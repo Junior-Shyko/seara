@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration
             $table->string('user_complement');      // Complemento
             $table->string('user_district');        // Bairro
             $table->string('user_city');            // Cidade
-            $table->string('user_estado');          // Estado
+            $table->string('user_state');          // Estado
             $table->string('user_cep');             // CEP
             $table->rememberToken();
             $table->timestamps();
