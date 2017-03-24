@@ -25,6 +25,7 @@ class CreateCompaniesTable extends Migration
             $table->string('company_district');       // bairro
             $table->string('company_city');           // cidade
             $table->string('company_state');          // estado
+            $table->string('company_cep');          // estado
             $table->string('company_phone');          // telefone
             $table->string('company_mobile');         // celular
             $table->string('company_brand_logo');     // logo da empresa
