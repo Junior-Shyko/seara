@@ -19,9 +19,9 @@ class RegisterController extends Controller
 	| provide this functionality without requiring any additional code.
 	|
 	*/
-	
+
 	use RegistersUsers;
-	
+
 	/**
 	 * Where to redirect users after login / registration.
 	 *
@@ -29,7 +29,7 @@ class RegisterController extends Controller
 	 */
 	protected $redirectTo = '/';
 	protected $registerView = 'auth.register';
-	
+
 	/**
 	 * Create a new controller instance.
 	 *
@@ -39,7 +39,7 @@ class RegisterController extends Controller
 	{
 		$this->middleware('guest');
 	}
-	
+
 	/**
 	 * Get a validator for an incoming registration request.
 	 *
@@ -50,11 +50,11 @@ class RegisterController extends Controller
 	{
 		return Validator::make($data, [
 			'name' => 'required|max:255',
-			'email' => 'required|email|max:255|unique:users',
+			'email' => 'required|email|max:255|unique:users,user_email',
 			'password' => 'required|min:6|confirmed',
 		]);
 	}
-	
+
 	/**
 	 * Create a new user instance after a valid registration.
 	 *
@@ -64,9 +64,11 @@ class RegisterController extends Controller
 	protected function create(array $data)
 	{
 		return User::create([
-			'name' => $data['name'],
-			'email' => $data['email'],
-			'password' => bcrypt($data['password']),
+			'user_name' => $data['name'],
+			'user_email' => $data['email'],
+			'user_password' => bcrypt($data['password']),
+			'user_id_company' => 1,
+			'user_id_profile' => 1
 		]);
 	}
 }

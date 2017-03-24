@@ -40,6 +40,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'user_password', 'remember_token',
     ];
+
+		 /***NECESSÁRIO PARA QUE O ELOQUENT CARREGUE A CHAVE PRIMÁRIA***/
+		 protected $primaryKey = 'user_id';
 }

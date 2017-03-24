@@ -16,8 +16,8 @@ class UpdateForeignIdUsers extends Migration
         Schema::table('users', function (Blueprint $table) {
 
             // Cria as referências relacionais
-            $table->foreign('id_company')->references('company_id')->on('companies');
-            $table->foreign('id_profile')->references('profile_id')->on('profiles');
+            $table->foreign('user_id_company')->references('company_id')->on('companies');
+            $table->foreign('user_id_profile')->references('profile_id')->on('profiles');
         });
     }
 

@@ -19,9 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('user_phone');           // telefone
             $table->string('user_password');        // senha
             $table->string('user_cargo');           // senha
-            $table->integer('id_company')
+            $table->integer('user_id_company')
                   ->unsigned();
-            $table->integer('id_profile')
+            $table->integer('user_id_profile')
                   ->unsigned();
             $table->date('user_birth');             // data de nascimento
             $table->string('user_sex');             // sexo
