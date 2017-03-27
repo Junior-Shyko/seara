@@ -22,6 +22,10 @@
   <link href="gentelella/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
   <link href="gentelella/vendors/nprogress/nprogress.css" rel="stylesheet">
   <link href="gentelella/build/css/custom.min.css" rel="stylesheet">
+  <!-- <link href="gentelella/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet"> -->
+
+  <!-- jQuery -->
+  <script src="gentelella/vendors/jquery/dist/jquery.min.js"></script>
 
   @stack('stylesheets')
 
@@ -48,8 +52,6 @@
   <!-- <script src="{{ asset("js/gentelella.min.js") }}"></script> -->
 
 
-  <!-- jQuery -->
-  <script src="gentelella/vendors/jquery/dist/jquery.min.js"></script>
   <!-- Bootstrap -->
   <script src="gentelella/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
   <!-- FastClick -->
@@ -60,6 +62,10 @@
   <script src="{{asset("gentelella/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js")}}"></script>
   <!-- Custom Theme Scripts -->
   <script src="gentelella/build/js/custom.min.js"></script>
+  <!-- Input Mask -->
+  <script src="gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
+  <!-- Date Range Picker -->
+  <!-- <script src="gentelella/vendors/bootstrap-daterangepicker/daterangepicker.js"></script> -->
 
   @stack('scripts')
 
