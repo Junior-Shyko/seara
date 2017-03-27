@@ -30,8 +30,8 @@ class UpdateForeignIdUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->dropForeign(['id_company']);
-            $table->dropForeign(['id_profile']);
+            $table->dropForeign(['user_id_company']);
+            $table->dropForeign(['user_id_profile']);
         });
     }
 }

@@ -15,11 +15,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_name',
-				'user_email',
-				'user_password',
+        'name',
+				'email',
+				'password',
 				'user_phone',
-				'user_cargo',
+				'user_position',
 				'user_id_company',
 				'user_id_profile',
 				'user_birth',
@@ -40,9 +40,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'user_password', 'remember_token',
+        'password', 'remember_token',
     ];
 
-		 /***NECESSÁRIO PARA QUE O ELOQUENT CARREGUE A CHAVE PRIMÁRIA***/
-		 protected $primaryKey = 'user_id';
 }
