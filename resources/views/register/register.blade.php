@@ -53,10 +53,27 @@
       Inputmask().mask(document.querySelectorAll("input")); // chama a máscara
       $("#cnpj").inputmask("99.999.999/9999-99"); //specifying options
       $("#cpf").inputmask("999.999.999-99"); //specifying options
-      $("#user_phone").inputmask("(99)9-9999-9999"); //specifying options
+      $("#user_phone").inputmask("(99)99999-9999"); //specifying options
       $("#birth").inputmask("99/99/9999"); //specifying options
-      $("#cep").inputmask("99.999-999")
-      $("#user_cep").inputmask("99.999-999")
+      $("#cep").inputmask("99.999-999");
+      $("#user_cep").inputmask("99.999-999",{
+        "oncomplete": function(){ // Ao concluir o CEP, vou fazer uma requisição e preencer automaticamente
+          $.ajax({
+            url: "http://correiosapi.apphb.com/cep/"+$("#user_cep").inputmask("unmaskedvalue"),
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            async: false,
+            success: function(data){
+              $("#user_street").val(data.tipoDeLogradouro + " " + data.logradouro);
+              $("#user_city").val(data.cidade);
+              $("#user_state").val(data.estado);
+              $("#user_district").val(data.bairro);
+            },
+            error: function(){
+            }
+          });
+        }
+      });
 
     // Smart Wizard
     $('#wizard').smartWizard({
@@ -86,7 +103,7 @@
 
     // Your Step validation logic
     function validateSteps(stepnumber){
-      var url = 'http://receitaws.com.br/v1/cnpj/22002899000114'
+      var url = 'http://receitaws.com.br/v1/cnpj/'+$("#cnpj").inputmask("unmaskedvalue");
       // validate step 1
       if(stepnumber == 1){
         $.ajax({
