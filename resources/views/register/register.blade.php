@@ -121,16 +121,12 @@ $(document).ready(function(){
     labelPrevious: "Voltar"
   });
 
-  console.log($("wizard").smartWizard());
-
   function leaveAStepCallback(obj, context){
     return validateSteps(context.fromStep); // return false to stay on step and true to continue navigation
   }
 
   function onFinishCallback(objs, context){
-    if(validateAllSteps()){
-      $('form').submit();
-    }
+    console.log("Acabou");
   }
 
   function onShow(obj, context)
@@ -163,6 +159,18 @@ $(document).ready(function(){
         error: function(){
         }
       });
+    } else if (stepnumber == 2) {
+      $("#empresa input[name=company_cnpj]").val($("#cnpj").val());
+      var testando = $("#empresa").serializeArray();
+      var data = {};
+       $("#empresa").serializeArray().map(function(x){
+         data[x.name] = x.value;
+      });
+
+      $.post("/companies", data, function(data){
+        console.log(data);
+      });
+      // $("#empresa").submit();
     }
     return true;
 

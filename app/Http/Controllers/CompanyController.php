@@ -35,7 +35,7 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Company::create($request->all());
     }
 
     /**
