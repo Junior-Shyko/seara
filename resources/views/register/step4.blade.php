@@ -1,16 +1,17 @@
 <div id="step-4" class="content" style="display: none;">
-  <form class="form-horizontal form-label-left">
+  <form id="usuario2" class="form-horizontal form-label-left">
+    {{csrf_field()}}
     <div class="form-group">
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="name">Dados Pessoais <span class="required">*</span>
       </label>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="cpf" placeholder="CPF" required="required" class="form-control col-md-2 col-xs-12" type="text">
+        <input id="cpf" name="user_cpf" placeholder="CPF" required="required" class="form-control col-md-2 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_phone" placeholder="Telefone de Contato" required="required" class="form-control col-md-2 col-xs-12" type="text">
+        <input id="user_phone" name="user_phone" placeholder="Telefone de Contato" required="required" class="form-control col-md-2 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="birth" placeholder="Data de Nascimento" class="form-control col-md-2 col-xs-12" type="text">
+        <input id="birth" name="user_birth" placeholder="Data de Nascimento" class="form-control col-md-2 col-xs-12" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
         <div id="gender" class="btn-group" data-toggle="buttons">
@@ -27,32 +28,32 @@
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="street">Endereço <span class="required">*</span>
       </label>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="user_street" placeholder="Rua" class="form-control col-md-7 col-xs-12" type="text">
+        <input id="user_street" name="user_street" placeholder="Rua" class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_number" placeholder="Número" class="form-control col-md-7 col-xs-12" type="text">
+        <input id="user_number" name="user_number" placeholder="Número" class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_district" placeholder="Bairro" class="form-control col-md-7 col-xs-12" type="text">
+        <input id="user_district" name="user_district" placeholder="Bairro" class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_cep" placeholder="CEP" class="form-control col-md-7 col-xs-12" type="text">
+        <input id="user_cep" name="user_cep" placeholder="CEP" class="form-control col-md-7 col-xs-12" type="text">
       </div>
     </div>
     <div class="form-group">
       <label class="control-label col-md-2 col-sm-2 col-xs-12"></label>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="user_city" placeholder="Cidade" class="form-control col-md-7 col-xs-12" name="middle-name" type="text">
+        <input id="user_city" name="user_city" placeholder="Cidade" class="form-control col-md-7 col-xs-12" name="middle-name" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_state" placeholder="Estado" class="form-control col-md-2 col-xs-12" name="middle-name" type="text">
+        <input id="user_state" name="user_state" placeholder="Estado" class="form-control col-md-2 col-xs-12" name="middle-name" type="text">
       </div>
     </div>
     <div class="form-group">
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="street">Cargo <span class="required">*</span>
       </label>
       <div class="col-md-4 col-sm-4 col-xs-12">
-        <input id="position" class="form-control col-md-6 col-xs-12" type="password">
+        <input id="position" name="user_position" class="form-control col-md-6 col-xs-12" type="password">
       </div>
     </div>
   </form>

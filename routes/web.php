@@ -16,3 +16,4 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/', 'HomeController@index');
 Route::get('/cadastro', 'SignUpController');
 Route::resource('companies', 'CompanyController');
+Route::resource('users', 'UserController');

@@ -127,6 +127,19 @@ $(document).ready(function(){
 
   function onFinishCallback(objs, context){
     console.log("Acabou");
+    var data = {};
+    $("#usuario1").serializeArray().map(function(x){
+      data[x.name] = x.value;
+    });
+
+    $("#usuario2").serializeArray().map(function(x){
+      data[x.name] = x.value;
+    });
+
+    data['user_id_profile'] = 1;
+    data['user_id_company'] = 2;
+
+    $.post('/users', data);
   }
 
   function onShow(obj, context)
