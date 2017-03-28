@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,4 +24,7 @@ class Company extends Model
       'company_brand_logo'
     ];
     //
+
+    protected $table = "companies";
+    protected $primaryKey = "company_id";
 }
