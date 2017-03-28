@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +15,6 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -46,7 +46,7 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
-        //
+      return response()->json($company);
     }
 
     /**
