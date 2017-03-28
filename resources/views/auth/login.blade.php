@@ -6,9 +6,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <title>Gentellela Alela! | </title>
-    
+
     <!-- Bootstrap -->
     <link href="{{ asset("css/bootstrap.min.css") }}" rel="stylesheet">
     <!-- Font Awesome -->
@@ -27,7 +27,7 @@
             <section class="login_content">
                 <form method="post" action="{{ url('/login') }}">
                     {!! csrf_field() !!}
-                    
+
                     <h1>Login Form</h1>
                     <div class="form-group has-feedback {{ $errors->has('email') ? ' has-error' : '' }}">
                         <input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Email">
@@ -38,7 +38,7 @@
                 </span>
                         @endif
                     </div>
-                    
+
                     <div class="form-group has-feedback{{ $errors->has('password') ? ' has-error' : '' }}">
                         <input type="password" class="form-control" placeholder="Password" name="password">
                         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
@@ -47,23 +47,23 @@
                   <strong>{{ $errors->first('password') }}</strong>
                 </span>
                         @endif
-                    
+
                     </div>
                     <div>
                         <input type="submit" class="btn btn-default submit" value="Log in">
                         <a class="reset_pass" href="{{  url('/password/reset') }}">Lost your password?</a>
                     </div>
-                    
+
                     <div class="clearfix"></div>
-                    
+
                     <div class="separator">
                         <p class="change_link">New to site?
-                            <a href="{{ url('/register') }}" class="to_register"> Create Account </a>
+                            <a href="{{ url('/cadastro') }}" class="to_register"> Create Account </a>
                         </p>
-                        
+
                         <div class="clearfix"></div>
                         <br />
-                        
+
                         <div>
                             <h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>
                             <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
