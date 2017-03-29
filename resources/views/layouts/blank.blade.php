@@ -11,11 +11,7 @@
 
   <title>Gentellela Alela! | </title>
 
-  <!-- Bootstrap -->
-  <link href="{{ asset("css/bootstrap.min.css") }}" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="{{ asset("css/font-awesome.min.css") }}" rel="stylesheet">
-  <!-- Custom Theme Style -->
+  <!-- Gentelella -->
   <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">
 
   <link href="gentelella/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -44,28 +40,8 @@
     </div>
   </div>
 
-  <!-- jQuery -->
-  <!-- <script src="{{ asset("js/jquery.min.js") }}"></script> -->
-  <!-- Bootstrap -->
-  <!-- <script src="{{ asset("js/bootstrap.min.js") }}"></script> -->
   <!-- Custom Theme Scripts -->
-  <!-- <script src="{{ asset("js/gentelella.min.js") }}"></script> -->
-
-
-  <!-- Bootstrap -->
-  <script src="gentelella/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-  <!-- FastClick -->
-  <script src="{{asset("gentelella/vendors/fastclick/lib/fastclick.js")}}"></script>
-  <!-- NProgress -->
-  <script src="gentelella/vendors/nprogress/nprogress.js"></script>
-  <!-- jQuery Smart Wizard -->
-  <script src="{{asset("gentelella/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js")}}"></script>
-  <!-- Custom Theme Scripts -->
-  <script src="gentelella/build/js/custom.min.js"></script>
-  <!-- Input Mask -->
-  <script src="gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
-  <!-- Date Range Picker -->
-  <!-- <script src="gentelella/vendors/bootstrap-daterangepicker/daterangepicker.js"></script> -->
+  <script src="{{ asset("js/gentelella.min.js") }}"></script>
 
   @stack('scripts')
 
