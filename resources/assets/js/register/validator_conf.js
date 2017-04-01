@@ -79,7 +79,6 @@ function searaValidator(value, requirement)
   return isValid;
 }
 
-
 function initValidator()
 {
   window.Parsley
@@ -92,4 +91,22 @@ function initValidator()
   });
 
   window.Parsley.addMessage('en', 'required', 'Campo Obrigatório');
+
+  // Reconfiguração das views
+
+  $('#form-step-1').parsley().on('form:validated', function() {
+    reconfigureWizardView(1);
+  });
+
+  $('#form-step-2').parsley().on('form:validated', function() {
+    reconfigureWizardView(2);
+  });
+
+  $('#form-step-3').parsley().on('form:validated', function() {
+    reconfigureWizardView(3);
+  });
+
+  $('#form-step-4').parsley().on('form:validated', function() {
+    reconfigureWizardView(4);
+  });
 }

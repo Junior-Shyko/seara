@@ -1,3 +1,9 @@
+function reconfigureWizardView(stepNumber)
+{
+  var current_height = $("#step-" + stepNumber).height();
+  $(".stepContainer").css('height', current_height + 20);
+}
+
 function requestCnpj()
 {
   var url = 'http://receitaws.com.br/v1/cnpj/'+$("#company_cnpj").inputmask("unmaskedvalue");
@@ -97,8 +103,7 @@ $(document).ready(function(){
 
   function onShow(obj, context)
   {
-    var size = $("#step-" + context.toStep).height() + 20;
-    $(".stepContainer").css('height', size);
+    reconfigureWizardView(context.toStep);
   }
 
   // Your Step validation logic
@@ -109,7 +114,7 @@ $(document).ready(function(){
     if(stepnumber == 1){
 
       // Executa validador
-		  $('#form-step-1').parsley().validate();
+      $('#form-step-1').parsley().validate();
       isValid = $('#form-step-1').parsley().isValid(); // Verifica se campo é válido
       if(isValid) requestCnpj(); // Faz requisição no ReceitaWS somente caso seja válido
 
@@ -128,6 +133,14 @@ $(document).ready(function(){
 
       $('#form-step-2').parsley().validate();
       isValid = $('#form-step-2').parsley().isValid();
+
+    } else if (stepnumber == 3) {
+
+      $('#form-step-3').parsley().validate();
+      isValid = $('#form-step-3').parsley().isValid();
+
+    } else if (stepnumber == 4) {
+
     }
     return isValid;
   }
