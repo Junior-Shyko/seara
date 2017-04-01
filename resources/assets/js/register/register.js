@@ -111,7 +111,7 @@ $(document).ready(function(){
       // Executa validador
 		  $('#form-step-1').parsley().validate();
       isValid = $('#form-step-1').parsley().isValid(); // Verifica se campo é válido
-      requestCnpj(); // Faz requisição no ReceitaWS
+      if(isValid) requestCnpj(); // Faz requisição no ReceitaWS somente caso seja válido
 
     } else if (stepnumber == 2) {
       // $("#empresa input[name=company_cnpj]").val($("#cnpj").val());
