@@ -90,7 +90,11 @@ function initValidator()
     }
   });
 
-  window.Parsley.addMessage('en', 'required', 'Campo Obrigatório');
+  // Mensagens
+
+  window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
+  $('#user_email').attr('data-parsley-type-message', 'Digite um email válido.');
+  $('#user_confirm_password').attr('data-parsley-equalto-message', 'As senhas devem ser idênticas.');
 
   // Reconfiguração das views
 
