@@ -59,23 +59,23 @@ function validarCNPJ(cnpj) {
 
 function requestCnpj()
 {
-
-  var url = 'http://receitaws.com.br/v1/cnpj/'+$("#cnpj").inputmask("unmaskedvalue");
+  var url = 'http://receitaws.com.br/v1/cnpj/'+$("#company_cnpj").inputmask("unmaskedvalue");
   $.ajax({
     url: url,
     dataType: 'jsonp',
     jsonp: 'callback',
     async: false,
     success: function(data){
-      $("#name").val(data.nome);
-      $("#fantasy").val(data.fantasia);
-      $("#street").val(data.logradouro);
-      $("#number").val(data.numero + " " + data.complemento);
-      $("#cep").val(data.cep);
-      $("#district").val(data.bairro);
-      $("#city").val(data.municipio);
-      $("#state").val(data.uf);
-      $("#phone").val(data.telefone);
+      $("#company_name").val(data.nome);
+      $("#company_fantasy").val(data.fantasia);
+      $("#company_street").val(data.logradouro);
+      $("#company_number").val(data.numero + " " + data.complemento);
+      $("#company_complement").val(data.complemento);
+      $("#company_cep").val(data.cep);
+      $("#company_district").val(data.bairro);
+      $("#company_city").val(data.municipio);
+      $("#company_state").val(data.uf);
+      $("#company_phone").val(data.telefone);
     },
     error: function(){
     }
@@ -89,8 +89,8 @@ function searaValidator(value, requirement)
   switch(requirement)
   {
     case "cnpj":
-    if($("#cnpj").inputmask('isComplete')) {
-      var cnpj = $("#cnpj").inputmask('unmaskedvalue');
+    if($("#company_cnpj").inputmask('isComplete')) {
+      var cnpj = $("#company_cnpj").inputmask('unmaskedvalue');
       if (validarCNPJ(cnpj)) {
         isValid = true;
       }
@@ -118,14 +118,23 @@ function initValidator()
       en: 'Campo Obrigatório'
     }
   });
+
+  window.Parsley.addMessage('en', 'required', 'Campo Obrigatório');
 }
 
 function initMask()
 {
   Inputmask().mask(document.querySelectorAll("input")); // chama a máscara
-  $("#cnpj").inputmask("99.999.999/9999-99", {
+
+  /* MÁSCARA PARA FORMULÁRIO DE EMPRESAS */
+  $("#company_cnpj").inputmask("99.999.999/9999-99", {
     "oncomplete": function() { $('#form-step-1').parsley().validate(); }
   }); //specifying options
+  $("#company_cep").inputmask("99.999-999");
+  $("#company_phone").inputmask("(99)9999-9999");
+  $("#company_mobile").inputmask("(99)99999-9999");
+
+  /* MÁSCARA PARA FORMULÁRIO DE USUÁRIOS */
   $("#cpf").inputmask("999.999.999-99"); //specifying options
   $("#user_phone").inputmask("(99)99999-9999"); //specifying options
   $("#birth").inputmask("99/99/9999"); //specifying options
@@ -198,11 +207,10 @@ $(document).ready(function(){
     // Vamos validar o step 1
     if(stepnumber == 1){
 
+      // Executa validador
 		  $('#form-step-1').parsley().validate();
-
-      isValid = $('#form-step-1').parsley().isValid();
-
-      requestCnpj();
+      isValid = $('#form-step-1').parsley().isValid(); // Verifica se campo é válido
+      requestCnpj(); // Faz requisição no ReceitaWS
 
     } else if (stepnumber == 2) {
       // $("#empresa input[name=company_cnpj]").val($("#cnpj").val());
@@ -216,6 +224,9 @@ $(document).ready(function(){
       //   console.log(data);
       // });
       // $("#empresa").submit();
+
+      $('#form-step-2').parsley().validate();
+      isValid = $('#form-step-2').parsley().isValid();
     }
     return isValid;
   }
@@ -229,4 +240,5 @@ $(document).ready(function(){
   $('.buttonNext').addClass('btn btn-success');
   $('.buttonPrevious').addClass('btn btn-primary');
   $('.buttonFinish').addClass('btn btn-default');
+
 });
