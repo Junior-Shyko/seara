@@ -30,8 +30,11 @@ elixir(function(mix) {
 
     // Scripts Básicos
     mix.scripts([
-      './vendor/bower_components/gentelella/vendors/jquery/dist/jquery.min.js',
-      './vendor/bower_components/gentelella/vendors/bootstrap/dist/js/bootstrap.min.js',
+      './vendor/bower_components/gentelella/vendors/jquery/dist/jquery.min.js', // JQUERy
+      './vendor/bower_components/gentelella/vendors/bootstrap/dist/js/bootstrap.min.js', //bootstrap
+      './vendor/bower_components/gentelella/vendors/nprogress/nprogress.js', //NProgress
+      './vendor/bower_components/gentelella/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js', //Bootstrap Progressbar
+      './vendor/bower_components/gentelella/vendors/fastclick/lib/fastclick.js', //Fastclick
       'gentelella/helpers/smartresize.js',
       'gentelella/custom.js'
     ], 'public/js/gentelella.min.js');
@@ -40,6 +43,7 @@ elixir(function(mix) {
     mix.scripts([
       './vendor/bower_components/gentelella/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js',
       './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
+      './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
       'register.js'
     ], 'public/js/register.min.js');
 

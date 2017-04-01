@@ -1,6 +1,131 @@
-$(document).ready(function(){
+function setValidatorMessage(msg)
+{
+  window.Parsley.addMessage('en', 'seara', msg);
+}
+
+function validarCNPJ(cnpj) {
+
+    cnpj = cnpj.replace(/[^\d]+/g,'');
+
+    if(cnpj == '') return false;
+
+    if (cnpj.length != 14)
+        return false;
+
+    // Elimina CNPJs invalidos conhecidos
+    if (cnpj == "00000000000000" ||
+        cnpj == "11111111111111" ||
+        cnpj == "22222222222222" ||
+        cnpj == "33333333333333" ||
+        cnpj == "44444444444444" ||
+        cnpj == "55555555555555" ||
+        cnpj == "66666666666666" ||
+        cnpj == "77777777777777" ||
+        cnpj == "88888888888888" ||
+        cnpj == "99999999999999")
+        return false;
+
+    // Valida DVs
+    tamanho = cnpj.length - 2
+    numeros = cnpj.substring(0,tamanho);
+    digitos = cnpj.substring(tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2)
+            pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(0))
+        return false;
+
+    tamanho = tamanho + 1;
+    numeros = cnpj.substring(0,tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (i = tamanho; i >= 1; i--) {
+      soma += numeros.charAt(tamanho - i) * pos--;
+      if (pos < 2)
+            pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(1))
+          return false;
+
+    return true;
+
+}
+
+function requestCnpj()
+{
+
+  var url = 'http://receitaws.com.br/v1/cnpj/'+$("#cnpj").inputmask("unmaskedvalue");
+  $.ajax({
+    url: url,
+    dataType: 'jsonp',
+    jsonp: 'callback',
+    async: false,
+    success: function(data){
+      $("#name").val(data.nome);
+      $("#fantasy").val(data.fantasia);
+      $("#street").val(data.logradouro);
+      $("#number").val(data.numero + " " + data.complemento);
+      $("#cep").val(data.cep);
+      $("#district").val(data.bairro);
+      $("#city").val(data.municipio);
+      $("#state").val(data.uf);
+      $("#phone").val(data.telefone);
+    },
+    error: function(){
+    }
+  });
+}
+
+function searaValidator(value, requirement)
+{
+  var isValid = false;
+
+  switch(requirement)
+  {
+    case "cnpj":
+    if($("#cnpj").inputmask('isComplete')) {
+      var cnpj = $("#cnpj").inputmask('unmaskedvalue');
+      if (validarCNPJ(cnpj)) {
+        isValid = true;
+      }
+      else {
+        setValidatorMessage('CNPJ Inválido');
+        isValid = false;
+      }
+    }
+    else {
+      isValid = false;
+    }
+    break;
+  }
+
+  return isValid;
+}
+
+function initValidator()
+{
+  window.Parsley
+  .addValidator('seara', {
+    requirementType: 'string',
+    validateString: searaValidator,
+    messages: {
+      en: 'Campo Obrigatório'
+    }
+  });
+}
+
+function initMask()
+{
   Inputmask().mask(document.querySelectorAll("input")); // chama a máscara
-  $("#cnpj").inputmask("99.999.999/9999-99"); //specifying options
+  $("#cnpj").inputmask("99.999.999/9999-99", {
+    "oncomplete": function() { $('#form-step-1').parsley().validate(); }
+  }); //specifying options
   $("#cpf").inputmask("999.999.999-99"); //specifying options
   $("#user_phone").inputmask("(99)99999-9999"); //specifying options
   $("#birth").inputmask("99/99/9999"); //specifying options
@@ -23,6 +148,11 @@ $(document).ready(function(){
       });
     }
   });
+}
+
+$(document).ready(function(){
+  initValidator();
+  initMask();
 
   // Smart Wizard
   $("#wizard").smartWizard({
@@ -40,19 +170,19 @@ $(document).ready(function(){
 
   function onFinishCallback(objs, context){
     console.log("Acabou");
-    var data = {};
-    $("#usuario1").serializeArray().map(function(x){
-      data[x.name] = x.value;
-    });
-
-    $("#usuario2").serializeArray().map(function(x){
-      data[x.name] = x.value;
-    });
-
-    data['user_id_profile'] = 1;
-    data['user_id_company'] = 2;
-
-    $.post('/users', data);
+    // var data = {};
+    // $("#usuario1").serializeArray().map(function(x){
+    //   data[x.name] = x.value;
+    // });
+    //
+    // $("#usuario2").serializeArray().map(function(x){
+    //   data[x.name] = x.value;
+    // });
+    //
+    // data['user_id_profile'] = 1;
+    // data['user_id_company'] = 2;
+    //
+    // $.post('/users', data);
   }
 
   function onShow(obj, context)
@@ -63,43 +193,31 @@ $(document).ready(function(){
 
   // Your Step validation logic
   function validateSteps(stepnumber){
-    var url = 'http://receitaws.com.br/v1/cnpj/'+$("#cnpj").inputmask("unmaskedvalue");
-    // validate step 1
-    if(stepnumber == 1){
-      $.ajax({
-        url: url,
-        dataType: 'jsonp',
-        jsonp: 'callback',
-        async: false,
-        success: function(data){
-          $("#name").val(data.nome);
-          $("#fantasy").val(data.fantasia);
-          $("#street").val(data.logradouro);
-          $("#number").val(data.numero + " " + data.complemento);
-          $("#cep").val(data.cep);
-          $("#district").val(data.bairro);
-          $("#city").val(data.municipio);
-          $("#state").val(data.uf);
-          $("#phone").val(data.telefone);
-        },
-        error: function(){
-        }
-      });
-    } else if (stepnumber == 2) {
-      $("#empresa input[name=company_cnpj]").val($("#cnpj").val());
-      var testando = $("#empresa").serializeArray();
-      var data = {};
-      $("#empresa").serializeArray().map(function(x){
-        data[x.name] = x.value;
-      });
+    var isValid = false;
 
-      $.post("/companies", data, function(data){
-        console.log(data);
-      });
+    // Vamos validar o step 1
+    if(stepnumber == 1){
+
+		  $('#form-step-1').parsley().validate();
+
+      isValid = $('#form-step-1').parsley().isValid();
+
+      requestCnpj();
+
+    } else if (stepnumber == 2) {
+      // $("#empresa input[name=company_cnpj]").val($("#cnpj").val());
+      // var testando = $("#empresa").serializeArray();
+      // var data = {};
+      // $("#empresa").serializeArray().map(function(x){
+      //   data[x.name] = x.value;
+      // });
+      //
+      // $.post("/companies", data, function(data){
+      //   console.log(data);
+      // });
       // $("#empresa").submit();
     }
-    return true;
-
+    return isValid;
   }
 
   function validateAllSteps(){
