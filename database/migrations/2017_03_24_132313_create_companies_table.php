@@ -17,15 +17,15 @@ class CreateCompaniesTable extends Migration
             $table->increments('company_id');         // id
             $table->string('company_name');           // razão social
             $table->string('company_fantasy');        // nome fantasia
-            $table->string('company_responsible');    // responsável pela empresa
+            // $table->string('company_responsible');    // responsável pela empresa
             $table->string('company_cnpj')->unique(); // cnpj da empresa
-            $table->string('company_street');         // logradouro da empresa
-            $table->string('company_number');         // numero da empresa
-            $table->string('company_complement');     // complemento da empresa
-            $table->string('company_district');       // bairro
-            $table->string('company_city');           // cidade
-            $table->string('company_state');          // estado
-            $table->string('company_cep');          // estado
+            $table->string('company_addr_street');         // logradouro da empresa
+            $table->string('company_addr_number');         // numero da empresa
+            $table->string('company_addr_complement');     // complemento da empresa
+            $table->string('company_addr_district');       // bairro
+            $table->string('company_addr_city');           // cidade
+            $table->string('company_addr_state');          // estado
+            $table->string('company_addr_cep');          // estado
             $table->string('company_phone');          // telefone
             $table->string('company_mobile');         // celular
             $table->string('company_brand_logo');     // logo da empresa

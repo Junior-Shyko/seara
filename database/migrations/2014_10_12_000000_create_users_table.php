@@ -26,13 +26,13 @@ class CreateUsersTable extends Migration
             $table->date('user_birth');             // data de nascimento
             $table->string('user_sex');             // sexo
             $table->string('user_cpf')->unique();   // CPF (campo único)
-            $table->string('user_street');          // Nome da rua
-            $table->string('user_number');          // Número da casa
-            $table->string('user_complement');      // Complemento
-            $table->string('user_district');        // Bairro
-            $table->string('user_city');            // Cidade
-            $table->string('user_state');          // Estado
-            $table->string('user_cep');             // CEP
+            $table->string('user_addr_street');          // Nome da rua
+            $table->string('user_addr_number');          // Número da casa
+            $table->string('user_addr_complement');      // Complemento
+            $table->string('user_addr_district');        // Bairro
+            $table->string('user_addr_city');            // Cidade
+            $table->string('user_addr_state');          // Estado
+            $table->string('user_addr_cep');             // CEP
             $table->rememberToken();
             $table->timestamps();
         });

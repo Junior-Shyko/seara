@@ -21,10 +21,8 @@ class CreateProfilesTable extends Migration
 
       // Adiciona os valores padrão dos perfis
       DB::table('profiles')->insert(array(
-        array('profile_name' => 'Super'),               // 1
-        array('profile_name' => 'Administrador Geral'), // 2
+        array('profile_name' => 'Administrador'), // 2
         array('profile_name' => 'Funcionário'),         // 3
-        array('profile_name' => 'Funcionário Seara')    // 4
       ));
     }
 
