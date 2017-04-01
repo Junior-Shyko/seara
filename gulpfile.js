@@ -44,7 +44,8 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js',
       './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
-      'register.js'
+      'register/validator_conf.js',
+      'register/register.js'
     ], 'public/js/register.min.js');
 
     /**************/
