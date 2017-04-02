@@ -45,6 +45,7 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
       'register/validator_conf.js',
+      'register/mask_autocomplete_conf.js',
       'register/register.js'
     ], 'public/js/register.min.js');
 
