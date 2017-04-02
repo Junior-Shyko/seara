@@ -4,6 +4,11 @@ function reconfigureWizardView(stepNumber)
   $(".stepContainer").css('height', current_height + 20);
 }
 
+function validateStep(stepNumber) {
+  $('#form-step-'+stepNumber).parsley().validate();
+  return $('#form-step-'+stepNumber).parsley().isValid();
+}
+
 function requestCnpj()
 {
   var url = 'http://receitaws.com.br/v1/cnpj/'+$("#company_cnpj").inputmask("unmaskedvalue");
@@ -42,10 +47,9 @@ function initMask()
   $("#company_mobile").inputmask("(99)99999-9999");
 
   /* MÁSCARA PARA FORMULÁRIO DE USUÁRIOS */
-  $("#cpf").inputmask("999.999.999-99"); //specifying options
+  $("#user_cpf").inputmask("999.999.999-99"); //specifying options
   $("#user_phone").inputmask("(99)99999-9999"); //specifying options
-  $("#birth").inputmask("99/99/9999"); //specifying options
-  $("#cep").inputmask("99.999-999");
+  $("#user_birth").inputmask("99/99/9999"); //specifying options
   $("#user_cep").inputmask("99.999-999",{
     "oncomplete": function(){ // Ao concluir o CEP, vou fazer uma requisição e preencer automaticamente
       $.ajax({
@@ -58,6 +62,9 @@ function initMask()
           $("#user_city").val(data.cidade);
           $("#user_state").val(data.estado);
           $("#user_district").val(data.bairro);
+
+          // Apenas para atualização da view
+          $("#form-step-4").parsley().validate();
         },
         error: function(){
         }
@@ -72,6 +79,7 @@ $(document).ready(function(){
 
   // Smart Wizard
   $("#wizard").smartWizard({
+    keyNavigation: false,
     onLeaveStep:leaveAStepCallback,
     onFinish:onFinishCallback,
     onShowStep: onShow,
@@ -85,7 +93,6 @@ $(document).ready(function(){
   }
 
   function onFinishCallback(objs, context){
-    console.log("Acabou");
     // var data = {};
     // $("#usuario1").serializeArray().map(function(x){
     //   data[x.name] = x.value;
@@ -99,6 +106,19 @@ $(document).ready(function(){
     // data['user_id_company'] = 2;
     //
     // $.post('/users', data);
+
+    // Validação de todos os passos
+    if ( !validateStep(1) ) {
+      return;
+    } else if (!validateStep(2)) {
+      return;
+    }else if (!validateStep(3)) {
+      return;
+    }else if (!validateStep(4)) {
+      return;
+    }else { // todos os passos são válidos
+      alert('Agora posso jogar para o servidor');
+    }
   }
 
   function onShow(obj, context)
@@ -141,14 +161,11 @@ $(document).ready(function(){
 
     } else if (stepnumber == 4) {
 
+      $('#form-step-4').parsley().validate();
+      isValid = $('#form-step-4').parsley().isValid();
+
     }
     return isValid;
-  }
-
-  function validateAllSteps(){
-    var isStepValid = true;
-    // all step validation logic
-    return isStepValid;
   }
 
   $('.buttonNext').addClass('btn btn-success');

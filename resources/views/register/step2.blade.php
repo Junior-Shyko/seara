@@ -5,7 +5,7 @@
 
      <!-- Razão Social -->
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Razão Social <span class="required">*</span>
+      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="name">Razão Social <span class="required">*</span>
       </label>
       <div class="col-md-8 col-sm-8 col-xs-12">
         <input id="company_name" name="company_name" placeholder="Razão Social" required class="form-control col-md-7 col-xs-12" type="text">
@@ -14,7 +14,7 @@
 
     <!-- Nome Fantasia -->
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fantasy">Nome Fantasia <span class="required">*</span>
+      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="fantasy">Nome Fantasia <span class="required">*</span>
       </label>
       <div class="col-md-8 col-sm-8 col-xs-12">
         <input id="company_fantasy" name="company_fantasy" placeholder="Nome Fantasia" required class="form-control col-md-8 col-xs-12" type="text">
@@ -23,7 +23,7 @@
 
     <!-- Endereço: Parte 1 -->
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="street">Endereço <span class="required">*</span>
+      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="street">Endereço <span class="required">*</span>
       </label>
       <div class="col-md-2 col-sm-2 col-xs-12">
         <input id="company_cep" name="company_cep" placeholder="CEP" required class="form-control col-md-7 col-xs-12" type="text">
@@ -41,7 +41,7 @@
 
     <!-- Endereço Parte 2 -->
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+      <label class="control-label col-md-2 col-sm-2 col-xs-12"></label>
       <div class="col-md-3 col-sm-3 col-xs-12">
         <input id="company_district" name="company_district" placeholder="Bairro" required class="form-control col-md-7 col-xs-12" name="middle-name" type="text">
       </div>
@@ -55,7 +55,7 @@
 
     <!-- Telefones de Contato -->
     <div class="form-group">
-      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="fantasy">Telefone/Celular <span class="required">*</span>
+      <label class="control-label col-md-2 col-sm-2 col-xs-12" for="fantasy">Telefone/Celular <span class="required">*</span>
       </label>
       <div class="col-md-3 col-sm-3 col-xs-12">
         <input id="company_phone" name="company_phone" placeholder="Telefone" required class="form-control col-md-4 col-xs-12" type="text">
