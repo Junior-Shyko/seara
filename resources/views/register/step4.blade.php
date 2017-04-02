@@ -8,13 +8,13 @@
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="name">Dados Pessoais <span class="required">*</span>
       </label>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_cpf" name="user_cpf" placeholder="CPF" data-parsley-seara="cpf" required class="form-control col-md-2 col-xs-12" type="text">
+        <input id="user_cpf" name="user_cpf" data-parsley-full="#user_cpf" placeholder="CPF" data-parsley-seara="cpf" required class="form-control col-md-2 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_birth" name="user_birth" placeholder="Data de Nascimento" data-parsley-seara="data" required class="form-control col-md-2 col-xs-12" type="text">
+        <input id="user_birth" name="user_birth" placeholder="Data de Nascimento" data-parsley-full="#user_birth" data-parsley-seara="data" required class="form-control col-md-2 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_phone" name="user_phone" placeholder="Telefone de Contato" required class="form-control col-md-2 col-xs-12" type="text">
+        <input id="user_phone" name="user_phone" placeholder="Telefone de Contato" data-parsley-full="#user_phone" required class="form-control col-md-2 col-xs-12" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
         <div id="gender" class="btn-group" data-toggle="buttons">
@@ -34,7 +34,7 @@
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="street">Endereço <span class="required">*</span>
       </label>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="user_cep" name="user_addr_cep" placeholder="CEP" required class="form-control col-md-7 col-xs-12" type="text">
+        <input id="user_cep" name="user_addr_cep" placeholder="CEP" data-parsley-full="#user_cep" required class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
         <input id="user_street" name="user_addr_street" placeholder="Rua" required class="form-control col-md-7 col-xs-12" type="text">

@@ -161,6 +161,16 @@ function initValidator()
     }
   });
 
+  window.Parsley.addValidator('full', {
+    requirementType: 'string',
+    validateString: function (value, requirement) {
+      return $(requirement).inputmask('isComplete');
+    },
+    messages: {
+      en: 'Campo Obrigatório'
+    }
+  });
+
   // Mensagens
   window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
   $('#user_email').attr('data-parsley-type-message', 'Digite um email válido.');

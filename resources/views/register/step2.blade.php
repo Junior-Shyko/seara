@@ -26,7 +26,7 @@
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="street">Endereço <span class="required">*</span>
       </label>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="company_cep" name="company_cep" placeholder="CEP" required class="form-control col-md-7 col-xs-12" type="text">
+        <input id="company_cep" name="company_cep" placeholder="CEP" data-parsley-full="#company_cep" required class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
         <input id="company_street" name="company_street" placeholder="Rua" required class="form-control col-md-7 col-xs-12" type="text">
@@ -58,10 +58,10 @@
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="fantasy">Telefone/Celular <span class="required">*</span>
       </label>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="company_phone" name="company_phone" placeholder="Telefone" required class="form-control col-md-4 col-xs-12" type="text">
+        <input id="company_phone" name="company_phone" placeholder="Telefone" data-parsley-full="#company_phone" required class="form-control col-md-4 col-xs-12" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="company_mobile" name="company_mobile" placeholder="Celular" required class="form-control col-md-4 col-xs-12" type="text">
+        <input id="company_mobile" name="company_mobile" placeholder="Celular" data-parsley-full="#company_mobile" required class="form-control col-md-4 col-xs-12" type="text">
       </div>
     </div>
   </form>
