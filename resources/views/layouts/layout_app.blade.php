@@ -29,27 +29,11 @@
 
 <body class="login">
   @include('layouts.header_app')
-  
-  <div class="container body">
-  <div class="jumbotron ">
-      <div class="container">
-        <h2>Seja bem vindo ao cadastro dos Cliente da Seara Contabilidade.</h2>
-       
-        <div class="col-md-2">
-          <img src="{{asset('img/avatarBussiness.jpg')}}" width="128">
-        </div>
-        <div class="col-md-10">
-          Se você está nessa página significa que você é um cliente e deve fazer o <strong>cadastro da sua igreja</strong> e depois o <strong>seu cadastro</strong>.
-          <br>
-          <br>
-          <p>Qualquer Dúvida você pode clicar no link <strong>DÚVIDAS</strong> na parte superior direita dessa página.</p>
-          Agora vamos iniciar o seu cadastro.
-        </div>
-       
-      </div>
-    </div>  
-    <div class="main_container">
 
+  <div class="container body">
+     
+    <div class="main_container">
+    
      @yield('content')
 
     </div>

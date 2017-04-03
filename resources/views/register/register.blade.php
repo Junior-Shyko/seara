@@ -1,7 +1,9 @@
 @extends('layouts.layout_app')
 @section('title', 'Page Title')
 @section('content')
+ @include('layouts.welcome_seara')
 <div class="login_wrapper" style="max-width: 1000px;">
+
     <div class="animate form login_form">
         <div id="wizard" class="form_wizard wizard_horizontal">
             <ul class="wizard_steps anchor">
