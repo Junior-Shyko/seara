@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Company;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,15 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        Company::create($request->all());
+      try {
+        $company = Company::create($request->all());
+      }
+      catch(Exception $e){
+        $errorCode = 400;
+        return response()->json(['error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
+      }
+
+      return response()->json(['id' => $company->company_id]);
     }
 
     /**

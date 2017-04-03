@@ -38,30 +38,8 @@ function stepChanged(obj, context)
 
 function formSubmit(objs, context)
 {
-  // var data = {};
-  // $("#usuario1").serializeArray().map(function(x){
-  //   data[x.name] = x.value;
-  // });
-  //
-  // $("#usuario2").serializeArray().map(function(x){
-  //   data[x.name] = x.value;
-  // });
-  //
-  // data['user_id_profile'] = 1;
-  // data['user_id_company'] = 2;
-  //
-  // $.post('/users', data);
 
-  // $("#empresa input[name=company_cnpj]").val($("#cnpj").val());
-  // var testando = $("#empresa").serializeArray();
-  // var data = {};
-  // $("#empresa").serializeArray().map(function(x){
-  //   data[x.name] = x.value;
-  // });
-  //
-  // $.post("/companies", data, function(data){
-  //   console.log(data);
-  // });
+
 
   // Validação de todos os passos
   if ( !validateStep(1) ) {
@@ -74,6 +52,7 @@ function formSubmit(objs, context)
     return;
   }else { // todos os passos são válidos
     alert('Agora posso jogar para o servidor');
+    store(); // cadastro da empresa e usuário
   }
 }
 
@@ -91,6 +70,43 @@ function reconfigureWizardView(stepNumber)
 function validateStep(stepNumber) {
   $('#form-step-'+stepNumber).parsley().validate();
   return $('#form-step-'+stepNumber).parsley().isValid();
+}
+
+/*ENVIO PARA O BANCO DE DADOS*/
+function store()
+{
+  // atribuo o cnpj
+  $("#form-step-2 input[name=company_cnpj]").val($("#company_cnpj").val());
+  var company = {};
+  $("#form-step-2").serializeArray().map(function(x){
+    console.log(x.name + ':' + x.value);
+    company[x.name] = x.value;
+  });
+
+  $.post("/companies", company, function(companyResponse){
+    // a requisição deu certo, agora vou guardar o usuário
+    var user = {};
+    $("#form-step-4").serializeArray().map(function(x){
+      user[x.name] = x.value;
+    });
+
+    $("#form-step-3").serializeArray().map(function(x){
+      user[x.name] = x.value;
+    });
+
+    user['user_id_profile'] = 1;
+    user['user_id_company'] = companyResponse.id;
+
+    $.post("/users", user, function(userResponse){
+
+    })
+    .fail(function (data) {
+        console.log('falha: ' + data['error'] + ' msg:' + data['message']);
+    })
+  })
+  .fail(function (data) {
+    console.log('falha: ' + data['error'] + ' msg: ' + data['message']);
+  });
 }
 
 $(document).ready(function(){
