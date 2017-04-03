@@ -38,9 +38,6 @@ function stepChanged(obj, context)
 
 function formSubmit(objs, context)
 {
-
-
-
   // Validação de todos os passos
   if ( !validateStep(1) ) {
     return;
@@ -73,6 +70,18 @@ function validateStep(stepNumber) {
 }
 
 /*ENVIO PARA O BANCO DE DADOS*/
+function unmask(str)
+{
+  console.log('str:' + str);
+  return str.replace(/[^\d]/g,'');
+}
+
+function brDatetoUsa(datestring)
+{
+  var dateSplitted = datestring.split('/');
+  return dateSplitted[2] + '-' + dateSplitted[1] + '-' + dateSplitted[0];
+}
+
 function store()
 {
   // atribuo o cnpj
@@ -82,6 +91,12 @@ function store()
     console.log(x.name + ':' + x.value);
     company[x.name] = x.value;
   });
+
+  console.log('retirando máscaras da empresa');
+  company['company_cnpj'] = unmask(company['company_cnpj']);
+  company['company_addr_cep'] = unmask(company['company_addr_cep']);
+  company['company_phone'] = unmask(company['company_phone']);
+  company['company_mobile'] = unmask(company['company_mobile']);
 
   $.post("/companies", company, function(companyResponse){
     // a requisição deu certo, agora vou guardar o usuário
@@ -94,8 +109,17 @@ function store()
       user[x.name] = x.value;
     });
 
+    user['user_sex'] = $("#form-step-4 input[type='radio']:checked").val();
     user['user_id_profile'] = 1;
     user['user_id_company'] = companyResponse.id;
+
+    // Retira as mascaras
+    user['user_cpf'] = unmask(user['user_cpf']);
+    user['user_phone'] = unmask(user['user_phone']);
+    user['user_addr_cep'] = unmask(user['user_addr_cep']);
+
+    // Conversão de data
+    user['user_birth'] = brDatetoUsa(user['user_birth']);
 
     $.post("/users", user, function(userResponse){
 
