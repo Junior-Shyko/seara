@@ -1,22 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+@extends('layouts.layout_app')
 
-  <!-- Meta, title, CSS, favicons, etc. -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('title', 'Page Title')
 
-  <title>Gentellela Alela! | </title>
 
-  <!-- Gentelella -->
-  <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">
-
-</head>
-
-<body class="login">
-<div class="login_wrapper" style="max-width: 1000px;">
+@section('content')
+    <div class="login_wrapper" style="max-width: 1000px;">
   <div class="animate form login_form">
     <div id="wizard" class="form_wizard wizard_horizontal">
       <ul class="wizard_steps anchor">
@@ -67,11 +55,8 @@
       <!-- </div> -->
     </div>
   </div>
+  
 </div>
 
 <!-- Gentelella -->
-<script src="{{ asset("js/gentelella.min.js") }}"></script>
-<script src="{{ asset("js/register.min.js") }}"></script>
-
-</body>
-</html>
+@endsection
