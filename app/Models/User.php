@@ -25,13 +25,13 @@ class User extends Authenticatable
 				'user_birth',
 				'user_sex',
 				'user_cpf',
-				'user_street',
-				'user_number',
-				'user_complement',
-				'user_district',
-				'user_city',
-				'user_state',
-				'user_cep',
+				'user_addr_street',
+				'user_addr_number',
+				'user_addr_complement',
+				'user_addr_district',
+				'user_addr_city',
+				'user_addr_state',
+				'user_addr_cep',
     ];
 
     /**

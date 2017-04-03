@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,17 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-      User::create($request->all());
+      // criptografo a senha
+      $request['password'] = bcrypt($request['password']);
+      try {
+        $user = User::create($request->all());
+      }
+      catch(Exception $e) {
+        $errorCode = 400;
+        return response(['error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
+      }
+
+      return response(['id' => $user->id]);
     }
 
     /**

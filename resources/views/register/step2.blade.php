@@ -26,16 +26,16 @@
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="street">Endereço <span class="required">*</span>
       </label>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="company_cep" name="company_cep" placeholder="CEP" data-parsley-full="#company_cep" required class="form-control col-md-7 col-xs-12" type="text">
+        <input id="company_cep" name="company_addr_cep" placeholder="CEP" data-parsley-full="#company_cep" required class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="company_street" name="company_street" placeholder="Rua" required class="form-control col-md-7 col-xs-12" type="text">
+        <input id="company_street" name="company_addr_street" placeholder="Rua" required class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-1 col-sm-1 col-xs-12">
-        <input id="company_number" name="company_number" placeholder="Nº" required class="form-control col-md-7 col-xs-12" type="text">
+        <input id="company_number" name="company_addr_number" placeholder="Nº" required class="form-control col-md-7 col-xs-12" type="text">
       </div>
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <input id="company_complement" name="company_complement" placeholder="Complemento" class="form-control col-md-7 col-xs-12" type="text">
+        <input id="company_complement" name="company_addr_complement" placeholder="Complemento" class="form-control col-md-7 col-xs-12" type="text">
       </div>
     </div>
 
@@ -43,13 +43,13 @@
     <div class="form-group">
       <label class="control-label col-md-2 col-sm-2 col-xs-12"></label>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="company_district" name="company_district" placeholder="Bairro" required class="form-control col-md-7 col-xs-12" name="middle-name" type="text">
+        <input id="company_district" name="company_addr_district" placeholder="Bairro" required class="form-control col-md-7 col-xs-12" name="middle-name" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="company_city" name="company_city" placeholder="Cidade" required class="form-control col-md-7 col-xs-12" name="middle-name" type="text">
+        <input id="company_city" name="company_addr_city" placeholder="Cidade" required class="form-control col-md-7 col-xs-12" name="middle-name" type="text">
       </div>
     <div class="col-md-2 col-sm-2 col-xs-12">
-      <input id="company_state" name="company_state" placeholder="Estado" required class="form-control col-md-7 col-xs-12" type="text">
+      <input id="company_state" name="company_addr_state" placeholder="Estado" required class="form-control col-md-7 col-xs-12" type="text">
     </div>
     </div>
 
