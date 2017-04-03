@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Seara Contabilidade - Sistema de Clientes </title>
-
+  <link rel="icon" href="{{ asset('img/favicon.png')}}">
   <!-- Gentelella -->
   <link href="{{ asset('css/gentelella.min.css') }}" rel="stylesheet">
 
