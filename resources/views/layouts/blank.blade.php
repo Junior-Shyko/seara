@@ -14,14 +14,6 @@
   <!-- Gentelella -->
   <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">
 
-  <link href="gentelella/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="gentelella/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <link href="gentelella/vendors/nprogress/nprogress.css" rel="stylesheet">
-  <link href="gentelella/build/css/custom.min.css" rel="stylesheet">
-  <!-- <link href="gentelella/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet"> -->
-
-  <!-- jQuery -->
-  <script src="gentelella/vendors/jquery/dist/jquery.min.js"></script>
 
   @stack('stylesheets')
 
