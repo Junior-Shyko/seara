@@ -19,11 +19,11 @@
       <div class="col-md-3 col-sm-3 col-xs-12">
         <div id="gender" class="btn-group" data-toggle="buttons">
           <label class="btn btn-default" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
-            <input name="gender" value="male" data-parsley-multiple="gender" type="radio">
+            <input name="gender" value="Masculino" data-parsley-multiple="gender" type="radio">
             &nbsp; Masculino &nbsp;
           </label>
           <label class="btn btn-primary active" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
-            <input name="gender" value="female" data-parsley-multiple="gender" type="radio"> Feminino
+            <input name="gender" value="Feminino" data-parsley-multiple="gender" type="radio" checked> Feminino
           </label>
         </div>
       </div>
