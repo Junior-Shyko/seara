@@ -15,5 +15,8 @@ Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/', 'HomeController@index');
 Route::get('/cadastro', 'SignUpController');
+/* ROTA PARA EMPRESA */
 Route::resource('companies', 'CompanyController');
+
+/* ROTA PARA USUARIOS*/
 Route::resource('users', 'UserController');

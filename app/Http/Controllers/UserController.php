@@ -66,9 +66,12 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        //
+       // return $user;
+       $id = base64_decode($id);
+       $user = User::find($id);
+       return view('user.edit' , compact('user'));
     }
 
     /**

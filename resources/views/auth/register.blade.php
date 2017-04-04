@@ -27,7 +27,7 @@
             <form method="post" action="{{ url('/register') }}">
                 {!! csrf_field() !!}
                 
-                <h1>Create Account</h1>
+                <h1>Criar Conta</h1>
                 
                 <div class="form-group has-feedback{{ $errors->has('name') ? ' has-error' : '' }}">
                     <input type="text" class="form-control" name="name" value="{{ old('name') }}" placeholder="Full Name">
