@@ -49,6 +49,11 @@ elixir(function(mix) {
       'register/register.js'
     ], 'public/js/register.min.js');
 
+    // Auth views
+    mix.scripts([
+      './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
+    ], 'public/js/parsley.min.js');
+
     /**************/
     /* Copy Fonts */
     /**************/
