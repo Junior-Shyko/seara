@@ -54,6 +54,8 @@
     </div>
 </div>
 <!-- Gentelella -->
+
+@include('modals.signup_confirmation');
 @endsection
 
 @push('scripts')

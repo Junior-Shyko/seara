@@ -121,11 +121,14 @@ function store()
     // Conversão de data
     user['user_birth'] = brDatetoUsa(user['user_birth']);
 
+    // Realização do cadastro do usuário
     $.post("/users", user, function(userResponse){
-
+      console.log("foi");
+      $('#modal_signup_confirmation').show();
     })
     .fail(function (data) {
         console.log('falha: ' + data['error'] + ' msg:' + data['message']);
+        // deleto empresa
     })
   })
   .fail(function (data) {
@@ -137,4 +140,9 @@ $(document).ready(function(){
   initValidator();
   initMask();
   initWizard();
+
+  // Redirecionamento para a página inicial
+  $("#modal_signup_confirmation_button").click(function () {
+    window.location.href = $(this).data('href');
+  });
 });
