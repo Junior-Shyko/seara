@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'contato@seara.com.br', 'name' => 'Seara Contabilidade'],
 
     /*
     |--------------------------------------------------------------------------
