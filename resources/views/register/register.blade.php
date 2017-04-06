@@ -55,3 +55,7 @@
 </div>
 <!-- Gentelella -->
 @endsection
+
+@push('scripts')
+  <script src="{{ asset("js/register.min.js") }}"></script>
+@endpush

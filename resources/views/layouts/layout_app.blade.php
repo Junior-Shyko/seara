@@ -31,9 +31,9 @@
   @include('layouts.header_app')
 
   <div class="container body">
-     
+
     <div class="main_container">
-    
+
      @yield('content')
 
     </div>
@@ -43,7 +43,6 @@
   <!-- Custom Theme Scripts -->
 
   <script src="{{ asset("js/gentelella.min.js") }}"></script>
-  <script src="{{ asset("js/register.min.js") }}"></script>
 
   @stack('scripts')
 
