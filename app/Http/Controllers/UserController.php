@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserRegistered;
+use Illuminate\Support\Facades\Mail;
+use Auth;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -48,6 +51,10 @@ class UserController extends Controller
         return response(['error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
       }
 
+      // Usuário criado com sucesso, envio os emails
+      Mail::to('ednofco@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
+      Mail::to($user)->send(new UserRegistered($user));
+      
       return response(['id' => $user->id]);
     }
 

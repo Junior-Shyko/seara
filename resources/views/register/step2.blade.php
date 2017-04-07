@@ -61,7 +61,7 @@
         <input id="company_phone" name="company_phone" placeholder="Telefone" data-parsley-full="#company_phone" required class="form-control col-md-4 col-xs-12" type="text">
       </div>
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <input id="company_mobile" name="company_mobile" placeholder="Celular" data-parsley-full="#company_mobile" required class="form-control col-md-4 col-xs-12" type="text">
+        <input id="company_mobile" name="company_mobile" placeholder="Celular" class="form-control col-md-4 col-xs-12" type="text">
       </div>
     </div>
   </form>

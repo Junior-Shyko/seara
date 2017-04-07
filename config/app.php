@@ -212,4 +212,15 @@ return [
 		'Html' => Collective\Html\HtmlFacade::class,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Configurações Personalizadas
+    |--------------------------------------------------------------------------
+    |
+    | Diversas configurações específicas desse App, como nome
+    |
+    */
+
+    'name' => 'Seara Contabilidade'
+
 ];
