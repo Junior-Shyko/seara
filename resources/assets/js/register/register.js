@@ -124,7 +124,7 @@ function store()
     // Realização do cadastro do usuário
     $.post("/users", user, function(userResponse){
       console.log("foi");
-      $('#modal_signup_confirmation').show();
+      $('#modal_signup_confirmation').modal('show');
     })
     .fail(function (data) {
         console.log('falha: ' + data['error'] + ' msg:' + data['message']);
