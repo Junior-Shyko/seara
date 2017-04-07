@@ -19,6 +19,10 @@ function initWizard()
 
 function stepChanged(obj, context)
 {
+  // Se o usuário estiver voltando, não preciso validar
+  if ( context.fromStep > context.toStep )
+  return true;
+
   var stepNumber = context.fromStep;
   var isValid = false;
 
@@ -127,8 +131,8 @@ function store()
       $('#modal_signup_confirmation').modal('show');
     })
     .fail(function (data) {
-        console.log('falha: ' + data['error'] + ' msg:' + data['message']);
-        // deleto empresa
+      console.log('falha: ' + data['error'] + ' msg:' + data['message']);
+      // deleto empresa
     })
   })
   .fail(function (data) {
