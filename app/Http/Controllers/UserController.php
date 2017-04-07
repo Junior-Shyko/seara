@@ -83,7 +83,17 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        //CREATED 2017-04-17 15:06 BY EXCELLENCE SOFT
+        $input = $request->all();
+        $input = $request->except('_token', '_method');
+
+        try {
+             $user_up = $user->update($input);
+             return redirect()->back()->with('success' , 'Alteração realizada com sucesso.');
+        } catch (Exception $e) {
+            
+        }
+        
     }
 
     /**
