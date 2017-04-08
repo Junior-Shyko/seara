@@ -24,18 +24,13 @@ function stepChanged(obj, context)
   return true;
 
   var stepNumber = context.fromStep;
-  var isValid = false;
 
-  if(stepNumber == 1){
-    isValid = validateStep(1);
-    if(isValid) requestCnpj(); // Faz requisição no ReceitaWS somente caso seja válido
-  } else if (stepNumber == 2) {
-    isValid = validateStep(2);
-  } else if (stepNumber == 3) {
-    isValid = validateStep(3);
-  } else if (stepNumber == 4) {
-    isValid = validateStep(4);
-  }
+  // valido o passo do qual estou saindo
+  var isValid = validateStep(stepNumber);
+
+  // Caso seja válido e eu estou saindo do step 1
+  // vou fazer a requisição de cnpj para autocomplete do step 2
+  if(isValid && stepNumber == 1) requestCnpj();
 
   return isValid;
 }
@@ -43,16 +38,24 @@ function stepChanged(obj, context)
 function formSubmit(objs, context)
 {
   // Validação de todos os passos
+  // No primeiro passo errado, vou voltar para ele
   if ( !validateStep(1) ) {
+    $("#wizard").smartWizard('goToStep', 1);
+    reconfigureWizardView(1);
     return;
   } else if (!validateStep(2)) {
+    $("#wizard").smartWizard('goToStep', 2);
+    reconfigureWizardView(2);
     return;
   }else if (!validateStep(3)) {
+    $("#wizard").smartWizard('goToStep', 3);
+    reconfigureWizardView(3);
     return;
   }else if (!validateStep(4)) {
+    $("#wizard").smartWizard('goToStep', 4);
+    reconfigureWizardView(4);
     return;
   }else { // todos os passos são válidos
-    alert('Agora posso jogar para o servidor');
     store(); // cadastro da empresa e usuário
   }
 }
