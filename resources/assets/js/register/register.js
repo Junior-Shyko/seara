@@ -56,7 +56,7 @@ function formSubmit(objs, context)
     reconfigureWizardView(4);
     return;
   }else { // todos os passos são válidos
-    store(); // cadastro da empresa e usuário
+    store(storeSuccess, storeFailure); // cadastro da empresa e usuário
   }
 }
 
@@ -89,7 +89,65 @@ function brDatetoUsa(datestring)
   return dateSplitted[2] + '-' + dateSplitted[1] + '-' + dateSplitted[0];
 }
 
-function store()
+function store(success, failure)
+{
+  var company = packCompany();
+  var user = packUser();
+  var data = {
+    '_token': $('meta[name="_token"]').attr('content'),
+    'company': company,
+    'user': user
+  }
+
+  $.post("/cadastro", data, function(companyResponse){
+    // Cadastro deu certo
+    success();
+  })
+  .fail(function (data) {
+    var msg = data.responseJSON['message'];
+    failure(msg);
+  });
+}
+
+function storeSuccess()
+{
+  console.log("foi");
+  $('#modal_signup_confirmation').modal('show');
+}
+
+function storeFailure(msg)
+{
+  $('#signup-error-msg').text(msg);
+  $('#signup-error').show().removeClass('hidden');
+}
+
+function packUser()
+{
+  // a requisição deu certo, agora vou guardar o usuário
+  var user = {};
+  $("#form-step-4").serializeArray().map(function(x){
+    user[x.name] = x.value;
+  });
+
+  $("#form-step-3").serializeArray().map(function(x){
+    user[x.name] = x.value;
+  });
+
+  user['user_sex'] = $("#form-step-4 input[type='radio']:checked").val();
+  user['user_id_profile'] = 1;
+
+  // Retira as mascaras
+  user['user_cpf'] = unmask(user['user_cpf']);
+  user['user_phone'] = unmask(user['user_phone']);
+  user['user_addr_cep'] = unmask(user['user_addr_cep']);
+
+  // Conversão de data
+  user['user_birth'] = brDatetoUsa(user['user_birth']);
+
+  return user;
+}
+
+function packCompany()
 {
   // atribuo o cnpj
   $("#form-step-2 input[name=company_cnpj]").val($("#company_cnpj").val());
@@ -105,42 +163,7 @@ function store()
   company['company_phone'] = unmask(company['company_phone']);
   company['company_mobile'] = unmask(company['company_mobile']);
 
-  $.post("/companies", company, function(companyResponse){
-    // a requisição deu certo, agora vou guardar o usuário
-    var user = {};
-    $("#form-step-4").serializeArray().map(function(x){
-      user[x.name] = x.value;
-    });
-
-    $("#form-step-3").serializeArray().map(function(x){
-      user[x.name] = x.value;
-    });
-
-    user['user_sex'] = $("#form-step-4 input[type='radio']:checked").val();
-    user['user_id_profile'] = 1;
-    user['user_id_company'] = companyResponse.id;
-
-    // Retira as mascaras
-    user['user_cpf'] = unmask(user['user_cpf']);
-    user['user_phone'] = unmask(user['user_phone']);
-    user['user_addr_cep'] = unmask(user['user_addr_cep']);
-
-    // Conversão de data
-    user['user_birth'] = brDatetoUsa(user['user_birth']);
-
-    // Realização do cadastro do usuário
-    $.post("/users", user, function(userResponse){
-      console.log("foi");
-      $('#modal_signup_confirmation').modal('show');
-    })
-    .fail(function (data) {
-      console.log('falha: ' + data['error'] + ' msg:' + data['message']);
-      // deleto empresa
-    })
-  })
-  .fail(function (data) {
-    console.log('falha: ' + data['error'] + ' msg: ' + data['message']);
-  });
+  return company;
 }
 
 $(document).ready(function(){

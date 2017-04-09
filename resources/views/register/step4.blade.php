@@ -1,8 +1,6 @@
 <div id="step-4" class="content" style="display: none;">
 
   <form id="form-step-4" class="form-horizontal form-label-left">
-    {{csrf_field()}}
-
     <!-- Dados Pessoais -->
     <div class="form-group">
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="name">Dados Pessoais <span class="required">*</span>
