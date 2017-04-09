@@ -46,6 +46,7 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
       'register/validator_conf.js',
       'register/mask_autocomplete_conf.js',
+      'spin.js',
       'register/register.js'
     ], 'public/js/register.min.js');
 
