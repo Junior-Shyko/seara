@@ -51,10 +51,6 @@ class UserController extends Controller
         return response(['error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
       }
 
-      // Usuário criado com sucesso, envio os emails
-      Mail::to('ednofco@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
-      Mail::to($user)->send(new UserRegistered($user));
-      
       return response(['id' => $user->id]);
     }
 
@@ -100,9 +96,9 @@ class UserController extends Controller
              $user_up = $user->update($input);
              return redirect()->back()->with('success' , 'Alteração realizada com sucesso.');
         } catch (Exception $e) {
-            
+
         }
-        
+
     }
 
     /**

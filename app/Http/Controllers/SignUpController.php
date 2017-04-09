@@ -7,6 +7,10 @@ use App\Models\Company;
 use App\Models\User;
 use Exception;
 
+
+use App\Mail\UserRegistered;
+use Illuminate\Support\Facades\Mail;
+
 class SignUpController extends Controller
 {
 
@@ -56,6 +60,9 @@ class SignUpController extends Controller
 
 			return response(['error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
 		}
+
+		Mail::to('ednofco@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
+		Mail::to($user)->send(new UserRegistered($user));
 
 		return response()->json(['message' => 'Cadastro concluído']);
 	}
