@@ -39,6 +39,6 @@
     </div>
 
   </form>
-  <p><strong>Observação: </strong>Este é o cadastro do responsável pela empresa. Este usuário terá acesso
+  <p class="alert alert-info"><strong>Observação: </strong>Este é o cadastro do responsável pela empresa. Este usuário terá acesso
   administrativo ao sistema. Operadores devem ser cadastrados pelo responsável posteriormente.</p>
 </div>
