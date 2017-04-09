@@ -107,16 +107,22 @@ function store(success, failure)
     var msg = data.responseJSON['message'];
     failure(msg);
   });
+
+  startSpin();
 }
 
 function storeSuccess()
 {
   console.log("foi");
-  $('#modal_signup_confirmation').modal('show');
+  stopSpin();
+  showConfirmation();
+  // $('#modal_signup_confirmation').modal('show');
 }
 
 function storeFailure(msg)
 {
+  // para spin e fecha modal
+  stopSpin(true);
   $('#signup-error-msg').text(msg);
   $('#signup-error').show().removeClass('hidden');
 }
@@ -166,11 +172,33 @@ function packCompany()
   return company;
 }
 
+function startSpin()
+{
+  $('#modal_signup_confirmation_header h4').text('Por favor, aguarde um momento enquanto concluímos seu cadastro...');
+  $('#modal_signup_confirmation_body').spin();
+
+  $('#modal_signup_confirmation').modal('show');
+}
+
+function stopSpin(closeModal = false)
+{
+  $('#modal_signup_confirmation_body').spin(false);
+  if(closeModal) $('#modal_signup_confirmation').modal('hide');
+}
+
+function showConfirmation()
+{
+  // Tiro o seara-hide, hidden
+  $('#modal_signup_confirmation_header h4').text('Cadastro Concluído com Sucesso!');
+  $('#modal_signup_confirmation_content').removeClass('seara-hide');
+  $('#modal_signup_confirmation .modal-footer').removeClass('hidden');
+}
+
 $(document).ready(function(){
   initValidator();
   initMask();
   initWizard();
-  
+
   // Desabilita o enter para formulários
   $(document).on("keypress", "form", function(event) {
     return event.keyCode != 13;
@@ -181,3 +209,6 @@ $(document).ready(function(){
     window.location.href = $(this).data('href');
   });
 });
+
+
+$('#el').spin();
