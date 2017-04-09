@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\UserRegistered;
 use Illuminate\Support\Facades\Mail;
-use Auth;
+use Auth, DB;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,8 +18,14 @@ class UserController extends Controller
      */
     public function index()
     {
-
-        $users = User::all();
+        DB::enableQueryLog();
+        $id_profile = Auth::user()->user_id_profile;
+        $users = DB::table('companies')
+            ->join('users', 'companies.company_id', '=', 'users.user_id_company')
+            ->get();
+        
+        //return DB::getQueryLog();
+            
         return view('user.index' , compact('users'));
     }
 

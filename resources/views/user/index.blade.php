@@ -18,28 +18,38 @@
                    
                     <div class="clearfix"></div>
                   </div>
+                  <div class="col-md-12">
+              <button class="btn btn-primary pull-right">Novo</button>
+            </div>
                   <div class="x_content">
-
-                    <table class="table table-bordered">
+                    <div class="panel panel-primary">
+                      <div class="panel-body">
+                        <table class="table table-bordered">
                       <thead>
                         <tr>
                           <th>Nome</th>
                           <th>E-mail</th>
                           <th>Perfil</th>
+                          <th>Empresa</th>
                           <th>Data Cadastro</th>
                         </tr>
                       </thead>
                       <tbody>
                       @foreach($users as $user)
                         <tr>
-                          <th>{{$user->name}}</th>
+                          <td>{{$user->name}}</td>
                           <td>{{$user->email}}</td>
                           <td>{{$user->user_id_profile}}</td>
-                          <td>{{$user->created_at}}</td>
+                          <td>{{$user->company_fantasy}}</td>
+                          <td>{{date('d/m/Y' , strtotime($user->created_at))}}</td>
                         </tr>
                         @endforeach
                       </tbody>
                     </table>
+                      </div>
+                      <div class="panel-footer">Todos usuários</div>
+                    </div>    
+                    
 
                   </div>
                 </div>
