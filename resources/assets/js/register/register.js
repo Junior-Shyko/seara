@@ -170,6 +170,11 @@ $(document).ready(function(){
   initValidator();
   initMask();
   initWizard();
+  
+  // Desabilita o enter para formulários
+  $(document).on("keypress", "form", function(event) {
+    return event.keyCode != 13;
+  });
 
   // Redirecionamento para a página inicial
   $("#modal_signup_confirmation_button").click(function () {

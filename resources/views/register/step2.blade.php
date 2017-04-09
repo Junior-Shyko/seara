@@ -1,5 +1,5 @@
 <div id="step-2" class="content" style="display: none;">
-  <form id="form-step-2" method="post" action="/companies" class="form-horizontal form-label-left">
+  <form id="form-step-2" class="form-horizontal form-label-left">
      <input type="hidden" name="company_cnpj" value="">
 
      <!-- Razão Social -->
