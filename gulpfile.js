@@ -21,7 +21,7 @@ elixir(function(mix) {
     mix.styles([
       './vendor/bower_components/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css',
       './vendor/bower_components/gentelella/vendors/font-awesome/css/font-awesome.min.css',
-      './vendor/bower_components/gentelella/build/css/custom.min.css'
+      'custom.css'
     ], 'public/css/gentelella.min.css');
 
     /****************/
