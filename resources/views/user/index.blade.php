@@ -30,8 +30,8 @@
                           <th>Nome</th>
                           <th>E-mail</th>
                           <th>Perfil</th>
-                          <th>Empresa</th>
                           <th>Data Cadastro</th>
+                          <th>Ação</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -39,19 +39,37 @@
                         @php
                        
                           $name_profile = \App\FunctionGeneral::getNameProfile( $user->user_id_profile );
+                          /* CONFIGURAÇÃO PARA O MODAL DE DELETE*/
+                          $modal_id_delete = "DeleteUser_".$user->id;
+                          $description_modal = "Excluir Usuário";
+                          $url_route = "users/".$user->id;
+                          $text_delete = "Deseja realmente excluir esse usuário?";
+                          $name_camp = "id";
+                          $value_camp = $user->id;
+
                         @endphp
                         <tr>
                           <td>{{ $user->name}}</td>
                           <td>{{ $user->email}}</td>
                           <td>{{ $name_profile->profile_name }}</td>
-                          <td>{{ $user->company_fantasy}}</td>
+                         
                           <td>{{ date('d/m/Y' , strtotime($user->created_at))}}</td>
+                          <td>
+                            <a href="{{url('users/'.base64_encode($user->id).'/edit')}}" class="btn btn-default" title="Editar"  ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                            <a href="#{{$modal_id_delete}}" class="btn btn-danger" title="Excluir" data-toggle="modal"> <i class="fa fa-trash-o" aria-hidden="true"></i> </a>
+                          </td>
                         </tr>
+                        @include('modals.modal_delete')
                         @endforeach
                       </tbody>
                     </table>
                       </div>
-                      <div class="panel-footer">Todos usuários</div>
+                      <div class="panel-footer"> 
+                          <strong>Empresa: </strong> {{$users[0]->company_fantasy}}
+                          <br>
+                          <strong>Total de usuários: </strong> {{count($users)}}
+  
+                      </div>
                     </div>    
                     
 
