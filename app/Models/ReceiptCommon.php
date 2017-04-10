@@ -8,5 +8,6 @@ class ReceiptCommon extends Model
 {
     //
 
+    protected $primaryKey = 'receipt_id';
     protected $table = 'receipt_common';
 }

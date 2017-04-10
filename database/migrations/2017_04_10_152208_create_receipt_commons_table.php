@@ -13,8 +13,17 @@ class CreateReceiptCommonsTable extends Migration
      */
     public function up()
     {
-        Schema::create('receipt_commons', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('receipt_common', function (Blueprint $table) {
+            $table->increments('receipt_id');
+            $table->integer('receipt_id_company')->unsigned();
+            $table->float('receipt_value', 12, 2);
+            $table->string('receipt_extensive_value');
+            $table->string('receipt_received_from');
+            $table->string('receipt_reference');
+            $table->string('receipt_local');
+            $table->date('receipt_date');
+            $table->string('receipt_emitter');
+            $table->string('receipt_document'); //cpf,cnpj,crc
             $table->timestamps();
         });
     }
