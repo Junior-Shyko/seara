@@ -53,7 +53,7 @@
               </div>
 
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" class="form-control has-feedback-left" name="user_birth" value="{{$user->user_birth}}" data-parsley-full="#user_birth" data-parsley-seara="data" placeholder="Data nascimento">
+                <input type="text" class="form-control has-feedback-left" id="user_birth" name="user_birth" value="{{date('d/m/Y' , strtotime($user->user_birth))}}" data-parsley-full="#user_birth" data-parsley-seara="data" placeholder="Data nascimento">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>                              
 
@@ -124,14 +124,17 @@
 </div>      
 </div>
 <!-- /page content -->
+@push('scripts')
 
-<!-- footer content -->
-<footer>
-  <div class="pull-right">
-    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-  </div>
-  <div class="clearfix"></div>
-</footer>
-<!-- /footer content -->
+  <script src="{{ asset("js/mask_camp.min.js") }}">
+ 
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      initMask();
+    });
+  </script>
 
+@endpush
+@include('footer');
 @endsection

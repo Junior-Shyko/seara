@@ -55,6 +55,14 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
     ], 'public/js/parsley.min.js');
 
+    // editar
+    mix.scripts([
+      './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
+      './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
+      'register/validator_conf.js',
+      'register/mask_autocomplete_conf.js',
+    ], 'public/js/mask_camp.min.js');
+
     /**************/
     /* Copy Fonts */
     /**************/
