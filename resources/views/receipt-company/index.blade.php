@@ -13,6 +13,7 @@
       <div class="x_panel">
         <div class="x_title">
           <h2>Recibos <small>Recibos emitidos pela empresa</small></h2>
+          <button class="btn btn-primary pull-right">Novo Recibo</button>
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -48,7 +49,7 @@
                   <td>
                     {{ $receipt->receipt_date }}
                   </td>
-                  <td style="white-space:nowrap;">
+                  <td class="no-break">
                     <a href="{{ url('recibo-empresa/'.$receipt->receipt_id).'/edit' }}" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Editar </a>
                     <a href="#" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 1 Via </a>
                     <a href="#" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 2 Vias </a>
@@ -77,17 +78,9 @@
 @endsection
 
 @push('stylesheets')
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}">
 @endpush
 
 @push('scripts')
-<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js">
-	</script>
-	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js">
-	</script>
-<script>
-$(document).ready(function() {
-  $('#receipts-table').DataTable();
-} );
-</script>
+<script type="text/javascript" language="javascript" src="{{asset('js/receipt.min.js')}}"></script>
 @endpush

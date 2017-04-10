@@ -24,6 +24,13 @@ elixir(function(mix) {
       'custom.css'
     ], 'public/css/gentelella.min.css');
 
+
+    // Receipts
+    mix.styles([
+      './vendor/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+      'receipt.css'
+    ], 'public/css/receipt.min.css');
+
     /****************/
     /*     Merge    */
     /****************/
@@ -62,6 +69,13 @@ elixir(function(mix) {
       'register/validator_conf.js',
       'register/mask_autocomplete_conf.js',
     ], 'public/js/mask_camp.min.js');
+
+    // Receipts
+    mix.scripts([
+      './vendor/bower_components/datatables.net/js/jquery.dataTables.js',
+      './vendor/bower_components/datatables.net-bs/js/dataTables.bootstrap.js',
+      'receipt.js'
+    ], 'public/js/receipt.min.js');
 
     /**************/
     /* Copy Fonts */

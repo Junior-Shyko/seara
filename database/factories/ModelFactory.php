@@ -28,6 +28,6 @@ $factory->define(App\Models\ReceiptCompany::class, function (Faker\Generator $fa
       'receipt_reference' => $faker->realText(20),
       'receipt_value' => $faker->randomFloat(0,2,200),
       'receipt_local' => $faker->city,
-      'receipt_local' => $faker->date()
+      'receipt_date' => $faker->date()
     ];
 });
