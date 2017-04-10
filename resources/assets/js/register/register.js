@@ -177,7 +177,7 @@ function startSpin()
   $('#modal_signup_confirmation_header h4').text('Por favor, aguarde um momento enquanto concluímos seu cadastro...');
   $('#modal_signup_confirmation_body').spin();
 
-  $('#modal_signup_confirmation').modal('show');
+  $('#modal_signup_confirmation').modal({backdrop: 'static', keyboard: false},'show');
 }
 
 function stopSpin(closeModal = false)
