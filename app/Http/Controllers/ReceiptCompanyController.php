@@ -16,6 +16,8 @@ class ReceiptCompanyController extends Controller
     public function index()
     {
         //
+        $receipts = ReceiptCompany::paginate(15);
+        return view('receipt-company.index', ['receipts' => $receipts]);
     }
 
     /**
