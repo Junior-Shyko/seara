@@ -161,6 +161,8 @@ return [
 		Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
 		Conner\Tagging\Providers\TaggingServiceProvider::class,
 		Collective\Html\HtmlServiceProvider::class,
+        /* TINKER */
+        Laravel\Tinker\TinkerServiceProvider::class,
     ],
 
     /*

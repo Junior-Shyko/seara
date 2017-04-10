@@ -36,12 +36,16 @@
                       </thead>
                       <tbody>
                       @foreach($users as $user)
+                        @php
+                       
+                          $name_profile = \App\FunctionGeneral::getNameProfile( $user->user_id_profile );
+                        @endphp
                         <tr>
-                          <td>{{$user->name}}</td>
-                          <td>{{$user->email}}</td>
-                          <td>{{$user->user_id_profile}}</td>
-                          <td>{{$user->company_fantasy}}</td>
-                          <td>{{date('d/m/Y' , strtotime($user->created_at))}}</td>
+                          <td>{{ $user->name}}</td>
+                          <td>{{ $user->email}}</td>
+                          <td>{{ $name_profile->profile_name }}</td>
+                          <td>{{ $user->company_fantasy}}</td>
+                          <td>{{ date('d/m/Y' , strtotime($user->created_at))}}</td>
                         </tr>
                         @endforeach
                       </tbody>
