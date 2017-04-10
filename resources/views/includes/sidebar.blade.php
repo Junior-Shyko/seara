@@ -3,11 +3,11 @@
         <div class="navbar nav_title" style="border: 0;">
             <a href="{{ url('/') }}" class="site_title"> <span>Seara Contabilidade</span></a>
         </div>
-        
+
         <div class="clearfix"></div>
-        
+
         <!-- menu profile quick info -->
-        <div class="profile">
+        <div class="profile clearfix">
             <div class="profile_pic">
                 <img src="{{ Gravatar::src(Auth::user()->email) }}" alt="{{ Auth::user()->name }}" class="img-circle profile_img">
             </div>
@@ -17,71 +17,70 @@
             </div>
         </div>
         <!-- /menu profile quick info -->
-        
-        <br />
-        
+
+        <br>
+
         <!-- sidebar menu -->
         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-            <div class="menu_section">
-                <h3><br></h3>
-                <li class="header" style=""></li>
-            <!-- Optionally, you can add icons to the links -->
-                
-                <ul class="nav side-menu">
-                <li class=""><a href="#"><span>Home</span></a></li>
-                    <li>
-                        <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
-                    </li>
-                    <li><a><i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="#">Igreja</a></li>
-                            <li><a href="#">Usuário</a></li>
-                            <li><a href="#">Histórico</a></li>
-                        </ul>
-                    </li>
-                    <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="#">Comun</a></li>
-                            <li><a href="#">Empresa</a></li>
-                            <li><a href="#">R.P.A</a></li>                            
-                        </ul>
-                    </li>
+          <div class="menu_section">
+            <!-- <h3><br></h3> -->
+            <ul class="nav side-menu">
+              <li>
+                <a href="{{url('/')}}"><i class="fa fa-home"></i> Home</a>
+              </li>
+              <li>
+                <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
+              </li>
+              <li><a><i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="#">Igreja</a></li>
+                  <li><a href="#">Usuário</a></li>
+                  <li><a href="#">Histórico</a></li>
+                </ul>
+              </li>
+              <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="#">Comun</a></li>
+                  <li><a href="{{url('recibo-empresa')}}">Empresa</a></li>
+                  <li><a href="#">R.P.A</a></li>
+                </ul>
+              </li>
 
-                    <li><a><i class="fa fa-calculator" aria-hidden="true"></i> Caixa <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="#">Lancar</a></li>
-                            <li><a href="#">Consultar</a></li>
-                            <li><a href="#">Auditar</a></li>
-
-                        </ul>
-                    </li>
-
-                    <li><a><i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="#">Caixa</a></li>
-                            <li><a href="#">Usuário</a></li>
-                            <li><a href="#">Igreja</a></li>
-                            <li><a>Contrato<span class="fa fa-chevron-down"></span></a>
-                              <ul class="nav child_menu">
-                                <li class="sub_menu"><a href="level2.html">Locação</a>
-                                </li>
-                                <li><a href="#level2_1">Serviço Voluntário</a>
-                                </li>
-                                <li><a href="#level2_2">Level Two</a>
-                                </li>
-                              </ul>
-                            </li>
-                        </ul>
-                    </li>
-
+              <li><a><i class="fa fa-calculator" aria-hidden="true"></i> Caixa <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="#">Lancar</a></li>
+                  <li><a href="#">Consultar</a></li>
+                  <li><a href="#">Auditar</a></li>
 
                 </ul>
-            </div>
-           
-        
+              </li>
+
+              <li><a><i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                  <li><a href="#">Caixa</a></li>
+                  <li><a href="#">Usuário</a></li>
+                  <li><a href="#">Igreja</a></li>
+                  <li><a>Contrato<span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li class="sub_menu"><a href="level2.html">Locação</a>
+                      </li>
+                      <li><a href="#level2_1">Serviço Voluntário</a>
+                      </li>
+                      <li><a href="#level2_2">Level Two</a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+
+            </ul>
+          </div>
+
+
         </div>
         <!-- /sidebar menu -->
-        
+
         <!-- /menu footer buttons -->
         <div class="sidebar-footer hidden-small">
             <a data-toggle="tooltip" data-placement="top" title="Settings">
