@@ -24,7 +24,7 @@ class UserRegistered extends Mailable
     {
       // Caso seja um email para o administrador, vou enviar para o
       // adm as informações do usuário.
-      if ($owner){
+      if (!$owner){
         $this->view = 'emails.users.registered';
         $this->subject = 'Registro Realizado com Sucesso';
       }
