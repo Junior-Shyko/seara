@@ -144,7 +144,7 @@ html , body{
     padding: 0 0 4px 0
 }
 .left_col {
-    background: #2A3F54
+    background: #005386;
 }
 .nav-sm .container.body .col-md-3.left_col {
     min-height: 100%;
@@ -356,7 +356,7 @@ body .container.body .right_col {
 .nav_title {
     width: 230px;
     float: left;
-    background: #2A3F54;
+    background: #005386;
     border-radius: 0;
     height: 57px
 }

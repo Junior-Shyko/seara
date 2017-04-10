@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use Auth, DB;
 use Exception;
 use App\Models\User;
+use App\FunctionGeneral;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -48,6 +49,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
       // criptografo a senha
+
       $request['password'] = bcrypt($request['password']);
       try {
         $user = User::create($request->all());
@@ -95,6 +97,16 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         //CREATED 2017-04-17 15:06 BY EXCELLENCE SOFT
+        
+        if(empty($request['password']))
+        {
+            unset($request['password']);
+        }else{
+            $request['password'] = bcrypt($request['password']);
+        }
+        //ALTERANDO A DATA BRASILEIRA PARA A AMERICANA
+        $request['user_birth'] = FunctionGeneral::DataBRtoMySQL($request['user_birth']);
+
         $input = $request->all();
         $input = $request->except('_token', '_method');
 
@@ -102,7 +114,7 @@ class UserController extends Controller
              $user_up = $user->update($input);
              return redirect()->back()->with('success' , 'Alteração realizada com sucesso.');
         } catch (Exception $e) {
-
+            return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
         }
 
     }
