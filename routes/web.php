@@ -21,3 +21,5 @@ Route::resource('companies', 'CompanyController');
 
 /* ROTA PARA USUARIOS*/
 Route::resource('users', 'UserController');
+
+Route::resource('recibo-empresa', 'ReceiptCompanyController');

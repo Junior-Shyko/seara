@@ -22,9 +22,9 @@
               <button class="btn btn-primary pull-right">Novo</button>
             </div>
                   <div class="x_content">
-                    <div class="panel panel-primary">
+                    <div class="panel">
                       <div class="panel-body">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered table-hover">
                       <thead>
                         <tr>
                           <th>Nome</th>

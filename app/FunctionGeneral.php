@@ -20,7 +20,7 @@ class FunctionGeneral extends Model
 
 	static public function getNameProfile($id_profile){
 
-		$profile = Profile::where('profile_id' , '=', $id_profile)->get();
+		$profile = Profile::where('profile_id' , '=', $id_profile)->first();
 
 		return $profile;
 	}
