@@ -131,6 +131,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        try {
+            $user->delete();
+            return redirect()->back()->with('success' , 'Usuário excluído com sucesso');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+        }
     }
 }
