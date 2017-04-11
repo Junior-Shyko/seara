@@ -65,14 +65,7 @@
 
     <!-- /page content -->
 
-    <!-- footer content -->
-    <footer>
-        <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-        </div>
-        <div class="clearfix"></div>
-    </footer>
-    <!-- /footer content -->
+   @include('footer')
 
 @endsection
 
@@ -86,8 +79,21 @@
 	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js">
 	</script>
 <script>
-$(document).ready(function() {
-  $('#receipts-table').DataTable();
-} );
+  $(document).ready(function() {
+    $('#receipts-table').DataTable({
+      "language": {
+        "zeroRecords": "Não há registro para mostrar",
+        "infoEmpty": "Sem registro para mostrar",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoFiltered": " - filtrando de _MAX_ registro",
+        "paginate": {
+          "previous": "Anterior",
+          "next": "Próximo",
+          "first": "Primeiro",
+          "last": "Último"
+        }
+      }
+    } );
+  });
 </script>
 @endpush

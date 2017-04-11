@@ -62,6 +62,13 @@ elixir(function(mix) {
       'register/validator_conf.js',
       'register/mask_autocomplete_conf.js',
     ], 'public/js/mask_camp.min.js');
+    //dataTables
+    mix.scripts([
+      './vendor/bower_components/datatables.net/js/jquery.datatables.min.js',
+     
+    ], 'public/js/plugin/dataTables.min.js');
+    
+
 
     /**************/
     /* Copy Fonts */
