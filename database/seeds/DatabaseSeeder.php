@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\ReceiptCompany;
+use App\Models\User;
 use Faker\Factory;
 
 class DatabaseSeeder extends Seeder
@@ -14,5 +15,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(ReceiptCompany::class);
+        $this->call(UsersTableSeeder::class);
     }
 }

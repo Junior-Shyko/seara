@@ -8,6 +8,7 @@ use Auth, DB;
 use Exception;
 use App\Models\User;
 use App\FunctionGeneral;
+use App\Models\Company;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -21,10 +22,13 @@ class UserController extends Controller
     {
         DB::enableQueryLog();
         $id_profile = Auth::user()->user_id_profile;
-        $users = DB::table('companies')
-            ->join('users', 'companies.company_id', '=', 'users.user_id_company')
-            ->get();
+        $id_company = Company::where('company_id' , Auth::user()->user_id_company)->first();
         
+        $users = DB::table('companies')
+                ->join('users', function ($join) use ($id_company) {
+            $join->on('companies.company_id', '=', 'users.user_id_company')
+                 ->where('companies.company_id', '=', $id_company->company_id);
+        })->get();
         //return DB::getQueryLog();
             
         return view('user.index' , compact('users'));
@@ -127,6 +131,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        try {
+            $user->delete();
+            return redirect()->back()->with('success' , 'Usuário excluído com sucesso');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+        }
     }
 }
