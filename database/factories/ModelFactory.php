@@ -1,5 +1,6 @@
 <?php
 use Faker\Factory;
+use App\Seara\Monetary;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,10 +37,14 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
 
 
 $factory->define(App\Models\ReceiptCompany::class, function (Faker\Generator $faker) {
+  $value = $faker->randomFloat(0,2,200);
     return [
       'receipt_received_from' => $faker->name,
+      'receipt_emitter' => $faker->name,
+      'receipt_document' => $faker->creditCardNumber,
       'receipt_reference' => $faker->realText(20),
-      'receipt_value' => $faker->randomFloat(0,2,200),
+      'receipt_value' => $value,
+      'receipt_extensive_value' => Monetary::numberToExt($value),
       'receipt_local' => $faker->city,
       'receipt_date' => $faker->date()
     ];

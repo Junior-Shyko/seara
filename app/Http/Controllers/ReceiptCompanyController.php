@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use Illuminate\Http\Request;
 use App\Models\ReceiptCompany;
+use App\Seara\Monetary;
 use Exception;
+
+use PDF;
 
 class ReceiptCompanyController extends Controller
 {
@@ -40,6 +44,7 @@ class ReceiptCompanyController extends Controller
     public function store(Request $request)
     {
       try {
+        $receipt->receipt_extensive_value = Monetary::numberToExt($receipt->receipt_value);
         $receipt = ReceiptCompany::create($request->all());
       }
       catch(Exception $e) {
@@ -94,17 +99,20 @@ class ReceiptCompanyController extends Controller
         //
     }
 
-    public function generatePDF(Request $request, $id)
+    public function generatePDF(Request $request, ReceiptCompany $receipt)
     {
       switch($request->vias)
       {
         case 1:
-          echo "Vou imprimir 1 via";
+          return PDF::loadView('pdf.via1', compact('receipt'))->stream('invoice.pdf');
         break;
 
         case 2:
-          echo "Vou imprimir 2 vias";
+          return PDF::loadView('pdf.via2', compact('receipt'))->stream('invoice.pdf');
         break;
       }
+
+      // Caso a requisição seja inválida, retorno para a lista de recibos
+      return redirect('/recibo-empresa');
     }
 }
