@@ -93,4 +93,18 @@ class ReceiptCompanyController extends Controller
     {
         //
     }
+
+    public function generatePDF(Request $request, $id)
+    {
+      switch($request->vias)
+      {
+        case 1:
+          echo "Vou imprimir 1 via";
+        break;
+
+        case 2:
+          echo "Vou imprimir 2 vias";
+        break;
+      }
+    }
 }

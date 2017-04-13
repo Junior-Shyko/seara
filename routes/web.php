@@ -23,3 +23,4 @@ Route::resource('companies', 'CompanyController');
 Route::resource('users', 'UserController');
 
 Route::resource('recibo-empresa', 'ReceiptCompanyController');
+Route::get('recibo-empresa/{id}/pdf', 'ReceiptCompanyController@generatePDF');

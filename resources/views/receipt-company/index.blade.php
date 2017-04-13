@@ -50,9 +50,10 @@
                     {{ $receipt->receipt_date }}
                   </td>
                   <td class="no-break">
-                    <a href="{{ url('recibo-empresa/'.$receipt->receipt_id).'/edit' }}" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i> Editar </a>
-                    <a href="#" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 1 Via </a>
-                    <a href="#" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 2 Vias </a>
+                    <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button>
+                    <a href="{{ url('recibo-empresa/'.$receipt->receipt_id.'/pdf?vias=1') }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 1 Via </a>
+                    <a href="{{ url('recibo-empresa/'.$receipt->receipt_id.'/pdf?vias=2') }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 2 Via </a>
                   </td>
                 </tr>
                 @endforeach
