@@ -50,8 +50,19 @@
                     {{ $receipt->receipt_date }}
                   </td>
                   <td class="no-break">
-                    <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
-                    <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></button>
+                    <!-- Ação Editar -->
+                    <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Editar Recibo">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                    <!-- Ação Clonar -->
+                    <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Clonar Recibo">
+                      <i class="fa fa-clone"></i>
+                    </button>
+                    <!-- Ação Excluir -->
+                    <button class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Excluir Recibo">
+                      <i class="fa fa-trash-o"></i>
+                    </button>
+                    <!-- Ação download -->
                     <a href="{{ url('recibo-empresa/'.$receipt->receipt_id.'/pdf?vias=1') }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 1 Via </a>
                     <a href="{{ url('recibo-empresa/'.$receipt->receipt_id.'/pdf?vias=2') }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 2 Via </a>
                   </td>
