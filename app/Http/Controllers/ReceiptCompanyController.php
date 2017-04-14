@@ -101,14 +101,15 @@ class ReceiptCompanyController extends Controller
 
     public function generatePDF(Request $request, ReceiptCompany $receipt)
     {
+      $pdf_name = 'recibo-'.$receipt->receipt_date.'.pdf';
       switch($request->vias)
       {
         case 1:
-          return PDF::loadView('pdf.via1', compact('receipt'))->stream('invoice.pdf');
+          return PDF::loadView('receipt-pdf.via1', compact('receipt'))->stream($pdf_name);
         break;
 
         case 2:
-          return PDF::loadView('pdf.via2', compact('receipt'))->stream('invoice.pdf');
+          return PDF::loadView('receipt-pdf.via2', compact('receipt'))->stream($pdf_name);
         break;
       }
 

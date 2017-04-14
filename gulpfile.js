@@ -31,6 +31,14 @@ elixir(function(mix) {
       'receipt.css'
     ], 'public/css/receipt.min.css');
 
+
+    // PDF Receipts
+    mix.styles([
+      'cssbase-min.css',
+      'cssreset-min.css',
+      'receipt-pdf.css'
+    ], 'public/css/receipt-pdf.min.css');
+
     /****************/
     /*     Merge    */
     /****************/
