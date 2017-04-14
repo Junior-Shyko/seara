@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App;
+use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ReceiptCompany;
 use App\Seara\Monetary;
@@ -19,9 +21,10 @@ class ReceiptCompanyController extends Controller
      */
     public function index()
     {
-        //
+        $company = Auth::user()->company;
+        $date = Carbon::now()->format('d/m/Y');      //
         $receipts = ReceiptCompany::all();
-        return view('receipt-company.index', ['receipts' => $receipts]);
+        return view('receipt-company.index', compact('company','date','receipts'));
     }
 
     /**
@@ -32,6 +35,7 @@ class ReceiptCompanyController extends Controller
     public function create()
     {
         //
+
         return view('receipt-company.create');
     }
 

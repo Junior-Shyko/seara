@@ -56,4 +56,9 @@ class User extends Authenticatable
 		$this->notify(new ResetPasswordNotification($token, $this));
 	}
 
+	public function company()
+	{
+		return $this->belongsTo('App\Models\Company', 'user_id_company');
+	}
+
 }

@@ -16,7 +16,7 @@
 
           {{ csrf_field() }}
 
-          <input type="hidden" name="receipt_id_company" value="{{Auth::user()->user_id_company}}">
+          <input type="hidden" name="receipt_id_company" value="{{ $company->company_id }}">
 
           <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Informações <span class="required">*</span>
@@ -25,10 +25,12 @@
               <input id="receipt_value" name="receipt_value" required placeholder="Valor" class="form-control col-md-7 col-xs-12" type="text">
             </div>
             <div class="col-md-2 col-sm-2 col-xs-12">
-              <input name="receipt_local" required placeholder="Local" class="form-control col-md-7 col-xs-12" type="text">
+              <input name="receipt_local" required placeholder="Local"
+              class="form-control col-md-7 col-xs-12" type="text" value="{{ $company->company_addr_city }}">
             </div>
             <div class="col-md-2 col-sm-2 col-xs-12">
-              <input id="receipt_date" name="receipt_date" required placeholder="Data" class="form-control col-md-7 col-xs-12" type="text">
+              <input id="receipt_date" name="receipt_date" required placeholder="Data"
+              class="form-control col-md-7 col-xs-12" type="text" value="{{ $date }}">
             </div>
           </div>
 
@@ -51,7 +53,8 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Emitente <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input name="receipt_emitter" required="required" class="form-control col-md-7 col-xs-12" type="text">
+              <input name="receipt_emitter" required="required"
+              class="form-control col-md-7 col-xs-12" type="text" value="{{ $company->company_fantasy }}">
             </div>
           </div>
 
@@ -59,7 +62,8 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">CNPJ <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-              <input name="receipt_document" required="required" class="form-control col-md-7 col-xs-12" type="text">
+              <input name="receipt_document" required="required"
+              class="form-control col-md-7 col-xs-12" type="text" value="{{ Auth::user()->company->company_cnpj }}">
             </div>
           </div>
         </div>
