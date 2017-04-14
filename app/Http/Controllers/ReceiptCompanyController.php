@@ -44,14 +44,15 @@ class ReceiptCompanyController extends Controller
     public function store(Request $request)
     {
       try {
+        $receipt = ReceiptCompany::create($request->all());
         $receipt->receipt_extensive_value = Monetary::numberToExt($receipt->receipt_value);
         $receipt = ReceiptCompany::create($request->all());
       }
       catch(Exception $e) {
-        redirect('recibo-empresa');
+        return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
       }
 
-      return redirect('/');
+      return redirect()->back()->with('success' , 'Recibo cadastrado com sucesso!');
     }
 
     /**
