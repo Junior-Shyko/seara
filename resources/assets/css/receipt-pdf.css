@@ -1,6 +1,10 @@
 body {
-  margin: 5px;
+  margin: 0px;
   padding: 0px;
+}
+
+strong {
+  font-weight: bold;
 }
 
 h3 {
