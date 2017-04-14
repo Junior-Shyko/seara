@@ -34,7 +34,9 @@
               <tbody>
                 @foreach ($receipts as $receipt)
                 <tr>
-                  <th scope="row">{{$receipt->receipt_id}}</th>
+                  <th scope="row">
+                    {{ $receipt->receipt_id }}
+                  </th>
                   <td>
                     {{ $receipt->receipt_received_from }}
                   </td>
@@ -48,7 +50,7 @@
                     {{ $receipt->receipt_local }}
                   </td>
                   <td>
-                    {{ $receipt->receipt_date }}
+                    {{ $receipt->receipt_date->format('d/m/Y') }}
                   </td>
                   <td class="no-break">
                     <!-- Ação Editar -->

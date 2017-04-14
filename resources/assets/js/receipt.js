@@ -16,4 +16,20 @@ $(document).ready(function() {
       }
     }
   } );
+
+
+  window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
+
+  $("#receipt_value").maskMoney(
+    {
+      prefix:'R$ ',
+      allowNegative: true,
+      thousands:'.',
+      decimal:',',
+      affixesStay: false
+    }
+  );
+
+  $("#receipt_date").inputmask('99/99/9999');
+
 });

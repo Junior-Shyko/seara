@@ -9,7 +9,7 @@
       </div>
 
       <!-- Formulário  -->
-      <form data-parsley-validate class="form-horizontal form-label-left" action="{{url('recibo-empresa')}}" method="POST">
+      <form data-parsley-validate="" class="form-horizontal form-label-left" action="{{url('recibo-empresa')}}" method="POST">
 
         <!-- Modal Body -->
         <div class="modal-body">
@@ -22,13 +22,13 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Informações <span class="required">*</span>
             </label>
             <div class="col-md-2 col-sm-2 col-xs-12">
-              <input name="receipt_value" required placeholder="Valor" class="form-control col-md-7 col-xs-12" type="text">
+              <input id="receipt_value" name="receipt_value" required placeholder="Valor" class="form-control col-md-7 col-xs-12" type="text">
             </div>
             <div class="col-md-2 col-sm-2 col-xs-12">
-              <input name="receipt_local" required="required" placeholder="Local" class="form-control col-md-7 col-xs-12" type="text">
+              <input name="receipt_local" required placeholder="Local" class="form-control col-md-7 col-xs-12" type="text">
             </div>
             <div class="col-md-2 col-sm-2 col-xs-12">
-              <input name="receipt_date" required="required" placeholder="Data" class="form-control col-md-7 col-xs-12" type="text">
+              <input id="receipt_date" name="receipt_date" required placeholder="Data" class="form-control col-md-7 col-xs-12" type="text">
             </div>
           </div>
 

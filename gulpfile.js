@@ -82,6 +82,9 @@ elixir(function(mix) {
     mix.scripts([
       './vendor/bower_components/datatables.net/js/jquery.dataTables.js',
       './vendor/bower_components/datatables.net-bs/js/dataTables.bootstrap.js',
+      './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
+      './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
+      'jquery.maskMoney.js',
       'receipt.js'
     ], 'public/js/receipt.min.js');
 
