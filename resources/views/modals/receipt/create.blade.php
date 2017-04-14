@@ -9,7 +9,7 @@
       </div>
 
       <!-- Formulário  -->
-      <form data-parsley-validate="" class="form-horizontal form-label-left" action="{{url('recibo-empresa')}}" method="POST">
+      <form id="form-new-receipt" data-parsley-validate="" class="form-horizontal form-label-left" action="{{ url('recibo-empresa') }}" method="POST" autocomplete="off">
 
         <!-- Modal Body -->
         <div class="modal-body">
@@ -70,8 +70,8 @@
 
         <!-- Modal Footer -->
         <div class="modal-footer">
-          <button class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
-          <input type="submit" class="btn btn-danger" value="Salvar">
+          <button class="btn btn-default pull-left" data-dismiss="modal" type="button" >Cancelar</button>
+          <button class="btn btn-danger" onclick="storeReceipt()" type="button">Salvar</button>
         </div>
 
       </form>

@@ -44,7 +44,7 @@
                     {{ $receipt->receipt_reference }}
                   </td>
                   <td>
-                    {{ $receipt->receipt_value }}
+                    R$ {{ number_format($receipt->receipt_value, '2', ',', '.') }}
                   </td>
                   <td>
                     {{ $receipt->receipt_local }}

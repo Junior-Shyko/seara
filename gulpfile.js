@@ -85,6 +85,7 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
       'jquery.maskMoney.js',
+      'helpers.js',
       'receipt.js'
     ], 'public/js/receipt.min.js');
 

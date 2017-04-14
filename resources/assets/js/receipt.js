@@ -1,5 +1,42 @@
-function modalEdit()
+function initMask()
 {
+  $("#receipt_value").maskMoney(
+    {
+      prefix:'R$ ',
+      allowNegative: true,
+      thousands:'.',
+      decimal:',',
+      affixesStay: false
+    }
+  );
+
+  $("#receipt_date").inputmask('99/99/9999');
+}
+
+function removeMasks()
+{
+  var datestring = $("#receipt_date").val();
+  $("#receipt_date").inputmask('remove');
+  $("#receipt_date").val( brDatetoUsa(datestring) );
+
+  var receipt_value = $("#receipt_value").maskMoney('unmasked')[0]
+  $("#receipt_value").maskMoney('destroy');
+  $("#receipt_value").val( receipt_value );
+}
+
+function storeReceipt()
+{
+  var formSel = "#form-new-receipt";
+
+  if( $(formSel).parsley().validate() ) {
+    // Caso tudo esteja válido, vou retirar as máscaras
+    // e dar um submit no form
+    $("#modal_create_receipt").modal('hide');
+    removeMasks();
+    $(formSel).submit();
+    initMask(); // aplico novamente as mascaras pois ainda posso usar o modal
+  }
+
 }
 
 $(document).ready(function() {
@@ -23,17 +60,6 @@ $(document).ready(function() {
 
 
   window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
-
-  $("#receipt_value").maskMoney(
-    {
-      prefix:'R$ ',
-      allowNegative: true,
-      thousands:'.',
-      decimal:',',
-      affixesStay: false
-    }
-  );
-
-  $("#receipt_date").inputmask('99/99/9999');
+  initMask();
 
 });

@@ -48,8 +48,7 @@ class ReceiptCompanyController extends Controller
     public function store(Request $request)
     {
       try {
-        $receipt = ReceiptCompany::create($request->all());
-        $receipt->receipt_extensive_value = Monetary::numberToExt($receipt->receipt_value);
+        $request['receipt_extensive_value'] = Monetary::numberToExt($request['receipt_value']);
         $receipt = ReceiptCompany::create($request->all());
       }
       catch(Exception $e) {
