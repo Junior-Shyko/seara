@@ -9,7 +9,6 @@
 
     <!-- page content -->
     <div class="right_col" role="main">
-
       <div class="x_panel">
         @include('msg.message')
         <div class="x_title">
@@ -54,7 +53,9 @@
                   </td>
                   <td class="no-break">
                     <!-- Ação Editar -->
-                    <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Editar Recibo">
+                    <button class="btn btn-primary btn-xs" data-toggle="tooltip" ]
+                            data-placement="top" data-original-title="Editar Recibo"
+                            onclick="editReceipt({{ $receipt->receipt_id }})">
                       <i class="fa fa-pencil"></i>
                     </button>
                     <!-- Ação Clonar -->
@@ -62,7 +63,10 @@
                       <i class="fa fa-clone"></i>
                     </button>
                     <!-- Ação Excluir -->
-                    <button class="btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Excluir Recibo">
+                    <button class="btn btn-danger btn-xs" data-toggle="tooltip"
+                            data-placement="top" data-original-title="Excluir Recibo"
+                            onclick="deleteReceipt({{ $receipt->receipt_id }})">
+
                       <i class="fa fa-trash-o"></i>
                     </button>
                     <!-- Ação download -->
@@ -82,6 +86,7 @@
     <!-- /page content -->
 
   @include('modals.receipt.create')
+  @include('modals.receipt.delete')
 
    @include('footer')
 

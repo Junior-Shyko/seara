@@ -8,16 +8,16 @@
       </div>
       {{ Form::open(array('url' => $url_route, 'method' => 'delete')) }}
       <div class="modal-body">
-        
+
         <h3>{{$text_delete}}</h3>
         {{Form::hidden($name_camp , $value_camp)}}
-        
+
       </div>
       <div class="modal-footer">
-       {{ Form::button('Não', array('class' => 'btn btn-default pull-left' , 'data-dismiss' => 'modal')) }}
-       {{ Form::submit('Sim', array('class' => 'btn btn-danger')) }}
-     </div>
-     {{ Form::close() }} 
-   </div><!-- /.modal-content -->
- </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal delete user-->
+        {{ Form::button('Não', array('class' => 'btn btn-default pull-left' , 'data-dismiss' => 'modal')) }}
+        {{ Form::submit('Sim', array('class' => 'btn btn-danger')) }}
+      </div>
+      {{ Form::close() }}
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal delete user-->

@@ -98,9 +98,16 @@ class ReceiptCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(ReceiptCompany $recibo_empresa)
     {
-        //
+      // Tentar excluir
+      try {
+        $recibo_empresa->delete();
+      } catch (Exception $e) {
+        return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+      }
+
+      return redirect()->back()->with('success' , 'Recibo excluído com sucesso');
     }
 
     public function generatePDF(Request $request, ReceiptCompany $receipt)

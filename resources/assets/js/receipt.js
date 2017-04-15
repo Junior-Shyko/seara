@@ -1,3 +1,10 @@
+function deleteReceipt(id)
+{
+  $("#modal_delete_receipt_text").html("Você deseja mesmo excluir esse recibo?");
+  $("#form-delete-receipt").attr('action', 'recibo-empresa/'+id);
+  $("#modal_delete_receipt").modal('show');
+}
+
 function initMask()
 {
   $("#receipt_value").maskMoney(
