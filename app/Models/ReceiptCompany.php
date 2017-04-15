@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class ReceiptCompany extends Model
@@ -88,4 +89,5 @@ class ReceiptCompany extends Model
 
     return $this->receipt_date->day.' de '.$month.' de '.$this->receipt_date->year;
   }
+
 }

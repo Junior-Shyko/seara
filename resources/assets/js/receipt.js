@@ -1,3 +1,28 @@
+function populateForm(frm, data) {
+  $.each(data, function(key, value){
+    $('[name='+key+']', frm).val(value);
+  });
+}
+
+
+function cloneReceipt(id)
+{
+  $.get('recibo-empresa/'+id, function(data){
+    populateForm("#form-edit-receipt", data);
+    $("#form-edit-receipt").attr('action', 'recibo-empresa/');
+    $("#modal_edit_receipt").modal('show');
+  });
+}
+
+function editReceipt(id)
+{
+  $.get('recibo-empresa/'+id, function(data){
+    populateForm("#form-edit-receipt", data);
+    $("#form-edit-receipt").attr('action', 'recibo-empresa/'+id);
+    $("#modal_edit_receipt").modal('show');
+  });
+}
+
 function deleteReceipt(id)
 {
   $("#modal_delete_receipt_text").html("Você deseja mesmo excluir esse recibo?");

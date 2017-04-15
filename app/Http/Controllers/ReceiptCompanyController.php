@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App;
 use Auth;
+use App\Models\ReceiptCommon;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ReceiptCompany;
@@ -64,9 +65,12 @@ class ReceiptCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(ReceiptCompany $recibo_empresa)
     {
-        //
+      $receiptArray = $recibo_empresa->toArray();
+      // $receiptArray['receipt_date'] = $recibo_empresa->receipt_date->format('d/m/Y');
+      $receiptArray['receipt_date'] = $recibo_empresa->receipt_date->toDateString();
+      return response()->json($receiptArray);
     }
 
     /**
@@ -87,9 +91,18 @@ class ReceiptCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, ReceiptCompany $recibo_empresa)
     {
-        //
+      try {
+        $recibo_empresa->fill($request->all());
+        $recibo_empresa->save();
+      }
+      catch(Exception $e) {
+        return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+      }
+
+      return redirect()->back()->with('success' , 'Recibo atualizado com sucesso!');
+      //
     }
 
     /**

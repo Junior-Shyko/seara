@@ -59,7 +59,9 @@
                       <i class="fa fa-pencil"></i>
                     </button>
                     <!-- Ação Clonar -->
-                    <button class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="top" data-original-title="Clonar Recibo">
+                    <button class="btn btn-primary btn-xs" data-toggle="tooltip"
+                            data-placement="top" data-original-title="Clonar Recibo"
+                            onclick="cloneReceipt({{ $receipt->receipt_id }})">
                       <i class="fa fa-clone"></i>
                     </button>
                     <!-- Ação Excluir -->
@@ -87,6 +89,7 @@
 
   @include('modals.receipt.create')
   @include('modals.receipt.delete')
+  @include('modals.receipt.edit')
 
    @include('footer')
 
