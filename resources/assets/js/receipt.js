@@ -8,9 +8,8 @@ function populateForm(frm, data) {
 function cloneReceipt(id)
 {
   $.get('recibo-empresa/'+id, function(data){
-    populateForm("#form-edit-receipt", data);
-    $("#form-edit-receipt").attr('action', 'recibo-empresa/');
-    $("#modal_edit_receipt").modal('show');
+    populateForm("#form-clone-receipt", data);
+    $("#modal_clone_receipt").modal('show');
   });
 }
 
@@ -87,7 +86,8 @@ $(document).ready(function() {
         "first": "Primeiro",
         "last": "Último"
       }
-    }
+    },
+    "order": [[ 0, "desc" ]]
   } );
 
 

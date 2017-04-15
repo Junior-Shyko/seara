@@ -90,6 +90,7 @@
   @include('modals.receipt.create')
   @include('modals.receipt.delete')
   @include('modals.receipt.edit')
+  @include('modals.receipt.clone')
 
    @include('footer')
 
