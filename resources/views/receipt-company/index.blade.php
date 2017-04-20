@@ -30,54 +30,6 @@
                   <th>Ações</th>
                 </tr>
               </thead>
-              <tbody>
-                @foreach ($receipts as $receipt)
-                <tr>
-                  <th scope="row">
-                    {{ $receipt->receipt_id }}
-                  </th>
-                  <td>
-                    {{ $receipt->receipt_received_from }}
-                  </td>
-                  <td>
-                    {{ $receipt->receipt_reference }}
-                  </td>
-                  <td>
-                    R$ {{ number_format($receipt->receipt_value, '2', ',', '.') }}
-                  </td>
-                  <td>
-                    {{ $receipt->receipt_local }}
-                  </td>
-                  <td>
-                    {{ $receipt->receipt_date->format('d/m/Y') }}
-                  </td>
-                  <td class="no-break">
-                    <!-- Ação Editar -->
-                    <button class="btn btn-primary btn-xs" data-toggle="tooltip" ]
-                            data-placement="top" data-original-title="Editar Recibo"
-                            onclick="editReceipt({{ $receipt->receipt_id }})">
-                      <i class="fa fa-pencil"></i>
-                    </button>
-                    <!-- Ação Clonar -->
-                    <button class="btn btn-primary btn-xs" data-toggle="tooltip"
-                            data-placement="top" data-original-title="Clonar Recibo"
-                            onclick="cloneReceipt({{ $receipt->receipt_id }})">
-                      <i class="fa fa-clone"></i>
-                    </button>
-                    <!-- Ação Excluir -->
-                    <button class="btn btn-danger btn-xs" data-toggle="tooltip"
-                            data-placement="top" data-original-title="Excluir Recibo"
-                            onclick="deleteReceipt({{ $receipt->receipt_id }})">
-
-                      <i class="fa fa-trash-o"></i>
-                    </button>
-                    <!-- Ação download -->
-                    <a href="{{ url('recibo-empresa/'.$receipt->receipt_id.'/pdf?vias=1') }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 1 Via </a>
-                    <a href="{{ url('recibo-empresa/'.$receipt->receipt_id.'/pdf?vias=2') }}" target="_blank" class="btn btn-info btn-xs"><i class="fa fa-print"></i> 2 Via </a>
-                  </td>
-                </tr>
-                @endforeach
-              </tbody>
             </table>
           </div>
 
@@ -86,11 +38,6 @@
     </div>
 
     <!-- /page content -->
-
-  @include('modals.receipt.create')
-  @include('modals.receipt.delete')
-  @include('modals.receipt.edit')
-  @include('modals.receipt.clone')
 
    @include('footer')
 
@@ -103,4 +50,9 @@
 
 @push('scripts')
 <script type="text/javascript" language="javascript" src="{{asset('js/receipt.min.js')}}"></script>
+
+<script>
+var datatablesURL = "{!! route('datatables.data') !!}";
+
+</script>
 @endpush

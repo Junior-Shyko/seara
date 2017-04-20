@@ -27,7 +27,7 @@
         "thomaswelton/laravel-gravatar": "~1.0",
         "rtconner/laravel-tagging": "~2.2",
         "laravelcollective/html": "^5.3.0",
-        "yajra/laravel-datatables-oracle": "^7.2",
+        "yajra/laravel-datatables-oracle": "^7.3",
         "laravel/tinker": "^1.0",
         "fzaninotto/faker": "^1.6",
         "barryvdh/laravel-dompdf": "^0.8.0"

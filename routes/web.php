@@ -22,5 +22,14 @@ Route::resource('companies', 'CompanyController');
 /* ROTA PARA USUARIOS*/
 Route::resource('users', 'UserController');
 
-Route::resource('recibo-empresa', 'ReceiptCompanyController');
-Route::get('recibo-empresa/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
+Route::resource('receipt-company', 'ReceiptCompanyController');
+Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
+
+// DataTables
+Route::get('recibo-empresa', 'ReceiptDatatablesController@getIndex');
+Route::get('recibo-empresa/data', 'ReceiptDatatablesController@anyData')->name('datatables.data');
+
+// Route::controller('recibo-empresa', 'ReceiptDatatablesController', [
+//     'anyData'  => 'datatables.data',
+//     'getIndex' => 'recibo-empresa'
+// ]);

@@ -71,27 +71,44 @@ function storeReceipt()
 }
 
 $(document).ready(function() {
+
+
   $('#receipts-table').DataTable({
-    "language": {
-      "lengthMenu": "Exibir _MENU_ recibos por página",
-      "zeroRecords": "Nenhum recibo cadastrado para essa pesquisa",
-      "infoEmpty": "Exibindo 0 de 0 recibos",
-      "emptyTable": "Nenhum redibo cadastrado",
-      "info": "Exibindo página _PAGE_ de _PAGES_",
-      "infoFiltered": "(filtrados de _MAX_ recibos)",
-      "search": "Pesquisar:",
-      "paginate": {
-        "previous": "Anterior",
-        "next": "Próximo",
-        "first": "Primeiro",
-        "last": "Último"
-      }
-    },
-    "order": [[ 0, "desc" ]]
-  } );
+    processing: true,
+    serverSide: true,
+    ajax: datatablesURL,
+    columns: [
+      { data: 'receipt_id', name: 'receipt_id' },
+      { data: 'receipt_received_from', name: 'receipt_received_from' },
+      { data: 'receipt_reference', name: 'receipt_reference' },
+      { data: 'receipt_value', name: 'receipt_value' },
+      { data: 'receipt_local', name: 'receipt_local' },
+      { data: 'receipt_date', name: 'receipt_date' },
+      {data: 'action', name: 'action', orderable: false, searchable: false}
+    ]
+  });
 
+  // $('#receipts-table').DataTable({
+  //   "language": {
+  //     "lengthMenu": "Exibir _MENU_ recibos por página",
+  //     "zeroRecords": "Nenhum recibo cadastrado para essa pesquisa",
+  //     "infoEmpty": "Exibindo 0 de 0 recibos",
+  //     "emptyTable": "Nenhum redibo cadastrado",
+  //     "info": "Exibindo página _PAGE_ de _PAGES_",
+  //     "infoFiltered": "(filtrados de _MAX_ recibos)",
+  //     "search": "Pesquisar:",
+  //     "paginate": {
+  //       "previous": "Anterior",
+  //       "next": "Próximo",
+  //       "first": "Primeiro",
+  //       "last": "Último"
+  //     }
+  //   },
+  //   "order": [[ 0, "desc" ]]
+  // } );
+  //
 
-  window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
-  initMask();
+  // window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
+  // initMask();
 
 });
