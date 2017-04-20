@@ -7,12 +7,15 @@ use Illuminate\Http\Request;
 use App\Models\ReceiptCompany;
 use Yajra\Datatables\Facades\Datatables;
 
+use Auth;
+
 class ReceiptDatatablesController extends Controller
 {
     //
     public function getIndex()
     {
-      return view('receipt-company.index');
+      $company = Auth::user()->company;
+      return view('receipt-company.index', compact('company'));
     }
 
     public function anyData()

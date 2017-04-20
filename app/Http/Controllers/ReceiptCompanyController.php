@@ -69,11 +69,11 @@ class ReceiptCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(ReceiptCompany $recibo_empresa)
+    public function show(ReceiptCompany $receipt_company)
     {
-      $receiptArray = $recibo_empresa->toArray();
+      $receiptArray = $receipt_company->toArray();
       // $receiptArray['receipt_date'] = $recibo_empresa->receipt_date->format('d/m/Y');
-      $receiptArray['receipt_date'] = $recibo_empresa->receipt_date->toDateString();
+      $receiptArray['receipt_date'] = $receipt_company->receipt_date->toDateString();
       return response()->json($receiptArray);
     }
 
@@ -95,11 +95,11 @@ class ReceiptCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ReceiptCompany $recibo_empresa)
+    public function update(Request $request, ReceiptCompany $receipt_company)
     {
       try {
-        $recibo_empresa->fill($request->all());
-        $recibo_empresa->save();
+        $receipt_company->fill($request->all());
+        $receipt_company->save();
       }
       catch(Exception $e) {
         return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
@@ -115,11 +115,11 @@ class ReceiptCompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ReceiptCompany $recibo_empresa)
+    public function destroy(ReceiptCompany $receipt_company)
     {
       // Tentar excluir
       try {
-        $recibo_empresa->delete();
+        $receipt_company->delete();
       } catch (Exception $e) {
         return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
       }

@@ -4,6 +4,12 @@ function populateForm(frm, data) {
   });
 }
 
+/* IMPLEMENTAÇÃO DAS ACTIONS */
+
+function createReceipt(id)
+{
+  $("#modal-receipt").modal('show');
+}
 
 function cloneReceipt(id)
 {

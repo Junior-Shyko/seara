@@ -13,7 +13,7 @@
         @include('msg.message')
         <div class="x_title">
           <h2>Recibos <small>Recibos emitidos pela empresa</small></h2>
-          <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#modal_create_receipt">Novo Recibo</button>
+          <button class="btn btn-primary pull-right" onclick="createReceipt( {{ $company->company_id }} )">Novo Recibo</button>
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -38,6 +38,8 @@
     </div>
 
     <!-- /page content -->
+
+    @include('modals.receipt.receipt')
 
    @include('footer')
 
