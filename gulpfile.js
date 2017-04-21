@@ -84,6 +84,8 @@ elixir(function(mix) {
       './vendor/bower_components/datatables.net-bs/js/dataTables.bootstrap.js',
       './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
+      './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+      'mask.js',
       'jquery.maskMoney.js',
       'helpers.js',
       'receipt.js'

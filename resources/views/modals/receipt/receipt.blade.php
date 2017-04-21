@@ -14,7 +14,7 @@
         <div class="modal-body">
 
           <!-- Formulário  -->
-          <form id="form-receipt" data-parsley-validate="" class="form-horizontal form-label-left">
+          <form id="form-receipt" data-parsley-validate="" class="form-horizontal form-label-left" autocomplete="off">
 
             {{ csrf_field() }}
 
@@ -26,7 +26,8 @@
               </label>
               <!-- Valor -->
               <div class="col-md-2 col-sm-2 col-xs-12">
-                <input id="receipt_value" name="receipt_value" required placeholder="Valor" class="form-control col-md-7 col-xs-12" type="text">
+                <input id="receipt_value" name="receipt_value" required placeholder="Valor"
+                class="form-control col-md-7 col-xs-12 money-mask" type="text">
               </div>
               <!-- Local -->
               <div class="col-md-2 col-sm-2 col-xs-12">
@@ -36,7 +37,7 @@
               <!-- Data -->
               <div class="col-md-2 col-sm-2 col-xs-12">
                 <input id="receipt_date" name="receipt_date" required placeholder="Data"
-                class="form-control col-md-7 col-xs-12" type="text">
+                class="form-control col-md-7 col-xs-12 date-mask" type="text">
               </div>
             </div>
 

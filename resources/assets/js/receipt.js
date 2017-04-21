@@ -13,19 +13,21 @@ function createReceipt(id)
 
 function cloneReceipt(id)
 {
-  $.get('recibo-empresa/'+id, function(data){
-    populateForm("#form-clone-receipt", data);
-    $("#modal_clone_receipt").modal('show');
-  });
+    $("#modal-receipt").modal('show');
+  // $.get('recibo-empresa/'+id, function(data){
+  //   populateForm("#form-clone-receipt", data);
+  //   $("#modal_clone_receipt").modal('show');
+  // });
 }
 
 function editReceipt(id)
 {
-  $.get('recibo-empresa/'+id, function(data){
-    populateForm("#form-edit-receipt", data);
-    $("#form-edit-receipt").attr('action', 'recibo-empresa/'+id);
-    $("#modal_edit_receipt").modal('show');
-  });
+    $("#modal-receipt").modal('show');
+  // $.get('recibo-empresa/'+id, function(data){
+  //   populateForm("#form-edit-receipt", data);
+  //   $("#form-edit-receipt").attr('action', 'recibo-empresa/'+id);
+  //   $("#modal-receipt").modal('show');
+  // });
 }
 
 function deleteReceipt(id)
