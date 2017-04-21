@@ -110,6 +110,11 @@ elixir(function(mix) {
       'receipt.js'
     ], 'public/js/receipt.min.js');
 
+    mix.scripts([
+      './vendor/bower_components/js-cookie/src/js.cookie.js',
+      'seara.js'
+    ], 'public/js/seara.min.js');
+
     /**************/
     /* Copy Fonts */
     /**************/

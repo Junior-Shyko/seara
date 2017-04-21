@@ -47,14 +47,25 @@ function createReceipt(id)
       receiptData = packForm("#form-receipt");
       receiptData['receipt_value'] = parseFloat(receiptData['receipt_value'].replace(/\./g, '').replace(',','.'));
       receiptData['receipt_date'] = brDatetoUsa(receiptData['receipt_date']);
-      console.log(receiptData);
 
-      $.post('receipt-company', receiptData, function(data){
+      seara.createReceiptCompany(receiptData, function(data){
         reloadTable();
       })
-      .always(function(data){
-        // Sempre apresento a mensagem de sucesso ou erro
+      .always(function (data) {
+        if (data["status"] == "success") {
+          notify.success("Sucesso", data["message"]);
+        }
+        else {
+          notify.error("Erro", data["message"]);
+        }
       });
+
+      // $.post('receipt-company', receiptData, function(data){
+      //   reloadTable();
+      // })
+      // .always(function(data){
+      //   // Sempre apresento a mensagem de sucesso ou erro
+      // });
 
       closeForm();
     }

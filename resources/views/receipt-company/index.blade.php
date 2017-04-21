@@ -43,7 +43,6 @@
 
    @include('footer')
 
-
 @endsection
 
 @push('stylesheets')
@@ -55,9 +54,14 @@
 <script type="text/javascript" language="javascript" src="{{asset('js/mask.min.js')}}"></script>
 <script type="text/javascript" language="javascript" src="{{asset('js/notify.min.js')}}"></script>
 <script type="text/javascript" language="javascript" src="{{asset('js/receipt.min.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{asset('js/seara.min.js')}}"></script>
 
 <script>
 var datatablesURL = "{!! route('datatables.data') !!}";
+
+seara.init({
+  receiptCompany: "{!! route('receipt-company.index') !!}"
+});
 
 </script>
 @endpush
