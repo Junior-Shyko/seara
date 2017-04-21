@@ -11,6 +11,13 @@ function loadData(data) {
   reloadAllMasks();
 }
 
+function currentDate()
+{
+  d = new Date();
+
+  return ( "0" + d.getDate() ).slice(-2) + "/" + ( "0" + (d.getMonth() + 1) ).slice(-2) + "/" + d.getFullYear();
+}
+
 function showForm()
 {
   $("#form-receipt").parsley().reset();
@@ -21,10 +28,21 @@ function showForm()
 
 function createReceipt(id)
 {
-  showForm();
   // Ação Salvar
   $("#form-save-btn").on('click', function(){
     $("#form-receipt").parsley().validate();
+  });
+
+  $.get('companies/'+id, function(company){
+    formData = {
+      "receipt_local": company.company_addr_city,
+      "receipt_date": currentDate(),
+      "receipt_emitter": company.company_fantasy,
+      "receipt_document": company.company_cnpj
+    }
+    populateForm("#form-receipt", formData);
+    reloadAllMasks();
+    showForm();
   });
 }
 
@@ -50,7 +68,13 @@ function cloneReceipt(id)
 
   $.get('receipt-company/'+id, function(data){
     loadData(data);
+    $('#receipt_value').val('');
     showForm();
+
+    $('#modal-receipt').on('shown.bs.modal', function () {
+      $('#receipt_value').focus();
+    })
+
   });
 }
 
