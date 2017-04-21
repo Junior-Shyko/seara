@@ -61,7 +61,7 @@ class ReceiptCompanyController extends Controller
         return response(['status' => 'error', 'code' => $errorCode, 'message' => $e->getMessage()], $errorCode);
       }
 
-      return response(['status' => 'success', 'message' => "Recibo criado com sucesso!"]);
+      return response(['status' => 'success', 'message' => "O recibo foi criado!"]);
     }
 
     /**
@@ -103,11 +103,13 @@ class ReceiptCompanyController extends Controller
         $receipt_company->save();
       }
       catch(Exception $e) {
-        return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+        $errorCode = 400;
+        return response(['status' => 'error', 'code' => $errorCode, 'message' => $e->getMessage()], $errorCode);
       }
 
-      return redirect()->back()->with('success' , 'Recibo atualizado com sucesso!');
-      //
+
+      return response(['status' => 'success', 'message' => "O recibo foi atualizado!"]);
+
     }
 
     /**
@@ -120,12 +122,18 @@ class ReceiptCompanyController extends Controller
     {
       // Tentar excluir
       try {
+
         $receipt_company->delete();
+
       } catch (Exception $e) {
-        return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+
+        $errorCode = 400;
+        return response(['status' => 'error', 'code' => $errorCode, 'message' => $e->getMessage()], $errorCode);
+
       }
 
-      return redirect()->back()->with('success' , 'Recibo excluído com sucesso');
+      return response(['status' => 'success', 'message' => "O recibo foi excluído!"]);
+
     }
 
     public function generatePDF(Request $request, ReceiptCompany $receipt)

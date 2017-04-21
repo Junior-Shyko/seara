@@ -39,11 +39,22 @@ var notify = (function(){
     });
   }
 
+  function response(data)
+  {
+    if (data["status"] == "success") {
+      success("Sucesso", data["message"]);
+    }
+    else {
+      error("Erro", data["message"]);
+    }
+  }
+
   return {
     success: success,
     error: error,
     info: info,
-    warning: warning
+    warning: warning,
+    response: response
   }
 
 })();

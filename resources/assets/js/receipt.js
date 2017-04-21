@@ -1,3 +1,12 @@
+function packReceiptData()
+{
+  var receiptData = packForm("#form-receipt");
+  receiptData['receipt_value'] = parseFloat(receiptData['receipt_value'].replace(/\./g, '').replace(',','.'));
+  receiptData['receipt_date'] = brDatetoUsa(receiptData['receipt_date']);
+
+  return receiptData;
+}
+
 function populateForm(frm, data) {
   $.each(data, function(key, value){
     $('[name='+key+']', frm).val(value);
@@ -39,33 +48,20 @@ function reloadTable()
 function createReceipt(id)
 {
   // Ação Salvar
+  $("#form-save-btn").off('click');
   $("#form-save-btn").on('click', function(){
 
     if( $("#form-receipt").parsley().validate() )
     {
       // Caso a validação esteja ok, vou registrar o recibo
-      receiptData = packForm("#form-receipt");
-      receiptData['receipt_value'] = parseFloat(receiptData['receipt_value'].replace(/\./g, '').replace(',','.'));
-      receiptData['receipt_date'] = brDatetoUsa(receiptData['receipt_date']);
+      receiptData = packReceiptData();
 
       seara.createReceiptCompany(receiptData, function(data){
         reloadTable();
       })
       .always(function (data) {
-        if (data["status"] == "success") {
-          notify.success("Sucesso", data["message"]);
-        }
-        else {
-          notify.error("Erro", data["message"]);
-        }
+        notify.response(data);
       });
-
-      // $.post('receipt-company', receiptData, function(data){
-      //   reloadTable();
-      // })
-      // .always(function(data){
-      //   // Sempre apresento a mensagem de sucesso ou erro
-      // });
 
       closeForm();
     }
@@ -91,21 +87,54 @@ function createReceipt(id)
 function editReceipt(id)
 {
   // Ação Salvar
+  $("#form-save-btn").off('click');
   $("#form-save-btn").on('click', function(){
-    $("#form-receipt").parsley().validate();
+
+    if( $("#form-receipt").parsley().validate() )
+    {
+      // Caso a validação esteja ok, vou registrar o recibo
+      receiptData = packReceiptData();
+
+      seara.updateReceiptCompany(id, receiptData, function(data){
+        reloadTable();
+      })
+      .always(function (data) {
+        notify.response(data);
+      });
+
+      closeForm();
+    }
+
   });
 
-  $.get('receipt-company/'+id, function(data){
+  seara.showReceiptCompany(id, function (data) {
     loadData(data);
     showForm();
   });
+
 }
 
 function cloneReceipt(id)
 {
   // Ação Salvar
-  $("#form-save-btn").on('click', function(){
-    $("#form-receipt").parsley().validate();
+  $("#form-save-btn").off('click');
+  $("#form-save-btn").click(function(){
+
+    if( $("#form-receipt").parsley().validate() )
+    {
+      // Caso a validação esteja ok, vou registrar o recibo
+      receiptData = packReceiptData();
+
+      seara.createReceiptCompany(receiptData, function(data){
+        reloadTable();
+      })
+      .always(function (data) {
+        notify.response(data);
+      });
+
+      closeForm();
+    }
+
   });
 
   $.get('receipt-company/'+id, function(data){
@@ -113,6 +142,29 @@ function cloneReceipt(id)
     $('#receipt_value').val('');
     showForm();
   });
+}
+
+function deleteReceipt(id)
+{
+
+  $("#modal-delete-receipt").modal("show");
+
+  // Eventos
+  $("#modal-delete-receipt-btn").off("click");
+
+  $("#modal-delete-receipt-btn").click(function (data) {
+
+    seara.destroyReceiptCompany(id, function (data) {
+      reloadTable();
+    })
+    .always(function (data) {
+      notify.response(data);
+    });
+
+    $("#modal-delete-receipt").modal("hide");
+
+  });
+
 }
 
 $(document).ready(function() {
