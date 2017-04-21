@@ -13,7 +13,6 @@
 
     <div class="col-md-12">
       <div class="x_panel">
-        @include('msg.message')
         <div class="x_title">
           <h2>Usuários <small>todos usuários da Igreja</small></h2>
 
@@ -65,13 +64,13 @@
                 </tbody>
               </table>
             </div>
-            <div class="panel-footer"> 
+            <div class="panel-footer">
               <strong>Empresa: </strong> {{$users[0]->company_fantasy}}
               <br>
               <strong>Total de usuários: </strong> {{count($users)}}
 
             </div>
-          </div>    
+          </div>
 
 
         </div>

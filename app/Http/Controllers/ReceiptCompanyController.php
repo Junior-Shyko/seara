@@ -57,10 +57,11 @@ class ReceiptCompanyController extends Controller
         $receipt = ReceiptCompany::create($request->all());
       }
       catch(Exception $e) {
-        return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+        $errorCode = 400;
+        return response(['status' => 'error', 'code' => $errorCode, 'message' => $e->getMessage()], $errorCode);
       }
 
-      return redirect()->back()->with('success' , 'Recibo cadastrado com sucesso!');
+      return response(['status' => 'success', 'message' => "Recibo criado com sucesso!"]);
     }
 
     /**

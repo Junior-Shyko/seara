@@ -24,17 +24,48 @@ function showForm()
   $("#modal-receipt").modal('show');
 }
 
+function closeForm()
+{
+  $("#modal-receipt").modal('hide');
+}
+
+function reloadTable()
+{
+  $("#receipts-table").DataTable().ajax.reload();
+}
+
 /* IMPLEMENTAÇÃO DAS ACTIONS */
 
 function createReceipt(id)
 {
   // Ação Salvar
   $("#form-save-btn").on('click', function(){
-    $("#form-receipt").parsley().validate();
+
+    if( $("#form-receipt").parsley().validate() )
+    {
+      // Caso a validação esteja ok, vou registrar o recibo
+      receiptData = packForm("#form-receipt");
+      receiptData['receipt_value'] = parseFloat(receiptData['receipt_value'].replace(/\./g, '').replace(',','.'));
+      receiptData['receipt_date'] = brDatetoUsa(receiptData['receipt_date']);
+      console.log(receiptData);
+
+      $.post('receipt-company', receiptData, function(data){
+        reloadTable();
+      })
+      .always(function(data){
+        // Sempre apresento a mensagem de sucesso ou erro
+      });
+
+      closeForm();
+    }
+
   });
 
   $.get('companies/'+id, function(company){
     formData = {
+      "receipt_value": '',
+      "receipt_received_from": '',
+      "receipt_reference": '',
       "receipt_local": company.company_addr_city,
       "receipt_date": currentDate(),
       "receipt_emitter": company.company_fantasy,
@@ -70,64 +101,10 @@ function cloneReceipt(id)
     loadData(data);
     $('#receipt_value').val('');
     showForm();
-
-    $('#modal-receipt').on('shown.bs.modal', function () {
-      $('#receipt_value').focus();
-    })
-
   });
 }
 
-function deleteReceipt(id)
-{
-  $("#modal_delete_receipt_text").html("Você deseja mesmo excluir esse recibo?");
-  $("#form-delete-receipt").attr('action', 'recibo-empresa/'+id);
-  $("#modal_delete_receipt").modal('show');
-}
-
-function initMask()
-{
-  $("#receipt_value").maskMoney(
-    {
-      prefix:'R$ ',
-      allowNegative: true,
-      thousands:'.',
-      decimal:',',
-      affixesStay: false
-    }
-  );
-
-  $("#receipt_date").inputmask('99/99/9999');
-}
-
-function removeMasks()
-{
-  var datestring = $("#receipt_date").val();
-  $("#receipt_date").inputmask('remove');
-  $("#receipt_date").val( brDatetoUsa(datestring) );
-
-  var receipt_value = $("#receipt_value").maskMoney('unmasked')[0]
-  $("#receipt_value").maskMoney('destroy');
-  $("#receipt_value").val( receipt_value );
-}
-
-function storeReceipt()
-{
-  var formSel = "#form-new-receipt";
-
-  if( $(formSel).parsley().validate() ) {
-    // Caso tudo esteja válido, vou retirar as máscaras
-    // e dar um submit no form
-    $("#modal_create_receipt").modal('hide');
-    removeMasks();
-    $(formSel).submit();
-    initMask(); // aplico novamente as mascaras pois ainda posso usar o modal
-  }
-
-}
-
 $(document).ready(function() {
-
 
   $('#receipts-table').DataTable({
     processing: true,
@@ -161,6 +138,11 @@ $(document).ready(function() {
   });
 
   window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
+
+  // Focagem automática no primeiro elemento
+  $('#modal-receipt').on('shown.bs.modal', function () {
+    $('#receipt_value').focus();
+  })
   // initMask();
 
 });

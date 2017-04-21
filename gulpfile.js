@@ -39,6 +39,13 @@ elixir(function(mix) {
       'receipt-pdf.css'
     ], 'public/css/receipt-pdf.min.css');
 
+    // Notifications
+    mix.styles([
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.css',
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.css',
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.css',
+    ], 'public/css/notify.min.css');
+
     /****************/
     /*     Merge    */
     /****************/
@@ -78,15 +85,27 @@ elixir(function(mix) {
       'register/mask_autocomplete_conf.js',
     ], 'public/js/mask_camp.min.js');
 
+
+    // Notificação
+    mix.scripts([
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.js',
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.js',
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.js',
+      'notify.js'
+    ], 'public/js/notify.min.js');
+
+    // Máscaras
+    mix.scripts([
+      './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+      'mask.js'
+    ], 'public/js/mask.min.js');
+
     // Receipts
     mix.scripts([
       './vendor/bower_components/datatables.net/js/jquery.dataTables.js',
       './vendor/bower_components/datatables.net-bs/js/dataTables.bootstrap.js',
       './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
-      './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
-      'mask.js',
-      'jquery.maskMoney.js',
       'helpers.js',
       'receipt.js'
     ], 'public/js/receipt.min.js');

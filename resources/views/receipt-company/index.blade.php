@@ -48,9 +48,12 @@
 
 @push('stylesheets')
   <link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{asset('css/notify.min.css')}}">
 @endpush
 
 @push('scripts')
+<script type="text/javascript" language="javascript" src="{{asset('js/mask.min.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{asset('js/notify.min.js')}}"></script>
 <script type="text/javascript" language="javascript" src="{{asset('js/receipt.min.js')}}"></script>
 
 <script>
