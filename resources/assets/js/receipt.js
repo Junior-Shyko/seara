@@ -56,7 +56,7 @@ function createReceipt(id)
       // Caso a validação esteja ok, vou registrar o recibo
       receiptData = packReceiptData();
 
-      seara.createReceiptCompany(receiptData, function(data){
+      seara.storeReceiptCompany(receiptData, function(data){
         reloadTable();
       })
       .always(function (data) {
@@ -125,7 +125,7 @@ function cloneReceipt(id)
       // Caso a validação esteja ok, vou registrar o recibo
       receiptData = packReceiptData();
 
-      seara.createReceiptCompany(receiptData, function(data){
+      seara.storeReceiptCompany(receiptData, function(data){
         reloadTable();
       })
       .always(function (data) {
