@@ -4,30 +4,54 @@ function populateForm(frm, data) {
   });
 }
 
+function loadData(data) {
+  data['receipt_date'] = usaDatetoBr( data['receipt_date'] );
+  data['receipt_value'] = data['receipt_value'].toFixed(2);
+  populateForm("#form-receipt", data);
+  reloadAllMasks();
+}
+
+function showForm()
+{
+  $("#form-receipt").parsley().reset();
+  $("#modal-receipt").modal('show');
+}
+
 /* IMPLEMENTAÇÃO DAS ACTIONS */
 
 function createReceipt(id)
 {
-  $("#modal-receipt").modal('show');
-}
-
-function cloneReceipt(id)
-{
-    $("#modal-receipt").modal('show');
-  // $.get('recibo-empresa/'+id, function(data){
-  //   populateForm("#form-clone-receipt", data);
-  //   $("#modal_clone_receipt").modal('show');
-  // });
+  showForm();
+  // Ação Salvar
+  $("#form-save-btn").on('click', function(){
+    $("#form-receipt").parsley().validate();
+  });
 }
 
 function editReceipt(id)
 {
-    $("#modal-receipt").modal('show');
-  // $.get('recibo-empresa/'+id, function(data){
-  //   populateForm("#form-edit-receipt", data);
-  //   $("#form-edit-receipt").attr('action', 'recibo-empresa/'+id);
-  //   $("#modal-receipt").modal('show');
-  // });
+  // Ação Salvar
+  $("#form-save-btn").on('click', function(){
+    $("#form-receipt").parsley().validate();
+  });
+
+  $.get('receipt-company/'+id, function(data){
+    loadData(data);
+    showForm();
+  });
+}
+
+function cloneReceipt(id)
+{
+  // Ação Salvar
+  $("#form-save-btn").on('click', function(){
+    $("#form-receipt").parsley().validate();
+  });
+
+  $.get('receipt-company/'+id, function(data){
+    loadData(data);
+    showForm();
+  });
 }
 
 function deleteReceipt(id)
@@ -112,7 +136,7 @@ $(document).ready(function() {
     order: [[0, "desc"]]
   });
 
-  // window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
+  window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
   // initMask();
 
 });

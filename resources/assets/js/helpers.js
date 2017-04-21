@@ -12,3 +12,9 @@ function brDatetoUsa(datestring)
   var dateSplitted = datestring.split('/');
   return dateSplitted[2] + '-' + dateSplitted[1] + '-' + dateSplitted[0];
 }
+
+function usaDatetoBr(datestring)
+{
+  var dateSplitted = datestring.split('-');
+  return dateSplitted[2] + '/' + dateSplitted[1] + '/' + dateSplitted[0];
+}

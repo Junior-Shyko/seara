@@ -85,7 +85,7 @@
         <!-- Modal Footer -->
         <div class="modal-footer">
           <button class="btn btn-default pull-left" data-dismiss="modal" type="button" >Cancelar</button>
-          <button class="btn btn-danger">Salvar</button>
+          <button id="form-save-btn" class="btn btn-danger">Salvar</button>
         </div>
 
     </div> <!-- Fim Modal content -->
