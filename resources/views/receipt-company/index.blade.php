@@ -58,11 +58,9 @@
 <script type="text/javascript" language="javascript" src="{{asset('js/seara.min.js')}}"></script>
 
 <script>
-var datatablesURL = "{!! route('datatables.data') !!}";
 
-seara.init({
-  receiptCompany: "{!! route('receipt-company.index') !!}"
-});
+var datatablesURL = "{!! route('datatables.data') !!}";
+var receiptCompany = new ResourceModel("{{ route('receipt-company.index') }}");
 
 </script>
 @endpush

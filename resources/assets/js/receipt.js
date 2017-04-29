@@ -56,7 +56,7 @@ function createReceipt(id)
       // Caso a validação esteja ok, vou registrar o recibo
       receiptData = packReceiptData();
 
-      seara.storeReceiptCompany(receiptData, function(data){
+      receiptCompany.create(receiptData, function(data){
         reloadTable();
       })
       .always(function (data) {
@@ -95,7 +95,7 @@ function editReceipt(id)
       // Caso a validação esteja ok, vou registrar o recibo
       receiptData = packReceiptData();
 
-      seara.updateReceiptCompany(id, receiptData, function(data){
+      receiptCompany.update(id, receiptData, function(data){
         reloadTable();
       })
       .always(function (data) {
@@ -107,7 +107,7 @@ function editReceipt(id)
 
   });
 
-  seara.showReceiptCompany(id, function (data) {
+  receiptCompany.read(id, function (data) {
     loadData(data);
     showForm();
   });
@@ -125,7 +125,7 @@ function cloneReceipt(id)
       // Caso a validação esteja ok, vou registrar o recibo
       receiptData = packReceiptData();
 
-      seara.storeReceiptCompany(receiptData, function(data){
+      receiptCompany.create(receiptData, function(data){
         reloadTable();
       })
       .always(function (data) {
@@ -136,8 +136,9 @@ function cloneReceipt(id)
     }
 
   });
-
-  $.get('receipt-company/'+id, function(data){
+  
+  // Atualização no form
+  receiptCompany.read(id, function(data){
     loadData(data);
     $('#receipt_value').val('');
     showForm();
@@ -154,7 +155,7 @@ function deleteReceipt(id)
 
   $("#modal-delete-receipt-btn").click(function (data) {
 
-    seara.destroyReceiptCompany(id, function (data) {
+    receiptCompany.delete(id, function (data) {
       reloadTable();
     })
     .always(function (data) {

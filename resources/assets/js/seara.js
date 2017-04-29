@@ -1,15 +1,40 @@
 /**
+ * Object Constructor que encapsula o acesso a recursos no sistema
+ * @param {str} resourceURL URL base do recurso
+ */
+function ResourceModel(resourceURL)
+{
+  this._seara.init(resourceURL);
+}
+
+ResourceModel.prototype.create = function (data, callback) {
+  return this._seara.storeResource(data, callback);
+};
+
+ResourceModel.prototype.read = function (id, callback) {
+  return this._seara.showResource(id, callback);
+};
+
+ResourceModel.prototype.update = function (id, data, callback) {
+  return this._seara.updateResource(id, data, callback);
+};
+
+ResourceModel.prototype.delete = function (id, callback) {
+  return this._seara.destroyResource(id, callback);
+};
+
+/**
  * Módulo de encapuslamento das chamadas ao servidor
  * Esse módulo possui diversas funções auxiliares que facilitam o acesso
  * a recursos no servidor (Resource Controllers).
  */
-var seara = (function(){
+ResourceModel.prototype._seara = (function(){
 
   /**
    * Rotas do servidor para cada recurso
    * @type {Object}
    */
-  var routes = {};
+  var _resourceURL;
 
   /**
    * Retorna o token de acesso para realizar requisições no servidor
@@ -21,38 +46,27 @@ var seara = (function(){
   }
 
   /**
-   * Retorna a URL para um dado recurso
-   * @param  {str} resourceName nome do recurso a ser acessado
-   * @return {str}              url do recurso
-   */
-  function resourceURL(resourceName)
-  {
-    return routes[resourceName];
-  }
-
-  /**
    * Inicia o módulo seara. Aqui deve ser passado um objeto que associa a url
    * raiz de cada recurso (resource.index). Esse método deve ser chamado no layout
    * padrão do projeto, ou em cada view onde será utilizado o módulo.
    * @param  {Object} laravelRoutes Rotas do servidor
    */
-  function init(laravelRoutes)
+  function init(resourceURL)
   {
-    routes = laravelRoutes;
+    _resourceURL = resourceURL;
   }
 
   /**
    * Cria um recurso no servidor (resource.store)
-   * @param  {str}      resourceName nome do recurso a ser criado
    * @param  {Object}   resourceData Json que representa o recurso (deve estar de acordo com o Eloquent)
    * @param  {Function} callback     Callback a ser executada quando finalizar com sucesso
    * @return {JHXR}                  Promessa Ajax.
    */
-  function storeResource(resourceName, resourceData, callback)
+  function storeResource(resourceData, callback)
   {
     // Criação é via post. Retorno as mesmas promessas
     return $.ajax({
-      url: resourceURL(resourceName),
+      url: _resourceURL,
       type: 'POST',
       data: resourceData,
       headers: { 'X-XSRF-TOKEN': getToken() },
@@ -63,10 +77,10 @@ var seara = (function(){
     });
   }
 
-  function showResource(resourceName, id, callback)
+  function showResource(id, callback)
   {
     return $.ajax({
-      url: resourceURL(resourceName) + "/" + id,
+      url: _resourceURL + "/" + id,
       type: 'GET',
       headers: { 'X-XSRF-TOKEN': getToken() },
     })
@@ -75,11 +89,11 @@ var seara = (function(){
     });
   }
 
-  function updateResource(resourceName, id, resourceData, callback)
+  function updateResource(id, resourceData, callback)
   {
     // Atualização é via put
     return $.ajax({
-      url: resourceURL(resourceName) + "/" + id,
+      url: _resourceURL + "/" + id,
       type: 'PUT',
       data: resourceData,
       headers: { 'X-XSRF-TOKEN': getToken() },
@@ -90,11 +104,11 @@ var seara = (function(){
     });
   }
 
-  function destroyResource(resourceName, id, callback)
+  function destroyResource(id, callback)
   {
     // Atualização é via delete
     return $.ajax({
-      url: resourceURL(resourceName) + "/" + id,
+      url: _resourceURL + "/" + id,
       type: 'DELETE',
       headers: { 'X-XSRF-TOKEN': getToken() }
     })
@@ -103,12 +117,13 @@ var seara = (function(){
     });
   }
 
+  // Métodos públicos
   return {
     init: init,
-    storeReceiptCompany: function (data, callback) { return storeResource('receiptCompany', data, callback) },
-    showReceiptCompany: function (id, callback) { return showResource('receiptCompany', id, callback) },
-    updateReceiptCompany: function (id, data, callback) { return updateResource('receiptCompany', id, data, callback) },
-    destroyReceiptCompany: function (id, callback) { return destroyResource('receiptCompany', id, callback) }
+    storeResource: storeResource,
+    showResource: showResource,
+    updateResource: updateResource,
+    destroyResource: destroyResource
   }
 
 })();
