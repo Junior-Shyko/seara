@@ -17,7 +17,7 @@
           <div class="x_title">
             <h2>Editar<small>edite seus dados do perfil</small></h2>
 
-          </div> 
+          </div>
         </h3>
       </div>
       <div class="panel-body">
@@ -55,7 +55,7 @@
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
                 <input type="text" class="form-control has-feedback-left" id="user_birth" name="user_birth" value="{{date('d/m/Y' , strtotime($user->user_birth))}}" data-parsley-full="#user_birth" data-parsley-seara="data" placeholder="Data nascimento">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
-              </div>                              
+              </div>
 
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
                 <input type="text" name="user_phone" value="{{$user->user_phone}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Telefone">
@@ -115,19 +115,22 @@
           <div class="col-md-2"></div>
         </div>
         {{Form::close()}}
-      </div>   
+      </div>
     </div>
   </div>
 </div>
 </div>
 
-</div>      
+</div>
 </div>
 <!-- /page content -->
+@endsection
+
+
 @push('scripts')
 
   <script src="{{ asset("js/mask_camp.min.js") }}">
- 
+
   </script>
   <script type="text/javascript">
     $(document).ready(function(){
@@ -136,5 +139,3 @@
   </script>
 
 @endpush
-@include('footer');
-@endsection
