@@ -16,18 +16,23 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/', 'HomeController@index');
 Route::get('/cadastro', 'SignUpController@index');
 Route::post('/cadastro', 'SignUpController@signup');
-/* ROTA PARA EMPRESA */
+
+// EMRPESAS
 Route::resource('companies', 'CompanyController');
 
-/* ROTA PARA USUARIOS*/
+// USUÁRIOS
+Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
 Route::resource('users', 'UserController');
+// Route::get('usuarios', 'UserController@anyData');
 
+// RECIBOS-EMPRESA
 Route::resource('receipt-company', 'ReceiptCompanyController');
 Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
 
-// DataTables
-Route::get('recibo-empresa', 'ReceiptDatatablesController@getIndex');
-Route::get('recibo-empresa/data', 'ReceiptDatatablesController@anyData')->name('datatables.data');
+Route::get('recibo-empresa', 'ReceiptCompanyController@index');
+Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData')->name('receipt-company.datatables');
+
+//
 
 // Route::controller('recibo-empresa', 'ReceiptDatatablesController', [
 //     'anyData'  => 'datatables.data',

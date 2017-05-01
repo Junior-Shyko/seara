@@ -115,6 +115,23 @@ elixir(function(mix) {
       'seara.js'
     ], 'public/js/seara.min.js');
 
+
+    // Usuários
+    mix.scripts([
+      './vendor/bower_components/datatables.net/js/jquery.dataTables.js',
+      './vendor/bower_components/datatables.net-bs/js/dataTables.bootstrap.js',
+      './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
+      './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
+      './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+      './vendor/bower_components/js-cookie/src/js.cookie.js',
+      'mask.js',
+      'helpers.js',
+      'searaTable.js',
+      'seara.js',
+      'notify.js',
+      'users.js'
+    ], 'public/js/users.min.js');
+
     /**************/
     /* Copy Fonts */
     /**************/

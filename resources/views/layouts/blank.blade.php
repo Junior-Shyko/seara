@@ -38,6 +38,12 @@
 
   <!-- Custom Theme Scripts -->
   <script src="{{ asset("js/gentelella.min.js") }}"></script>
+  
+  <script>
+  $("body").tooltip({
+    selector: '[data-toggle="tooltip"]'
+  });
+  </script>
 
   @stack('scripts')
 

@@ -57,7 +57,7 @@
 
 <script>
 
-var datatablesURL = "{!! route('datatables.data') !!}";
+var datatablesURL = "{!! route('receipt-company.datatables') !!}";
 
 // Acesso a recursos
 var receiptCompany = new ResourceModel("{{ route('receipt-company.index') }}");
