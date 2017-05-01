@@ -68,15 +68,15 @@ function createReceipt(id)
 
   });
 
-  $.get('companies/'+id, function(company){
-    formData = {
+  company.read(id, function(data){
+      formData = {
       "receipt_value": '',
       "receipt_received_from": '',
       "receipt_reference": '',
-      "receipt_local": company.company_addr_city,
+      "receipt_local": data.company_addr_city,
       "receipt_date": currentDate(),
-      "receipt_emitter": company.company_fantasy,
-      "receipt_document": company.company_cnpj
+      "receipt_emitter": data.company_fantasy,
+      "receipt_document": data.company_cnpj
     }
     populateForm("#form-receipt", formData);
     reloadAllMasks();
@@ -136,7 +136,7 @@ function cloneReceipt(id)
     }
 
   });
-  
+
   // Atualização no form
   receiptCompany.read(id, function(data){
     loadData(data);

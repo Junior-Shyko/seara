@@ -1,40 +1,9 @@
 /**
- * Object Constructor que encapsula o acesso a recursos no sistema
- * @param {str} resourceURL URL base do recurso
- */
-function ResourceModel(resourceURL)
-{
-  this._seara.init(resourceURL);
-}
-
-ResourceModel.prototype.create = function (data, callback) {
-  return this._seara.storeResource(data, callback);
-};
-
-ResourceModel.prototype.read = function (id, callback) {
-  return this._seara.showResource(id, callback);
-};
-
-ResourceModel.prototype.update = function (id, data, callback) {
-  return this._seara.updateResource(id, data, callback);
-};
-
-ResourceModel.prototype.delete = function (id, callback) {
-  return this._seara.destroyResource(id, callback);
-};
-
-/**
  * Módulo de encapuslamento das chamadas ao servidor
  * Esse módulo possui diversas funções auxiliares que facilitam o acesso
  * a recursos no servidor (Resource Controllers).
  */
-ResourceModel.prototype._seara = (function(){
-
-  /**
-   * Rotas do servidor para cada recurso
-   * @type {Object}
-   */
-  var _resourceURL;
+var Seara = function(_resourceURL){
 
   /**
    * Retorna o token de acesso para realizar requisições no servidor
@@ -126,4 +95,30 @@ ResourceModel.prototype._seara = (function(){
     destroyResource: destroyResource
   }
 
-})();
+};
+
+/**
+ * Object Constructor que encapsula o acesso a recursos no sistema
+ * @param {str} resourceURL URL base do recurso
+ */
+function ResourceModel(resourceURL)
+{
+  this._seara = new Seara(resourceURL);
+  // this._seara.init(resourceURL);
+}
+
+ResourceModel.prototype.create = function (data, callback) {
+  return this._seara.storeResource(data, callback);
+};
+
+ResourceModel.prototype.read = function (id, callback) {
+  return this._seara.showResource(id, callback);
+};
+
+ResourceModel.prototype.update = function (id, data, callback) {
+  return this._seara.updateResource(id, data, callback);
+};
+
+ResourceModel.prototype.delete = function (id, callback) {
+  return this._seara.destroyResource(id, callback);
+};

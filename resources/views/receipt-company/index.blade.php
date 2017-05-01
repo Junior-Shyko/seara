@@ -60,7 +60,10 @@
 <script>
 
 var datatablesURL = "{!! route('datatables.data') !!}";
+
+// Acesso a recursos
 var receiptCompany = new ResourceModel("{{ route('receipt-company.index') }}");
+var company = new ResourceModel("{{ route('companies.index') }}");
 
 </script>
 @endpush
