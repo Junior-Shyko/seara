@@ -69,5 +69,8 @@
 
 
 @push('scripts')
+<script>
+var base_url = "{{ url('') }}"
+</script>
 <script src="{{ asset("js/register.min.js") }}"></script>
 @endpush

@@ -99,7 +99,7 @@ function store(success, failure)
     'user': user
   }
 
-  $.post("/cadastro", data, function(companyResponse){
+  $.post(base_url+"/cadastro", data, function(companyResponse){
     // Cadastro deu certo
     success();
   })
