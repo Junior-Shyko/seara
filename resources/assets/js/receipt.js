@@ -15,7 +15,7 @@ function populateForm(frm, data) {
 
 function loadData(data) {
   data['receipt_date'] = usaDatetoBr( data['receipt_date'] );
-  data['receipt_value'] = data['receipt_value'].toFixed(2);
+  data['receipt_value'] = parseFloat( data['receipt_value'] ).toFixed(2);
   populateForm("#form-receipt", data);
   reloadAllMasks();
 }
