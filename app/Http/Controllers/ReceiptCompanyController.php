@@ -170,6 +170,15 @@ class ReceiptCompanyController extends Controller
       function ($receipt) {
         return $this->actions($receipt->receipt_id);
       })
+      ->editColumn('receipt_value', function ($receipt){
+        return 'R$ '.number_format($receipt->receipt_value, 2, ',', '.');
+      })
+      ->editColumn('receipt_date', function($receipt){
+        return $receipt->receipt_date->format('m/d/Y');
+      })
+      ->editColumn('receipt_local', function($receipt){
+        return ucfirst($receipt->receipt_local);
+      })
       ->make(true);
     }
 
@@ -200,6 +209,6 @@ class ReceiptCompanyController extends Controller
     private function actionDownload($id, $vias)
     {
       $url = ("receipt-company/{$id}/pdf?vias={$vias}");
-      return "<a href='{$url}' target='_blank' class='btn btn-info btn-xs'><i class='fa fa-print'></i> 1 Via </a>";
+      return "<a href='{$url}' target='_blank' class='btn btn-info btn-xs'><i class='fa fa-print'></i> {$vias} Via </a>";
     }
   }

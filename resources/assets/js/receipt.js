@@ -178,10 +178,10 @@ $(document).ready(function() {
       { data: 'receipt_id', name: 'receipt_id' },
       { data: 'receipt_received_from', name: 'receipt_received_from' },
       { data: 'receipt_reference', name: 'receipt_reference' },
-      { data: 'receipt_value', name: 'receipt_value' },
+      { data: 'receipt_value', name: 'receipt_value', className: 'no-break' },
       { data: 'receipt_local', name: 'receipt_local' },
-      { data: 'receipt_date', name: 'receipt_date' },
-      {data: 'action', name: 'action', orderable: false, searchable: false}
+      { data: 'receipt_date', name: 'receipt_date', className: 'no-break' },
+      { data: 'action', name: 'action', orderable: false, searchable: false, className: 'no-break' }
     ],
     language: {
       "lengthMenu": "Exibir _MENU_ recibos por página",

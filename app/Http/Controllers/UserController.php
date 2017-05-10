@@ -61,10 +61,10 @@ class UserController extends Controller
     }
     catch(Exception $e) {
       $errorCode = 400;
-      return response(['error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
+      return response(['status' => 'error', 'error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
     }
 
-    return response(['id' => $user->id]);
+    return response(['status' => 'success', 'message' => 'Usuário criado com sucesso', 'id' => $user->id]);
   }
 
   /**
@@ -140,17 +140,20 @@ class UserController extends Controller
     }
   }
 
+  // Tabela com os usuários da empresa
   public function dataTable()
   {
-    $users = User::select(
-      [
-        'id',
-        'name',
-        'email',
-        'user_id_profile',
-        'created_at'
-      ]
-    );
+    $users = DB::table('users')
+    ->where('user_id_company', Auth::user()->user_id_company)
+    ->where('id', '<>', Auth::user()->id)
+    ->leftjoin('profiles', 'users.user_id_profile', '=', 'profiles.profile_id' )
+    ->select([
+      'users.id',
+      'users.name',
+      'users.email',
+      'profiles.profile_name',
+      'users.created_at'
+    ]);
 
     return Datatables::of($users)
     ->addColumn(
@@ -159,7 +162,7 @@ class UserController extends Controller
         return $this->actions($user->id);
       })
       ->make(true);
-  }
+    }
 
   private function actions($id)
   {
