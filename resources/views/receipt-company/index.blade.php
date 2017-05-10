@@ -21,7 +21,7 @@
             <table id="receipts-table" class="table table-hover">
               <thead>
                 <tr>
-                  <th>#</th>
+                 
                   <th>Recebido de</th>
                   <th>Referente a</th>
                   <th>Valor</th>
@@ -30,6 +30,18 @@
                   <th>Ações</th>
                 </tr>
               </thead>
+              <tbody>
+                  @foreach($receipt as $receipts)
+                    <tr>
+                      <td>{{$receipts->receipt_received_from}}</td>
+                      <td>{{$receipts->receipt_reference}}</td>
+                      <td>{{$receipts->receipt_value}}</td>
+                      <td>{{$receipts->receipt_local}}</td>
+                      <td>{{date('d/m/Y' , strtotime($receipts->receipt_date))}}</td>
+                     
+                    </tr>
+                  @endforeach
+              </tbody>
             </table>
           </div>
 

@@ -170,7 +170,7 @@ function deleteReceipt(id)
 $(document).ready(function() {
 
   $('#receipts-table').DataTable({
-    processing: true,
+    processing: false,
     serverSide: true,
     ajax: datatablesURL,
     columns: [

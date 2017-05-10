@@ -29,6 +29,7 @@ class ReceiptCompanyController extends Controller
         $company = Auth::user()->company;
         $date = Carbon::now()->format('d/m/Y');      //
         $receipts = ReceiptCompany::all();
+        
         return view('receipt-company.index', compact('company','date','receipts'));
     }
 

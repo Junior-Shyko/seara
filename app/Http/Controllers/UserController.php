@@ -56,6 +56,7 @@ class UserController extends Controller
 
       $request['password'] = bcrypt($request['password']);
       try {
+        $request['users_avatar'] = 'default-user-avatar.png';
         $user = User::create($request->all());
       }
       catch(Exception $e) {
