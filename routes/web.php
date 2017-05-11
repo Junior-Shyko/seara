@@ -18,6 +18,7 @@ Route::get('/cadastro', 'SignUpController@index');
 Route::post('/cadastro', 'SignUpController@signup');
 
 // EMRPESAS
+/* ROTA PARA EMPRESA */
 Route::resource('companies', 'CompanyController');
 
 // USUÁRIOS
@@ -25,7 +26,7 @@ Route::get('users/datatable', 'UserController@dataTable')->name('users.datatable
 Route::resource('users', 'UserController');
 // Route::get('usuarios', 'UserController@anyData');
 
-// RECIBOS-EMPRESA
+//ROTA PARA RECIBOS
 Route::resource('receipt-company', 'ReceiptCompanyController');
 Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
 

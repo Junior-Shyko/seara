@@ -9,7 +9,7 @@
         <!-- menu profile quick info -->
         <div class="profile clearfix">
             <div class="profile_pic">
-                <img src="{{ Gravatar::src(Auth::user()->email) }}" alt="{{ Auth::user()->name }}" class="img-circle profile_img">
+                <img src="{{ url('img/'.Auth::user()->users_avatar) }}" alt="{{ Auth::user()->name }}" class="img-circle profile_img">
             </div>
             <div class="profile_info">
                 <span>Bem Vindo,</span>
@@ -33,7 +33,7 @@
               </li>
               <li><a><i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                  <li><a href="#">Igreja</a></li>
+                  <li><a href="{{url('companies')}}">Igreja</a></li>
                   <li><a href="#">Usuário</a></li>
                   <li><a href="#">Histórico</a></li>
                 </ul>

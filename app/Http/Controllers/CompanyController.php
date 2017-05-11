@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Auth;
 
 class CompanyController extends Controller
 {
-
+    //SÓ PARA USUARIOS LOGADOS
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,6 +21,10 @@ class CompanyController extends Controller
      */
     public function index()
     {
+        //PEGANDO O ID DA EMPRESA DO USUÁRIO
+        $id_company = Auth::user()->user_id_company;
+        $company = Company::all();
+        return view('business.index' , compact('company'));
     }
 
     /**
@@ -25,7 +34,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        //
+        return view('business.create');
     }
 
     /**
@@ -37,7 +46,9 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
       try {
+        //DB::enableQueryLog();
         $company = Company::create($request->all());
+        //return DB::getQueryLog();
       }
       catch(Exception $e){
         $errorCode = 400;
@@ -66,7 +77,7 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
-        //
+        return view('business.update');
     }
 
     /**

@@ -15,7 +15,9 @@ class ReceiptDatatablesController extends Controller
     public function getIndex()
     {
       $company = Auth::user()->company;
-      return view('receipt-company.index', compact('company'));
+      $receipt = ReceiptCompany::where('receipt_id_company' , Auth::user()->user_id_company)->orderBy('receipt_id' , 'desc')->get();
+      
+      return view('receipt-company.index', compact('company' , 'receipt'));
     }
 
     public function anyData()

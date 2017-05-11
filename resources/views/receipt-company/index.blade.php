@@ -42,6 +42,8 @@
     @include('modals.receipt.receipt')
     @include('modals.receipt.delete')
 
+   @include('footer')
+
 @endsection
 
 @push('stylesheets')
@@ -56,12 +58,10 @@
 <script type="text/javascript" language="javascript" src="{{asset('js/seara.min.js')}}"></script>
 
 <script>
+var datatablesURL = "{{ route('receipt-company.datatables') }}";
 
-var datatablesURL = "{!! route('receipt-company.datatables') !!}";
-
-// Acesso a recursos
 var receiptCompany = new ResourceModel("{{ route('receipt-company.index') }}");
-var company = new ResourceModel("{{ route('companies.index') }}");
+var company = new ResourceModel("{{ url('companies') }}")
 
 </script>
 @endpush

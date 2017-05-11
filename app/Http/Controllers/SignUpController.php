@@ -61,7 +61,7 @@ class SignUpController extends Controller
 			return response(['error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
 		}
 
-		Mail::to('ednofco@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
+		Mail::to('excelencesoft@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
 		Mail::to($user)->send(new UserRegistered($user));
 
 		return response()->json(['message' => 'Cadastro concluído']);
