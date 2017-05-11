@@ -145,6 +145,15 @@ elixir(function(mix) {
     /* Copy Fonts */
     /**************/
 
+    /* -  ARQUIVOS DE PLUGINS E BIBLIOTECAS  -  */
+    //ARQUIVOS PARA HOME
+    mix.scripts([
+      'plugins/fastclick.js',
+      'plugins/nprogress.js',
+      'plugins/icheck.js'      
+    ], 'public/js/home.js');
+
+
     // Bootstrap
     mix.copy('vendor/bower_components/gentelella/vendors/bootstrap/fonts/', 'public/fonts');
 
