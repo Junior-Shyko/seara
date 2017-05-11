@@ -72,6 +72,11 @@ elixir(function(mix) {
       'register/register.js'
     ], 'public/js/register.min.js');
 
+    //Business - Company
+    mix.scripts([
+      'company.js'
+    ],'public/js/company.min.js');
+    
     // Auth views
     mix.scripts([
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
@@ -115,7 +120,7 @@ elixir(function(mix) {
       'seara.js'
     ], 'public/js/seara.min.js');
 
-
+    
     // Usuários
     mix.scripts([
       './vendor/bower_components/datatables.net/js/jquery.dataTables.js',

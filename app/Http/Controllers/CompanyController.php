@@ -77,7 +77,8 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
-        return view('business.update');
+        
+        return view('business.update', compact('company'));
     }
 
     /**
@@ -89,7 +90,17 @@ class CompanyController extends Controller
      */
     public function update(Request $request, Company $company)
     {
-        //
+        
+        try {
+            $input = $request->all();
+            $input = $request->except('_token' , '_method');
+            $companies = Company::where('company_id' , $company->company_id)->update($input);
+            return redirect()->back()->with('success' , 'Igreja alterado com sucesso');
+        } catch (Exception $e) {
+
+            return redirect()->back()->with('error' , 'Ocorreu um erro, tente novamente.');
+        }
+        
     }
 
     /**

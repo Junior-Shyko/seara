@@ -157,6 +157,7 @@ function deleteReceipt(id)
 
     receiptCompany.delete(id, function (data) {
       reloadTable();
+      
     })
     .always(function (data) {
       notify.response(data);

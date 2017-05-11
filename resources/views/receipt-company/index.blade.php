@@ -42,7 +42,7 @@
     @include('modals.receipt.receipt')
     @include('modals.receipt.delete')
 
-   @include('footer')
+
 
 @endsection
 
