@@ -3,7 +3,14 @@
 @push('stylesheets')
 <!-- Example -->
 <!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
+{{Html::style('css/home.min.css')}}
+<style type="text/css">
+	.ui-button ui-corner-all ui-widget{
+		float: left;
+	}
+</style>
 @endpush
+
 
 @section('main_container')
 
@@ -69,46 +76,36 @@
 
 				<div class="x_content">
 
-					<p>Add class <code>bulk_action</code> to table for bulk actions options on row select</p>
-
 					<div class="table-responsive">
-						<table class="table table-striped jambo_table bulk_action">
-							<thead>
-								<tr class="headings">
-									<th>
-										<div class="icheckbox_flat-green" style="position: relative;"><input type="checkbox" id="check-all" class="flat" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-									</th>
-									<th class="column-title" style="display: none;">Invoice </th>
-									<th class="column-title" style="display: none;">Invoice Date </th>
-									<th class="column-title" style="display: none;">Order </th>
-									<th class="column-title" style="display: none;">Bill to Name </th>
-									<th class="column-title" style="display: none;">Status </th>
-									<th class="column-title" style="display: none;">Amount </th>
-									<th class="column-title no-link last" style="display: none;"><span class="nobr">Action</span>
-									</th>
-									<th class="bulk-actions" colspan="7" style="display: table-cell;">
-										<a class="antoo" style="color:#fff; font-weight:500;">Bulk Actions ( <span class="action-cnt">1 Records Selected</span> ) <i class="fa fa-chevron-down"></i></a>
-									</th>
-								</tr>
-							</thead>
-
-							<tbody>
-								<tr class="even pointer selected">
-									<td class="a-center ">
-										<div class="icheckbox_flat-green checked" style="position: relative;"><input type="checkbox" class="flat" name="table_records" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-									</td>
-									<td class=" ">121000040</td>
-									<td class=" ">May 23, 2014 11:47:56 PM </td>
-									<td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
-									<td class=" ">John Blank L</td>
-									<td class=" ">Paid</td>
-									<td class="a-right a-right ">$7.45</td>
-									<td class=" last"><a href="#">View</a>
+						<table class="table table-bordered">
+						    <thead>
+						        <tr>
+						            <th>Razão Social</th>
+						            <th>Fantasia</th>
+						            <th>Responsável</th>
+						            <th>CNPJ</th>
+						            <th>Data Cadastro</th>
+						            <th>Aprovar</th>
+						        </tr>
+						    </thead>
+						    <tbody>
+						        @foreach($company as $companies)
+						        <tr>
+									<td>{{$companies->company_name}}</td>
+									<td>{{$companies->company_fantasy}}</td>
+									<td>{{$companies->company_responsible}}</td>
+									<td>{{$companies->company_cnpj}}</td>
+									<td>{{$companies->created_at}}</td>
+									<td>
+										<input type="checkbox" name="aprovar" id="{{$companies->company_id}}">
 									</td>
 								</tr>
-
-							</tbody>
+						        @endforeach
+						        
+						        
+						    </tbody>
 						</table>
+
 					</div>
 
 
@@ -118,11 +115,42 @@
 	</div>
 </div>
 <!-- /page content -->
-
+<div id="dialog-confirm" title="Confirmação">
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>Deseja realmente aprovar essa igreja:</p>
+</div>
 @push('scripts')
     <script>
       var base_url = "{{ url('') }}"
     </script>
     <script src="{{ asset("js/home.js") }}"></script>
-    @endpush
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$( "input[type=checkbox]" ).on( "click",function(){
+    			var conf = $( "input:checked" ).val();
+    			var id = $(this).closest('td').attr('id');
+    			if(conf == 'on')
+    			{
+    				$( "#dialog-confirm" ).dialog({
+				      resizable: false,
+				      height: "auto",
+				      width: 400,
+				      modal: true,
+				      buttons: {
+				        Ok: function() {
+				          alert('envia para o banco o '+id);
+				          $( this ).dialog( "close" );
+				        },
+				        Cancel: function() {
+				          $( this ).dialog( "close" );
+				        }
+				      }
+				    });
+    			}else if(conf == 'undefined')
+    			{
+    				alert('empresa reprovada');
+    			}
+    		});
+    	});
+    </script>
+@endpush
 @endsection

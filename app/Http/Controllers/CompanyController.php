@@ -113,4 +113,16 @@ class CompanyController extends Controller
     {
         //
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Company  $company
+     * @return \Illuminate\Http\Response
+     */
+    public function companiesStatus()
+    {
+        $company = Company::where('company_status' , 0)->get();
+        return response()->json($company);
+    }
 }

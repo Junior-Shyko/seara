@@ -147,7 +147,14 @@ elixir(function(mix) {
 
     /* -  ARQUIVOS DE PLUGINS E BIBLIOTECAS  -  */
     //ARQUIVOS PARA HOME
+    mix.styles([
+      './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.min.css',
+      './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.theme.css'      
+    ], 'public/css/home.min.css');
+
     mix.scripts([
+      './vendor/bower_components/gentelella/vendors/jquery/dist/jquery.min.js', // JQUERy
+      './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.min.js',
       'plugins/fastclick.js',
       'plugins/nprogress.js',
       'plugins/icheck.js'      
