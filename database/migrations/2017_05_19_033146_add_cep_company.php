@@ -14,7 +14,7 @@ class AddCepCompany extends Migration
     public function up()
     {
         Schema::table('companies', function (Blueprint $table) {
-            $table->string('company_addr_cep' , 25);
+            $table->string('company_addr_cep' , 25)->change();
         });
     }
 

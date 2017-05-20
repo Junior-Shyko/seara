@@ -14,12 +14,12 @@ class AddCompany extends Migration
     public function up()
     {
         Schema::table('companies', function (Blueprint $table) {
-            $table->string('company_addr_street' , 150);
-            $table->string('company_addr_number' , 10);
-            $table->string('company_addr_complement' , 50);
-            $table->string('company_addr_district' , 150);
-            $table->string('company_addr_city' , 150);
-            $table->string('company_addr_state' , 5);
+            $table->string('company_addr_street' , 150)->change();
+            $table->string('company_addr_number' , 10)->change();
+            $table->string('company_addr_complement' , 50)->change();
+            $table->string('company_addr_district' , 150)->change();
+            $table->string('company_addr_city' , 150)->change();
+            $table->string('company_addr_state' , 5)->change();
         });
     }
 

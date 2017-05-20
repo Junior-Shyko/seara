@@ -14,15 +14,13 @@ class AddUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('user_addr_cep' , 10);
-            $table->string('user_addr_street' , 100);
-            $table->string('user_addr_number' , 10);
-            $table->string('user_addr_complement' , 50);
-            $table->string('user_addr_district' , 100);
-            $table->string('user_addr_city' , 100);
-            $table->string('user_addr_state' , 10);
-
-
+            $table->string('user_addr_cep' , 10)->change();
+            $table->string('user_addr_street' , 100)->change();
+            $table->string('user_addr_number' , 10)->change();
+            $table->string('user_addr_complement' , 50)->change();
+            $table->string('user_addr_district' , 100)->change();
+            $table->string('user_addr_city' , 100)->change();
+            $table->string('user_addr_state' , 10)->change();
         });
     }
 
