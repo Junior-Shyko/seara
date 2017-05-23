@@ -153,12 +153,12 @@ elixir(function(mix) {
     ], 'public/css/home.min.css');
 
     mix.scripts([
-      './vendor/bower_components/gentelella/vendors/jquery/dist/jquery.min.js', // JQUERy
       './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.min.js',
       'plugins/fastclick.js',
       'plugins/nprogress.js',
-      'plugins/icheck.js'      
-    ], 'public/js/home.js');
+      'plugins/icheck.js',
+      'home.js' 
+    ], 'public/js/home.min.js');
 
 
     // Bootstrap

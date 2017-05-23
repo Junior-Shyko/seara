@@ -20,6 +20,7 @@ Route::post('/cadastro', 'SignUpController@signup');
 // EMRPESAS
 /* ROTA PARA EMPRESA */
 Route::resource('companies', 'CompanyController');
+Route::post('companies/alterar-status', 'CompanyController@alterStatus');
 
 // USUÁRIOS
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');

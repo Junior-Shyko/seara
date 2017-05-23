@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Company;
 use Illuminate\Http\Request;
-use Auth;
+use Auth , DB;
 
 class CompanyController extends Controller
 {
@@ -124,5 +124,20 @@ class CompanyController extends Controller
     {
         $company = Company::where('company_status' , 0)->get();
         return response()->json($company);
+    }
+
+
+    public function alterStatus(Request $request)
+    {
+        $company = Company::find($request['company_id']);
+
+        try{
+            //DB::connection()->enableQueryLog();
+            $company = DB::table('companies')->where('company_id' , $request['company_id'])->update(['company_status' => 1]);
+            //return DB::getQueryLog();
+            return redirect()->back()->with('success' , 'Empresa Ativa');
+        }catch(Exception $e){
+            return $e->getMessage();
+        }
     }
 }
