@@ -26,6 +26,7 @@ class ReceiptCompanyController extends Controller
   public function index()
   {
     $company = Auth::user()->company;
+
     return view('receipt-company.index', compact('company'));
   }
 

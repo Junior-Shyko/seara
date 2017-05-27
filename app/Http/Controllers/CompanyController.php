@@ -111,7 +111,12 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        //
+        try {
+          $company->delete();
+          return redirect()->back()->with('success' , 'Igreja excluída com sucesso');
+        } catch (Exception $e) {
+          return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+        }
     }
 
     /**
@@ -140,4 +145,6 @@ class CompanyController extends Controller
             return $e->getMessage();
         }
     }
+
+    
 }

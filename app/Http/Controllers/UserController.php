@@ -31,8 +31,9 @@ class UserController extends Controller
       ->where('companies.company_id', '=', $id_company->company_id);
     })->get();
     //return DB::getQueryLog();
+    //id_company passando ID_COMPANY mais está levando o objeto inteiro
 
-    return view('user.index' , compact('users'));
+    return view('user.index' , compact('users' ));
   }
 
   /**

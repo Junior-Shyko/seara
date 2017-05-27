@@ -21,6 +21,7 @@ Route::post('/cadastro', 'SignUpController@signup');
 /* ROTA PARA EMPRESA */
 Route::resource('companies', 'CompanyController');
 Route::post('companies/alterar-status', 'CompanyController@alterStatus');
+Route::delete('companies/delete' , 'CompanyController@destroy');
 
 // USUÁRIOS
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
