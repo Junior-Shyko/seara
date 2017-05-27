@@ -3,8 +3,7 @@
 @push('stylesheets')
 <!-- Example -->
 <!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
-{{-- {{Html::style('css/dropzone.css')}} --}}
-{{Html::style('plugins/bootstrap-fileinput/css/fileinput.min.css')}}
+{{Html::style('css/company.min.css')}}
 <style>
 .kv-avatar .file-preview-frame,.kv-avatar .file-preview-frame:hover {
     margin: 0;
@@ -50,7 +49,7 @@
 			<div class="x_content">
 				<br>
 				
-				{{Form::model($company, ['route' => ['companies.update' , $company->company_id] , 'class' => 'form-horizontal form-label-left input_mask' , 'method' => 'PUT']) }}
+				{{Form::model($company, ['url' => ['companies.update' , $company->company_id] , 'class' => 'form-horizontal form-label-left input_mask' , 'method' => 'PUT']) }}
 
 					<div class="col-md-5 col-sm-6 col-xs-12 form-group has-feedback">
 						{{Form::label('razao_social','Razão Social')}}
@@ -139,13 +138,13 @@
         <h4 class="modal-title">Adicionar ou Alterar Logo Marca</h4>
       </div>
       <div class="modal-body">
-	  
-                <input id="input-700" name="kartik-input-700[]" type="file" multiple class="file">
+	  	<label class="text-danger">Somente arquivos jpg , png e jpeg são permitidos para downloads</label>
+                <input id="logo_upload" name="logo_upload" type="file" multiple class="file">
 		</div>
 	 
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
-        <button type="button" class="btn btn-primary">Upload</button>
+       
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -156,7 +155,6 @@
 	</div>
 </div>
 
-
 @push('scripts')
 <script>
 	var base_url = "{{ url('') }}"
@@ -166,27 +164,42 @@
 
 
 <script src="{{ asset("js/company.min.js") }}"></script>
-{{Html::script('plugins/bootstrap-fileinput/js/fileinput.min.js')}}
-<script>
+
+<script type="text/javascript">
+	$("#logo_upload").fileinput({
+    language: "pt-BR",
+    uploadUrl: "{{url('companies/alterar-logo')}}", // server upload action
+    uploadAsync: true,
+    maxFileCount: 1,
+    showAjaxErrorDetails: true,//não mostrou mais o retorno do controller no pagina html
+    MsgInvalidFileType:'Tipo inválido para o arquivo "{name}". Somente os arquivos "{types}" são suportados.',
+    MsgInvalidFileExtension: 'Extensão inválida para o arquivo "{name}". Somente os arquivos "{extensions}" são suportados.',
+    MsgProgress: 'Lendo arquivo {index} de {files} - {name} - {porcento}% completo.',
+    DropZoneEnabled: true,
+    ShowPreview: true,
+    ShowUpload: true,
+    uploadLabel: 'Upload',
+    removeLabel: 'Limpar upload',
+    browseLabel: 'Procurar',
+    dropZoneTitle: 'Procure seus arquivo e anexe aqui',
+    AllowedFileExtensions: ['jpg' , 'png' , 'jpeg']
+
    
-$("#input-700").fileinput({
-                    language: "pt-BR",
-                    uploadUrl: "{{url('companies/alterar-logo')}}", // server upload action
-                    uploadAsync: true,
-                    maxFileCount: 1,
-                    showAjaxErrorDetails: false,//não mostrou mais o retorno do controller no pagina html
-                    MsgInvalidFileType:'Tipo inválido para o arquivo "{name}". Somente os arquivos "{types}" são suportados.',
-                    MsgInvalidFileExtension: 'Extensão inválida para o arquivo "{name}". Somente os arquivos "{extensions}" são suportados.',
-                    MsgProgress: 'Lendo arquivo {index} de {files} - {name} - {porcento}% completo.',
-                    DropZoneEnabled: true,
-                   
-                });
-               $('#input-700').on('fileuploaded', function(event, data, previewId, index) {
-                    var form = data.form, files = data.files, extra = data.extra,
-                        response = data.response, reader = data.reader;
-                    alert('chamo a funcao de imagem do avatar');
-                   getAvatar();
-                });
+});
+$('#logo_upload').on('fileuploaded', function(event, data, previewId, index) {
+    var form = data.form, files = data.files, extra = data.extra,
+        response = data.response, reader = data.reader;
+    
+    setTimeout(function(){
+	  $("#upload_logo").modal('hide');
+	}, 3000);
+});
+
+	$.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });	 
 </script>
 @endpush
 @endsection

@@ -3,5 +3,5 @@ $(document).ready(function() {
 	$('#fone_fixo_business').mask('(00) 0000-0000');
 	$('#cnpj_business').mask('00.000.000/0000-00');
 	 
-	 
+
 });

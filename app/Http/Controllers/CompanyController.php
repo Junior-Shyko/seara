@@ -6,6 +6,8 @@ use Exception;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Auth , DB;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Str;
 
 class CompanyController extends Controller
 {
@@ -148,7 +150,37 @@ class CompanyController extends Controller
 
     public function alterLogo(Request $request)
     {
-        dd($request);
+       if($request->ajax())
+        {
+        
+            $tot_array = count($_FILES["logo_upload"]["name"]);
+            $id_company = Company::find(Auth::user()->user_id_company);
+
+            $tmp_name = $_FILES["logo_upload"]["tmp_name"];
+            $exp = explode(".", $_FILES["logo_upload"]["name"]);
+            $extension = end($exp);
+                // // //RENOMIANDO O ARQUIVO
+            $name =  time(). '_'.Str::random(10).'.'.$extension;
+
+
+            //dd($tmp_name);
+            $uploaddir = '/var/www/html/seara/public/img/logo/';
+            $uploadfile = $uploaddir . basename($name);
+
+
+            
+            if (move_uploaded_file($tmp_name, $uploadfile)) {
+                //\DB::enableQueryLog();
+                $company = DB::table('companies')->where('company_id' , $id_company->company_id)->update(['company_brand_logo' => $name]);
+                //return \DB::getQueryLog();
+                
+                return response()->json(['messagem' , 'success']);
+            } else {
+                return response()->json(['messagem' , 'error']);
+            }
+
+           
+        }
     }
 
     
