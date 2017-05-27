@@ -22,6 +22,7 @@ Route::post('/cadastro', 'SignUpController@signup');
 Route::resource('companies', 'CompanyController');
 Route::post('companies/alterar-status', 'CompanyController@alterStatus');
 Route::delete('companies/delete' , 'CompanyController@destroy');
+Route::get('alterar-logo' , 'CompanyController@alterLogo');
 
 // USUÁRIOS
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');

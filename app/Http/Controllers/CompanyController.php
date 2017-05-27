@@ -146,5 +146,10 @@ class CompanyController extends Controller
         }
     }
 
+    public function alterLogo(Request $request)
+    {
+        dd($request);
+    }
+
     
 }
