@@ -242,3 +242,34 @@ if (typeof NProgress != 'undefined') {
         NProgress.done();
     });
 }
+
+String.prototype.isEmpty = function() {
+    return (this.length === 0 || !this.trim());
+};
+
+// Funções para o Loading Overlay
+function showOverlay(sel)
+{
+    if ( sel )
+    {
+        if ( sel.isEmpty() )
+            $.LoadingOverlay("show");
+        else
+            $(sel).LoadingOverlay("show");
+    }
+    else
+        $.LoadingOverlay("show");
+}
+
+function hideOverlay(sel)
+{
+    if ( sel )
+    {
+        if ( sel.isEmpty() )
+            $.LoadingOverlay("hide");
+        else
+            $(sel).LoadingOverlay("hide");
+    }
+    else
+        $.LoadingOverlay("hide");
+}

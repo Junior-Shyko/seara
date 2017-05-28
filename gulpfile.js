@@ -65,6 +65,8 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js', //Bootstrap Progressbar
       './vendor/bower_components/gentelella/vendors/fastclick/lib/fastclick.js', //Fastclick
       './vendor/bower_components/sweetalert2/dist/sweetalert2.min.js', //Sweetalert2
+      './vendor/bower_components/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js', // Loading Overlay
+
       'gentelella/helpers/smartresize.js',
       'gentelella/custom.js'
     ], 'public/js/gentelella.min.js');
@@ -142,7 +144,6 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.js',
       './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.js',
       './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.js',
-      './vendor/bower_components/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js',
       'mask.js',
       'helpers.js',
       'searaTable.js',

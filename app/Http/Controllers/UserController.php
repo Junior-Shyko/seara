@@ -57,18 +57,22 @@ class UserController extends Controller
   public function store(Request $request)
   {
 
-    $messages = [
-      'email.required' => 'O email é obrigatório!',
-      'email.unique' => 'Esse email já está sendo utilizado!',
-      'name.required' => 'O nome é obrigatório'
-    ];
-
     $rules = [
       'email' => 'required|unique:users',
-      'name' => 'required'
+      'name' => 'required',
+      'user_cpf' => 'required|unique:users',
+      'user_birth' => 'required|date_format:d/m/Y',
+      'password' => 'required',
+      'user_addr_cep' => 'required',
+      'user_addr_street' => 'required',
+      'user_addr_number' => 'required',
+      'user_addr_district' => 'required',
+      'user_addr_city' => 'required',
+      'user_addr_state' => 'required',
     ];
 
-    $validator = Validator::make( $request->all(), $rules, $messages );
+    $validator = Validator::make( $request->all(), $rules/*, $messages*/ );
+    //$validator->setAttributeNames( $attributes );
 
     if ( $validator->fails() )
     {
@@ -82,7 +86,7 @@ class UserController extends Controller
       $user = User::create($request->all());
     }
     catch(Exception $e) {
-      $errorCode = 412;
+      $errorCode = 422;
       return response(['status' => 'error', 'error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
     }
 
