@@ -33,7 +33,7 @@
               </li>
               <li><a><i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                  <li><a href="{{url('companies')}}">Igreja</a></li>
+                  <li><a href="{{url('cadastro')}}">Igreja</a></li>
                   <li><a href="#">Usuário</a></li>
                   <li><a href="#">Histórico</a></li>
                 </ul>

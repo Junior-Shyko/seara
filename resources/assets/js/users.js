@@ -10,12 +10,11 @@ function createUser()
     // No submit, faço um pack no form
     var data = packForm('#form-user');
 
-    console.log(data);
-
     // Envio para o servidor
     user.create(data, function(response){
       // no caso de sucesso, recarrego a tablea
-      notifyResponse(response);
+      $('#modal-form').modal('hide');
+      notify.response(response);
       usersDataTable.reloadTable();
     })
     .fail(function(jqXHR){
