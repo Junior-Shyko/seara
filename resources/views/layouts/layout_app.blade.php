@@ -9,6 +9,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="_token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>Seara Contabilidade - Sistema de Clientes </title>
   <link rel="icon" href="{{ asset('img/favicon.png')}}">
@@ -23,7 +24,13 @@
 
   </style>
 
-
+  <script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+  </script>
   @stack('stylesheets')
 
 </head>

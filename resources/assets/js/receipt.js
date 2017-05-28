@@ -140,7 +140,7 @@ function cloneReceipt(id)
   // Atualização no form
   receiptCompany.read(id, function(data){
     loadData(data);
-    $('#receipt_value').val('');
+    $('#receipt_value').focus();
     showForm();
   });
 }

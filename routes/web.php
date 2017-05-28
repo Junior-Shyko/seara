@@ -19,7 +19,17 @@ Route::post('/cadastro', 'SignUpController@signup');
 
 // EMRPESAS
 /* ROTA PARA EMPRESA */
-Route::resource('companies', 'CompanyController');
+//Route::resource('companies', 'CompanyController');
+
+
+Route::group(['prefix' => 'companies'], function () {
+    Route::get('/{id}/edit' 		, 'CompanyController@edit');
+    Route::put('/update/{id}' 	, 'CompanyController@update');
+    Route::post('/alterar-status', 'CompanyController@alterStatus');
+	Route::delete('/delete' 		, 'CompanyController@destroy');
+	Route::post('/alterar-logo' 	, 'CompanyController@alterLogo');
+});
+
 
 // USUÁRIOS
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');

@@ -47,6 +47,12 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.css',
     ], 'public/css/notify.min.css');
 
+
+    // Business - Company
+    mix.styles([
+      './vendor/bower_components/bootstrap-fileinput/css/fileinput.min.css'
+     
+    ], 'public/css/company.min.css');
     /****************/
     /*     Merge    */
     /****************/
@@ -76,6 +82,8 @@ elixir(function(mix) {
 
     //Business - Company
     mix.scripts([
+      './vendor/bower_components/gentelella/vendors/bootstrap-fileinput/js/fileinput.js',
+      './vendor/bower_components/gentelella/vendors/bootstrap-fileinput/js/locales/pt-BR.js',
       'company.js'
     ],'public/js/company.min.js');
 
@@ -155,12 +163,12 @@ elixir(function(mix) {
     ], 'public/css/home.min.css');
 
     mix.scripts([
-      './vendor/bower_components/gentelella/vendors/jquery/dist/jquery.min.js', // JQUERy
       './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.min.js',
       'plugins/fastclick.js',
       'plugins/nprogress.js',
-      'plugins/icheck.js'
-    ], 'public/js/home.js');
+      'plugins/icheck.js',
+      'home.js' 
+    ], 'public/js/home.min.js');
 
 
     // Bootstrap

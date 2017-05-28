@@ -3,6 +3,20 @@
 @push('stylesheets')
 <!-- Example -->
 <!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
+{{Html::style('css/company.min.css')}}
+<style>
+.kv-avatar .file-preview-frame,.kv-avatar .file-preview-frame:hover {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    text-align: center;
+}
+.kv-avatar .file-input {
+    display: table-cell;
+    max-width: 220px;
+}
+</style>
 @endpush
 
 @section('main_container')
@@ -15,7 +29,8 @@
 			<div class="x_title">
 				<h2>Dados da empresa <small>Editar dados</small></h2>
 				<ul class="nav navbar-right panel_toolbox">
-					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+					{{-- <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a> --}}
+					<li><a href="#upload_logo" data-toggle="modal"> <button class="btn btn-success"><i class="fa fa-newspaper-o" aria-hidden="true"></i> Logo igreja </button> </a>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
@@ -34,7 +49,7 @@
 			<div class="x_content">
 				<br>
 				
-				{{Form::model($company, ['route' => ['companies.update' , $company->company_id] , 'class' => 'form-horizontal form-label-left input_mask' , 'method' => 'PUT']) }}
+				{{Form::model($company, ['url' => ['companies.update' , $company->company_id] , 'class' => 'form-horizontal form-label-left input_mask' , 'method' => 'PUT']) }}
 
 					<div class="col-md-5 col-sm-6 col-xs-12 form-group has-feedback">
 						{{Form::label('razao_social','Razão Social')}}
@@ -113,11 +128,32 @@
 					</div>
 
 				{{Form::close()}}
+<div class="clearfix"></div>
+
+				<div class="modal fade" id="upload_logo" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Adicionar ou Alterar Logo Marca</h4>
+      </div>
+      <div class="modal-body">
+	  	<label class="text-danger">Somente arquivos jpg , png e jpeg são permitidos para downloads</label>
+                <input id="logo_upload" name="logo_upload" type="file" multiple class="file">
+		</div>
+	 
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+       
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 			</div>
 		</div>
 	</div>
 </div>
-
 
 @push('scripts')
 <script>
@@ -128,6 +164,43 @@
 
 
 <script src="{{ asset("js/company.min.js") }}"></script>
+
+<script type="text/javascript">
+	$("#logo_upload").fileinput({
+    language: "pt-BR",
+    uploadUrl: "{{url('companies/alterar-logo')}}", // server upload action
+    uploadAsync: true,
+    maxFileCount: 1,
+    showAjaxErrorDetails: true,//não mostrou mais o retorno do controller no pagina html
+    MsgInvalidFileType:'Tipo inválido para o arquivo "{name}". Somente os arquivos "{types}" são suportados.',
+    MsgInvalidFileExtension: 'Extensão inválida para o arquivo "{name}". Somente os arquivos "{extensions}" são suportados.',
+    MsgProgress: 'Lendo arquivo {index} de {files} - {name} - {porcento}% completo.',
+    DropZoneEnabled: true,
+    ShowPreview: true,
+    ShowUpload: true,
+    uploadLabel: 'Upload',
+    removeLabel: 'Limpar upload',
+    browseLabel: 'Procurar',
+    dropZoneTitle: 'Procure seus arquivo e anexe aqui',
+    AllowedFileExtensions: ['jpg' , 'png' , 'jpeg']
+
+   
+});
+$('#logo_upload').on('fileuploaded', function(event, data, previewId, index) {
+    var form = data.form, files = data.files, extra = data.extra,
+        response = data.response, reader = data.reader;
+    
+    setTimeout(function(){
+	  $("#upload_logo").modal('hide');
+	}, 3000);
+});
+
+	$.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });	 
+</script>
 @endpush
 @endsection
 <!-- /page content -->

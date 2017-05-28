@@ -26,6 +26,7 @@ class ReceiptCompanyController extends Controller
   public function index()
   {
     $company = Auth::user()->company;
+
     return view('receipt-company.index', compact('company'));
   }
 
@@ -96,6 +97,7 @@ class ReceiptCompanyController extends Controller
   public function update(Request $request, ReceiptCompany $receipt_company)
   {
     try {
+      $request['receipt_extensive_value'] = Monetary::numberToExt($request['receipt_value']);
       $receipt_company->fill($request->all());
       $receipt_company->save();
     }

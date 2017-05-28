@@ -90,4 +90,9 @@ class ReceiptCompany extends Model
     return $this->receipt_date->day.' de '.$month.' de '.$this->receipt_date->year;
   }
 
+  public function getReceiptLocalAttribute($value)
+  {
+    return ucfirst($value);
+  }
+
 }

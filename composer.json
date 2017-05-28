@@ -31,7 +31,8 @@
         "laravel/tinker": "^1.0",
         "fzaninotto/faker": "^1.6",
         "barryvdh/laravel-dompdf": "^0.8.0",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "intervention/image": "^2.3"
     },
     "require-dev": {
         "mockery/mockery": "0.9.*",
