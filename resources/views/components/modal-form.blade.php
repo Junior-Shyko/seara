@@ -6,7 +6,7 @@
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4></h4>
+        <h4>{{ $title }}</h4>
       </div>
 
         <!-- Modal Body -->

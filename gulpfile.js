@@ -21,6 +21,7 @@ elixir(function(mix) {
     mix.styles([
       './vendor/bower_components/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css',
       './vendor/bower_components/gentelella/vendors/font-awesome/css/font-awesome.min.css',
+      './vendor/bower_components/sweetalert2/dist/sweetalert2.min.css',
       'custom.css'
     ], 'public/css/gentelella.min.css');
 
@@ -57,6 +58,7 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/nprogress/nprogress.js', //NProgress
       './vendor/bower_components/gentelella/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js', //Bootstrap Progressbar
       './vendor/bower_components/gentelella/vendors/fastclick/lib/fastclick.js', //Fastclick
+      './vendor/bower_components/sweetalert2/dist/sweetalert2.min.js', //Sweetalert2
       'gentelella/helpers/smartresize.js',
       'gentelella/custom.js'
     ], 'public/js/gentelella.min.js');
@@ -76,7 +78,7 @@ elixir(function(mix) {
     mix.scripts([
       'company.js'
     ],'public/js/company.min.js');
-    
+
     // Auth views
     mix.scripts([
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
@@ -120,7 +122,7 @@ elixir(function(mix) {
       'seara.js'
     ], 'public/js/seara.min.js');
 
-    
+
     // Usuários
     mix.scripts([
       './vendor/bower_components/datatables.net/js/jquery.dataTables.js',
@@ -149,7 +151,7 @@ elixir(function(mix) {
     //ARQUIVOS PARA HOME
     mix.styles([
       './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.min.css',
-      './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.theme.css'      
+      './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.theme.css'
     ], 'public/css/home.min.css');
 
     mix.scripts([
@@ -157,7 +159,7 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.min.js',
       'plugins/fastclick.js',
       'plugins/nprogress.js',
-      'plugins/icheck.js'      
+      'plugins/icheck.js'
     ], 'public/js/home.js');
 
 

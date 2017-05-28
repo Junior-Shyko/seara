@@ -48,13 +48,9 @@
 </div>
 <!-- /page content -->
 
-@component('components.modal-delete', ['id' => 'modal-delete', 'btnID' => 'modal-delete-btn'])
-  O recibo será excluído, deseja confirmar?
-@endcomponent
-
-@component('components.modal-form', ['id' => 'modal-form', 'btnID' => 'modal-form-btn'])
+@component('components.modal-form', ['id' => 'modal-form', 'btnID' => 'modal-form-btn', 'title' => 'Cadastrar Usuário'])
   <!-- Formulário  -->
-  <form id="form-user" data-parsley-validate="" autocomplete="off">
+  <form id="form-user" data-parsley-validate="" >
 
     <input type="hidden" name="user_id_company" value="{{ Auth::user()->user_id_company }}">
     <input type="hidden" name="user_id_profile" value="2">

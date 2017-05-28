@@ -142,17 +142,17 @@ class ReceiptCompanyController extends Controller
       case 1:
 
       $pdf =PDF::loadView('receipt-pdf.via1', compact('receipt'));
-      $pdf->setPaper('A4', 'report');  
+      $pdf->setPaper('A4', 'report');
       $pdf->output();
       $dom_pdf = $pdf->getDomPDF();
 
       $canvas = $dom_pdf ->get_canvas();
       /*page_text(pos_horizontal,pos_vertical , texto , null , tamanho, cor_em_rgb)
-      */       
+      */
       $canvas->page_text(530, 800, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
-      
-      return $pdf->stream($pdf_name);      
-        
+
+      return $pdf->stream($pdf_name);
+
       break;
 
       case 2:
@@ -187,7 +187,7 @@ class ReceiptCompanyController extends Controller
         return 'R$ '.number_format($receipt->receipt_value, 2, ',', '.');
       })
       ->editColumn('receipt_date', function($receipt){
-        return $receipt->receipt_date->format('m/d/Y');
+        return $receipt->receipt_date->format('d/m/Y');
       })
       ->editColumn('receipt_local', function($receipt){
         return ucfirst($receipt->receipt_local);

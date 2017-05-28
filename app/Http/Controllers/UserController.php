@@ -11,6 +11,8 @@ use App\Models\User;
 use App\FunctionGeneral;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Validator;
 
 class UserController extends Controller
 {
@@ -53,14 +55,33 @@ class UserController extends Controller
   */
   public function store(Request $request)
   {
-    // criptografo a senha
 
+    $messages = [
+      'email.required' => 'O email é obrigatório!',
+      'email.unique' => 'Esse email já está sendo utilizado!',
+      'name.required' => 'O nome é obrigatório'
+    ];
+
+    $rules = [
+      'email' => 'required|unique:users',
+      'name' => 'required'
+    ];
+
+    $validator = Validator::make( $request->all(), $rules, $messages );
+
+    if ( $validator->fails() )
+    {
+      $messages = $validator->errors()->all();
+      return response( ['status' => 'error', 'message' => $messages], 422 );
+    }
+
+    // criptografo a senha
     $request['password'] = bcrypt($request['password']);
     try {
       $user = User::create($request->all());
     }
     catch(Exception $e) {
-      $errorCode = 400;
+      $errorCode = 412;
       return response(['status' => 'error', 'error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
     }
 
@@ -132,12 +153,19 @@ class UserController extends Controller
   */
   public function destroy(User $user)
   {
+    // Tentar excluir
     try {
+
       $user->delete();
-      return redirect()->back()->with('success' , 'Usuário excluído com sucesso');
+
     } catch (Exception $e) {
-      return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+
+      $errorCode = 412;
+      return response(['status' => 'error', 'code' => $errorCode, 'message' => $e->getMessage()], $errorCode);
+
     }
+
+    return response(['status' => 'success', 'message' => "O usuário foi excluído!"]);
   }
 
   // Tabela com os usuários da empresa
@@ -161,22 +189,28 @@ class UserController extends Controller
       function ($user) {
         return $this->actions($user->id);
       })
-      ->make(true);
+      ->editColumn(
+        'created_at',
+        function($user){
+          $created_at = new Carbon( $user->created_at );
+          return $created_at->format('d/m/Y á\s H:i:s');
+        })
+        ->make(true);
+      }
+
+      private function actions($id)
+      {
+        return $this->actionEdit($id)
+        .$this->actionDelete($id);
+      }
+
+      private function actionEdit($id)
+      {
+        return "<button class='btn btn-primary btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='Editar Usuário' onclick='editUser( {$id} )' role='tooltip'> <i class='fa fa-pencil'></i> </button>";
+      }
+
+      private function actionDelete($id)
+      {
+        return "<button class='btn btn-danger btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='Excluir Usuário' onclick='deleteUser( {$id} )' role='tooltip'> <i class='fa fa-trash-o'></i> </button>";
+      }
     }
-
-  private function actions($id)
-  {
-    return $this->actionEdit($id)
-    .$this->actionDelete($id);
-  }
-
-  private function actionEdit($id)
-  {
-    return "<button class='btn btn-primary btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='Editar Usuário' onclick='editUser( {$id} )' role='tooltip'> <i class='fa fa-pencil'></i> </button>";
-  }
-
-  private function actionDelete($id)
-  {
-    return "<button class='btn btn-danger btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='Excluir Usuário' onclick='deleteUser( {$id} )' role='tooltip'> <i class='fa fa-trash-o'></i> </button>";
-  }
-}

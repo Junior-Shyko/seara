@@ -72,10 +72,22 @@ var notify = (function(){
   function response(data)
   {
     if (data["status"] == "success") {
-      success("Sucesso", data["message"]);
+      if ( data["message"] instanceof Array )
+      {
+        for ( message of data["message"] )
+          success("Sucesso", message);
+      }
+      else
+        success("Sucesso", data["message"]);
     }
     else {
-      error("Erro", data["message"]);
+      if (data["message"] instanceof Array )
+      {
+        for ( message of data["message"] )
+          error("Erro", message);
+      }
+      else
+        error("Erro", data["message"]);
     }
   }
 
