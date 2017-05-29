@@ -9,7 +9,12 @@
         <!-- menu profile quick info -->
         <div class="profile clearfix">
             <div class="profile_pic">
-                <img src="{{ url('img/'.Auth::user()->users_avatar) }}" alt="{{ Auth::user()->name }}" class="img-circle profile_img">
+                @if(empty(Auth::user()->users_avatar))
+                   
+                    <img src="{{ url('img/default-user-avatar.png') }}" alt="Avatar de {{ Auth::user()->name }}" class="img-circle profile_img">
+                @else
+                    <img src="{{ url('img/default-user-avatar.png') }}" alt="Avatar de {{ Auth::user()->name }}" class="img-circle profile_img">
+                @endif
             </div>
             <div class="profile_info">
                 <span>Bem Vindo,</span>

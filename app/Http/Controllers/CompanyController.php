@@ -162,13 +162,11 @@ class CompanyController extends Controller
                 // // //RENOMIANDO O ARQUIVO
             $name =  time(). '_'.Str::random(10).'.'.$extension;
 
-
-            //dd($tmp_name);
-            $uploaddir = '/var/www/html/seara/public/img/logo/';
+            $uploaddir = dirname(dirname(dirname(__DIR__))).'/public/img/logo/';
+            
             $uploadfile = $uploaddir . basename($name);
 
-
-            
+           
             if (move_uploaded_file($tmp_name, $uploadfile)) {
                 //\DB::enableQueryLog();
                 $company = DB::table('companies')->where('company_id' , $id_company->company_id)->update(['company_brand_logo' => $name]);
@@ -178,7 +176,6 @@ class CompanyController extends Controller
             } else {
                 return response()->json(['messagem' , 'error']);
             }
-
            
         }
     }
