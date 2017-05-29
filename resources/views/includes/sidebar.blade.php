@@ -36,13 +36,15 @@
               <li>
                 <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
               </li>
-              <li><a><i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                  <li><a href="{{url('companies')}}">Igreja</a></li>
-                  <li><a href="#">Usuário</a></li>
-                  <li><a href="#">Histórico</a></li>
-                </ul>
-              </li>
+              @if(Auth::user()->user_id_profile == 1)
+                <li><a><i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+                    <li><a href="{{url('companies')}}">Igreja</a></li>
+                    <li><a href="#">Usuário</a></li>
+                    <li><a href="#">Histórico</a></li>
+                  </ul>
+                </li>
+              @endif
               <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
                   <li><a href="#">Comun</a></li>

@@ -15,7 +15,8 @@ function createUser()
     // Envio para o servidor
     user.create(data, function(response){
       // no caso de sucesso, recarrego a tablea
-      notifyResponse(response);
+      //notifyResponse(response);
+      notify.response(response);
       usersDataTable.reloadTable();
     })
     .fail(function(jqXHR){

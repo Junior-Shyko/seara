@@ -42,18 +42,18 @@
 		</div>
 		<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
 			<div class="tile-stats">
-				<div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+				<div class="icon"><i class="fa fa-list-alt"></i></div>
 				<div class="count">179</div>
-				<h3>New Sign ups</h3>
-				<p>Lorem ipsum psdea itgum rixt.</p>
+				<h3>Total de Recibos</h3>
+				<p>Todos os recibos gerados.</p>
 			</div>
 		</div>
 		<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
 			<div class="tile-stats">
-				<div class="icon"><i class="fa fa-check-square-o"></i></div>
+				<div class="icon"><i class="fa fa-money"></i></div>
 				<div class="count">179</div>
-				<h3>New Sign ups</h3>
-				<p>Lorem ipsum psdea itgum rixt.</p>
+				<h3>Caixa</h3>
+				<p>Total de caixas enviados.</p>
 			</div>
 		</div>
 	</div>

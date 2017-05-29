@@ -10,6 +10,7 @@ use Exception;
 use App\Models\User;
 use App\FunctionGeneral;
 use App\Models\Company;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Validator;
@@ -26,6 +27,8 @@ class UserController extends Controller
     DB::enableQueryLog();
     $id_profile = Auth::user()->user_id_profile;
     $id_company = Company::where('company_id' , Auth::user()->user_id_company)->first();
+    //EVITANDO DE ENVIAR ESSES IDS DE PERFIL
+    $profile    = Profile::all()->except([1,2, 4]);
 
     $users = DB::table('companies')
     ->join('users', function ($join) use ($id_company) {
@@ -35,7 +38,7 @@ class UserController extends Controller
     //return DB::getQueryLog();
     //id_company passando ID_COMPANY mais está levando o objeto inteiro
 
-    return view('user.index' , compact('users' ));
+    return view('user.index' , compact('users' , 'profile' ));
   }
 
   /**
@@ -80,7 +83,9 @@ class UserController extends Controller
     $request['password'] = bcrypt($request['password']);
     try {
       $request['users_avatar'] = 'default-user-avatar.png';
+
       $user = User::create($request->all());
+
     }
     catch(Exception $e) {
       $errorCode = 412;
