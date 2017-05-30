@@ -179,7 +179,8 @@ class ReceiptCompanyController extends Controller
         'receipt_local',
         'receipt_date'
       ]
-    );
+    )
+    ->where('receipt_id_company',  Auth::user()->user_id_company);
 
     return Datatables::of($receipts)
     ->addColumn(
