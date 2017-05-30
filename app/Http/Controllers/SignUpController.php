@@ -31,6 +31,7 @@ class SignUpController extends Controller
 
 	public function signup(Request $request)
 	{
+		
 		$userData = $request->input('user');
 		$companyData = $request->input('company');
 
@@ -47,8 +48,9 @@ class SignUpController extends Controller
 		}
 
 		// Tento Criar o Usuário
-		$userData['user_id_company'] = $company->company_id;
-
+		$userData['user_id_company'] 	= $company->company_id;
+		$userData['users_avatar'] 		= 'default-user-avatar.png';
+		$userData['user_id_profile']	= 2;
 		try {
 			$user = User::create($userData);
 		}

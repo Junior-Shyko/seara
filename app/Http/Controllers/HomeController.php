@@ -35,10 +35,10 @@ class HomeController extends Controller
         
             return view('home' , compact('company' , 'tot_users' , 'tot_company'));
         }else{
-            $company = Company::where('company_id' ,'=', Auth::user()->user_id_profile)->get();
+            $company = Company::where('company_id' ,'=', Auth::user()->user_id_company)->get();
             
             //TOTAL DE USUÁRIOS
-            $tot_users      = User::where('user_id_company' , Auth::user()->user_id_profile);
+            $tot_users      = User::where('user_id_company' , Auth::user()->user_id_company);
             
 
             return view('home_basic' , compact('company' , 'tot_users' ));

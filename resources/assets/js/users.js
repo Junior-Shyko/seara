@@ -14,6 +14,7 @@ function createUser()
     user.create(data, function(response){
       // no caso de sucesso, recarrego a tablea
       $('#modal-form').modal('hide');
+      //notifyResponse(response);
       notify.response(response);
       usersDataTable.reloadTable();
     })

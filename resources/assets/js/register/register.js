@@ -113,7 +113,7 @@ function store(success, failure)
 
 function storeSuccess()
 {
-  console.log("foi");
+  //console.log("foi");
   stopSpin();
   showConfirmation();
   // $('#modal_signup_confirmation').modal('show');

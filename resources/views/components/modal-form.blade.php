@@ -18,7 +18,7 @@
 
         <!-- Modal Footer -->
         <div class="modal-footer">
-          <button class="btn btn-default pull-left" data-dismiss="modal" type="button" >Cancelar</button>
+          <button class="btn btn-default pull-left" data-dismiss="modal" type="button" >Sair</button>
           <button id="{{ $btnID }}" class="btn btn-danger">Salvar</button>
         </div>
 

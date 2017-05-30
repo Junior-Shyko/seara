@@ -1,4 +1,4 @@
-  <img src="{{asset('images/header.jpg')}}">
+  <img src="{{url('img/logo/'.$company->company_brand_logo)}}">
   <div class="title">
     <h3 class="receipt">RECIBO </h3>
     <h3 class="value" style="">VALOR: R$ {{ number_format($receipt->receipt_value,2,',','.') }} </h3>

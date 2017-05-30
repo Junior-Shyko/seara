@@ -86,9 +86,17 @@
     </div>
 
     <div class="form-group">
-      <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="col-md-8 col-sm-8 col-xs-8">
         <label for="exampleInputEmail1">Email</label>
         <input type="email" class="form-control" placeholder="Email" name="email">
+      </div>
+       <div class="col-md-4 col-sm-4 col-xs-4">
+        <label>Email</label>
+        <select name="user_id_profile"  class="form-control" id="">
+          @foreach($profile as $profiles)
+            <option value="{{$profiles->profile_id}}" >{{$profiles->profile_name}}</option>
+          @endforeach
+        </select>
       </div>
     </div>
 

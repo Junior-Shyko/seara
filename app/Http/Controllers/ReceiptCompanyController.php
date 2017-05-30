@@ -6,6 +6,7 @@ use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ReceiptCompany;
+use App\Models\Company;
 use App\Seara\Monetary;
 use Yajra\Datatables\Facades\Datatables;
 use Exception;
@@ -142,11 +143,12 @@ class ReceiptCompanyController extends Controller
     switch($request->vias)
     {
       case 1:
-
-      $pdf =PDF::loadView('receipt-pdf.via1', compact('receipt'));
+      $id_company = Auth::user()->user_id_company;
+      $company    = Company::find($id_company);
+      $pdf        = PDF::loadView('receipt-pdf.via1', compact('receipt' , 'company'));
       $pdf->setPaper('A4', 'report');
       $pdf->output();
-      $dom_pdf = $pdf->getDomPDF();
+      $dom_pdf    = $pdf->getDomPDF();
 
       $canvas = $dom_pdf ->get_canvas();
       /*page_text(pos_horizontal,pos_vertical , texto , null , tamanho, cor_em_rgb)
