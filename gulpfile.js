@@ -22,6 +22,9 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css',
       './vendor/bower_components/gentelella/vendors/font-awesome/css/font-awesome.min.css',
       './vendor/bower_components/sweetalert2/dist/sweetalert2.min.css',
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.css',
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.css',
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.css',
       'custom.css'
     ], 'public/css/gentelella.min.css');
 
@@ -39,14 +42,6 @@ elixir(function(mix) {
       'cssreset-min.css',
       'receipt-pdf.css'
     ], 'public/css/receipt-pdf.min.css');
-
-    // Notifications
-    mix.styles([
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.css',
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.css',
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.css',
-    ], 'public/css/notify.min.css');
-
 
     // Business - Company
     mix.styles([
@@ -66,7 +61,13 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/fastclick/lib/fastclick.js', //Fastclick
       './vendor/bower_components/sweetalert2/dist/sweetalert2.min.js', //Sweetalert2
       './vendor/bower_components/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js', // Loading Overlay
+      './vendor/bower_components/js-cookie/src/js.cookie.js', //Cookies
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.js', // Pnotify
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.js', //Pnotify
+      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.js', // Pnotify
 
+      'seara.js',
+      'notify.js',
       'gentelella/helpers/smartresize.js',
       'gentelella/custom.js'
     ], 'public/js/gentelella.min.js');
@@ -102,15 +103,6 @@ elixir(function(mix) {
       'register/mask_autocomplete_conf.js',
     ], 'public/js/mask_camp.min.js');
 
-
-    // Notificação
-    mix.scripts([
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.js',
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.js',
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.js',
-      'notify.js'
-    ], 'public/js/notify.min.js');
-
     // Máscaras
     mix.scripts([
       './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
@@ -127,12 +119,6 @@ elixir(function(mix) {
       'receipt.js'
     ], 'public/js/receipt.min.js');
 
-    mix.scripts([
-      './vendor/bower_components/js-cookie/src/js.cookie.js',
-      'seara.js'
-    ], 'public/js/seara.min.js');
-
-
     // Usuários
     mix.scripts([
       './vendor/bower_components/datatables.net/js/jquery.dataTables.js',
@@ -140,15 +126,9 @@ elixir(function(mix) {
       './vendor/bower_components/gentelella/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js',
       './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
       './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
-      './vendor/bower_components/js-cookie/src/js.cookie.js',
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.js',
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.buttons.js',
-      './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.js',
       'mask.js',
       'helpers.js',
       'searaTable.js',
-      'seara.js',
-      'notify.js',
       'users.js'
     ], 'public/js/users.min.js');
 

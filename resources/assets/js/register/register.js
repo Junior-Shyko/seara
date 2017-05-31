@@ -99,13 +99,14 @@ function store(success, failure)
     'user': user
   }
 
-  $.post(base_url+"/cadastro", data, function(companyResponse){
-    // Cadastro deu certo
-    success();
+  $.post(base_url+"/cadastro", data, function(response){
+    notify.response(response);
+    stopSpin();
+    showConfirmation();
   })
-  .fail(function (data) {
-    var msg = data.responseJSON['message'];
-    failure(msg);
+  .fail(function (jqXHR) {
+    notify.response( jqXHR.responseJSON );
+    stopSpin(true);
   });
 
   startSpin();
@@ -148,7 +149,7 @@ function packUser()
   user['user_addr_cep'] = unmask(user['user_addr_cep']);
 
   // Conversão de data
-  user['user_birth'] = brDatetoUsa(user['user_birth']);
+  //user['user_birth'] = brDatetoUsa(user['user_birth']);
 
   return user;
 }

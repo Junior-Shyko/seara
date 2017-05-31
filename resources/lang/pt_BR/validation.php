@@ -30,12 +30,12 @@ return [
     'boolean'              => 'The :attribute field must be true or false.',
     'confirmed'            => 'The :attribute confirmation does not match.',
     'date'                 => 'The :attribute is not a valid date.',
-    'date_format'          => 'A :attribute deve estar no formato dd/mm/YYYY.',
+    'date_format'          => 'O campo :attribute deve estar no formato dd/mm/YYYY.',
     'different'            => 'The :attribute and :other must be different.',
     'digits'               => 'The :attribute must be :digits digits.',
     'digits_between'       => 'The :attribute must be between :min and :max digits.',
     'distinct'             => 'The :attribute field has a duplicate value.',
-    'email'                => 'O :attribute não é um endereço válido.',
+    'email'                => 'O campo :attribute não é um endereço válido.',
     'exists'               => 'The selected :attribute is invalid.',
     'filled'               => 'The :attribute field is required.',
     'image'                => 'The :attribute must be an image.',
@@ -61,7 +61,7 @@ return [
     'numeric'              => 'The :attribute must be a number.',
     'present'              => 'The :attribute field must be present.',
     'regex'                => 'The :attribute format is invalid.',
-    'required'             => 'O :attribute é obrigatório.',
+    'required'             => 'O campo :attribute é obrigatório.',
     'required_if'          => 'The :attribute field is required when :other is :value.',
     'required_unless'      => 'The :attribute field is required unless :other is in :values.',
     'required_with'        => 'The :attribute field is required when :values is present.',
@@ -77,7 +77,7 @@ return [
     ],
     'string'               => 'The :attribute must be a string.',
     'timezone'             => 'The :attribute must be a valid zone.',
-    'unique'               => 'O :attribute já está sendo utilizado.',
+    'unique'               => 'O campo :attribute já está em uso.',
     'url'                  => 'The :attribute format is invalid.',
 
     /*
@@ -94,18 +94,6 @@ return [
     'custom' => [
         'user_birth' => [
             'required' => 'A :attribute é obrigatória.',
-        ],
-
-        'password' => [
-            'required' => 'A :attribute é obrigatória.'
-        ],
-
-        'user_addr_street' => [
-            'required' => 'A :attribute é obrigatória.'
-        ],
-
-        'user_addr_city' => [
-            'required' => 'A :attribute é obrigatória.'
         ],
     ],
 
@@ -134,7 +122,20 @@ return [
         'user_addr_number' => 'Número',
         'user_addr_district' => 'Bairro',
         'user_addr_city' => 'Cidade',
-        'user_addr_state' => 'Estado'
+        'user_addr_state' => 'Estado',
+
+        /* Tabela de empresas */
+        'company_cnpj' => 'CNPJ',
+        'company_name' => 'Razão social',
+        'company_fantasy' => 'Nome fantasia',
+        'company_addr_cep' => 'CEP',
+        'company_addr_street' => 'Rua',
+        'company_addr_number' => 'Número',
+        'company_addr_complement' => 'Complemento',
+        'company_addr_district' => 'Bairro',
+        'company_addr_state' => 'Estado',
+        'company_phone' => 'Telefone',
+        'company_mobile' => 'Número do celular'
     ],
 
 ];
