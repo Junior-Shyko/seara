@@ -21,7 +21,8 @@ class Company extends Model
       'company_addr_cep',
       'company_phone',
       'company_mobile',
-      'company_brand_logo'
+      'company_brand_logo',
+      'company_status'
     ];
     //
 

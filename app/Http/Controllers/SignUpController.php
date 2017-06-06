@@ -80,8 +80,9 @@ class SignUpController extends Controller
 
 	public function signup(Request $request)
 	{		
-		$userData = $request->input('user');
-		$companyData = $request->input('company');
+		$userData 						= $request->input('user');
+		$companyData 					= $request->input('company');
+		
 
 		$validation = $this->validateData( array_merge($userData, $companyData) );
 
@@ -98,6 +99,8 @@ class SignUpController extends Controller
 
 			// Cadastro da empresa no banco
 			try {
+				$companyData['company_status'] 	= 0;
+				//dd($companyData);
 				$company = Company::create($companyData);
 			}
 			catch(Exception $e){

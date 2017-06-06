@@ -43,6 +43,11 @@ Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePD
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');
 Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData')->name('receipt-company.datatables');
 
+
+//ROTA PARA CAIXA
+Route::get('caixa', function(){
+	return view('box.index');
+});
 //
 
 // Route::controller('recibo-empresa', 'ReceiptDatatablesController', [
