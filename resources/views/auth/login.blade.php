@@ -1,6 +1,9 @@
 @extends('layouts.layout_app')
 @section('title', 'Page Title')
 @section('content')
+
+@include('msg.message')
+
 <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">

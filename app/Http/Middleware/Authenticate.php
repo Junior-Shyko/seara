@@ -27,12 +27,15 @@ class Authenticate
         }
 
         // Logout caso a empresa do usuário não esteja ativa
-        $company_status = Company::find( Auth::user()->user_id_company )->company_status;
+        $company = Company::find( Auth::user()->user_id_company );
 
         //Caso a empresa não esteja ativa, o usuário é deslogado
-        if(Auth::check() && $company_status !== 1){
+        if(Auth::check() && $company->company_status !== 1){
             Auth::logout();
-            return redirect('login')->withErrors('sorry, this user account is deactivated');
+            return redirect('login')->with(
+                'error',
+                "A empresa {$company->company_fantasy} ainda não foi ativada. Aguarde enquanto o cadastro é avaliado."
+            );
         }
 
         return $next($request);
