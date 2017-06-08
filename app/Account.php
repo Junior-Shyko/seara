@@ -9,5 +9,5 @@ class Account extends Model
 	/*DESENVOLVIDO POR EXCELLENCE SOFT 06/07/2017*/
     protected $table 		= 'accounts';
     protected $primaryKey 	= 'accounts_id';
-    protected $fillabe	 	= ['accounts_name' , 'accounts_id_user' , 'accounts_id_company'];
+    protected $fillable	 	= ['accounts_name' , 'accounts_id_user' , 'accounts_id_company' , 'accounts_id_type_account'];
 }

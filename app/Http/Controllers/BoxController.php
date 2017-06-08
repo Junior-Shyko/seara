@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Box;
 
 class BoxController extends Controller
 {
@@ -14,6 +15,7 @@ class BoxController extends Controller
     public function index()
     {
         //
+        //$box = Box::where('')
         return view('box.index');
     }
 

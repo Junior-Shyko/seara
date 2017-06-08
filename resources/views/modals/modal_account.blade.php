@@ -29,8 +29,8 @@
                     
                   
                     <div class="form-group">
-                        <input type="text" name="accounts_id_user" id="accounts_id_user" value="{{Auth::user()->id}}">
-                        <input type="text" name="accounts_id_company" id="accounts_id_company" value="{{Auth::user()->user_id_company}}">
+                        <input type="hidden" name="accounts_id_user" id="accounts_id_user" value="{{Auth::user()->id}}">
+                        <input type="hidden" name="accounts_id_company" id="accounts_id_company" value="{{Auth::user()->user_id_company}}">
                         
                     </div>
                     <div class="ln_solid"></div>
@@ -44,3 +44,5 @@
         </div>
     </div>
 </div>
+
+

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Account;
 
 class AccountController extends Controller
 {
@@ -34,7 +35,16 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Create 2017-06-08 by Excellence Soft
+        if($request->ajax()){
+            try {
+                $account = Account::create($request->all());
+                return response()->json(['message' , 'success']);
+            } catch (Exception $e) {
+                return response()->json(['message' , 'error'.$e->getMessege()]);
+            }
+
+        }
     }
 
     /**
