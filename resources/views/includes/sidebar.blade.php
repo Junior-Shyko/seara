@@ -55,7 +55,7 @@
 
               <li><a><i class="fa fa-calculator" aria-hidden="true"></i> Caixa <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                  <li><a href="#">Lancar</a></li>
+                  <li><a href="{{url('caixa')}}">Lancar</a></li>
                   <li><a href="#">Consultar</a></li>
                   <li><a href="#">Auditar</a></li>
 

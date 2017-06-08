@@ -14,77 +14,7 @@
                     <a class="btn btn-app pull-right" data-toggle="modal" data-target="#create_account">
                     <i class="fa fa-list-ol" aria-hidden="true"></i> Criar Conta
                     </a>
-                    <div class="modal fade " id="create_account" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                                    </button>
-                                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form-horizontal form-label-left">
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-3">Nome da conta</label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <input type="text" class="form-control">
-                                                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-3">Tipo</label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <select class="form-control" name="">
-                                                    <option selected="">Entrada</option>
-                                                    <option>Saída</option>
-                                                </select>
-                                                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-3">Custom Mask</label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <input type="text" class="form-control" data-inputmask="'mask': '99-999999'">
-                                                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-3">Serial Number</label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <input type="text" class="form-control" data-inputmask="'mask' : '****-****-****-****-****-***'">
-                                                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-3">TaxID Mask</label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <input type="text" class="form-control" data-inputmask="'mask' : '99-99999999'">
-                                                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-md-3 col-sm-3 col-xs-3">Credit Card Mask</label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <input type="text" class="form-control" data-inputmask="'mask' : '9999-9999-9999-9999'">
-                                                <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
-                                            </div>
-                                        </div>
-                                        <div class="ln_solid"></div>
-                                        <div class="form-group">
-                                            <div class="col-md-9 col-md-offset-3">
-                                                <button type="submit" class="btn btn-primary">Cancel</button>
-                                                <button type="submit" class="btn btn-success">Submit</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('modals.modal_account')
                     <div class="clearfix"></div>
                 </div>
                 <div class="col-md-12">

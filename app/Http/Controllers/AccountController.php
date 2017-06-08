@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class BoxController extends Controller
+class AccountController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,6 @@ class BoxController extends Controller
     public function index()
     {
         //
-        return view('box.index');
     }
 
     /**

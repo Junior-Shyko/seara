@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBoxesTable extends Migration
+class CreateTypeAccountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,15 @@ class CreateBoxesTable extends Migration
      */
     public function up()
     {
-        Schema::create('boxes', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('type_accounts', function (Blueprint $table) {
+            $table->increments('type_accounts_id');
+            $table->integer('type_accounts_name');
+            $table->integer('type_accounts_id_user');
             $table->timestamps();
         });
+    
+
+        
     }
 
     /**
@@ -26,6 +31,6 @@ class CreateBoxesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('boxes');
+        Schema::dropIfExists('type_accounts');
     }
 }

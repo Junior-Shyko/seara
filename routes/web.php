@@ -45,9 +45,7 @@ Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData')->name
 
 
 //ROTA PARA CAIXA
-Route::get('caixa', function(){
-	return view('box.index');
-});
+Route::resource('caixa' , 'BoxController');
 //
 
 // Route::controller('recibo-empresa', 'ReceiptDatatablesController', [
