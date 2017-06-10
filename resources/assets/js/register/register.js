@@ -30,7 +30,27 @@ function stepChanged(obj, context)
 
   // Caso seja válido e eu estou saindo do step 1
   // vou fazer a requisição de cnpj para autocomplete do step 2
-  if(isValid && stepNumber == 1) requestCnpj();
+  if(isValid && stepNumber == 1) {
+    SearaLoader.showModal('Atualizando dados da empresa...');
+
+    // Ajax para verificação do conpj (chamada síncrona)
+    $.ajax({
+      type: 'POST',
+      url: SearaApp.baseURL + 'cadastro/checkCNPJ',
+      data: {company_cnpj: $('#company_cnpj').inputmask('unmaskedvalue')},
+      error: function(response){
+        SearaAlert.error( 'O CNPJ já está em uso' );
+        $('#wizard').smartWizard('goToStep', 1);
+      },
+      success: function(){
+        requestCnpj().always(function(){
+          SearaLoader.hideModal();
+        });
+      },
+      headers: { 'X-XSRF-TOKEN': Cookies.get("XSRF-TOKEN") },
+      dataType: 'json',
+    });
+  }
 
   return isValid;
 }
@@ -99,17 +119,22 @@ function store(success, failure)
     'user': user
   }
 
+
+  SearaLoader.showModal('Aguarde enquanto seu cadastro é concluído');
+
   $.post(base_url+"/cadastro", data, function(response){
     notify.response(response);
-    stopSpin();
-    showConfirmation();
+
+    SearaAlert.success('Cadastro concluído com sucesso', 'Aguarde enquanto as informações do seu cadastro são avaliadas.')
+    .then(function(){
+      // Reireciona para a página inicial
+      $(location).attr('href',SearaApp.baseURL);
+    });
   })
   .fail(function (jqXHR) {
     notify.response( jqXHR.responseJSON );
-    stopSpin(true);
+    SearaAlert.error('Falha no cadstro', 'Verifique os erros informados e tente novamente', 2000);
   });
-
-  startSpin();
 }
 
 function storeSuccess()

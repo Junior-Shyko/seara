@@ -82,9 +82,9 @@ class SignUpController extends Controller
 	{		
 		$userData 						= $request->input('user');
 		$companyData 					= $request->input('company');
-		
 
 		$validation = $this->validateData( array_merge($userData, $companyData) );
+
 
 		if ( !$validation['status'] )
 		{
@@ -104,8 +104,9 @@ class SignUpController extends Controller
 				$company = Company::create($companyData);
 			}
 			catch(Exception $e){
+
 				$errorCode = 422;
-				return response()->json(['status' => 'success', 'message' => 'Cadastrado não concluído, tente novamente.'], $errorCode);
+				return response()->json(['status' => 'error', 'message' => 'Cadastrado não concluído, tente novamente.'], $errorCode);
 			}
 
 			// Tento Criar o Usuário
@@ -126,10 +127,28 @@ class SignUpController extends Controller
 				return response(['status' => 'error', 'message' => ['Cadstrado não concluído, tente novamente.']], $errorCode);
 			}
 
-			Mail::to('excelencesoft@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
-			Mail::to($user)->send(new UserRegistered($user));
+			//Mail::to('excelencesoft@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
+			//Mail::to($user)->send(new UserRegistered($user));
 
 			return response()->json(['status' => 'success', 'message' => 'Cadastrado concluido com sucesso.']);
 			}
+	}
+
+	public function checkCNPJ(Request $request)
+	{
+		$rules = [
+			'company_cnpj' => 'unique:companies'
+		];
+
+		$validator = Validator::make( $request->all(), $rules );
+
+		if ( $validator->fails() )
+		{
+			return response()->json(['status' => 'error', 'message' => $messages = $validator->errors()->all()[0]], 422);
+		}
+		else
+		{
+			return response()->json(['status' => 'success']);
+		}
 	}
 }

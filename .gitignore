@@ -6,4 +6,8 @@ Homestead.json
 .env
 .idea
 /public
+
+!/public/img
+
 deploy.conf
+

@@ -122,3 +122,95 @@ ResourceModel.prototype.update = function (id, data, callback) {
 ResourceModel.prototype.delete = function (id, callback) {
   return this._seara.destroyResource(id, callback);
 };
+
+String.prototype.isEmpty = function() {
+    return (this.length === 0 || !this.trim());
+};
+
+$.LoadingOverlaySetup({
+  image: SearaApp.assetURL + 'img/ring.svg'
+});
+
+/**
+ * Loader para Seara
+ */
+var SearaLoader = (function(){
+
+   // Funções para o Loading Overlay
+  function showOverlay(sel)
+  {
+      if ( sel )
+      {
+          if ( sel.isEmpty() )
+              $.LoadingOverlay("show");
+          else
+              $(sel).LoadingOverlay("show");
+      }
+      else
+          $.LoadingOverlay("show");
+  }
+
+  function hideOverlay(sel)
+  {
+      if ( sel )
+      {
+          if ( sel.isEmpty() )
+              $.LoadingOverlay("hide");
+          else
+              $(sel).LoadingOverlay("hide");
+      }
+      else
+          $.LoadingOverlay("hide");
+  }
+
+  function showModal( title = '' )
+  {
+    swal({
+      title: title,
+      imageUrl: SearaApp.assetURL + 'img/ring.svg',
+      showConfirmButton: false
+    })
+  }
+
+  function closeModal()
+  {
+    swal.close();
+  }
+
+  return {
+    show: showOverlay,
+    hide: hideOverlay,
+    showModal: showModal,
+    hideModal: closeModal
+  }
+
+}());
+
+var SearaAlert = (function(){
+
+  function alertError( title = '', text = '', timer = null )
+  {
+    return swal({
+      title: title,
+      text: text,
+      type: 'error',
+      timer: timer
+    });
+  }
+
+  function alertSuccess( title = '', text = '', timer = null )
+  {
+    return swal({
+      title: title,
+      text: text,
+      type: 'success',
+      timer: timer
+    });
+  }
+
+  return {
+    error: alertError,
+    success: alertSuccess
+  }
+
+}());

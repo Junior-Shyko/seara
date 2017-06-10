@@ -64,7 +64,11 @@
       <label class="control-label col-md-2 col-sm-2 col-xs-12" for="street">Cargo <span class="required">*</span>
       </label>
       <div class="col-md-4 col-sm-4 col-xs-12">
-        <input id="user_position" name="user_position"    class="form-control col-md-6 col-xs-12" type="text">
+        <select class="form-control form-white" id="user_position" name="user_position">
+          <option>Presidente</option>
+          <option>Administrador</option>
+          <option>Representante</option>
+        </select>
       </div>
     </div>
   </form>

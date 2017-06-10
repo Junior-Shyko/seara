@@ -5,11 +5,11 @@ function requestCnpj()
 {
   // url do recietaws
   var url = 'http://receitaws.com.br/v1/cnpj/'+$("#company_cnpj").inputmask("unmaskedvalue");
-  $.ajax({
+
+  return $.ajax({
     url: url,
     dataType: 'jsonp',
     jsonp: 'callback',
-    async: false,
     success: function(data){
       $("#company_name").val(data.nome);
       $("#company_fantasy").val(data.fantasia);
@@ -23,17 +23,19 @@ function requestCnpj()
       $("#company_phone").val(data.telefone);
     },
     error: function(){
-    }
+    },
+    timeout: 3000
   });
 }
 
 function requestCEP()
 {
+  SearaLoader.showModal( 'Atualizando endereço...' );
   $.ajax({
     url: "http://correiosapi.apphb.com/cep/"+$("#user_cep").inputmask("unmaskedvalue"),
     dataType: 'jsonp',
     jsonp: 'callback',
-    async: false,
+    async: true,
     success: function(data){
       $("#user_street").val(data.tipoDeLogradouro + " " + data.logradouro);
       $("#user_city").val(data.cidade);
@@ -42,9 +44,14 @@ function requestCEP()
 
       // Apenas para atualização da view
       $("#form-step-4").parsley().validate();
+
+      // Fecho o modal de loader
+      SearaLoader.hideModal();
     },
     error: function(){
-    }
+      SearaLoader.hideModal();
+    },
+    timeout: 3000
   });
 }
 
