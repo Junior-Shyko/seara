@@ -59,9 +59,5 @@
 
 <script>
 var datatablesURL = "{{ route('receipt-company.datatables') }}";
-
-var receiptCompany = new ResourceModel("{{ route('receipt-company.index') }}");
-var company = new ResourceModel("{{ url('companies') }}")
-
 </script>
 @endpush

@@ -38,6 +38,14 @@
     </div>
   </div>
 
+  
+  <script>
+    var SearaApp = {};
+
+    SearaApp.assetURL = "{{ asset('') }}";
+    SearaApp.baseURL = "{{ url('') }}/";
+  </script>
+
   <!-- Custom Theme Scripts -->
   <script src="{{ asset("js/gentelella.min.js") }}"></script>
   

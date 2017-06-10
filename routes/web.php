@@ -13,12 +13,17 @@
 
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');
-Route::get('/', 'HomeController@index');
 
 // Cadastro
 Route::get('/cadastro', 'SignUpController@index');
 Route::post('/cadastro', 'SignUpController@signup');
 Route::post('/cadastro/checkCNPJ', 'SignUpController@checkCNPJ');
+
+// Home
+Route::group(['prefix' => '/'], function(){
+	Route::get('/', 'HomeController@index');
+	Route::get('/dataTable', 'HomeController@dataTable')->name('home.datatables');
+});
 
 
 // EMRPESAS

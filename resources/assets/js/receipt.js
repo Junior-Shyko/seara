@@ -1,3 +1,7 @@
+var receiptCompany = new ResourceModel('receipt-company');
+var company = new ResourceModel('companies');
+
+
 function packReceiptData()
 {
   var receiptData = packForm("#form-receipt");

@@ -62,120 +62,114 @@
 		<div class="col-md-12 col-sm-12 col-xs-12">
 			<div class="x_panel">
 				<div class="x_title">
-					<h2>Empresas <small>Aprovar cadastro de igrejas</small></h2>
-					<ul class="nav navbar-right panel_toolbox">
-						<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-						</li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="#">Settings 1</a>
-								</li>
-								<li><a href="#">Settings 2</a>
-								</li>
-							</ul>
-						</li>
-						<li><a class="close-link"><i class="fa fa-close"></i></a>
-						</li>
-					</ul>
+					<!-- Usuários -->
+					<button class="btn btn-primary pull-right" onclick="createUser()" data-toggle="tooltip" data-placement="bottom" data-original-title="Novo Usuário">
+						<i class="fa fa-plus" aria-hidden="true"></i>
+					</button>
+
+					<button class="btn btn-primary pull-right" onclick="usersDataTable.reloadTable()" data-toggle="tooltip" data-placement="bottom" data-original-title="Atualizar">
+						<i class="fa fa-refresh" aria-hidden="true"></i>
+					</button>
+
 					<div class="clearfix"></div>
 				</div>
+			</div>
 
-				<div class="x_content">
+			<div class="x_content">
 
-					<div class="table-responsive">
-						<table class="table table-bordered">
-						    <thead>
-						        <tr>
-						            <th>Razão Social</th>
-						            <th>Fantasia</th>
-						            <th>Responsável</th>
-						            <th>CNPJ</th>
-						            <th>Data Cadastro</th>
-						            <th>Aprovar</th>
-						        </tr>
-						    </thead>
-						    <tbody>
-						        @foreach($company as $companies)
-						        <tr>
-									<td>{{$companies->company_name}}</td>
-									<td>{{$companies->company_fantasy}}</td>
-									<td>{{$companies->company_responsible}}</td>
-									<td>{{$companies->company_cnpj}}</td>
-									<td>{{$companies->created_at}}</td>
-									<td>
-										<a href="#" data-toggle="modal" class="btn btn-info" data-target="#aprovar_{{$companies->company_id}}">
-											<i class="fa fa-check-square-o" aria-hidden="true"></i>
-										</a>
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Razão Social</th>
+								<th>Fantasia</th>
+								<th>Responsável</th>
+								<th>CNPJ</th>
+								<th>Data Cadastro</th>
+								<th>Aprovar</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach($company as $companies)
+							<tr>
+								<td>{{$companies->company_name}}</td>
+								<td>{{$companies->company_fantasy}}</td>
+								<td>{{$companies->company_responsible}}</td>
+								<td>{{$companies->company_cnpj}}</td>
+								<td>{{$companies->created_at}}</td>
+								<td>
+									<a href="#" data-toggle="modal" class="btn btn-info" data-target="#aprovar_{{$companies->company_id}}">
+										<i class="fa fa-check-square-o" aria-hidden="true"></i>
+									</a>
 
-									</td>
-									<div class="modal fade" id="aprovar_{{$companies->company_id}}" tabindex="-1" role="dialog">
-									  <div class="modal-dialog" role="document">
-									    <div class="modal-content">
-									      <div class="modal-header">
-									        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									        <h4 class="modal-title">Aprovar empresa</h4>
-									      </div>
-									      {{Form::open(['url' => 'companies/alterar-status'])}}
-									      <div class="modal-body">
-									       <div class="row">
-									       	<div class="col-md-12">
-									       		<div class="col-md-2"></div>
-									       		<div class="col-md-8">
-									       			<ul class="list-group">
-												  <li class="list-group-item">Endereço: {{$companies->company_street}}</li>
-												  <li class="list-group-item">Número: {{$companies->company_number}}</li>
-												  <li class="list-group-item">Bairro: {{$companies->company_district}}</li>
-												  <li class="list-group-item">Celular: {{$companies->company_mobile}}</li>
-												  <li class="list-group-item">Fixo: {{$companies->company_phone}}</li>
-												  <li class="list-group-item">Cadastro: {{date('d/m/Y' , strtotime($companies->created_at))}}</li>
-												</ul>
-									       		</div>
-									       		<div class="col-md-2">
-									       			<input type="hidden" name="company_id" value="{{$companies->company_id}}">
-									       		</div>
-									       	</div>
-									       </div>
-									      </div>
-									      <div class="modal-footer">
-									        <button type="button" class="btn btn-default" data-dismiss="modal">Voltar</button>
-									        <button type="submit" class="btn btn-primary">Ativar <i class="fa fa-check-square" aria-hidden="true"></i>
-											</button>
-									      </div>
-									      {{Form::close()}}
-									    </div><!-- /.modal-content -->
-									  </div><!-- /.modal-dialog -->
-									</div><!-- /.modal -->
-								</tr>
-						        @endforeach
-						        
-						        
-						    </tbody>
-						</table>
+								</td>
+								<div class="modal fade" id="aprovar_{{$companies->company_id}}" tabindex="-1" role="dialog">
+									<div class="modal-dialog" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+												<h4 class="modal-title">Aprovar empresa</h4>
+											</div>
+											{{Form::open(['url' => 'companies/alterar-status'])}}
+											<div class="modal-body">
+												<div class="row">
+													<div class="col-md-12">
+														<div class="col-md-2"></div>
+														<div class="col-md-8">
+															<ul class="list-group">
+																<li class="list-group-item">Endereço: {{$companies->company_street}}</li>
+																<li class="list-group-item">Número: {{$companies->company_number}}</li>
+																<li class="list-group-item">Bairro: {{$companies->company_district}}</li>
+																<li class="list-group-item">Celular: {{$companies->company_mobile}}</li>
+																<li class="list-group-item">Fixo: {{$companies->company_phone}}</li>
+																<li class="list-group-item">Cadastro: {{date('d/m/Y' , strtotime($companies->created_at))}}</li>
+															</ul>
+														</div>
+														<div class="col-md-2">
+															<input type="hidden" name="company_id" value="{{$companies->company_id}}">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Voltar</button>
+												<button type="submit" class="btn btn-primary">Ativar <i class="fa fa-check-square" aria-hidden="true"></i>
+												</button>
+											</div>
+											{{Form::close()}}
+										</div><!-- /.modal-content -->
+									</div><!-- /.modal-dialog -->
+								</div><!-- /.modal -->
+							</tr>
+							@endforeach
 
-					</div>
 
+						</tbody>
+					</table>
 
 				</div>
+
+
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 <!-- /page content -->
 
 @push('scripts')
 
 
-    <script>
-      var base_url = "{{ url('') }}"
-    </script>
-    <script src="{{ asset("js/home.min.js") }}"></script>
-   <script type="text/javascript">
+<script>
+	var base_url = "{{ url('') }}"
+</script>
+<script src="{{ asset("js/home.min.js") }}"></script>
+<script type="text/javascript">
 	$(function() {
 
 		$("#dialog-confirm").hide();	
 
-	
+
 
 		
 

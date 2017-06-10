@@ -32,7 +32,7 @@ class HomeController extends Controller
             //TOTAL DE USUÁRIOS
             $tot_users      = User::all()->count();
             $tot_company    = Company::all()->count();        
-        
+            
             return view('home' , compact('company' , 'tot_users' , 'tot_company'));
         }else{
             $company = Company::where('company_id' ,'=', Auth::user()->user_id_company)->get();
@@ -43,5 +43,50 @@ class HomeController extends Controller
 
             return view('home_basic' , compact('company' , 'tot_users' ));
         }
+    }
+
+    public function dataTable()
+    {
+        $users = DB::table('users')
+        ->where('user_id_company', Auth::user()->user_id_company)
+        ->where('id', '<>', Auth::user()->id)
+        ->leftjoin('profiles', 'users.user_id_profile', '=', 'profiles.profile_id' )
+        ->select([
+          'users.id',
+          'users.name',
+          'users.email',
+          'profiles.profile_name',
+          'users.created_at'
+          ]);
+
+        return Datatables::of($users)
+        ->addColumn(
+          'action',
+          function ($user) {
+            return $this->actions($user->id);
+        })
+        ->editColumn(
+            'created_at',
+            function($user){
+              $created_at = new Carbon( $user->created_at );
+              return $created_at->format('d/m/Y á\s H:i:s');
+          })
+        ->make(true);
+    }
+
+    private function actions($id)
+    {
+        return $this->actionEdit($id)
+        .$this->actionDelete($id);
+    }
+
+    private function actionEdit($id)
+    {
+        return "<button class='btn btn-primary btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='Editar Usuário' onclick='editUser( {$id} )' role='tooltip'> <i class='fa fa-pencil'></i> </button>";
+    }
+
+    private function actionDelete($id)
+    {
+        return "<button class='btn btn-danger btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='Excluir Usuário' onclick='deleteUser( {$id} )' role='tooltip'> <i class='fa fa-trash-o'></i> </button>";
     }
 }
