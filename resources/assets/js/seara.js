@@ -125,16 +125,14 @@ var SearaAlert = (function(){
 var SearaAjax = (function(){
   function getToken()
   {
-    // return Cookies.get("XSRF-TOKEN");
-    return $('meta[name="csrf-token"]').attr('content');
-    // return $('meta[name="_token"]').attr('content');
+    return Cookies.get("XSRF-TOKEN");
   }
 
   function ajaxCall(type, url, data, callback, dataType = 'Json')
   {
     var ajaxOptions = {
       url: baseURL(url),
-      headers: { 'X-CSRF-TOKEN': getToken() },
+      headers: { 'X-XSRF-TOKEN': getToken() },
       dataType: dataType,
       type: type,
       method: type
@@ -144,14 +142,10 @@ var SearaAjax = (function(){
     {
       if ( data != null )
         ajaxOptions.data = data;
-
-      console.log( 'POST' )
     }
 
     if ( callback != null )
       ajaxOptions.success = callback;
-
-    console.log( ajaxOptions );
 
     return $.ajax( ajaxOptions );
 
