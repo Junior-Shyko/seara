@@ -152,22 +152,25 @@ function cloneReceipt(id)
 function deleteReceipt(id)
 {
 
-  $("#modal-delete-receipt").modal("show");
+  swal({
+    title: 'Atenção',
+    text: 'O recibo será excluído, deseja confirmar?',
+    type: 'warning',
+    showCancelButton: true
+  })
+  .then(function(){
 
-  // Eventos
-  $("#modal-delete-receipt-btn").off("click");
-
-  $("#modal-delete-receipt-btn").click(function (data) {
-
-    receiptCompany.delete(id, function (data) {
+    SearaLoader.showModal('Excluindo recibo...');
+    receiptCompany.delete(id, function (response) {
+      notify.response(response);
       reloadTable();
-      
     })
-    .always(function (data) {
-      notify.response(data);
+    .fail(function (jqXHR) {
+      notify.response(jqXHR.responseJSON);
+    })
+    .always(function(){
+      SearaLoader.hideModal();
     });
-
-    $("#modal-delete-receipt").modal("hide");
 
   });
 

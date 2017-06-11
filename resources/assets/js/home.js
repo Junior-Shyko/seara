@@ -28,7 +28,7 @@ function allowCompany ( companyID )
 	})
 	.then(function(){
 
-		SearaLoader.showModal();
+		SearaLoader.showModal('Ativando empresa...');
 		SearaAjax.post('companies/alterar-status', {company_id: companyID}, function( response ){
 			notify.response(response);
 			companyTable.reloadTable();
