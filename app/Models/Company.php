@@ -28,4 +28,9 @@ class Company extends Model
 
     protected $table = "companies";
     protected $primaryKey = "company_id";
+
+    public function users()
+    {
+      return $this->hasMany('App\Models\User', 'user_id_company');
+    }
 }

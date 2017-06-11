@@ -192,7 +192,7 @@ class UserController extends Controller
       'users.email',
       'profiles.profile_name',
       'users.created_at'
-    ]);
+    ])->orderBy('users.id', 'DESC');
 
     return Datatables::of($users)
     ->addColumn(

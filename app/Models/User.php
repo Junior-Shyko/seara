@@ -6,6 +6,7 @@ use App\Notifications\ResetPasswordNotification;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -59,6 +60,22 @@ class User extends Authenticatable
 	public function company()
 	{
 		return $this->belongsTo('App\Models\Company', 'user_id_company');
+	}
+
+	public static function totalActiveUsers()
+	{
+		$query = DB::raw("
+			SELECT 
+				count(*) AS total
+			FROM users
+			LEFT JOIN companies
+			ON users.user_id_company = companies.company_id
+			WHERE companies.company_status = 1
+		");
+
+		$result = DB::select( $query );
+
+		return $result[0]->total;
 	}
 
 }

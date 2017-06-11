@@ -138,14 +138,20 @@ class CompanyController extends Controller
     {
         $company = Company::find($request['company_id']);
 
-        try{
+        try
+        {
             //DB::connection()->enableQueryLog();
             $company = DB::table('companies')->where('company_id' , $request['company_id'])->update(['company_status' => 1]);
-            //return DB::getQueryLog();
-            return redirect()->back()->with('success' , 'Empresa Ativa');
-        }catch(Exception $e){
-            return $e->getMessage();
+
         }
+        catch(Exception $e)
+        {
+            return response()->json(['status' => 'error', 'message' => 'Empresa não ativada,tente novamente.'], 422);
+            // return $e->getMessage();
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Empresa ativada com sucesso.']);
+
     }
 
     public function alterLogo(Request $request)

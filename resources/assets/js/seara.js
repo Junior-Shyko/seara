@@ -3,7 +3,7 @@ function baseURL( url )
   url = url.replace(/^\//, '');
   url = url.replace(/\/$/, '');
 
-  return SearaApp.baseURL + url;
+  return SearaApp.baseURL + url + '/';
 }
 
 $.LoadingOverlaySetup({
@@ -125,26 +125,33 @@ var SearaAlert = (function(){
 var SearaAjax = (function(){
   function getToken()
   {
-    return Cookies.get("XSRF-TOKEN");
+    // return Cookies.get("XSRF-TOKEN");
+    return $('meta[name="csrf-token"]').attr('content');
+    // return $('meta[name="_token"]').attr('content');
   }
 
-  function ajaxCall(type, url, data, callback, dataType = 'json')
+  function ajaxCall(type, url, data, callback, dataType = 'Json')
   {
     var ajaxOptions = {
       url: baseURL(url),
-      headers: { 'X-XSRF-TOKEN': getToken() },
+      headers: { 'X-CSRF-TOKEN': getToken() },
       dataType: dataType,
-      type: type
+      type: type,
+      method: type
     };
 
     if ( type == 'POST' || type == 'PUT' )
     {
       if ( data != null )
         ajaxOptions.data = data;
+
+      console.log( 'POST' )
     }
 
     if ( callback != null )
       ajaxOptions.success = callback;
+
+    console.log( ajaxOptions );
 
     return $.ajax( ajaxOptions );
 
@@ -181,20 +188,32 @@ var SearaAjax = (function(){
 
 function SearaTable(tableID, url, columns, singular = 'registro', plural = 'registros'){
 
-  function loadTable()
-  {
-    $('#'+tableID).DataTable({
+  this.tableID = tableID;
+  this.url = baseURL(url);
+  this.columns = columns;
+  this.singular = singular;
+  this.plural = plural;
+
+};
+
+SearaTable.prototype.reloadTable = function() {
+  $("#" + this.tableID).DataTable().ajax.reload();
+}
+
+SearaTable.prototype.loadTable = function (){
+
+    $('#'+this.tableID).DataTable({
       processing: true,
       serverSide: true,
-      ajax: url,
-      columns: columns,
+      ajax: this.url,
+      columns: this.columns,
       language: {
-        "lengthMenu": "Exibir _MENU_ " + plural + " por página",
-        "zeroRecords": "Nenhum " + singular + " cadastrado para essa pesquisa",
-        "infoEmpty": "Exibindo 0 de 0 " + plural,
-        "emptyTable": "Nenhum " + singular + " cadastrado",
+        "lengthMenu": "Exibir _MENU_ " + this.plural + " por página",
+        "zeroRecords": "Nenhum " + this.singular + " cadastrado para essa pesquisa",
+        "infoEmpty": "Exibindo 0 de 0 " + this.plural,
+        "emptyTable": "Nenhum " + this.singular + " cadastrado",
         "info": "Exibindo página _PAGE_ de _PAGES_",
-        "infoFiltered": "(filtrados de _MAX_ " + plural + ")",
+        "infoFiltered": "(filtrados de _MAX_ " + this.plural + ")",
         "search": "Pesquisar:",
         "paginate": {
           "previous": "Anterior",
@@ -202,13 +221,6 @@ function SearaTable(tableID, url, columns, singular = 'registro', plural = 'regi
           "first": "Primeiro",
           "last": "Último"
         }
-      },
-      order: [[0, "desc"]]
+      }
     });
-  }
-
-  function reloadTable()
-  {
-    $("#" + tableID).DataTable().ajax.reload();
-  }
-};
+}

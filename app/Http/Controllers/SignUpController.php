@@ -112,7 +112,7 @@ class SignUpController extends Controller
 			// Tento Criar o Usuário
 			$userData['user_id_company'] 	= $company->company_id;
 			$userData['users_avatar'] 		= 'default-user-avatar.png';
-			$userData['user_id_profile']	= 2;
+			$userData['user_id_profile']	= 3; // Administrador da Empresa
 			$userData['user_birth']			= Carbon::createFromFormat('d/m/Y', $userData['user_birth'])->format('Y-m-d');
 
 			try {

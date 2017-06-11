@@ -1,3 +1,8 @@
+  var usersDataTable;
+
+  // Acesso a recursos
+  var user = new ResourceModel('users');
+
 // HELPERS
 function createUser()
 {
@@ -47,5 +52,18 @@ function deleteUser(id)
 }
 
 $(document).ready(function(){
+
+  var colunas = [
+  { data: 'id', name: 'id' },
+  { data: 'name', name: 'name' },
+  { data: 'email', name: 'email' },
+  { data: 'profile_name', name: 'profile_name' },
+  { data: 'created_at', name: 'created_at' },
+  { data: 'action', name: 'action', orderable: false, searchable: false }
+  ];
+
+  usersDataTable = new SearaTable('users-table', 'users/datatable', colunas, 'usuário', 'usuários');
+
   usersDataTable.loadTable();
+
 });

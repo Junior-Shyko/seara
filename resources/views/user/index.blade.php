@@ -167,22 +167,4 @@
 
 @push('scripts')
 <script type="text/javascript" language="javascript" src="{{asset('js/users.min.js')}}"></script>
-
-<script>
-
-  var colunas = [
-  { data: 'id', name: 'id' },
-  { data: 'name', name: 'name' },
-  { data: 'email', name: 'email' },
-  { data: 'profile_name', name: 'profile_name' },
-  { data: 'created_at', name: 'created_at' },
-  { data: 'action', name: 'action', orderable: false, searchable: false }
-  ];
-
-  var usersDataTable = new SearaTable('users-table', "{{ route('users.datatables') }}", colunas, 'usuário', 'usuários');
-
-  // Acesso a recursos
-  var user = new ResourceModel("{{ route('users.index') }}");
-
-</script>
 @endpush

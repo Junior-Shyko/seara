@@ -22,14 +22,13 @@ Route::post('/cadastro/checkCNPJ', 'SignUpController@checkCNPJ');
 // Home
 Route::group(['prefix' => '/'], function(){
 	Route::get('/', 'HomeController@index');
-	Route::get('/dataTable', 'HomeController@dataTable')->name('home.datatables');
+	Route::get('/datatable', 'HomeController@dataTable')->name('home.datatables');
 });
 
 
 // EMRPESAS
 /* ROTA PARA EMPRESA */
 Route::resource('companies', 'CompanyController');
-
 
 Route::group(['prefix' => 'companies'], function () {
 	Route::get('/{id}/edit' 		, 'CompanyController@edit');
