@@ -18,14 +18,10 @@
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-3">Tipo</label>
                         <div class="col-md-6 col-sm-6 col-xs-6">
-                            <select class="form-control" name="accounts_id_type_account" id="accounts_id_type_account">
-                                <option value="0" selected="">Entrada</option>
-                                <option value="1">Saída</option>
-                            </select>
-                            
+                          
+                            {{Form::select('accounts_id_type_account', $type_account, 'Selecione', ['class' => 'form-control' , 'id' => 'accounts_id_type_account'])}}
                         </div>
-                    </div>
-                    
+                    </div>                   
                     
                   
                     <div class="form-group">

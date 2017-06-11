@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Box;
+use App\FunctionGeneral;
 use Auth , DB;
 
 class BoxController extends Controller
@@ -17,8 +18,10 @@ class BoxController extends Controller
     {
         //CREATE 2017-06-2017 BY EXCELLENCE SOFT
         $box = Box::where('boxes_id_company' , Auth::user()->user_id_company);
-       
-        return view('box.index' , compact('box'));
+        $type_account = DB::table('type_accounts')->where('type_accounts_id_company' , Auth::user()->user_id_company)->orderBy('type_accounts_id')
+                                ->pluck('type_accounts_name','type_accounts_id');
+        //dd($type_account);
+        return view('box.index' , compact('box' , 'type_account'));
     }
 
     /**
@@ -39,7 +42,40 @@ class BoxController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Create 2017-06-11 by Excellence Soft - Junior Oliveira
+        //dd($request->all());
+        if($request->ajax())
+        {
+            $request['boxes_id_user']           = Auth::user()->id;
+            $request['boxes_id_company']        =Auth::user()->user_id_company;
+            //$request['boxes_balance_initial']   = FunctionGeneral::moeda($request['boxes_balance_initial']);
+            //$request['boxes_balance_previous']  = FunctionGeneral::moeda($request['boxes_balance_initial']);
+            $boxes_decimate                 = $request['boxes_decimate'];    
+            $request['boxes_decimate']      = FunctionGeneral::moeda($boxes_decimate );
+            $box_offer                      = $request['box_offer'];
+            $request['box_offer']           = FunctionGeneral::moeda($box_offer);
+            $boxes_other                    = $request['boxes_other'];
+            $request['boxes_other']         = FunctionGeneral::moeda($boxes_other);
+            $box_end                        = $request['box_end'];
+            $request['box_end']             = FunctionGeneral::moeda($box_end);
+            //$request['box_balance']             = FunctionGeneral::moeda($request['boxes_balance_initial']);
+            //$request['box_balance_end']         = FunctionGeneral::moeda($request['boxes_balance_initial']);
+            
+            try {
+                $request->except('_token');
+                $input = $request->all();
+                
+                $box = Box::create($input);
+
+                return response()->json(['message' , 'success']);
+
+            } catch (Exception $e) {
+
+                return response()->json(['message' , 'error']);
+
+            }
+
+        }
     }
 
     /**

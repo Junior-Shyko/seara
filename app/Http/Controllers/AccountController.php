@@ -47,6 +47,7 @@ class AccountController extends Controller
             }
 
         }
+        //dd($request->all());
     }
 
     /**

@@ -22,7 +22,7 @@
                                         <div class="x_content bs-example-popovers">
                                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                                                 <div class="col-md-3 form-group">
-                                                    <input type="text" name="accounts_id" class="form-control" id="cod_account" placeholder="Cod. Conta">
+                                                    <input type="text" name="boxes_id_account" class="form-control" id="cod_account" placeholder="Cod. Conta">
                                                 </div>
                                                 <div class="col-md-6 form-group">
                                                     <label class="control-label text-primary" id="label_desc_account">Decrição da conta</label>
@@ -57,19 +57,19 @@
                                         <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                     </div>
                                     <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
-                                        <input type="text" name="box_offer"  class="form-control has-feedback-left" id="box_other" placeholder="Outras">
+                                        <input type="text" name="boxes_other"  class="form-control has-feedback-left" id="boxes_other" placeholder="Outras">
                                         <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                     </div>
                                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                                         <small>SAÍDA</small>
                                     </div>
                                     <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
-                                        <input type="text" name="box_end"  class="form-control" id="box_exit" placeholder="Saída">
+                                        <input type="text" name="box_end"  class="form-control" id="box_end" placeholder="Saída">
                                         <span class="fa fa-money form-control-feedback right" aria-hidden="true"></span>
                                     </div>
                                     <div class="ln_solid"></div>
                                     <div class="col-md-8 col-sm-8 col-xs-12 form-group has-feedback">
-                                        <h4 class="pull-right form-label">SALDO: R$ </h4>
+                                       
                                     </div>
                                 </form>
                             </div>

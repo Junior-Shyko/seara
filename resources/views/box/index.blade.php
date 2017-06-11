@@ -72,7 +72,9 @@
         $('#box_exit').mask('000.000.000.000.000,00', {reverse: true});
     
        $(function() {
-        var route = '{{url('conta')}}';
+        var route       = '{{url('conta')}}';
+        var route_box   = '{{url('caixa')}}';
+        var token       =  {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') };
            $("#save_account").click(function(event) {
                 /* Act on the event */
                 
@@ -80,6 +82,7 @@
                 id_type_account = $("#accounts_id_type_account").val(); 
                 id_user         = '{{Auth::user()->id}}';
                 id_company      = '{{Auth::user()->user_id_company}}';
+                console.log(id_type_account);
                 $.ajax({
                     url: route,
                     type: 'POST',
@@ -131,7 +134,38 @@
 
             //SUBMIT DO FORM
             $("#save_entry").click(function(){
-                console.log($('form#form_entry').serializeObject());
+                console.log();
+                $.ajax({
+                    url: route_box,
+                    type: 'POST',
+                    dataType: 'json',
+                    headers: token,
+                    data: $('form#form_entry').serializeObject(),
+                    success:function(){
+                        new PNotify({
+                          title: 'Cadastrado',
+                          text: 'Seu lançamento foi realizado com sucesso',
+                          type: 'success',
+                          styling: 'bootstrap3'
+                        });
+                    }
+                })
+                .done(function() {
+                    console.log("success");
+                })
+                .fail(function() {
+                    console.log("error");
+                    new PNotify({
+                          title: 'Erro',
+                          text: 'Ocorreu um erro, tente novamente',
+                          type: 'danger',
+                          styling: 'bootstrap3'
+                        });
+                })
+                .always(function() {
+                    console.log("complete");
+                });
+                
             });
        });
 </script>
