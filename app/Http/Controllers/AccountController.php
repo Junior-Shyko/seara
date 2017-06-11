@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Account;
+use App\Box;
+use DB, Auth;
 
 class AccountController extends Controller
 {
@@ -14,7 +16,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        //
+       return "CConta";
     }
 
     /**
@@ -55,7 +57,15 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        //
+        //$desc_account = Account::where('accounts_id' , $id)->get();
+           // DB::enableQueryLog();
+        $desc_account = DB::table('accounts')
+                ->join('type_accounts', 'accounts.accounts_id_type_account' , '=' , 'type_accounts.type_accounts_id' )
+                ->where('accounts.accounts_id', '=', $id)
+                ->get();
+
+        //return DB::getQueryLog();
+    return response()->json([$desc_account]);
     }
 
     /**

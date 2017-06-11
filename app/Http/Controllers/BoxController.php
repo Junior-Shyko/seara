@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Box;
+use Auth , DB;
 
 class BoxController extends Controller
 {
@@ -14,9 +15,10 @@ class BoxController extends Controller
      */
     public function index()
     {
-        //
-        //$box = Box::where('')
-        return view('box.index');
+        //CREATE 2017-06-2017 BY EXCELLENCE SOFT
+        $box = Box::where('boxes_id_company' , Auth::user()->user_id_company);
+       
+        return view('box.index' , compact('box'));
     }
 
     /**
