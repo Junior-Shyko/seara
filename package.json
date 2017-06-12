@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "bower": "^1.8.0",
+    "datatables.net": "^1.10.15",
+    "datatables.net-dt": "^1.10.15",
     "elixir": "^0.1.2",
     "form-serializer": "^2.5.0",
     "sweetalert2": "^6.6.5"

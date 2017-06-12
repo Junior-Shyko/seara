@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Box;
 use App\FunctionGeneral;
 use Auth , DB;
+use Carbon\Carbon;
 
 class BoxController extends Controller
 {
@@ -61,19 +62,19 @@ class BoxController extends Controller
             //$request['box_balance']             = FunctionGeneral::moeda($request['boxes_balance_initial']);
             //$request['box_balance_end']         = FunctionGeneral::moeda($request['boxes_balance_initial']);
             
-            try {
-                $request->except('_token');
-                $input = $request->all();
-                
-                $box = Box::create($input);
+                try {
+                    $request->except('_token');
+                    $input = $request->all();
+                    
+                    $box = Box::create($input);
 
-                return response()->json(['message' , 'success']);
+                    return response()->json(['message' , 'success']);
 
-            } catch (Exception $e) {
+                } catch (Exception $e) {
 
-                return response()->json(['message' , 'error']);
+                    return response()->json(['message' , 'error']);
 
-            }
+                }
 
         }
     }
@@ -84,9 +85,15 @@ class BoxController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-        //
+        //2017-06-11
+        //lançamento
+        $month = Carbon::now()->month;
+        
+        $launch = Box::where('boxes_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
+        return response()->json($launch);
+
     }
 
     /**

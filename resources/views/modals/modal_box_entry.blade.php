@@ -74,8 +74,8 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" id="save_entry">Save changes</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                                <button type="button" class="btn btn-primary" id="save_entry">Salvar Lançamento <i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                             </div>
                         </div>
                     </div>

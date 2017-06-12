@@ -25,27 +25,18 @@
                     <div class="panel">
                         <div class="panel-body">
                             <div class="table-responsive">
-                                <table id="datatable" class="table table-striped table-bordered dataTable no-footer" role="grid" aria-describedby="datatable_info">
+                                <table id="table_launch" class="display" cellspacing="0" width="100%">
                                     <thead>
-                                        <tr role="row">
-                                            <th class="sorting_asc" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 191px;">Name</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 311px;">Position</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 144px;">Office</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 77px;">Age</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 142px;">Start date</th>
-                                            <th class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 112px;">Ação</th>
+                                        <tr>
+                                            <th>Dia</th>
+                                            <th>Descrição</th>
+                                           {{--  <th>Oferta</th>
+                                            <th>Outros</th>
+                                            <th>Saída</th>
+                                            <th>Ação</th> --}}
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr role="row" class="odd">
-                                            <td class="sorting_1">Airi Satou</td>
-                                            <td>Accountant</td>
-                                            <td>Tokyo</td>
-                                            <td>33</td>
-                                            <td>2008/11/28</td>
-                                            <td>$162,700</td>
-                                        </tr>
-                                    </tbody>
+                                    
                                 </table>
                             </div>
                         </div>
@@ -61,9 +52,23 @@
 @push('scripts')
 {{Html::script('js/box.js')}}
 {{Html::script('js/mask.min.js')}}
-{{Html::script('plugins/bootstrap-daterangepicker/moment.min.js')}}
-{{Html::script('plugins/bootstrap-daterangepicker/daterangepicker.js')}}
+{{-- {{Html::script('plugins/datatables.net/css/jquery.dataTables.css')}} --}}
+{{Html::script('plugins/datatables.net/js/jquery.dataTables.js')}}
 {{Html::script('plugins/form-serializer/jquery.serialize-object.js')}}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#table_launch').DataTable({
+            
+            serverSide: true,
+            ajax: '{{url('caixa/show')}}',
+            columns: [  
+                { data: 'boxes_day', name: 'boxes_day' },
+                { data: 'boxes_description', name: 'boxes_description' }]
+            }); 
+    }); 
+</script>
+
 
 <script type="text/javascript">
         $('#boxes_decimate').mask('000.000.000.000.000,00', {reverse: true});
@@ -148,6 +153,8 @@
                           type: 'success',
                           styling: 'bootstrap3'
                         });
+                        $('form#form_entry')[0].reset();
+                        $("#cod_account").focus();
                     }
                 })
                 .done(function() {
