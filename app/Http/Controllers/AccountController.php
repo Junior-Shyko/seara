@@ -64,7 +64,7 @@ class AccountController extends Controller
                 ->join('type_accounts', 'accounts.accounts_id_type_account' , '=' , 'type_accounts.type_accounts_id' )
                 ->where('accounts.accounts_id', '=', $id)
                 ->get();
-
+               
         //return DB::getQueryLog();
     return response()->json([$desc_account]);
     }

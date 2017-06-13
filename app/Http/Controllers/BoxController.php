@@ -92,6 +92,7 @@ class BoxController extends Controller
         $month = Carbon::now()->month;
         
         $launch = Box::where('boxes_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
+
         return response()->json($launch);
 
     }
@@ -125,8 +126,16 @@ class BoxController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        if($request->ajax()){
+            try {
+                $box  = Box::find($request['boxes_id']);
+                $box->delete();
+                return response()->json(['message' => 'success']);
+            } catch (Exception $e) {
+                return response()->json(['message' => 'Error: '.$e->getMessege()]);
+            }
+        }
     }
 }

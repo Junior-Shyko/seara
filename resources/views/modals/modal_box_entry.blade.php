@@ -38,11 +38,11 @@
                                     </div>
                                     <div class="divider-dashed"></div>
                                     <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback">
-                                        <input type="text" name="boxes_day"  class="form-control has-feedback-left" id="day_entry" placeholder="Dia">
+                                        <input type="text" name="boxes_day"  class="form-control has-feedback-left" id="boxes_day" placeholder="Dia">
                                         <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
                                     </div>
                                     <div class="col-md-9 col-sm-9 col-xs-12 form-group has-feedback">
-                                        <input type="text" name="boxes_description" class="form-control" id="description_account" placeholder="Histórico">
+                                        <input type="text" name="boxes_description" class="form-control" id="boxes_description" placeholder="Histórico">
                                         <span class="fa fa-edit form-control-feedback right" aria-hidden="true"></span>
                                     </div>
                                     <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
