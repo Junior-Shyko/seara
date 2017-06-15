@@ -13,6 +13,8 @@ use Yajra\Datatables\Facades\Datatables;
 
 class HomeController extends Controller
 {
+    use \App\Traits\ActionTable;
+
     /**
      * Create a new controller instance.
      *
@@ -102,11 +104,11 @@ class HomeController extends Controller
 
     private function actions($id)
     {
-        return $this->actionAllow($id);
-    }
-
-    private function actionAllow($id)
-    {
-        return "<button class='btn btn-primary btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='Aprovar Empresa' onclick='allowCompany( {$id} )' role='tooltip'> <i class='fa fa-check-square'></i> </button>";
+        return $this->actionButton(
+            $id,
+            'Aprovar Empresa',
+            'allowCompany',
+            'fa-check-square'
+        );
     }
 }

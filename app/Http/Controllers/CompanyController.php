@@ -8,9 +8,13 @@ use Illuminate\Http\Request;
 use Auth , DB;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Str;
+use Yajra\Datatables\Facades\Datatables;
+use Carbon\Carbon;
 
 class CompanyController extends Controller
 {
+    use \App\Traits\ActionTable;
+
     //SÓ PARA USUARIOS LOGADOS
     public function __construct()
     {
@@ -186,6 +190,71 @@ class CompanyController extends Controller
            
         }
     }
+
+    public function dataTable()
+    {
+        $company_id = Auth::user()->user_id_company;
+
+        $companies = Company::select([
+
+            'company_id',
+            'company_name',
+            'company_fantasy',
+            'company_cnpj',
+            'created_at'
+
+        ])
+        ->where('company_id', '<>', $company_id)
+        ->where('company_status', 0);
+
+        $dataTable = Datatables::of( $companies );
+
+        $dataTable->addColumn(
+            'company_admin',
+
+            function( $company )
+            {
+                $company = Company::find( $company->company_id );
+                return $company->users->where('user_id_profile', 3)->first()->name;
+            }
+        );
+
+        $dataTable->addColumn(
+
+            'action',
+
+            function( $company )
+            {
+                return $this->actions( $company->company_id );
+            }
+
+        );
+
+        $dataTable->editColumn(
+
+            'created_at',
+
+            function( $company )
+            {
+                $created_at = new Carbon( $company->created_at );
+                return $created_at;
+            }
+
+        );
+
+    }
+
+    private function actions( $company_id )
+    {
+        return $this->actionButton( 
+            $company_id, 
+            'Editar Empresa', 
+            'editCompany', 
+            'fa-pencil' 
+        );
+    }
+
+
 
     
 }
