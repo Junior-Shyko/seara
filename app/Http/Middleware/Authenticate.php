@@ -30,7 +30,7 @@ class Authenticate
         $company = Company::find( Auth::user()->user_id_company );
 
         //Caso a empresa não esteja ativa, o usuário é deslogado
-        if(Auth::check() && $company->company_status !== 1){
+        if(Auth::check() && $company->company_status != 1){
             Auth::logout();
             return redirect('login')->with(
                 'error',
