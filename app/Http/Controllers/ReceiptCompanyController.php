@@ -140,11 +140,11 @@ class ReceiptCompanyController extends Controller
   {
     $pdf_name = 'recibo-'.$receipt->receipt_date.'.pdf';
     ini_set('memory_limit', '-1');
+
     switch($request->vias)
     {
       case 1:
-      $id_company = Auth::user()->user_id_company;
-      $company    = Company::find($id_company);
+      $company    = Auth::user()->company;
       $pdf        = PDF::loadView('receipt-pdf.via1', compact('receipt' , 'company'));
       $pdf->setPaper('A4', 'report');
       $pdf->output();

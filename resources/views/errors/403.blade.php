@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>Gentellela Alela! | </title>
+    <title> Seara Contabilidade </title>
     
     <!-- Bootstrap -->
     <link href="{{ asset("css/bootstrap.min.css") }}" rel="stylesheet">
@@ -25,21 +25,11 @@
             <div class="col-middle">
                 <div class="text-center text-center">
                     <h1 class="error-number">403</h1>
-                    <h2>Access denied</h2>
-                    <p>Full authentication is required to access this resource. <a href="#">Report this?</a>
+                    <h2>Acesso negado</h2>
+                    <p>Você não tem permissão para acessar essa página.
                     </p>
                     <div class="mid_center">
-                        <h3>Search</h3>
-                        <form>
-                            <div class="col-xs-12 form-group pull-right top_search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search for...">
-                                    <span class="input-group-btn">
-                              <button class="btn btn-default" type="button">Go!</button>
-                          </span>
-                                </div>
-                            </div>
-                        </form>
+                        <a href="{{url('')}}" class="btn btn-primary">Página Inicial</a>
                     </div>
                 </div>
             </div>
