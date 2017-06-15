@@ -6,5 +6,7 @@ Homestead.json
 .idea
 /public/
 
+*.log
+
 deploy.conf
 

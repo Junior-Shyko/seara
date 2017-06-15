@@ -6,8 +6,13 @@ function baseURL( url )
   return SearaApp.baseURL + url + '/';
 }
 
+function asset( url )
+{
+  return SearaApp.assetURL + url;
+}
+
 $.LoadingOverlaySetup({
-  image: SearaApp.assetURL + 'appimg/ring.svg'
+  image: SearaApp.assetURL + 'img/ring.svg'
 });
 
 /**
@@ -74,7 +79,7 @@ var SearaLoader = (function(){
   {
     swal({
       title: title,
-      imageUrl: SearaApp.assetURL + 'appimg/ring.svg',
+      imageUrl: asset('img/ring.svg'),
       showConfirmButton: false
     })
   }

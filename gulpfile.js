@@ -154,4 +154,7 @@ elixir(function(mix) {
 
     // Font awesome
     mix.copy('vendor/bower_components/gentelella/vendors/font-awesome/fonts/', 'public/fonts');
+
+    // Imagens
+    mix.copy('resources/assets/img/', 'public/img/');
 });
