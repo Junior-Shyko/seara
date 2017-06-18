@@ -205,7 +205,8 @@ class CompanyController extends Controller
 
         ])
         ->where('company_id', '<>', $company_id)
-        ->where('company_status', 0);
+        ->where('company_status', 0)
+        ->orderBy('created_at', 'desc');
 
         $dataTable = Datatables::of( $companies );
 
@@ -237,7 +238,7 @@ class CompanyController extends Controller
             function( $company )
             {
                 $created_at = new Carbon( $company->created_at );
-                return $created_at;
+                return $created_at->format('d/m/Y à\s H:i:s');
             }
 
         );
