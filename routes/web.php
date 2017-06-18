@@ -28,15 +28,15 @@ Route::group(['prefix' => '/'], function(){
 
 // EMRPESAS
 /* ROTA PARA EMPRESA */
-Route::resource('companies', 'CompanyController');
 
 Route::group(['prefix' => 'companies'], function () {
-	Route::get('/{id}/edit' 		, 'CompanyController@edit');
-    Route::put('/update/{id}' 		, 'CompanyController@update');
-    Route::post('/alterar-status'	, 'CompanyController@alterStatus');
-	Route::delete('/delete' 		, 'CompanyController@destroy');
-	Route::post('/alterar-logo' 	, 'CompanyController@alterLogo');
+    Route::post('alterar-status'	, 'CompanyController@alterStatus');
+	Route::post('alterar-logo' 	, 'CompanyController@alterLogo');
+	Route::get('dataTable', 'CompanyController@dataTable');
 });
+
+Route::resource('companies', 'CompanyController');
+
 
 
 // USUÁRIOS

@@ -242,6 +242,8 @@ class CompanyController extends Controller
 
         );
 
+        return $dataTable->make(true);
+
     }
 
     private function actions( $company_id )
