@@ -52,8 +52,4 @@
 @push('scripts')
 <script type="text/javascript" language="javascript" src="{{asset('js/mask.min.js')}}"></script>
 <script type="text/javascript" language="javascript" src="{{asset('js/receipt.min.js')}}"></script>
-
-<script>
-var datatablesURL = "{{ route('receipt-company.datatables') }}";
-</script>
 @endpush

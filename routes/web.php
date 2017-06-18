@@ -49,7 +49,7 @@ Route::resource('receipt-company', 'ReceiptCompanyController');
 Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
 
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');
-Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData')->name('receipt-company.datatables');
+Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData');
 
 
 //ROTA PARA CAIXA

@@ -1,5 +1,6 @@
 var receiptCompany = new ResourceModel('receipt-company');
 var company = new ResourceModel('companies');
+var receiptTable;
 
 
 function packReceiptData()
@@ -44,7 +45,7 @@ function closeForm()
 
 function reloadTable()
 {
-  $("#receipts-table").DataTable().ajax.reload();
+  receiptTable.reloadTable();
 }
 
 /* IMPLEMENTAÇÃO DAS ACTIONS */
@@ -178,34 +179,24 @@ function deleteReceipt(id)
 
 $(document).ready(function() {
 
-  $('#receipts-table').DataTable({
-    processing: false,
-    serverSide: true,
-    ajax: datatablesURL,
-    columns: [
+  var colunas = [
       { data: 'receipt_received_from', name: 'receipt_received_from' },
       { data: 'receipt_reference', name: 'receipt_reference' },
       { data: 'receipt_value', name: 'receipt_value', className: 'no-break' },
       { data: 'receipt_local', name: 'receipt_local' },
       { data: 'receipt_date', name: 'receipt_date', className: 'no-break' },
       { data: 'action', name: 'action', orderable: false, searchable: false, className: 'no-break' }
-    ],
-    language: {
-      "lengthMenu": "Exibir _MENU_ recibos por página",
-      "zeroRecords": "Nenhum recibo cadastrado para essa pesquisa",
-      "infoEmpty": "Exibindo 0 de 0 recibos",
-      "emptyTable": "Nenhum recibo cadastrado",
-      "info": "Exibindo página _PAGE_ de _PAGES_",
-      "infoFiltered": "(filtrados de _MAX_ recibos)",
-      "search": "Pesquisar:",
-      "paginate": {
-        "previous": "Anterior",
-        "next": "Próximo",
-        "first": "Primeiro",
-        "last": "Último"
-      }
-    }
-  });
+  ];
+
+  receiptTable = new SearaTable( 
+    'receipts-table',
+    'recibo-empresa/datatable',
+    colunas,
+    'recibo',
+    'recibos'
+  );
+
+  receiptTable.loadTable();
 
   window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
 
