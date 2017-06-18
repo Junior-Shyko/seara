@@ -38,8 +38,6 @@ elixir(function(mix) {
 
     // PDF Receipts
     mix.styles([
-      'cssbase-min.css',
-      'cssreset-min.css',
       'receipt-pdf.css'
     ], 'public/css/receipt-pdf.min.css');
 
