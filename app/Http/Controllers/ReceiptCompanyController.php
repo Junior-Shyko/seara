@@ -173,7 +173,8 @@ class ReceiptCompanyController extends Controller
         'receipt_date'
       ]
     )
-    ->where('receipt_id_company',  Auth::user()->user_id_company);
+    ->where('receipt_id_company',  Auth::user()->user_id_company)
+    ->orderBy('receipt_id', 'desc');
 
     return Datatables::of($receipts)
     ->addColumn(

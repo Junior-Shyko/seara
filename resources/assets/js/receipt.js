@@ -183,7 +183,6 @@ $(document).ready(function() {
     serverSide: true,
     ajax: datatablesURL,
     columns: [
-      { data: 'receipt_id', name: 'receipt_id' },
       { data: 'receipt_received_from', name: 'receipt_received_from' },
       { data: 'receipt_reference', name: 'receipt_reference' },
       { data: 'receipt_value', name: 'receipt_value', className: 'no-break' },
@@ -205,8 +204,7 @@ $(document).ready(function() {
         "first": "Primeiro",
         "last": "Último"
       }
-    },
-    order: [[0, "desc"]]
+    }
   });
 
   window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');

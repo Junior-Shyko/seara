@@ -54,7 +54,6 @@ function deleteUser(id)
 $(document).ready(function(){
 
   var colunas = [
-  { data: 'id', name: 'id' },
   { data: 'name', name: 'name' },
   { data: 'email', name: 'email' },
   { data: 'profile_name', name: 'profile_name' },
