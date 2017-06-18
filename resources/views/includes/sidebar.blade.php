@@ -54,7 +54,7 @@
               @endif
               <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                  <li><a href="#">Comun</a></li>
+                  <li><a href="{{ url('recibo-comum') }}">Comum</a></li>
                   <li><a href="{{url('recibo-empresa')}}">Empresa</a></li>
                   <li><a href="#">R.P.A</a></li>
                 </ul>

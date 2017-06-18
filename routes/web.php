@@ -44,12 +44,19 @@ Route::get('users/datatable', 'UserController@dataTable')->name('users.datatable
 Route::resource('users', 'UserController');
 // Route::get('usuarios', 'UserController@anyData');
 
-//ROTA PARA RECIBOS
-Route::resource('receipt-company', 'ReceiptCompanyController');
+//ROTA PARA RECIBOS - Empresa
 Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
-
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');
 Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData');
+
+Route::resource('receipt-company', 'ReceiptCompanyController');
+
+// Recibo - Comum
+Route::get('recibo-comum/{receipt}/pdf', 'ReceiptCommonController@generatePDF');
+Route::get('recibo-comum', 'ReceiptCommonController@index');
+Route::get('recibo-comum/dataTable', 'ReceiptCommonController@dataTable');
+
+Route::resource('receipt-common', 'ReceiptCommonController');
 
 
 //ROTA PARA CAIXA
