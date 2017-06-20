@@ -21,7 +21,8 @@ class BoxController extends Controller
         $box = Box::where('boxes_id_company' , Auth::user()->user_id_company);
         $type_account = DB::table('type_accounts')->where('type_accounts_id_company' , Auth::user()->user_id_company)->orderBy('type_accounts_id')
                                 ->pluck('type_accounts_name','type_accounts_id');
-        //dd($type_account);
+
+       
         return view('box.index' , compact('box' , 'type_account'));
     }
 
@@ -137,5 +138,10 @@ class BoxController extends Controller
                 return response()->json(['message' => 'Error: '.$e->getMessege()]);
             }
         }
+    }
+
+    public function balance_initial()
+    {
+        return view('box.setting');
     }
 }

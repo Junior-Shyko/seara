@@ -53,9 +53,12 @@ Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData')->name
 
 
 //ROTA PARA CAIXA
-Route::resource('caixa' , 'BoxController');
+
 Route::post('caixa/store' , 'BoxController@store');
 Route::post('caixa/delete' , 'BoxController@destroy');
+Route::get('caixa/saldo-inicial' , 'BoxController@balance_initial');
+Route::resource('caixa' , 'BoxController');
+
 Route::resource('conta' , 'AccountController');
 //
 
