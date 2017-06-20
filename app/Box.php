@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Box extends Model
 {
-    protected $table 		= 'boxes';
-    protected $primaryKey 	= 'boxes_id';
-    protected $fillable	 	= ['boxes_id_account' ,'boxes_day', 'boxes_description' ,'boxes_id_user' , 'boxes_id_company' , 'boxes_balance_initial' , 'boxes_balance_previous' ,'boxes_decimate' , 'box_offer' , 'box_end' , 'box_balance' , 'box_balance_end'];
+    protected $table 		= 'entries';
+    protected $primaryKey 	= 'entries_id';
+    protected $fillable	 	= ['entries_id_account' ,'entries_day', 'entries_description' , 'entries_id_company' , 'entries_balance_initial' , 'entries_balance_previous' ,'entries_decimate' , 'entries_offer' , 'entries_end' , 'entries_balance' , 'entries_balance_end'];
 
 
 }

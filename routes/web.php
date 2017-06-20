@@ -64,6 +64,7 @@ Route::resource('receipt-common', 'ReceiptCommonController');
 Route::post('caixa/store' , 'BoxController@store');
 Route::post('caixa/delete' , 'BoxController@destroy');
 Route::get('caixa/saldo-inicial' , 'BoxController@balance_initial');
+Route::get('caixa/abrir-caixa' , 'BoxController@box_open');
 Route::resource('caixa' , 'BoxController');
 
 Route::resource('conta' , 'AccountController');

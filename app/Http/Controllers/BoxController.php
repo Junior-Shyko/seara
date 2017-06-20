@@ -18,11 +18,11 @@ class BoxController extends Controller
     public function index()
     {
         //CREATE 2017-06-2017 BY EXCELLENCE SOFT
-        $box = Box::where('boxes_id_company' , Auth::user()->user_id_company);
+        $box = Box::where('entries_id_company' , Auth::user()->user_id_company)->get();
         $type_account = DB::table('type_accounts')->where('type_accounts_id_company' , Auth::user()->user_id_company)->orderBy('type_accounts_id')
                                 ->pluck('type_accounts_name','type_accounts_id');
 
-       
+      
         return view('box.index' , compact('box' , 'type_account'));
     }
 
@@ -92,7 +92,7 @@ class BoxController extends Controller
         //lançamento
         $month = Carbon::now()->month;
         
-        $launch = Box::where('boxes_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
+        $launch = Box::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
 
         return response()->json($launch);
 

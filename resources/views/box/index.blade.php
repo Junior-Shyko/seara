@@ -7,11 +7,15 @@
 @section('main_container')
 <!-- page content -->
 <div class="right_col" role="main">
+
     <div class="row">
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Caixa <small>Registrar Caixa</small></h2>
+                    
+
+
                     <a class="btn btn-app pull-right" data-toggle="modal" data-target="#create_account">
                     <i class="fa fa-list-ol" aria-hidden="true"></i> Criar Conta
                     </a>
@@ -20,6 +24,10 @@
                 </div>
                 <div class="col-md-12">
                     <a href="#lancar_conta" data-toggle="modal"><button class="btn btn-primary pull-right"> <i class="fa fa-plus-circle" aria-hidden="true"></i> Lançar registro</button></a>
+                    @if(count($box) == 0)
+                    <a href="#modal_open_box" data-toggle="modal"><button class="btn btn-success pull-left"> <i class="fa fa-money" aria-hidden="true"></i> Abrir o primeiro caixa</button></a>
+                    @endif
+                    @include('modals.modal_open_box')
                 </div>
                 <div class="x_content">
                     <div class="panel">
@@ -67,14 +75,14 @@
     
         },
         columns: [  
-            { data: 'boxes_day', name: 'boxes_day' },
-            { data: 'boxes_description', name: 'boxes_description' },
-            { data: 'boxes_decimate', name: 'boxes_decimate' },
-            { data: 'box_offer', name: 'box_offer' },
-            { data: 'boxes_other', name: 'boxes_other' },
-            { data: 'box_end', name: 'box_end' },
+            { data: 'entries_day', name: 'entries_day' },
+            { data: 'entries_description', name: 'entries_description' },
+            { data: 'entries_decimate', name: 'entries_decimate' },
+            { data: 'entries_offer', name: 'entries_offer' },
+            { data: 'entries_other', name: 'entries_other' },
+            { data: 'entries_end', name: 'entries_end' },
             {
-                 data: "boxes_id",
+                 data: "entries_id",
                  bSortable: false,
                  mRender: function (data) { return '<a href="#" class="btn btn-info" ><i class="fa fa-pencil" style="font-size: 12px;" data-original-title="Alterar"></i></a> <a href="#" class="btn btn-danger" onclick="delete_launch('+data+')" ><i class="fa fa-trash" style="font-size: 12px;" title="Excluir"></i></a>'; }
              }
