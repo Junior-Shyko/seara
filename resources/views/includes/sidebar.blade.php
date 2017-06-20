@@ -10,7 +10,6 @@
         <div class="profile clearfix">
             <div class="profile_pic">
                 @if(empty(Auth::user()->users_avatar))
-                   
                     <img src="{{ url('img/default-user-avatar.png') }}" alt="Avatar de {{ Auth::user()->name }}" class="img-circle profile_img">
                 @else
                     <img src="{{ url('img/default-user-avatar.png') }}" alt="Avatar de {{ Auth::user()->name }}" class="img-circle profile_img">
@@ -33,11 +32,19 @@
               <li>
                 <a href="{{url('/')}}"><i class="fa fa-home"></i> Home</a>
               </li>
+              @if(Auth::user()->profile == 'admin' || Auth::user()->profile == 'owner')
               <li>
                 <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
               </li>
-              @if(Auth::user()->user_id_profile == 1)
-                <li><a><i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span></a>
+              @endif
+              @if(Auth::user()->profile == 'owner')
+                <li>
+                  <a href="{{url('companies')}}"><i class="fa fa-building"></i> Igrejas</a>
+                </li>
+                <li>
+                  <a>
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span>
+                  </a>
                   <ul class="nav child_menu">
                     <li><a href="{{url('cadastro')}}">Igreja</a></li>
                     <li><a href="#">Usuário</a></li>
@@ -47,7 +54,7 @@
               @endif
               <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                  <li><a href="#">Comun</a></li>
+                  <li><a href="{{ url('recibo-comum') }}">Comum</a></li>
                   <li><a href="{{url('recibo-empresa')}}">Empresa</a></li>
                   <li><a href="#">R.P.A</a></li>
                 </ul>

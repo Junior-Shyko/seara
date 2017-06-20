@@ -1,18 +1,68 @@
-  <img src="{{url('img/logo/'.$company->company_brand_logo)}}">
-  <div class="title">
-    <h3 class="receipt">RECIBO </h3>
-    <h3 class="value" style="">VALOR: R$ {{ number_format($receipt->receipt_value,2,',','.') }} </h3>
-  </div>
-  <div class="first-section">
-    <p><strong>Recebi(emos) de:</strong> {{ $receipt->receipt_received_from }}</p>
-    <p><strong>A importância de:</strong> {{ ucfirst($receipt->receipt_extensive_value) }}</p>
-    <p><strong>Referente a:</strong> {{ $receipt->receipt_reference }}</p>
-  </div>
-  <div class="second-section">
-    <p>Para maior clareza firmo(amos) o presente</p>
-  </div>
-  <div class="center">
-    <p class="data"> {{ $receipt->receipt_local }}, {{ $receipt->extensiveDate() }}</p>
-    <hr>
-    <p class="contador">{{ $receipt->receipt_emitter }} {{ $receipt->receipt_document }}</p>
-  </div>
+<table border="0">
+  <tr style="height: 99;">
+    <td colspan="2">
+      <img src="{{asset('img/logo.png')}}" style="width: 100%; display: block;">
+    </td>
+    <td colspan="2"></td>
+    <td colspan="4" class="text-center">
+      ACESSORIA E SERVIÇOS<br>
+      EDVAN OLIVEIRA FARIAS<br>
+      CRC: 9409/O-3
+    </td>
+    <td colspan="4" class="text-right">
+{{--       {{ $company->company_addr_street }}, {{ $company->company_addr_number }}<br>
+      {{ $company->company_addr_district }}<br>
+      {{ $company->company_addr_cep }} - {{ $company->company_addr_city }} - {{ $company->company_addr_state }}<br>
+      {{ $company->company_phone }} / {{ $company->company_mobile }}<br> --}}
+      Rua Afonso Lopes, 862<br>
+      Parque Dois Irmãos<br>
+      CEP 60742-670 - Fortaleza - CE<br>
+      <strong>Fone: (85) 3493.4647 / 98813.3053</strong><br>
+      e-mail: contabilidade2006@oi.com.br<br>
+    </td>
+  </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr>
+    <td colspan="4"></td>
+    <td colspan="4" class="text-center">
+      <strong>RECIBO</strong>
+    </td>
+    <td colspan="4" class="text-right">
+      <strong>VALOR: R$ {{ number_format($receipt->receipt_value,2,',','.') }}</strong>
+    </td>
+  </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr>
+    <td colspan="2" class="text-bold top-align">Recebi(emos) de: </td>
+    <td colspan="10" class="top-align">{{ mb_strtoupper($receipt->receipt_received_from) }}</td>
+  </tr>
+  <tr>
+    <td colspan="2" class="text-bold top-align">A importância de: </td>
+    <td colspan="10" class="top-align">{{ mb_strtoupper($receipt->receipt_extensive_value) }}</td>
+  </tr>
+  <tr>
+    <td colspan="2" class="text-bold top-align">Referente a: </td>
+    <td colspan="10" class="top-align">{{ mb_strtoupper($receipt->receipt_reference) }}</td>
+  </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr>
+    <td colspan="12">Para maior clareza firmo(amos) o presente</td>
+  </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr>
+    <td colspan="1"></td>
+    <td colspan="10" class="text-center">{{ mb_strtoupper($receipt->receipt_local) }}, {{ mb_strtoupper($receipt->extensiveDate()) }}</td>
+    <td colspan="1"></td>
+  </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr>
+    <td colspan="3"></td>
+    <td colspan="6"><hr></td>
+    <td colspan="3"></td>
+  </tr>
+  <tr>
+    <td colspan="3"></td>
+    <td colspan="6" class="text-center">{{ $receipt->receipt_emitter }} {{ $receipt->receipt_document }}</td>
+    <td colspan="3"></td>
+  </tr>
+</table> 

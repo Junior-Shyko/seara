@@ -28,15 +28,15 @@ Route::group(['prefix' => '/'], function(){
 
 // EMRPESAS
 /* ROTA PARA EMPRESA */
-Route::resource('companies', 'CompanyController');
 
 Route::group(['prefix' => 'companies'], function () {
-	Route::get('/{id}/edit' 		, 'CompanyController@edit');
-    Route::put('/update/{id}' 		, 'CompanyController@update');
-    Route::post('/alterar-status'	, 'CompanyController@alterStatus');
-	Route::delete('/delete' 		, 'CompanyController@destroy');
-	Route::post('/alterar-logo' 	, 'CompanyController@alterLogo');
+    Route::post('alterar-status'	, 'CompanyController@alterStatus');
+	Route::post('alterar-logo' 	, 'CompanyController@alterLogo');
+	Route::get('dataTable', 'CompanyController@dataTable');
 });
+
+Route::resource('companies', 'CompanyController');
+
 
 
 // USUÁRIOS
@@ -44,12 +44,19 @@ Route::get('users/datatable', 'UserController@dataTable')->name('users.datatable
 Route::resource('users', 'UserController');
 // Route::get('usuarios', 'UserController@anyData');
 
-//ROTA PARA RECIBOS
-Route::resource('receipt-company', 'ReceiptCompanyController');
+//ROTA PARA RECIBOS - Empresa
 Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
-
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');
-Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData')->name('receipt-company.datatables');
+Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData');
+
+Route::resource('receipt-company', 'ReceiptCompanyController');
+
+// Recibo - Comum
+Route::get('recibo-comum/{receipt}/pdf', 'ReceiptCommonController@generatePDF');
+Route::get('recibo-comum', 'ReceiptCommonController@index');
+Route::get('recibo-comum/dataTable', 'ReceiptCommonController@dataTable');
+
+Route::resource('receipt-common', 'ReceiptCommonController');
 
 
 //ROTA PARA CAIXA

@@ -46,6 +46,33 @@ class User extends Authenticatable
 		'password', 'remember_token',
 	];
 
+	protected $appends = [
+		'profile'
+	];
+
+	public function getProfileAttribute()
+	{
+		$id_profile = $this->attributes['user_id_profile'];
+		$profile = '';
+
+		switch ($id_profile) 
+		{
+			case 1:
+				$profile = 'owner';
+				break;
+			
+			case 2:
+				$profile = 'employee';
+				break;
+
+			case 3:
+				$profile = 'admin';
+				break;
+		}
+
+		return $profile;
+	}
+
 	/**
 	* Envia a notificação de redefinição de senha
 	*

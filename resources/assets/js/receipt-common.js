@@ -190,7 +190,7 @@ $(document).ready(function() {
 
   receiptTable = new SearaTable( 
     'receipts-table',
-    'recibo-empresa/datatable',
+    'recibo-comum/dataTable',
     colunas,
     'recibo',
     'recibos'

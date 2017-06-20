@@ -12,7 +12,7 @@
       <div class="x_panel">
         @include('msg.message')
         <div class="x_title">
-          <h2>Recibos <small>Recibos emitidos pela empresa</small></h2>
+          <h2>Recibos <small>Recibos emitidos para a empresa</small></h2>
           <button class="btn btn-primary pull-right" onclick="createReceipt( {{ $company->company_id }} )">Novo Recibo</button>
           <div class="clearfix"></div>
         </div>
@@ -21,7 +21,7 @@
             <table id="receipts-table" class="table table-hover">
               <thead>
                 <tr>
-                  <th>Recebido de</th>
+                  <th>Emitente</th>
                   <th>Referente a</th>
                   <th>Valor</th>
                   <th>Local</th>
@@ -46,10 +46,10 @@
 @endsection
 
 @push('stylesheets')
-  <link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}">
+  {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}"> --}}
 @endpush
 
 @push('scripts')
-<script type="text/javascript" language="javascript" src="{{asset('js/mask.min.js')}}"></script>
-<script type="text/javascript" language="javascript" src="{{asset('js/receipt.min.js')}}"></script>
+{{-- <script type="text/javascript" language="javascript" src="{{asset('js/mask.min.js')}}"></script> --}}
+{{-- <script type="text/javascript" language="javascript" src="{{asset('js/receipt-common.min.js')}}"></script> --}}
 @endpush

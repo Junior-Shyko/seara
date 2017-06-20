@@ -1,81 +1,44 @@
-body {
-  margin: 0px;
-  padding: 0px;
-}
+  @page { 
+    margin: 5px; 
+  }
 
-strong {
-  font-weight: bold;
-}
+  body { 
+    margin: 5px; 
+  }
 
-h3 {
-  font-size: 16px;
-  font-weight: bold;
-}
+  td {
+    width: 49.75;
+  }
 
-.container {
-  border: 1px solid black;
-  font-size: 11pt;
-}
+  table {
+    width: 597;
+    border: 1px solid;
+    table-layout: fixed;
+    padding: 5;
+    font-size: 10pt;
+    font-family: sans-serif;
+  }
 
-.title {
-  position: relative;
-  margin-bottom: 0px;
-  padding: 0px;
-}
+  .text-center {
+    text-align: center;
+  }
 
-.center {
-  text-align: center;
-}
+  .text-right {
+    text-align: right;
+  }
 
-.value {
-  position: absolute;
-  top: 0;
-  right: 20px;
-  margin-bottom: 0px;
-}
+  .text-left {
+    text-align: left;
+  }
 
-.receipt {
-  text-align: center;
-  margin: 0px;
-}
+  .text-bold {
+    font-weight: bold;
+  }
 
-#segundaVia {
-  margin-top: 20px;
-}
+  .offset-5 {
+    height: 5;
+  }
 
-p {
-  margin: 0 20px 10px;
-  clear: both;
-}
-
-hr {
-  border-top: 1px solid black;
-  width: 300pt;
-  margin: 0px auto 5px;
-}
-
-.contador {
-  margin: 0px 0px 20px;
-}
-
-img {
-  width: 100%;
-  height: auto;
-}
-
-.first-section {
-  margin: 0px 0px;
-}
-
-.second-section p {
-  margin-top: 3px;
-  margin-bottom: 3px;
-}
-
-.second-section {
-  margin: 20px 0px 20px;
-}
-
-.data {
-  margin-bottom: 40px;
-}
+  .top-align {
+    vertical-align: top;
+  }

@@ -4,9 +4,9 @@ Homestead.yaml
 Homestead.json
 .env
 .idea
-/public/*
+/public/
 
-!/public/img
+*.log
 
 deploy.conf
 

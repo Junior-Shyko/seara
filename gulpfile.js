@@ -38,8 +38,6 @@ elixir(function(mix) {
 
     // PDF Receipts
     mix.styles([
-      'cssbase-min.css',
-      'cssreset-min.css',
       'receipt-pdf.css'
     ], 'public/css/receipt-pdf.min.css');
 
@@ -154,4 +152,7 @@ elixir(function(mix) {
 
     // Font awesome
     mix.copy('vendor/bower_components/gentelella/vendors/font-awesome/fonts/', 'public/fonts');
+
+    // Imagens
+    mix.copy('resources/assets/img/', 'public/img/');
 });

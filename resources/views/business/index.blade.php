@@ -25,34 +25,20 @@
           <div class="panel">
             <div class="panel-body">
               <div class="table-responsive">
-                 <table class="table table-bordered table-hover">
-                <thead>
-                  <tr>
-                    <th>Razão Social</th>
-                    <th>CNPJ</th>
-                    <th>Responsável</th>
-                    <th>Data Cadastro</th>
-                    <th>Ação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($company as $companys)
-                  
-                  <tr>
-                    <td>{{ $companys->company_name }}</td>
-                    <td>{{ $companys->company_cnpj }}</td>
-                    <td>{{ $companys->company_cnpj }}</td>
-
-                    <td>{{ date('d/m/Y' , strtotime($companys->created_at))}}</td>
-                    <td>
-                      <a href="{{url('companies/'.$companys->company_id.'/edit')}}" class="btn btn-default" title="Editar"  ><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                      
-                    </td>
-                  </tr>
-                  
-                  @endforeach
-                </tbody>
-              </table>
+                <table class="table table-hover" id="company-table">
+                  <thead>
+                    <tr>
+                      <th>Razão Social</th>
+                      <th>Fantasia</th>
+                      <th>CNPJ</th>
+                      <th>Responsável</th>
+                      <th>Data Cadastro</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
               </div>
             </div>
             <div class="panel-footer">
@@ -71,13 +57,36 @@
 </div>
 <!-- /page content -->
 
-<!-- footer content -->
-<footer>
-  <div class="pull-right">
-    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-  </div>
-  <div class="clearfix"></div>
-</footer>
-<!-- /footer content -->
-
 @endsection
+
+@push('scripts')
+
+<script>
+  
+var companyTable;
+
+$(document).ready(function(){
+
+  var colunas = [
+    { data: 'company_name', name: 'company_name' },
+    { data: 'company_fantasy', name: 'company_fantasy' },
+    { data: 'company_cnpj', name: 'company_cnpj' },
+    { data: 'company_admin', name: 'company_admin' },
+    { data: 'created_at', name: 'created_at' },
+    { data: 'action', name: 'action', orderable: false, searchable: false }
+  ];
+
+  companyTable = new SearaTable('company-table', 'companies/dataTable', colunas, 'igreja', 'igrejas');
+
+  companyTable.loadTable();
+});
+
+function editCompany(companyID)
+{
+  console.log(companyID);
+}
+
+
+</script>
+
+@endpush

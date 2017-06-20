@@ -37,7 +37,6 @@
         <table id="users-table" class="table table-hover">
           <thead>
             <tr>
-              <th>#</th>
               <th>Nome</th>
               <th>Email</th>
               <th>Perfil</th>

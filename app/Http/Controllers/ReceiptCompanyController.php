@@ -138,34 +138,27 @@ class ReceiptCompanyController extends Controller
 
   public function generatePDF(Request $request, ReceiptCompany $receipt)
   {
+
+    PDF::setOptions([
+
+        'dpi' => 72,
+        'defaultPaperSize' => 'a4'
+
+    ]);
+
     $pdf_name = 'recibo-'.$receipt->receipt_date.'.pdf';
+
+    $vias = $request->vias;
+    $company = Auth::user()->company;
+
+    $pdf = PDF::loadView('receipt-pdf.vias', compact('vias', 'company', 'receipt'));
+    
     ini_set('memory_limit', '-1');
-    switch($request->vias)
-    {
-      case 1:
-      $id_company = Auth::user()->user_id_company;
-      $company    = Company::find($id_company);
-      $pdf        = PDF::loadView('receipt-pdf.via1', compact('receipt' , 'company'));
-      $pdf->setPaper('A4', 'report');
-      $pdf->output();
-      $dom_pdf    = $pdf->getDomPDF();
 
-      $canvas = $dom_pdf ->get_canvas();
-      /*page_text(pos_horizontal,pos_vertical , texto , null , tamanho, cor_em_rgb)
-      */
-      $canvas->page_text(530, 800, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-      return $pdf->stream($pdf_name);
-
-      break;
-
-      case 2:
-      return PDF::loadView('receipt-pdf.via2', compact('receipt'))->stream($pdf_name);
-      break;
-    }
+    return $pdf->stream($pdf_name);
 
     // Caso a requisição seja inválida, retorno para a lista de recibos
-    return redirect('/recibo-empresa');
+    // return redirect('/recibo-empresa');
   }
 
   public function anyData()
@@ -180,7 +173,8 @@ class ReceiptCompanyController extends Controller
         'receipt_date'
       ]
     )
-    ->where('receipt_id_company',  Auth::user()->user_id_company);
+    ->where('receipt_id_company',  Auth::user()->user_id_company)
+    ->orderBy('receipt_id', 'desc');
 
     return Datatables::of($receipts)
     ->addColumn(
