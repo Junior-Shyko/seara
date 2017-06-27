@@ -144,4 +144,9 @@ class BoxController extends Controller
     {
         return view('box.setting');
     }
+
+    public function open_box(Request $request)
+    {
+        return $request->all();
+    }
 }

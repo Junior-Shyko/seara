@@ -1,8 +1,9 @@
 @extends('layouts.blank')
 @push('stylesheets')
 <!-- Example -->
-<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
-{{Html::style('plugins/bootstrap-daterangepicker/daterangepicker.css')}}
+<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->{{-- 
+{{Html::style('plugins/bootstrap-daterangepicker/daterangepicker.css')}} --}}
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 @endpush
 @section('main_container')
 <!-- page content -->
@@ -13,9 +14,6 @@
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Caixa <small>Registrar Caixa</small></h2>
-                    
-
-
                     <a class="btn btn-app pull-right" data-toggle="modal" data-target="#create_account">
                     <i class="fa fa-list-ol" aria-hidden="true"></i> Criar Conta
                     </a>
@@ -23,7 +21,16 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="col-md-12">
-                    <a href="#lancar_conta" data-toggle="modal"><button class="btn btn-primary pull-right"> <i class="fa fa-plus-circle" aria-hidden="true"></i> Lançar registro</button></a>
+                @if(count($box) == 0)
+                    @php
+                    $disabled = 'disabled';
+                    @endphp
+                @else
+                    @php
+                    $disabled = '';
+                    @endphp   
+                @endif
+                    <a href="#lancar_conta" data-toggle="modal"><button class="btn btn-primary pull-right {{$disabled}}" {{$disabled}}> <i class="fa fa-plus-circle" aria-hidden="true"></i> Lançar registro</button></a>
                     @if(count($box) == 0)
                     <a href="#modal_open_box" data-toggle="modal"><button class="btn btn-success pull-left"> <i class="fa fa-money" aria-hidden="true"></i> Abrir o primeiro caixa</button></a>
                     @endif
@@ -64,6 +71,10 @@
 {{Html::script('plugins/datatables.net/css/jquery.dataTables.css')}}
 {{Html::script('plugins/datatables.net/js/jquery.dataTables.js')}}
 {{Html::script('plugins/form-serializer/jquery.serialize-object.js')}}
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
     
@@ -150,7 +161,7 @@
     $('#box_other').mask('000.000.000.000.000,00', {reverse: true});
     $('#box_exit').mask('000.000.000.000.000,00', {reverse: true});
     
-    $(function() {
+$(function() {
     var route       = '{{url('conta')}}';
     var route_box   = '{{url('caixa')}}';
     var token  =  {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') };
@@ -247,8 +258,18 @@
             
         });
     
-       
+
+});
+
+$(document).ready(function() {
+    $("#date_box_open").daterangepicker({
+            singleDatePicker: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            showDropdowns: true
     });
+});
 </script>
 @endpush
 <!-- /page content -->
