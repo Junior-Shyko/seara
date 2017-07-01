@@ -3,7 +3,7 @@
 @push('stylesheets')
 <!-- Example -->
 <!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
-{{Html::style('css/home.min.css')}}
+{{-- {{Html::style('css/home.min.css')}} --}}
 <style type="text/css">
 	.ui-button ui-corner-all ui-widget{
 		float: left;

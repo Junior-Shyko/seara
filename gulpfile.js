@@ -85,8 +85,8 @@ elixir(function(mix) {
 
     //Business - Company
     mix.scripts([
-      './vendor/bower_components/gentelella/vendors/bootstrap-fileinput/js/fileinput.js',
-      './vendor/bower_components/gentelella/vendors/bootstrap-fileinput/js/locales/pt-BR.js',
+      './vendor/bower_components/bootstrap-fileinput/js/fileinput.js',
+      './vendor/bower_components/bootstrap-fileinput/js/locales/pt-BR.js',
       'company.js'
     ],'public/js/company.min.js');
 
@@ -106,6 +106,7 @@ elixir(function(mix) {
     // Máscaras
     mix.scripts([
       './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+      'jquery.maskMoney.js',
       'mask.js'
     ], 'public/js/mask.min.js');
 
@@ -129,11 +130,22 @@ elixir(function(mix) {
 
     mix.scripts([
       './vendor/bower_components/gentelella/vendors/jquery-ui/jquery-ui.min.js',
-      'plugins/fastclick.js',
-      'plugins/nprogress.js',
-      'plugins/icheck.js',
+      './vendor/bower_components/gentelella/vendors/iCheck/icheck.min.js',
       'home.js' 
     ], 'public/js/home.min.js');
+
+    // Caixa
+
+    mix.scripts(
+
+      [
+        './vendor/bower_components/jquery-serialize-object/jquery.serialize-object.js',
+        'box.js'
+      ],
+
+      'public/js/box.min.js'
+
+    );
 
     /**************/
     /* Copy Fonts */

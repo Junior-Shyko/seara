@@ -35,6 +35,8 @@
     "jquery-mask-plugin": "^1.4.10",
     "js-cookie": "^2.1.4",
     "gasparesganga-jquery-loading-overlay": "^1.5.3",
-    "sweetalert2": "^6.6.4"
+    "sweetalert2": "^6.6.4",
+    "jquery-serialize-object": "2.5.0",
+    "bootstrap-fileinput": "4.4.2"
   }
 }
