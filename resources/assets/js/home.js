@@ -11,7 +11,7 @@ $(document).ready(function(){
 	  { data: 'action', name: 'action', orderable: false, searchable: false }
 	];
 
-	companyTable = new SearaTable('company-table', 'datatable', colunas, 'igreja', 'igrejas');
+	companyTable = new SearaTable('company-table', 'datatable', colunas);
 
 	console.log( companyTable );
 

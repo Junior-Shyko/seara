@@ -188,7 +188,7 @@ var SearaAjax = (function(){
 function SearaTable(tableID, url, columns, singular = 'registro', plural = 'registros'){
 
   this.tableID = tableID;
-  this.url = baseURL(url);
+  this.url = url;
   this.columns = columns;
   this.singular = singular;
   this.plural = plural;
@@ -222,4 +222,5 @@ SearaTable.prototype.loadTable = function (){
         }
       }
     });
+    
 }
