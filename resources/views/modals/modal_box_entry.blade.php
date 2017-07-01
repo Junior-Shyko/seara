@@ -53,7 +53,7 @@
                                         <span class="fa fa-money form-control-feedback left" id="" aria-hidden="true"></span>
                                     </div>
                                     <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
-                                        <input type="text" name="box_offer" class="form-control has-feedback-left" id="box_offer" placeholder="Oferta">
+                                        <input type="text" name="entries_offer" class="form-control has-feedback-left" id="box_offer" placeholder="Oferta">
                                         <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                                     </div>
                                     <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Box;
+use App\Entry;
 use App\FunctionGeneral;
 use Auth , DB;
 use Carbon\Carbon;
@@ -18,12 +19,13 @@ class BoxController extends Controller
     public function index()
     {
         //CREATE 2017-06-2017 BY EXCELLENCE SOFT
-        $box = Box::where('entries_id_company' , Auth::user()->user_id_company)->get();
+        $box = Box::where('boxies_id_company' , Auth::user()->user_id_company)->get();
+
         $type_account = DB::table('type_accounts')->where('type_accounts_id_company' , Auth::user()->user_id_company)->orderBy('type_accounts_id')
                                 ->pluck('type_accounts_name','type_accounts_id');
 
-      
-        return view('box.index' , compact('box' , 'type_account'));
+        $entry = Entry::where('entries_id_company' ,  Auth::user()->user_id_company)->get();
+        return view('box.index' , compact('box' , 'type_account' , 'entry' ));
     }
 
     /**
@@ -45,21 +47,25 @@ class BoxController extends Controller
     public function store(Request $request)
     {
         //Create 2017-06-11 by Excellence Soft - Junior Oliveira
-        //dd($request->all());
+        /*
+
+        ESSE CÓDIGO DEVE ESTÁ NO ENTRYCONTROLLER
+
+        */
         if($request->ajax())
         {
-            $request['boxes_id_user']           = Auth::user()->id;
-            $request['boxes_id_company']        =Auth::user()->user_id_company;
+            $request['entries_id_users']           = Auth::user()->id;
+            $request['entries_id_company']        =Auth::user()->user_id_company;
             //$request['boxes_balance_initial']   = FunctionGeneral::moeda($request['boxes_balance_initial']);
             //$request['boxes_balance_previous']  = FunctionGeneral::moeda($request['boxes_balance_initial']);
-            $boxes_decimate                 = $request['boxes_decimate'];    
-            $request['boxes_decimate']      = FunctionGeneral::moeda($boxes_decimate );
-            $box_offer                      = $request['box_offer'];
-            $request['box_offer']           = FunctionGeneral::moeda($box_offer);
-            $boxes_other                    = $request['boxes_other'];
-            $request['boxes_other']         = FunctionGeneral::moeda($boxes_other);
-            $box_end                        = $request['box_end'];
-            $request['box_end']             = FunctionGeneral::moeda($box_end);
+            $boxes_decimate                 = $request['entries_decimate'];    
+            $request['entries_decimate']    = FunctionGeneral::moeda($boxes_decimate );
+            $box_offer                      = $request['entries_offer'];
+            $request['entries_offer']       = FunctionGeneral::moeda($box_offer);
+            $boxes_other                    = $request['entries_other'];
+            $request['entries_other']       = FunctionGeneral::moeda($boxes_other);
+            $box_end                        = $request['entries_end'];
+            $request['entries_end']         = FunctionGeneral::moeda($box_end);
             //$request['box_balance']             = FunctionGeneral::moeda($request['boxes_balance_initial']);
             //$request['box_balance_end']         = FunctionGeneral::moeda($request['boxes_balance_initial']);
             
@@ -67,7 +73,7 @@ class BoxController extends Controller
                     $request->except('_token');
                     $input = $request->all();
                     
-                    $box = Box::create($input);
+                    $box = Entry::create($input);
 
                     return response()->json(['message' , 'success']);
 
@@ -91,9 +97,9 @@ class BoxController extends Controller
         //2017-06-11
         //lançamento
         $month = Carbon::now()->month;
-        
-        $launch = Box::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
-
+        //DB::enableQueryLog();
+        $launch = Entry::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
+        //return DB::getQueryLog();
         return response()->json($launch);
 
     }
@@ -143,5 +149,37 @@ class BoxController extends Controller
     public function balance_initial()
     {
         return view('box.setting');
+    }
+
+    public function open_box(Request $request)
+    {
+        $data_open = FunctionGeneral::DataBRtoMySQL($request['date_box_open']);
+        $request['boxies_date_open'] = $data_open;
+        $request['boxies_status'] = 'Aberto';
+        $request['boxies_balance_end'] = 0.00;
+        $initial = FunctionGeneral::moeda($request['boxies_balance_initial_modal']);
+        $request['boxies_balance_initial'] = $initial;
+        
+
+        try {
+            
+            $box = Box::create($request->all());
+          
+          
+            return "Cadastrado";
+
+        } catch (Exception $e) {
+            return $e->getMessege();
+        }
+        
+        if($box)
+        {
+            dump($box);
+            return "gravado";
+
+        
+        }
+        
+
     }
 }

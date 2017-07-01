@@ -1,8 +1,9 @@
 @extends('layouts.blank')
 @push('stylesheets')
 <!-- Example -->
-<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
-{{Html::style('plugins/bootstrap-daterangepicker/daterangepicker.css')}}
+<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->{{-- 
+{{Html::style('plugins/bootstrap-daterangepicker/daterangepicker.css')}} --}}
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 @endpush
 @section('main_container')
 <!-- page content -->
@@ -13,9 +14,6 @@
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Caixa <small>Registrar Caixa</small></h2>
-                    
-
-
                     <a class="btn btn-app pull-right" data-toggle="modal" data-target="#create_account">
                     <i class="fa fa-list-ol" aria-hidden="true"></i> Criar Conta
                     </a>
@@ -23,11 +21,62 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="col-md-12">
-                    <a href="#lancar_conta" data-toggle="modal"><button class="btn btn-primary pull-right"> <i class="fa fa-plus-circle" aria-hidden="true"></i> Lançar registro</button></a>
-                    @if(count($box) == 0)
+                @if(count($box) == 0)
+                    @php
+                    $disabled = 'disabled';
+                    @endphp
+                @else
+                    @php
+                    $disabled = '';
+                    @endphp   
+                @endif
+                    <a href="#lancar_conta" data-toggle="modal"><button class="btn btn-primary pull-right {{$disabled}}" {{$disabled}}> <i class="fa fa-plus-circle" aria-hidden="true"></i> Lançar registro</button></a>
+                    @if(count($box) == 0 )
                     <a href="#modal_open_box" data-toggle="modal"><button class="btn btn-success pull-left"> <i class="fa fa-money" aria-hidden="true"></i> Abrir o primeiro caixa</button></a>
                     @endif
                     @include('modals.modal_open_box')
+
+                    <div class="col-md-12">
+                        <div class="panel">
+                           
+                                @php
+                                    global $soma_total;
+                                    $soma_total = 0;
+                                   
+                                @endphp
+                            @foreach($entry as $entries)
+                               
+                                @php
+
+                                 $soma_total = ($soma_total + $entries->entries_decimate);
+                                 $soma_total = ($soma_total + $entries->entries_offer);
+                                 $soma_total = ($soma_total + $entries->entries_other);
+                                 $soma_total = ($soma_total - $entries->entries_end);
+
+                                @endphp    
+                            @endforeach
+                            @php
+                                $previus_balance = ($box[0]->boxies_balance_initial + $soma_total);
+                            @endphp
+                           
+                          <div class="col-md-12">
+                              <div class="col-md-4">
+   <div class="x_title">
+                      <h2>Saldo Anterior: R$ {{number_format($previus_balance, 2 , ',' , '.')}} </h2>
+                      <ul class="nav navbar-right panel_toolbox">
+                       
+                        <li><a href="{{url('caixa')}}" class="close-link"><i class="fa fa-refresh text-primary"></i></a>
+                        </li>
+                      </ul>
+                      <div class="clearfix"></div>
+                    </div>
+                              </div>
+                              
+                              <div class="col-md-4"></div>
+                               <div class="col-md-4"></div>
+                          </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="x_content">
                     <div class="panel">
@@ -63,7 +112,14 @@
 {{Html::script('js/mask.min.js')}}
 {{Html::script('plugins/datatables.net/css/jquery.dataTables.css')}}
 {{Html::script('plugins/datatables.net/js/jquery.dataTables.js')}}
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.15/sorting/currency.js"></script>
 {{Html::script('plugins/form-serializer/jquery.serialize-object.js')}}
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+{{Html::script('plugins/jquery-maskmoney/dist/jquery.maskMoney.min.js')}}
 <script type="text/javascript">
     $(document).ready(function() {
     
@@ -74,6 +130,9 @@
             dataSrc: ''
     
         },
+        columnDefs: [
+           { type: 'currency', targets: 0 }
+        ],
         columns: [  
             { data: 'entries_day', name: 'entries_day' },
             { data: 'entries_description', name: 'entries_description' },
@@ -87,6 +146,7 @@
                  mRender: function (data) { return '<a href="#" class="btn btn-info" ><i class="fa fa-pencil" style="font-size: 12px;" data-original-title="Alterar"></i></a> <a href="#" class="btn btn-danger" onclick="delete_launch('+data+')" ><i class="fa fa-trash" style="font-size: 12px;" title="Excluir"></i></a>'; }
              }
         ],
+        
         language: {
           "lengthMenu": "Exibir _MENU_ recibos por página",
           "zeroRecords": "Nenhum recibo cadastrado para essa pesquisa",
@@ -150,7 +210,15 @@
     $('#box_other').mask('000.000.000.000.000,00', {reverse: true});
     $('#box_exit').mask('000.000.000.000.000,00', {reverse: true});
     
-    $(function() {
+
+    
+$(function() {
+    //MASCARA DE MONEY
+    $('#boxies_balance_initial_modal').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+
+
     var route       = '{{url('conta')}}';
     var route_box   = '{{url('caixa')}}';
     var token  =  {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') };
@@ -247,8 +315,18 @@
             
         });
     
-       
+
+});
+
+$(document).ready(function() {
+    $("#date_box_open").daterangepicker({
+            singleDatePicker: true,
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
+            showDropdowns: true
     });
+});
 </script>
 @endpush
 <!-- /page content -->
