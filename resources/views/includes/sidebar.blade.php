@@ -60,23 +60,8 @@
                 </ul>
               </li>
 
-              <li><a><i class="fa fa-calculator" aria-hidden="true"></i> Caixa <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                 
-                   <li><a href="#">Lancar<span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li class="sub_menu"><a href="{{url('caixa/saldo-inicial')}}">Saldo inicial</a>
-                      </li>
-                      <li><a href="{{url('caixa')}}">Caixa</a>
-                      </li>
-                      <li><a href="#level2_2">Level Two</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li><a href="#">Consultar</a></li>
-                  <li><a href="#">Auditar</a></li>
-
-                </ul>
+              <li><a href="{{url('caixa')}}"><i class="fa fa-calculator" aria-hidden="true"></i> Caixa <span class="fa fa-chevron-down"></span></a>
+                
               </li>
 
               <li><a><i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span></a>

@@ -16,6 +16,11 @@
   <!-- Gentelella -->
   <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">
 
+  <script type="text/javascript">
+    var url_project = "{{url('/')}}";
+    var id_user         = '{{Auth::user()->id}}';
+    var id_company      = '{{Auth::user()->user_id_company}}';
+  </script>
 
   @stack('stylesheets')
 

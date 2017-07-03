@@ -15,16 +15,27 @@ class BoxController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     *PARA MOSTRAR A QUERY COMPLETA
+     * DB::enableQueryLog();
+     * //return DB::getQueryLog();
      */
     public function index()
     {
         //CREATE 2017-06-2017 BY EXCELLENCE SOFT
-        $box = Box::where('boxies_id_company' , Auth::user()->user_id_company)->get();
-
+        //UPDATE 2017-07-03
+        $month = Carbon::now()->month;
+        
+        $box = Box::where(
+            [
+                ['boxies_id_company' , '=' , Auth::user()->user_id_company],
+                ['boxies_status' , '=' , 'Aberto']
+            ])->whereMonth('created_at', $month)->get();
+        
         $type_account = DB::table('type_accounts')->where('type_accounts_id_company' , Auth::user()->user_id_company)->orderBy('type_accounts_id')
                                 ->pluck('type_accounts_name','type_accounts_id');
 
         $entry = Entry::where('entries_id_company' ,  Auth::user()->user_id_company)->get();
+
         return view('box.index' , compact('box' , 'type_account' , 'entry' ));
     }
 
@@ -60,10 +71,13 @@ class BoxController extends Controller
             //$request['boxes_balance_previous']  = FunctionGeneral::moeda($request['boxes_balance_initial']);
             $boxes_decimate                 = $request['entries_decimate'];    
             $request['entries_decimate']    = FunctionGeneral::moeda($boxes_decimate );
+            
             $box_offer                      = $request['entries_offer'];
             $request['entries_offer']       = FunctionGeneral::moeda($box_offer);
+            
             $boxes_other                    = $request['entries_other'];
             $request['entries_other']       = FunctionGeneral::moeda($boxes_other);
+            
             $box_end                        = $request['entries_end'];
             $request['entries_end']         = FunctionGeneral::moeda($box_end);
             //$request['box_balance']             = FunctionGeneral::moeda($request['boxes_balance_initial']);
@@ -99,7 +113,8 @@ class BoxController extends Controller
         $month = Carbon::now()->month;
         //DB::enableQueryLog();
         $launch = Entry::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
-        //return DB::getQueryLog();
+        
+       
         return response()->json($launch);
 
     }
