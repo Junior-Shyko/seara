@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use App\Models\Profile;
+use App\Models\User;
+use App\Box;
 
 class FunctionGeneral extends Model
 {
@@ -31,5 +33,17 @@ class FunctionGeneral extends Model
 		$replace = array('', '.');
 		$valor = str_replace($source, $replace, $get_valor); //remove os pontos e substitui a virgula pelo ponto
 		return $valor; //retorna o valor formatado para gravar no banco
+	}
+
+	public static function getName($id_users)
+	{
+		$user = User::find($id_users);
+		echo $user->name;
+	}
+	//VERIFICA SE A TABELA BOX NÃO TEM REGISTRO NENHOM
+	public static function getBox()
+	{
+		$box = Box::all();
+		return $box;
 	}
 }

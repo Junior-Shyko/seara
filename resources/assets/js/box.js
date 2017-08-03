@@ -3,13 +3,10 @@ $(document).ready(function() {
 	$('#table_launch').DataTable({
 
 		ajax: {
-			url:  '{{url('caixa/show')}}',
+			url:  url_project + '/caixa/show',
 			dataSrc: ''
 
 		},
-		columnDefs: [
-		{ type: 'currency', targets: 0 }
-		],
 		columns: [  
 		{ data: 'entries_day', name: 'entries_day' },
 		{ data: 'entries_description', name: 'entries_description' },
@@ -20,7 +17,7 @@ $(document).ready(function() {
 		{
 			data: "entries_id",
 			bSortable: false,
-			mRender: function (data) { return '<a href="#" class="btn btn-info" ><i class="fa fa-pencil" style="font-size: 12px;" data-original-title="Alterar"></i></a> <a href="#" class="btn btn-danger" onclick="delete_launch('+data+')" ><i class="fa fa-trash" style="font-size: 12px;" title="Excluir"></i></a>'; }
+			mRender: function (data) { return '<a href="#" id="edit_entry" class="btn btn-info" ><i class="fa fa-pencil" style="font-size: 12px;" data-original-title="Alterar"></i></a> <a href="#" class="btn btn-danger" onclick="delete_launch('+data+')" ><i class="fa fa-trash" style="font-size: 12px;" title="Excluir"></i></a>'; }
 		}
 		],
 
@@ -58,9 +55,15 @@ function delete_launch(id){
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 			},
-			data: {boxes_id: id},
+			data: {entries_id: id},
 			success:function(response){
 				reloadTable();
+                new PNotify({
+                    title: 'Excluído',
+                    text: 'Lançamento Excluído com sucesso',
+                    type: 'success',
+                    styling: 'bootstrap3'
+                });
 				$("#modal_delete_launch").modal('hide');
 			}
 		})
@@ -80,10 +83,10 @@ function delete_launch(id){
 	});
 }
 
-$('#boxes_decimate').mask('000.000.000.000.000,00', {reverse: true});
+$('#entries_decimate').mask('000.000.000.000.000,00', {reverse: true});
 $('#box_offer').mask('000.000.000.000.000,00', {reverse: true});
-$('#box_other').mask('000.000.000.000.000,00', {reverse: true});
-$('#box_exit').mask('000.000.000.000.000,00', {reverse: true});
+$('#entries_other').mask('000.000.000.000.000,00', {reverse: true});
+$('#entries_end').mask('000.000.000.000.000,00', {reverse: true});
 
 $(function() {
     //MASCARA DE MONEY
@@ -92,16 +95,16 @@ $(function() {
     	);
 
 
-    var route       = '{{url('conta')}}';
-    var route_box   = '{{url('caixa')}}';
+    var route       = url_project + '/conta';
+    var route_box   = url_project + '/caixa';
     var token  =  {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') };
     $("#save_account").click(function(event) {
     	/* Act on the event */
     	
-    	name_account    = $("#accounts_name").val();
-    	id_type_account = $("#accounts_id_type_account").val(); 
-    	id_user         = '{{Auth::user()->id}}';
-    	id_company      = '{{Auth::user()->user_id_company}}';
+    	name_account                = $("#accounts_name").val();
+    	id_type_account             = $("#accounts_id_type_account").val(); 
+    	id_user_save_account        = id_user;
+        id_company_save_account     = id_company;
     	console.log(id_type_account);
     	$.ajax({
     		url: route,
@@ -120,8 +123,7 @@ $(function() {
     				styling: 'bootstrap3'
     			});
     			$('#accounts_name').val('');
-    		}
-    		
+    		}    		
     	})
     	.done(function() {
     		console.log("success");
@@ -138,12 +140,14 @@ $(function() {
     $("#cod_account").blur(function(event) {
     	/* Act on the event */
     	code_account = $("#cod_account").val();
-    	route_get_account = '{{url('conta')}}';
+    	route_get_account = url_project + '/conta';
     	$.get( route_get_account+'/'+code_account, function( data ) {
     		$( "#label_desc_account" ).html( data[0][0].accounts_name);
     		nome_tipo_conta = data[0][0].type_accounts_name.toUpperCase();
     		$( "#label_desc_type" ).html( "Tipo de conta: " + nome_tipo_conta);
-    		
+    		if(nome_tipo_conta == "ENTRADA"){
+                $("#entries_end").attr('disabled','disabled');
+            }
     		$( "#boxes_description" ).val( data[0][0].accounts_name);                  
     	});
     	
@@ -151,7 +155,7 @@ $(function() {
     
         //SUBMIT DO FORM
         $("#save_entry").click(function(){
-        	console.log();
+        	console.log($('form#form_entry').serializeObject());
         	$.ajax({
         		url: route_box,
         		type: 'POST',
@@ -186,7 +190,10 @@ $(function() {
         		console.log("complete");
         	});
         	
+
         });
+
+
         
 
     });
@@ -199,4 +206,10 @@ $(document).ready(function() {
 		},
 		showDropdowns: true
 	});
+
+    $("#edit_entry").click(function(event){
+                alert('modal de editar' + event);
+            });
+
+    
 });

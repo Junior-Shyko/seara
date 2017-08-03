@@ -17,16 +17,20 @@
                             <span class="fa fa-edit form-control-feedback right" aria-hidden="true"></span>
                         </div>
                     </div>
+                @php
 
+                    $getBox = \App\FunctionGeneral::getBox();
+                
+                @endphp    
+                @if(count($getBox) == 0)
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-3">Saldo Inicial</label>
                         <div class="col-md-9 col-sm-9 col-xs-9">
-                            <input type="text" class="form-control" id="boxies_balance_initial_modal" name="boxies_balance_initial_modal">
+                            <input type="text" class="form-control" id="boxies_balance_initial_modal" required="true" name="boxies_balance_initial_modal">
                             <span class="fa fa-edit form-control-feedback right" aria-hidden="true"></span>
                         </div>
                     </div>
-
-                    
+                @endif
                   
                     <div class="form-group">
                         <input type="hidden" name="boxies_id_users" id="boxies_id_users" value="{{Auth::user()->id}}">

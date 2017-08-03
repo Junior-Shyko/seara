@@ -105,4 +105,6 @@ class User extends Authenticatable
 		return $result[0]->total;
 	}
 
+	
+
 }
