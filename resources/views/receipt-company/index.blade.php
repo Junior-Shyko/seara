@@ -12,8 +12,22 @@
       <div class="x_panel">
         @include('msg.message')
         <div class="x_title">
+
           <h2>Recibos <small>Recibos emitidos pela empresa</small></h2>
-          <button class="btn btn-primary pull-right" onclick="createReceipt( {{ $company->company_id }} )">Novo Recibo</button>
+
+          <button class="btn btn-primary pull-right" onclick="createReceipt( {{ $company->company_id }} )">
+            Novo Recibo
+          </button>
+
+          <button class="btn btn-primary pull-right" onclick="receiptTable.reloadTable()" data-toggle="tooltip" data-placement="bottom" data-original-title="Atualizar">
+            <i class="fa fa-refresh" aria-hidden="true"></i>
+          </button>
+
+          <button class="btn btn-primary pull-right" onclick="showReceiptSettings()" data-toggle="tooltip" data-placement="bottom" data-original-title="Configurações do Recibo">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+          </button>
+
+
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -39,9 +53,7 @@
     <!-- /page content -->
 
     @include('modals.receipt.receipt')
-    @include('modals.receipt.delete')
-
-
+    @include('modals.receipt.settings')
 
 @endsection
 
