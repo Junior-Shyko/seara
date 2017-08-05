@@ -179,7 +179,22 @@ function deleteReceipt(id)
 
 function showReceiptSettings()
 {
+    $('#form-receipt-settings').find('input[type="text"], textarea').val('');
     $('#modal-receipt-settings').modal('show');
+
+    $('#form-receipt-settings').off('submit');
+    $('#form-receipt-settings').submit(function(){
+        var data = packForm('#form-receipt-settings');
+        console.log(data);
+    });
+
+    SearaAjax.get(
+        'receipt-company/settings', 
+        function(response)
+        {
+            populateForm('#form-receipt-settings', response);
+        }
+    );
 }
 
 $(document).ready(function() {

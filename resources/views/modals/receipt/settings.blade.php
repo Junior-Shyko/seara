@@ -16,7 +16,7 @@
           <!-- Formulário  -->
           <form id="form-receipt-settings" class="form-horizontal" autocomplete="off" action="javascript:;">
 
-            <input type="hidden" id="receipt_id_company" name="receipt_id_company" value="{{ $company->company_id }}">
+            <input type="hidden" name="setting_id_company" value="{{ $company->company_id }}">
 
             <!-- Valor, Local e Data -->
             <div class="row">
@@ -31,12 +31,12 @@
               <div class="row">
                 <!-- Valor -->
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input id="receipt_value" name="receipt_value" placeholder="Local"
+                  <input name="setting_receipt_local" placeholder="Local"
                   class="form-control" type="text">
                 </div>
                 <!-- Local -->
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input name="receipt_local" placeholder="Emitente"
+                  <input name="setting_receipt_emitter" placeholder="Emitente"
                   class="form-control" type="text">
                 </div>
               </div>
@@ -46,12 +46,12 @@
               <div class="row">
                 <!-- Data -->
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input id="receipt_date" name="receipt_date" placeholder="Documento"
+                  <input name="setting_receipt_document" placeholder="Documento"
                   class="form-control" type="text">
                 </div>
 
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" name="receipt_email" placeholder="Email/Website" class="form-control">
+                  <input type="text" name="setting_receipt_email" placeholder="Email/Website" class="form-control">
                 </div>
               </div>
             </div>
@@ -68,7 +68,7 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                  <textarea class="form-control" name="receipt_header" rows="5"></textarea>
+                  <textarea class="form-control" name="setting_receipt_header" rows="5"></textarea>
                 </div>
               </div>
             </div>

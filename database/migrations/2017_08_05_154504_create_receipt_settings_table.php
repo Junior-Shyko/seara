@@ -13,7 +13,7 @@ class CreateReceiptSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('receipt_settings', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
 
             // Columns
             $table->increments('setting_id');
@@ -23,7 +23,7 @@ class CreateReceiptSettingsTable extends Migration
             $table->string('setting_receipt_document');
             $table->string('setting_receipt_email');
             $table->string('setting_receipt_header');
-            $table->timestamps();
+            //$table->timestamps();
 
             // Foreign keys
             $table->foreign('setting_id_company')->references('company_id')->on('companies');
@@ -37,6 +37,6 @@ class CreateReceiptSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('receipt_settings');
+        Schema::dropIfExists('settings');
     }
 }
