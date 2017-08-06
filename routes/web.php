@@ -45,10 +45,12 @@ Route::resource('users', 'UserController');
 // Route::get('usuarios', 'UserController@anyData');
 
 //ROTA PARA RECIBOS - Empresa
-Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');
 Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData');
+
+Route::get('receipt-company/{receipt}/pdf', 'ReceiptCompanyController@generatePDF');
 Route::get('receipt-company/settings', 'ReceiptCompanyController@getReceiptSettings');
+Route::post('receipt-company/settings', 'ReceiptCompanyController@storeReceiptSettings');
 
 Route::resource('receipt-company', 'ReceiptCompanyController');
 

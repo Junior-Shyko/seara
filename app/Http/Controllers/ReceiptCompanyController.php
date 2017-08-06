@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Models\ReceiptCompany;
-use App\Models\Company;
-use App\Seara\Monetary;
-use Yajra\Datatables\Facades\Datatables;
 use Exception;
-
 use PDF;
 use DB;
+
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Yajra\Datatables\Facades\Datatables;
+
+use App\Seara\Monetary;
+
+use App\Models\ReceiptCompany;
+use App\Models\Company;
+use App\Models\Setting;
 
 class ReceiptCompanyController extends Controller
 {
@@ -204,7 +207,7 @@ class ReceiptCompanyController extends Controller
 	{
 		$company = Auth::user()->company;
 
-		$setting = DB::table('settings')->where('setting_id_company', $company->company_id)->first();
+		$setting = Setting::where('setting_id_company', $company->company_id)->first();
 
 		if ( is_null($setting) )
 		{
@@ -217,10 +220,41 @@ class ReceiptCompanyController extends Controller
 				'setting_receipt_header' => $company->company_fantasy
 			];
 
-			DB::table('settings')->insert($setting);
+			$setting = Setting::create($setting);
 		}
 
-		return (array) $setting;
+		return $setting->toArray();
+	}
+
+	public function storeReceiptSettings(Request $request)
+	{	
+		$company_id = $request->input('setting_id_company');
+
+		$setting_data = [
+			'setting_receipt_document' => $request->input('setting_receipt_document'),
+			'setting_receipt_email' => $request->input('setting_receipt_email'),
+			'setting_receipt_emitter' => $request->input('setting_receipt_emitter'),
+			'setting_receipt_header' => $request->input('setting_receipt_header'),
+			'setting_receipt_local' => $request->input('setting_receipt_local')
+		];
+
+		$response = [];
+		$code = 200;
+
+		try {
+			$setting = Setting::where('setting_id_company', $company_id)->first();
+			$setting->fill($setting_data);
+			$setting->save();
+
+			$response['status'] = 'success';
+			$response['message'] = 'Configurações salvas com sucesso!';
+		}
+		catch (Exception $e) {
+			$response['status'] = 'error';
+			$response['message'] = 'Configurações não salvas, tente novamente!';
+		}
+
+		return response($response, $code);
 	}
 
   private function actions($id)

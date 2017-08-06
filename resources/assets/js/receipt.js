@@ -184,8 +184,18 @@ function showReceiptSettings()
 
     $('#form-receipt-settings').off('submit');
     $('#form-receipt-settings').submit(function(){
+
         var data = packForm('#form-receipt-settings');
-        console.log(data);
+        
+        SearaAjax.post('receipt-company/settings', data)
+        .done(function(response){
+            notify.response(response);
+            $('#modal-receipt-settings').modal('hide');
+        })
+        .fail(function(jqXHR){
+            notify.response(jqXHR.responseJSON);
+        });
+
     });
 
     SearaAjax.get(
