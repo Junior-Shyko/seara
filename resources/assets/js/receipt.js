@@ -53,45 +53,60 @@ function reloadTable()
 
 function createReceipt(id)
 {
-  // Ação Salvar
-  $("#form-save-btn").off('click');
-  $("#form-save-btn").on('click', function(){
+    //reseta formulário
+    $('#form-receipt').find('input[type="text"], textarea').val('');
+    $('#modal-receipt').find('.modal-title').text('Novo Recibo');
 
-    if( $("#form-receipt").parsley().validate() )
-    {
-      // Caso a validação esteja ok, vou registrar o recibo
-      receiptData = packReceiptData();
+    // Ação Salvar
+    $("#form-save-btn").off('click');
+    $("#form-save-btn").on('click', function(){
 
-      receiptCompany.create(receiptData, function(data){
-        reloadTable();
-      })
-      .always(function (data) {
-        notify.response(data);
-      });
+        if( $("#form-receipt").parsley().validate() )
+        {
+            // Caso a validação esteja ok, vou registrar o recibo
+            receiptData = packReceiptData();
 
-      closeForm();
-    }
+            receiptCompany.create(
+                receiptData,
+                function(data)
+                {
+                    reloadTable();
+                    notify.response(data);
+                    closeForm();
+                }
+            )
+            .fail(function(jqXHR){
+                notify.response(jqXHR.responseJSON);
+            });
+        }
 
-});
+    });
 
-  company.read(id, function(data){
-    formData = {
-        "receipt_value": '',
-        "receipt_received_from": '',
-        "receipt_reference": '',
-        "receipt_local": data.company_addr_city,
-        "receipt_date": currentDate(),
-        "receipt_emitter": data.company_fantasy,
-        "receipt_document": data.company_cnpj
-    }
-    populateForm("#form-receipt", formData);
-    reloadAllMasks();
-    showForm();
-  });
+    SearaAjax.get(
+        'receipt-company/settings', 
+        function(response)
+        {
+            var formData = {
+                receipt_local: response.setting_receipt_local,
+                receipt_date: currentDate(),
+                receipt_emitter: response.setting_receipt_emitter,
+                receipt_document: response.setting_receipt_document
+            };
+
+            populateForm("#form-receipt", formData);
+            reloadAllMasks();
+            showForm();
+        }
+    );
+
+    $('#modal-receipt').modal('show');
 }
 
 function editReceipt(id)
 {
+
+    $('#modal-receipt').find('.modal-title').text('Editar Recibo');
+
   // Ação Salvar
   $("#form-save-btn").off('click');
   $("#form-save-btn").on('click', function(){
@@ -122,6 +137,8 @@ function editReceipt(id)
 
 function cloneReceipt(id)
 {
+    $('#modal-receipt').find('.modal-title').text('Clonar Recibo');
+
   // Ação Salvar
   $("#form-save-btn").off('click');
   $("#form-save-btn").click(function(){
@@ -204,7 +221,7 @@ function showReceiptSettings()
         {
             populateForm('#form-receipt-settings', response);
         }
-    );
+        );
 }
 
 $(document).ready(function() {

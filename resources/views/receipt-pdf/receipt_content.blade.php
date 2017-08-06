@@ -5,20 +5,14 @@
     </td>
     <td colspan="2"></td>
     <td colspan="4" class="text-center">
-      ACESSORIA E SERVIÇOS<br>
-      EDVAN OLIVEIRA FARIAS<br>
-      CRC: 9409/O-3
+      {!! nl2br(e($setting['setting_receipt_header'])) !!}
     </td>
     <td colspan="4" class="text-right">
-      Avenida {{ ucwords($company->company_addr_street) }}, {{ $company->company_addr_number }}<br>
+      {{ ucwords($company->company_addr_street) }}, {{ $company->company_addr_number }}<br>
       {{ ucwords($company->company_addr_district) }}<br>
       CEP {{ preg_replace('/^(\d{2})(\d{3})(\d{3})$/', '$1.$2-$3', $company->company_addr_cep) }} - {{ ucwords($company->company_addr_city) }} - {{ ucwords($company->company_addr_state) }}<br>
       {{ preg_replace('/^(\d{2})(\d?\d{4})(\d{4})$/', '($1) $2-$3', $company->company_phone) }} / {{ preg_replace('/^(\d{2})(\d?\d{4})(\d{4})$/', '($1) $2-$3', $company->company_mobile) }}<br>
-{{--       Rua Afonso Lopes, 862<br>
-      Parque Dois Irmãos<br>
-      CEP 60742-670 - Fortaleza - CE<br>
-      <strong>Fone: (85) 3493.4647 / 98813.3053</strong><br>
-      e-mail: contabilidade2006@oi.com.br<br> --}}
+      E-mail: {{ $setting['setting_receipt_email'] }}<br>
     </td>
   </tr>
   <tr><td colspan="12" class="offset-5"></td></tr>

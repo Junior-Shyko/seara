@@ -6,7 +6,7 @@
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4>Clonar Recibo</h4>
+        <h4 class="modal-title">Clonar Recibo</h4>
       </div>
 
 

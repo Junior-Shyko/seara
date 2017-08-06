@@ -155,8 +155,9 @@ class ReceiptCompanyController extends Controller
 
   	$vias = $request->vias;
   	$company = Auth::user()->company;
+  	$setting = $this->getReceiptSettings();
 
-  	$pdf = PDF::loadView('receipt-pdf.vias', compact('vias', 'company', 'receipt'));
+  	$pdf = PDF::loadView('receipt-pdf.vias', compact('vias', 'company', 'receipt', 'setting'));
 
   	ini_set('memory_limit', '-1');
 
