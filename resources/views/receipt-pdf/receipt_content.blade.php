@@ -1,9 +1,9 @@
 <table border="0">
   <tr style="height: 99;">
-    <td colspan="4">
+    <td colspan="3">
       <img src="{{asset("img/logo/{$company->company_brand_logo}")}}" style="width: 100%; display: block;">
     </td>
-    {{-- <td colspan="1"></td> --}}
+    <td colspan="1"></td>
     <td colspan="4" class="text-center">
       {!! nl2br(e($setting['setting_receipt_header'])) !!}
     </td>
