@@ -1,9 +1,9 @@
 <table border="0">
   <tr style="height: 99;">
-    <td colspan="2">
+    <td colspan="4">
       <img src="{{asset("img/logo/{$company->company_brand_logo}")}}" style="width: 100%; display: block;">
     </td>
-    <td colspan="2"></td>
+    {{-- <td colspan="1"></td> --}}
     <td colspan="4" class="text-center">
       {!! nl2br(e($setting['setting_receipt_header'])) !!}
     </td>
@@ -12,7 +12,7 @@
       {{ ucwords($company->company_addr_district) }}<br>
       CEP {{ preg_replace('/^(\d{2})(\d{3})(\d{3})$/', '$1.$2-$3', $company->company_addr_cep) }} - {{ ucwords($company->company_addr_city) }} - {{ ucwords($company->company_addr_state) }}<br>
       {{ preg_replace('/^(\d{2})(\d?\d{4})(\d{4})$/', '($1) $2-$3', $company->company_phone) }} / {{ preg_replace('/^(\d{2})(\d?\d{4})(\d{4})$/', '($1) $2-$3', $company->company_mobile) }}<br>
-      E-mail: {{ $setting['setting_receipt_email'] }}<br>
+      {{ $setting['setting_receipt_email'] }}<br>
     </td>
   </tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
