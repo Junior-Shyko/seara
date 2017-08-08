@@ -49,7 +49,7 @@
 			<div class="x_content">
 				<br>
 				
-				{{Form::model($company, ['url' => ['companies.update' , $company->company_id] , 'class' => 'form-horizontal form-label-left input_mask' , 'method' => 'PUT']) }}
+				{{Form::model($company, ['route' => ['companies.update' , $company->company_id] , 'class' => 'form-horizontal form-label-left input_mask' , 'method' => 'PUT']) }}
 
 					<div class="col-md-5 col-sm-6 col-xs-12 form-group has-feedback">
 						{{Form::label('razao_social','Razão Social')}}
