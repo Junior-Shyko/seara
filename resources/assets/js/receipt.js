@@ -162,6 +162,7 @@ function cloneReceipt(id)
 
   // Atualização no form
   receiptCompany.read(id, function(data){
+    data.receipt_date = currentDate();
     loadData(data);
     $('#receipt_value').focus();
     showForm();

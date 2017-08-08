@@ -19,6 +19,10 @@
     font-family: sans-serif;
   }
 
+  .description {
+    font-size: 9pt;
+  }
+
   .text-center {
     text-align: center;
   }
