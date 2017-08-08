@@ -18,24 +18,21 @@
 
             <input type="hidden" name="setting_id_company" value="{{ $company->company_id }}">
 
-            <!-- Valor, Local e Data -->
-            <div class="row">
-              <div class="col-md-12">
-                <label class="form-label" for="first-name">
-                  Informações Básicas
-                </label>
-              </div>
-            </div>
-
             <div class="form-group">
               <div class="row">
                 <!-- Valor -->
                 <div class="col-md-6 col-sm-6 col-xs-12">
+                  <label class="form-label" for="first-name">
+                    Local
+                  </label>
                   <input name="setting_receipt_local" placeholder="Local"
                   class="form-control" type="text">
                 </div>
                 <!-- Local -->
                 <div class="col-md-6 col-sm-6 col-xs-12">
+                  <label class="form-label" for="first-name">
+                    Emitente
+                  </label>
                   <input name="setting_receipt_emitter" placeholder="Emitente"
                   class="form-control" type="text">
                 </div>
@@ -46,11 +43,17 @@
               <div class="row">
                 <!-- Data -->
                 <div class="col-md-6 col-sm-6 col-xs-12">
+                  <label class="form-label" for="first-name">
+                    Documento
+                  </label>
                   <input name="setting_receipt_document" placeholder="Documento"
                   class="form-control" type="text">
                 </div>
 
                 <div class="col-md-6 col-sm-6 col-xs-12">
+                  <label class="form-label" for="first-name">
+                    Email de contato
+                  </label>
                   <input type="text" name="setting_receipt_email" placeholder="Email/Website" class="form-control">
                 </div>
               </div>

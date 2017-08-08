@@ -16,38 +16,48 @@
     </td>
   </tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
   <tr>
     <td colspan="4"></td>
     <td colspan="4" class="text-center">
-      <strong>RECIBO</strong>
+      <h2>
+        <strong>RECIBO</strong>
+      </h2>
     </td>
     <td colspan="4" class="text-right">
-      <strong>VALOR: R$ {{ number_format($receipt->receipt_value,2,',','.') }}</strong>
+      <h3>
+        <strong>VALOR: R$ {{ number_format($receipt->receipt_value,2,',','.') }}</strong>
+      </h3>
     </td>
   </tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
   <tr>
-    <td colspan="2" class="text-bold top-align">Recebi(emos) de: </td>
-    <td colspan="10" class="top-align">{{ mb_strtoupper($receipt->receipt_received_from) }}</td>
+    <td colspan="3" class="text-bold top-align">Recebi(emos) de: </td>
+    <td colspan="9" class="top-align">{{ mb_strtoupper($receipt->receipt_received_from) }}</td>
   </tr>
   <tr>
-    <td colspan="2" class="text-bold top-align">A importância de: </td>
-    <td colspan="10" class="top-align">{{ mb_strtoupper($receipt->receipt_extensive_value) }}</td>
+    <td colspan="3" class="text-bold top-align">A importância de: </td>
+    <td colspan="9" class="top-align">{{ mb_strtoupper($receipt->receipt_extensive_value) }}</td>
   </tr>
   <tr>
-    <td colspan="2" class="text-bold top-align">Referente a: </td>
-    <td colspan="10" class="top-align">{{ mb_strtoupper($receipt->receipt_reference) }}</td>
+    <td colspan="3" class="text-bold top-align">Referente a: </td>
+    <td colspan="9" class="top-align">{{ mb_strtoupper($receipt->receipt_reference) }}</td>
   </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
   <tr>
     <td colspan="12">Para maior clareza firmo(amos) o presente</td>
   </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
   <tr>
     <td colspan="1"></td>
     <td colspan="10" class="text-center">{{ mb_strtoupper($receipt->receipt_local) }}, {{ mb_strtoupper($receipt->extensiveDate()) }}</td>
     <td colspan="1"></td>
   </tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
+  <tr><td colspan="12" class="offset-5"></td></tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
   <tr>
     <td colspan="3"></td>
