@@ -102,4 +102,16 @@ class AccountController extends Controller
     {
         //
     }
+
+     /**
+     * Shows all records.
+     *
+     * 
+     * @return data
+     */
+     public function getAccount()
+     {
+        $account = Account::all();
+        return response()->json([$account]);
+     }
 }

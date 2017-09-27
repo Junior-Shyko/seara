@@ -5,108 +5,92 @@ var receiptTable;
 
 function packReceiptData()
 {
-    var receiptData = packForm("#form-receipt");
-    receiptData['receipt_value'] = parseFloat(receiptData['receipt_value'].replace(/\./g, '').replace(',','.'));
-    receiptData['receipt_date'] = brDatetoUsa(receiptData['receipt_date']);
+  var receiptData = packForm("#form-receipt");
+  receiptData['receipt_value'] = parseFloat(receiptData['receipt_value'].replace(/\./g, '').replace(',','.'));
+  receiptData['receipt_date'] = brDatetoUsa(receiptData['receipt_date']);
 
-    return receiptData;
+  return receiptData;
 }
 
 function populateForm(frm, data) {
-    $.each(data, function(key, value){
-        $('[name='+key+']', frm).val(value);
-    });
+  $.each(data, function(key, value){
+    $('[name='+key+']', frm).val(value);
+  });
 }
 
-function loadData(data) 
-{
-    data['receipt_date'] = usaDatetoBr( data['receipt_date'] );
-    data['receipt_value'] = parseFloat( data['receipt_value'] ).toFixed(2);
-    populateForm("#form-receipt", data);
-    reloadAllMasks();
+function loadData(data) {
+  data['receipt_date'] = usaDatetoBr( data['receipt_date'] );
+  data['receipt_value'] = parseFloat( data['receipt_value'] ).toFixed(2);
+  populateForm("#form-receipt", data);
+  reloadAllMasks();
 }
 
 function currentDate()
 {
-    d = new Date();
+  d = new Date();
 
-    return ( "0" + d.getDate() ).slice(-2) + "/" + ( "0" + (d.getMonth() + 1) ).slice(-2) + "/" + d.getFullYear();
+  return ( "0" + d.getDate() ).slice(-2) + "/" + ( "0" + (d.getMonth() + 1) ).slice(-2) + "/" + d.getFullYear();
 }
 
 function showForm()
 {
-    $("#form-receipt").parsley().reset();
-    $("#modal-receipt").modal('show');
+  $("#form-receipt").parsley().reset();
+  $("#modal-receipt").modal('show');
 }
 
 function closeForm()
 {
-    $("#modal-receipt").modal('hide');
+  $("#modal-receipt").modal('hide');
 }
 
 function reloadTable()
 {
-    receiptTable.reloadTable();
+  receiptTable.reloadTable();
 }
 
 /* IMPLEMENTAÇÃO DAS ACTIONS */
 
 function createReceipt(id)
 {
-    //reseta formulário
-    $('#form-receipt').find('input[type="text"], textarea').val('');
-    $('#modal-receipt').find('.modal-title').text('Novo Recibo');
+  // Ação Salvar
+  $("#form-save-btn").off('click');
+  $("#form-save-btn").on('click', function(){
 
-    // Ação Salvar
-    $("#form-save-btn").off('click');
-    $("#form-save-btn").on('click', function(){
+    if( $("#form-receipt").parsley().validate() )
+    {
+      // Caso a validação esteja ok, vou registrar o recibo
+      receiptData = packReceiptData();
 
-        if( $("#form-receipt").parsley().validate() )
-        {
-            // Caso a validação esteja ok, vou registrar o recibo
-            receiptData = packReceiptData();
+      receiptCompany.create(receiptData, function(data){
+        reloadTable();
+      })
+      .always(function (data) {
+        notify.response(data);
+      });
 
-            receiptCompany.create(
-                receiptData,
-                function(data)
-                {
-                    reloadTable();
-                    notify.response(data);
-                    closeForm();
-                }
-            )
-            .fail(function(jqXHR){
-                notify.response(jqXHR.responseJSON);
-            });
-        }
+      closeForm();
+    }
 
-    });
+  });
 
-    SearaAjax.get(
-        'receipt-company/settings', 
-        function(response)
-        {
-            var formData = {
-                receipt_local: response.setting_receipt_local,
-                receipt_date: currentDate(),
-                receipt_emitter: response.setting_receipt_emitter,
-                receipt_document: response.setting_receipt_document
-            };
-
-            populateForm("#form-receipt", formData);
-            reloadAllMasks();
-            showForm();
-        }
-    );
-
-    $('#modal-receipt').modal('show');
+  company.read(id, function(data){
+      formData = {
+      "receipt_value": '',
+      "receipt_received_from": '',
+      "receipt_reference": '',
+      "receipt_local": data.company_addr_city,
+      "receipt_date": currentDate(),
+      "receipt_emitter": data.company_fantasy,
+      "receipt_document": data.company_cnpj
+    }
+    populateForm("#form-receipt", formData);
+    reloadAllMasks();
+    showForm();
+  });
 }
 
 function editReceipt(id)
 {
-
-    $('#modal-receipt').find('.modal-title').text('Editar Recibo');
-
   // Ação Salvar
   $("#form-save-btn").off('click');
   $("#form-save-btn").on('click', function(){
@@ -126,7 +110,7 @@ function editReceipt(id)
       closeForm();
     }
 
-});
+  });
 
   receiptCompany.read(id, function (data) {
     loadData(data);
@@ -137,8 +121,6 @@ function editReceipt(id)
 
 function cloneReceipt(id)
 {
-    $('#modal-receipt').find('.modal-title').text('Clonar Recibo');
-
   // Ação Salvar
   $("#form-save-btn").off('click');
   $("#form-save-btn").click(function(){
@@ -158,11 +140,10 @@ function cloneReceipt(id)
       closeForm();
     }
 
-});
+  });
 
   // Atualização no form
   receiptCompany.read(id, function(data){
-    data.receipt_date = currentDate();
     loadData(data);
     $('#receipt_value').focus();
     showForm();
@@ -171,82 +152,53 @@ function cloneReceipt(id)
 
 function deleteReceipt(id)
 {
-    swal({
-        title: 'Atenção',
-        text: 'O recibo será excluído, deseja confirmar?',
-        type: 'warning',
-        showCancelButton: true
+
+  swal({
+    title: 'Atenção',
+    text: 'O recibo será excluído, deseja confirmar?',
+    type: 'warning',
+    showCancelButton: true
+  })
+  .then(function(){
+
+    SearaLoader.showModal('Excluindo recibo...');
+    receiptCompany.delete(id, function (response) {
+      notify.response(response);
+      reloadTable();
     })
-    .then(function(){
-
-        SearaLoader.showModal('Excluindo recibo...');
-        receiptCompany.delete(id, function (response) {
-            notify.response(response);
-            reloadTable();
-        })
-        .fail(function (jqXHR) {
-            notify.response(jqXHR.responseJSON);
-        })
-        .always(function(){
-            SearaLoader.hideModal();
-        });
-
+    .fail(function (jqXHR) {
+      notify.response(jqXHR.responseJSON);
+    })
+    .always(function(){
+      SearaLoader.hideModal();
     });
 
-}
+  });
 
-function showReceiptSettings()
-{
-    $('#form-receipt-settings').find('input[type="text"], textarea').val('');
-    $('#modal-receipt-settings').modal('show');
-
-    $('#form-receipt-settings').off('submit');
-    $('#form-receipt-settings').submit(function(){
-
-        var data = packForm('#form-receipt-settings');
-        
-        SearaAjax.post('receipt-company/settings', data)
-        .done(function(response){
-            notify.response(response);
-            $('#modal-receipt-settings').modal('hide');
-        })
-        .fail(function(jqXHR){
-            notify.response(jqXHR.responseJSON);
-        });
-
-    });
-
-    SearaAjax.get(
-        'receipt-company/settings', 
-        function(response)
-        {
-            populateForm('#form-receipt-settings', response);
-        }
-        );
 }
 
 $(document).ready(function() {
 
-    var colunas = [
-    { data: 'receipt_received_from', name: 'receipt_received_from' },
-    { data: 'receipt_reference', name: 'receipt_reference' },
-    { data: 'receipt_value', name: 'receipt_value', className: 'no-break' },
-    { data: 'receipt_local', name: 'receipt_local' },
-    { data: 'receipt_date', name: 'receipt_date', className: 'no-break' },
-    { data: 'action', name: 'action', orderable: false, searchable: false, className: 'no-break' }
-    ];
+  var colunas = [
+      { data: 'receipt_received_from', name: 'receipt_received_from' },
+      { data: 'receipt_reference', name: 'receipt_reference' },
+      { data: 'receipt_value', name: 'receipt_value', className: 'no-break' },
+      { data: 'receipt_local', name: 'receipt_local' },
+      { data: 'receipt_date', name: 'receipt_date', className: 'no-break' },
+      { data: 'action', name: 'action', orderable: false, searchable: false, className: 'no-break' }
+  ];
 
-    receiptTable = new SearaTable( 
-        'receipts-table',
-        'recibo-empresa/datatable',
-        colunas,
-        'recibo',
-        'recibos'
-        );
+  receiptTable = new SearaTable( 
+    'receipts-table',
+    'recibo-empresa/datatable',
+    colunas,
+    'recibo',
+    'recibos'
+  );
 
-    receiptTable.loadTable();
+  receiptTable.loadTable();
 
-    window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
+  window.Parsley.addMessage('en', 'required', 'Campo Obrigatório.');
 
   // Focagem automática no primeiro elemento
   $('#modal-receipt').on('shown.bs.modal', function () {

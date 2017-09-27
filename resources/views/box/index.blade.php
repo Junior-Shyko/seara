@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-12">
     
-            @include('msg.message');
+            @include('msg.message')
 
             <div class="x_panel">
                 <div class="x_title">
@@ -21,7 +21,49 @@
                     <a class="btn btn-app pull-right" data-toggle="modal" data-target="#create_account">
                         <i class="fa fa-list-ol" aria-hidden="true"></i> Criar Conta
                     </a>
+                    <a class="btn btn-success pull-right" data-toggle="modal" data-target="#view_all">
+                        <i class="fa fa-list" aria-hidden="true"></i> Todas Contas
+                    </a>
                     @include('modals.modal_account')
+                    
+                    <!-- -->
+                    
+                    <div class="modal fade" id="view_all" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <div class="modal-dialog modal-sm" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">TODAS AS CONTAS</h4>
+                          </div>
+                          <div class="modal-body">
+                           @push('scripts')
+                                 <script type="text/javascript">
+
+                                $.get(url_project+'/mostrar-contas', function(data) {
+                                    /*optional stuff to do after success */
+                                    $.each(data, function(index, value) {
+                                        console.log( value.length);
+                                        for (var i = 0; i < value.length; i++) {
+                                            console.log( value[i].accounts_name);
+                                            $("#data-account").append('<li class="list-group-item"> CODIGO: '+value[i].accounts_id+' - '+value[i].accounts_name+'</li>')
+                                        }
+                                    });
+                                });
+                                
+                            </script>
+                           @endpush
+                           <ul class="list-group" id="data-account">
+                              
+                            </ul>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- fim todas as contas -->
                     <div class="clearfix"></div>
                      <strong>MÊS / ANO: </strong>{{ \Carbon\Carbon::now()->month . ' / '. \Carbon\Carbon::now()->year }}
                 </div>
@@ -47,6 +89,7 @@
                     @else
                         <a href="#modal_close_box" data-toggle="modal"><button class="btn btn-success pull-left"> <i class="fa fa-money" aria-hidden="true"></i> Fechar caixa</button></a>
                     @endif
+                    <a href="#modal_open_box" data-toggle="modal"><button class="btn btn-default pull-left"> <i class="fa fa-print" aria-hidden="true"></i> Imprimir caixa</button></a>
   @include('modals.modal_open_box')
 
                     <div class="col-md-12">
@@ -122,7 +165,7 @@
             <div class="panel">
                 <div class="panel-body">
                     <div class="table-responsive">
-                        <table id="table_launch" class="display" cellspacing="0" width="100%">
+                        <table id="table_launch" class="display dataTable" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
                                     <th>Dia</th>
@@ -134,6 +177,38 @@
                                     <th>Ação</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                @foreach ($entry as $entries)
+                                    <tr>
+                                        <td>{{$entries->entries_day}}</td>
+                                        <td>{{$entries->entries_description}}</td>
+                                        <td>{{number_format($entries->entries_decimate, 2 , ',' , '.')}}</td>
+                                        <td>{{number_format($entries->entries_offer, 2 , ',' , '.')}}</td>
+                                        <td>{{number_format($entries->entries_other, 2 , ',' , '.')}}</td>
+                                        <td>{{number_format($entries->entries_end, 2 , ',' , '.')}}</td>
+                                        <td>
+                                           <a href="#alter_entry_{{$entries->entries_id}}" class="btn btn-default"  data-toggle="modal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                           <a href="#delete_entries_{{$entries->entries_id}}" class="btn btn-danger"  data-toggle="modal"><i class="fa fa-trash" aria-hidden="true"></i></a>     
+                                        </td>
+                                    </tr>
+                                    <!-- Modal deletar lançamento -->
+                                    @php
+                                        $modal_id_delete = 'delete_entries_'.$entries->entries_id;
+                                        $description_modal = "Apagar Lançamento";
+                                        $url_route = 'lancar/'.$entries->entries_id;
+                                        $text_delete = "Deseja realmente excluir esse lançamento?";
+                                        $name_camp = "entries_id";
+                                        $value_camp = $entries->entries_id;
+                                    @endphp
+                                    @include('modals.modal_alter_entry')
+                                    @include('modals.modal_delete')
+                                @endforeach
+                                <tr>
+                                    <td>
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -141,8 +216,8 @@
                 </div>
             </div>
         </div>
-        @include('modals.modal_box_entry');
-        @include('modals.modal_delete_launch');
+        @include('modals.modal_box_entry')
+        @include('modals.modal_delete_launch')
         @include('modals.modal_close_box')
 
 

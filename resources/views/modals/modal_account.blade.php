@@ -23,7 +23,13 @@
                         </div>
                     </div>                   
                     
-                  
+                  <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Histórico</label>
+                        <div class="col-md-9 col-sm-6 col-xs-6">
+                          
+                            <textarea cols="10" name="accounts_historic" id="accounts_historic" class="form-control"></textarea>
+                        </div>
+                    </div>    
                     <div class="form-group">
                         <input type="hidden" name="accounts_id_user" id="accounts_id_user" value="{{Auth::user()->id}}">
                         <input type="hidden" name="accounts_id_company" id="accounts_id_company" value="{{Auth::user()->user_id_company}}">

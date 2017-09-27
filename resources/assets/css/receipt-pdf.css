@@ -15,13 +15,8 @@
     border: 1px solid;
     table-layout: fixed;
     padding: 5;
-    font-size: 11pt;
+    font-size: 10pt;
     font-family: sans-serif;
-  }
-
-  .description {
-    font-size: 9pt;
-    margin-top: 5px;
   }
 
   .text-center {

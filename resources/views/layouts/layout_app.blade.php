@@ -47,7 +47,7 @@
     var SearaApp = {};
 
     SearaApp.assetURL = "{{ asset('') }}";
-    SearaApp.baseURL = "{{ url('') }}/";
+    SearaApp.baseURL = "http://searacontabilidade.com.br/sis";
   </script>
   
   <script src="{{ asset("js/gentelella.min.js") }}"></script>

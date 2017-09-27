@@ -1,42 +1,17 @@
 $(document).ready(function() {
-
-	$('#table_launch').DataTable({
-
-		ajax: {
-			url:  url_project + '/caixa/show',
-			dataSrc: ''
-
-		},
-		columns: [  
-		{ data: 'entries_day', name: 'entries_day' },
-		{ data: 'entries_description', name: 'entries_description' },
-		{ data: 'entries_decimate', name: 'entries_decimate' },
-		{ data: 'entries_offer', name: 'entries_offer' },
-		{ data: 'entries_other', name: 'entries_other' },
-		{ data: 'entries_end', name: 'entries_end' },
-		{
-			data: "entries_id",
-			bSortable: false,
-			mRender: function (data) { return '<a href="#" id="edit_entry" class="btn btn-info" ><i class="fa fa-pencil" style="font-size: 12px;" data-original-title="Alterar"></i></a> <a href="#" class="btn btn-danger" onclick="delete_launch('+data+')" ><i class="fa fa-trash" style="font-size: 12px;" title="Excluir"></i></a>'; }
-		}
-		],
-
-		language: {
-			"lengthMenu": "Exibir _MENU_ recibos por página",
-			"zeroRecords": "Nenhum recibo cadastrado para essa pesquisa",
-			"infoEmpty": "Exibindo 0 de 0 recibos",
-			"emptyTable": "Nenhum recibo cadastrado",
-			"info": "Exibindo página _PAGE_ de _PAGES_",
-			"infoFiltered": "(filtrados de _MAX_ recibos)",
-			"search": "Pesquisar:",
-			"paginate": {
-				"previous": "Anterior",
-				"next": "Próximo",
-				"first": "Primeiro",
-				"last": "Último"
-			}
-		},
-	}); 
+$('#alter_entries_decimate').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    $('#alter_entries_offer').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    $('#alter_entries_other').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    $('#alter_entries_end').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    
 }); 
 
 function reloadTable()
@@ -87,14 +62,16 @@ $('#entries_decimate').mask('000.000.000.000.000,00', {reverse: true});
 $('#box_offer').mask('000.000.000.000.000,00', {reverse: true});
 $('#entries_other').mask('000.000.000.000.000,00', {reverse: true});
 $('#entries_end').mask('000.000.000.000.000,00', {reverse: true});
+//MODAL DE ALTERAR AS ENTRADAS
+
 
 $(function() {
     //MASCARA DE MONEY
     $('#boxies_balance_initial_modal').maskMoney(
     	{prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     	);
-
-
+    
+    
     var route       = url_project + '/conta';
     var route_box   = url_project + '/caixa';
     var token  =  {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') };

@@ -8,6 +8,7 @@ use App\Entry;
 use App\FunctionGeneral;
 use Auth , DB;
 use Carbon\Carbon;
+use Yajra\Datatables\Datatables;
 
 class BoxController extends Controller
 {
@@ -137,21 +138,12 @@ class BoxController extends Controller
 
         if(count($box) > 0)
         {
-
-        //lançamento
-        $launch = Entry::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
-        
-        }else{
-            $launch = array();
+            //lançamento
+            $launch = Entry::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
+            
+           return response()->json($launch);
         }
-
-        /* return Datatables::eloquent($launch)
-                ->editColumn('entries_decimate', function ($receipt){
-                return 'R$ '.number_format($receipt->entries_decimate, 2, ',', '.');
-              })
-                ->make();*/
-        return response()->json($launch);
-
+        
     }
 
     /**
