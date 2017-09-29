@@ -15,7 +15,8 @@
   <link rel="icon" href="{{ asset('img/favicon.png')}}">
   <!-- Gentelella -->
   <link href="{{ asset('css/gentelella.min.css') }}" rel="stylesheet">
-
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
   <!-- <link href="gentelella/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet"> -->
   <style type="text/css">
     .navbar{
@@ -40,7 +41,10 @@
     </div>
 
   </div>
-
+<div id="dialog" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+ 
   <!-- Custom Theme Scripts -->
 
   <script>
@@ -51,7 +55,7 @@
   </script>
   
   <script src="{{ asset("js/gentelella.min.js") }}"></script>
-
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   @stack('scripts')
 
 </body>

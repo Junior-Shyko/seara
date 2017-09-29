@@ -185,8 +185,13 @@ $(document).ready(function() {
 	});
 
     $("#edit_entry").click(function(event){
-                alert('modal de editar' + event);
-            });
+        alert('modal de editar' + event);
+    });
 
-    
+
+});
+
+$("#alter_save_entry").click(function(){
+    $("#modal_load").modal('show');
+
 });

@@ -213,13 +213,14 @@
                     </div>
                 </div>
                 <div class="panel-footer">
+
                 </div>
             </div>
         </div>
         @include('modals.modal_box_entry')
         @include('modals.modal_delete_launch')
         @include('modals.modal_close_box')
-
+        @include('modals.modal_load')
 
 
     </div>
@@ -237,5 +238,6 @@
 {{Html::script('plugins/bootstrap-daterangepicker/daterangepicker.js')}}
 <script src="{{ asset('js/mask.min.js') }}"></script>
 <script src="{{ asset('js/box.min.js') }}"></script>
+
 
 @endpush

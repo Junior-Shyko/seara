@@ -42,15 +42,15 @@
             <div class="form-group">
               <div class="col-md-3">
                 {{Form::label('day_launch' , 'Dia do Lançamento')}}
-                {{Form::text('entries_end' , '' , ['id' => 'alter_entries_end' , 'class' =>'form-control'] )}}
+                {{Form::text('entries_day' , $entries->entries_day  , ['id' => 'entries_day' , 'class' =>'form-control'] )}}
               </div>
               <div class="col-md-9">
-                {{Form::label('entries_end' , 'Alterar saída')}}
-                {{Form::text('entries_end' , '' , ['id' => 'alter_entries_end' , 'class' =>'form-control'] )}}
+                {{Form::label('entries_end' , 'Alterar valor de saída')}}
+                {{Form::text('entries_end' , $entries->entries_end, ['id' => 'alter_entries_end' , 'class' =>'form-control'] )}}
               </div>
               <div class="col-md-12">
                 {{Form::label('description' , 'Descrição')}}
-                {{Form::text('entries_description' , '' , ['id' => 'alter_entries_description' , 'class' =>'form-control'] )}}
+                {{Form::text('entries_description' , $entries->entries_description, ['id' => 'alter_entries_description' , 'class' =>'form-control'] )}}
               </div>
             </div>
           @endif
@@ -61,7 +61,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Voltar</button>
-        <button type="submit" class="btn btn-primary">Ativar <i class="fa fa-check-square" aria-hidden="true"></i></button>
+        <button type="submit" class="btn btn-primary"  id="alter_save_entry">Alterar Lançamento <i class="fa fa-check-square" aria-hidden="true"></i></button>
       </div>
       {{Form::close()}}
     </div><!-- /.modal-content -->

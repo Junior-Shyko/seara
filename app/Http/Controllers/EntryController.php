@@ -95,7 +95,7 @@ class EntryController extends Controller
 
         $input = $request->all();
         $input = $request->except('_method' , '_token');
-
+        
         try {
             $up_entry = Entry::where('entries_id' , $id)->update($input);
             return redirect()->back()->with('success' , 'Lançamento alterado com sucesso');

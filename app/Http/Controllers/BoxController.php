@@ -53,7 +53,7 @@ class BoxController extends Controller
         $type_account = DB::table('type_accounts')->where('type_accounts_id_company' , Auth::user()->user_id_company)->orderBy('type_accounts_id')
                                 ->pluck('type_accounts_name','type_accounts_id');
 
-        $entry = Entry::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->get();
+        $entry = Entry::where('entries_id_company' , Auth::user()->user_id_company)->whereMonth('created_at', $month)->orderBy('entries_day')->get();
         
        
        return view('box.index' , compact('box' , 'type_account' , 'entry' , 'value_previous'));
