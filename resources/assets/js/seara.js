@@ -3,7 +3,7 @@ function baseURL( url )
   url = url.replace(/^\//, '');
   url = url.replace(/\/$/, '');
 
-  return SearaApp.baseURL + url + '/';
+  return SearaApp.baseURL + url;
 }
 
 function asset( url )
