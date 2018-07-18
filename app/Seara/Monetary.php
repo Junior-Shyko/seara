@@ -48,6 +48,7 @@ class Monetary {
         return $number - floor($number);
     }
     static function conversionR($number) {
+        $value = null;
         if (in_array($number, range(1, 19))) {
             $value = self::$unidades[$number-1];
         }
