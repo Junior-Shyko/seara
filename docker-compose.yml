@@ -7,35 +7,32 @@ services:
     ports:
       - 4242:3306
     environment:
-      - MYSQL_DATABASE=vetdb
+      - MYSQL_DATABASE=seara
       - MYSQL_ROOT_PASSWORD=root
   php:
     image: fcoedno/php:7.1-fpm-dev
-    #build: docker/
     volumes:
-      - ./:/var/www/app
+      - ./:/code
       - composercache:/.composer
-    working_dir: /var/www/app
+    working_dir: /code
     environment:
-      - USER_ID=${UID}
       - APP_ENV=dev
-    user: ${UID}
   web:
     image: fcoedno/nginx:1.13.8-dev
     volumes:
-      - ./:/var/www/app:ro
+      - ./:/code:ro
     depends_on:
       - php
     ports:
       - 80:80
     environment:
       - NGINX_HOST=seara.localhost
+      - NGINX_ROOT=/code/public
   node:
     build: docker/node/
     volumes:
-      - ./:/var/www/app
-    working_dir: /var/www/app
-    user: ${UID}
+      - ./:/code
+    working_dir: /code
 volumes:
   database:
   composercache:
