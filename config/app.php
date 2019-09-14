@@ -167,6 +167,7 @@ return [
 
         /* TINKER */
         Laravel\Tinker\TinkerServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
     ],
 

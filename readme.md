@@ -3,6 +3,9 @@
 Primeiro de tudo, vamos clonar esse repositório
 
     git clone https://github.com/fcoedno/seara.git
+    
+> Obs.: Se você tiver `make` pode simplesmente executar `make init`. Esse comando
+deve executar todas as rotinas necessárias para subir o projeto :).
 
 Gere o arquivo .env
 
