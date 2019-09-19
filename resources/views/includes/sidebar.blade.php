@@ -39,7 +39,7 @@
               @endif
               @if(Auth::user()->profile == 'owner')
                 <li>
-                  <a href="{{url('companies')}}"><i class="fa fa-building"></i> Igrejas</a>
+                  <a href="{{url('clientes')}}"><i class="fa fa-building"></i> Clientes</a>
                 </li>
                 <li>
                   <a>
