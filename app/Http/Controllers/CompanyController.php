@@ -28,8 +28,6 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        //PEGANDO O ID DA EMPRESA DO USUÁRIO
-        $id_company = Auth::user()->user_id_company;
         $company = Company::all();
         return view('business.index' , compact('company'));
     }
@@ -201,24 +199,15 @@ class CompanyController extends Controller
             'company_name',
             'company_fantasy',
             'company_cnpj',
-            'created_at'
+            'created_at',
+            'company_manager'
 
         ])
         ->where('company_id', '<>', $company_id)
-        ->where('company_status', 0)
+        ->where('company_status', 1)
         ->orderBy('created_at', 'desc');
 
         $dataTable = Datatables::of( $companies );
-
-        $dataTable->addColumn(
-            'company_admin',
-
-            function( $company )
-            {
-                $company = Company::find( $company->company_id );
-                return $company->users->where('user_id_profile', 3)->first()->name;
-            }
-        );
 
         $dataTable->addColumn(
 

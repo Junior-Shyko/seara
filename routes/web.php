@@ -82,5 +82,3 @@ Route::resource('lancar' , 'EntryController');
 //     'anyData'  => 'datatables.data',
 //     'getIndex' => 'recibo-empresa'
 // ]);
-
-Route::get('clientes', 'CustomerController@index');

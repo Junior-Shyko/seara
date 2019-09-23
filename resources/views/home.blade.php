@@ -62,43 +62,43 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-md-12 col-sm-12 col-xs-12">
-			<div class="x_panel">
-				<div class="x_title">
+{{--	<div class="row">--}}
+{{--		<div class="col-md-12 col-sm-12 col-xs-12">--}}
+{{--			<div class="x_panel">--}}
+{{--				<div class="x_title">--}}
 
-					<button class="btn btn-primary pull-right" onclick="companyTable.reloadTable()" data-toggle="tooltip" data-placement="bottom" data-original-title="Atualizar">
-						<i class="fa fa-refresh" aria-hidden="true"></i>
-					</button>
+{{--					<button class="btn btn-primary pull-right" onclick="companyTable.reloadTable()" data-toggle="tooltip" data-placement="bottom" data-original-title="Atualizar">--}}
+{{--						<i class="fa fa-refresh" aria-hidden="true"></i>--}}
+{{--					</button>--}}
 
-					<div class="clearfix"></div>
-				</div>
+{{--					<div class="clearfix"></div>--}}
+{{--				</div>--}}
 
-				<div class="x_content">
+{{--				<div class="x_content">--}}
 
-					<div class="table-responsive">
-						<table class="table table-hover" id="company-table">
-							<thead>
-								<tr>
-									<th>Razão Social</th>
-									<th>Fantasia</th>
-									<th>Responsável</th>
-									<th>CNPJ</th>
-									<th>Data Cadastro</th>
-									<th>Aprovar</th>
-								</tr>
-							</thead>
+{{--					<div class="table-responsive">--}}
+{{--						<table class="table table-hover" id="company-table">--}}
+{{--							<thead>--}}
+{{--								<tr>--}}
+{{--									<th>Razão Social</th>--}}
+{{--									<th>Fantasia</th>--}}
+{{--									<th>Responsável</th>--}}
+{{--									<th>CNPJ</th>--}}
+{{--									<th>Data Cadastro</th>--}}
+{{--									<th>Aprovar</th>--}}
+{{--								</tr>--}}
+{{--							</thead>--}}
 
-							<tbody>
-							</tbody>
-						</table>						
-					</div>
+{{--							<tbody>--}}
+{{--							</tbody>--}}
+{{--						</table>						--}}
+{{--					</div>--}}
 
-				</div>
+{{--				</div>--}}
 
-			</div>
-		</div>
-	</div>
+{{--			</div>--}}
+{{--		</div>--}}
+{{--	</div>--}}
 </div>
 </div>
 <!-- /page content -->

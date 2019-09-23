@@ -14,12 +14,12 @@
     <div class="col-md-12">
       <div class="x_panel">
         <div class="x_title">
-          <h2>Igreja <small>informações da Igreja</small></h2>
+          <h2>Clientes <small>gerenciamento de clientes</small></h2>
 
           <div class="clearfix"></div>
         </div>
         <div class="col-md-12">
-          <a href="{{url('companies/create')}}"><button class="btn btn-primary pull-right">Novo</button></a>
+          <a href="{{url('companies/create')}}"><button class="btn btn-primary pull-right">Cadastrar Cliente</button></a>
         </div>
         <div class="x_content">
           <div class="panel">
@@ -63,29 +63,20 @@
 
 <script>
   
-var companyTable;
-
 $(document).ready(function(){
-
   var colunas = [
     { data: 'company_name', name: 'company_name' },
     { data: 'company_fantasy', name: 'company_fantasy' },
     { data: 'company_cnpj', name: 'company_cnpj' },
-    { data: 'company_admin', name: 'company_admin' },
+    { data: 'company_manager', name: 'company_manager' },
     { data: 'created_at', name: 'created_at' },
     { data: 'action', name: 'action', orderable: false, searchable: false }
   ];
 
-  companyTable = new SearaTable('company-table', 'companies/dataTable', colunas, 'igreja', 'igrejas');
+  var companyTable = new SearaTable('company-table', 'companies/dataTable', colunas, 'cliente', 'clientes');
 
   companyTable.loadTable();
 });
-
-function editCompany(companyID)
-{
-  console.log(companyID);
-}
-
 
 </script>
 

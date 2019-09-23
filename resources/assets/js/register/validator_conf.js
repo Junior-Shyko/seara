@@ -190,8 +190,4 @@ function initValidator()
   $('#form-step-3').parsley().on('form:validated', function() {
     reconfigureWizardView(3);
   });
-
-  $('#form-step-4').parsley().on('form:validated', function() {
-    reconfigureWizardView(4);
-  });
 }

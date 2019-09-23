@@ -2,20 +2,20 @@ var companyTable;
 
 $(document).ready(function(){
 
-	var colunas = [
-	  { data: 'company_name', name: 'company_name' },
-	  { data: 'company_fantasy', name: 'company_fantasy' },
-	  { data: 'company_admin', name: 'company_admin' },
-	  { data: 'company_cnpj', name: 'company_cnpj' },
-	  { data: 'created_at', name: 'created_at' },
-	  { data: 'action', name: 'action', orderable: false, searchable: false }
-	];
-
-	companyTable = new SearaTable('company-table', 'datatable', colunas);
-
-	console.log( companyTable );
-
-	companyTable.loadTable();
+	// var colunas = [
+	//   { data: 'company_name', name: 'company_name' },
+	//   { data: 'company_fantasy', name: 'company_fantasy' },
+	//   { data: 'company_admin', name: 'company_admin' },
+	//   { data: 'company_cnpj', name: 'company_cnpj' },
+	//   { data: 'created_at', name: 'created_at' },
+	//   { data: 'action', name: 'action', orderable: false, searchable: false }
+	// ];
+	//
+	// companyTable = new SearaTable('company-table', 'datatable', colunas);
+	//
+	// console.log( companyTable );
+	//
+	// companyTable.loadTable();
 });
 
 function allowCompany ( companyID )

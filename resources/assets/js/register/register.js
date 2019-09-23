@@ -55,29 +55,28 @@ function stepChanged(obj, context)
   return isValid;
 }
 
-function formSubmit(objs, context)
-{
+function formSubmit(objs, context) {
   // Validação de todos os passos
   // No primeiro passo errado, vou voltar para ele
   if ( !validateStep(1) ) {
     $("#wizard").smartWizard('goToStep', 1);
     reconfigureWizardView(1);
     return;
-  } else if (!validateStep(2)) {
+  }
+
+  if (!validateStep(2)) {
     $("#wizard").smartWizard('goToStep', 2);
     reconfigureWizardView(2);
     return;
-  }else if (!validateStep(3)) {
+  }
+
+  if (!validateStep(3)) {
     $("#wizard").smartWizard('goToStep', 3);
     reconfigureWizardView(3);
     return;
-  }else if (!validateStep(4)) {
-    $("#wizard").smartWizard('goToStep', 4);
-    reconfigureWizardView(4);
-    return;
-  }else { // todos os passos são válidos
-    store(storeSuccess, storeFailure); // cadastro da empresa e usuário
   }
+
+  store(storeSuccess, storeFailure); // cadastro da empresa e usuário
 }
 
 function updateWizard(obj, context)
@@ -117,7 +116,7 @@ function store(success, failure)
     '_token': $('meta[name="_token"]').attr('content'),
     'company': company,
     'user': user
-  }
+  };
 
 
   SearaLoader.showModal('Aguarde enquanto seu cadastro é concluído');
@@ -128,7 +127,7 @@ function store(success, failure)
     SearaAlert.success('Cadastro concluído com sucesso', 'Aguarde enquanto as informações do seu cadastro são avaliadas.')
     .then(function(){
       // Reireciona para a página inicial
-      $(location).attr('href',SearaApp.baseURL);
+      $(location).attr('href',baseURL('/companies'));
     });
   })
   .fail(function (jqXHR) {
@@ -157,24 +156,10 @@ function packUser()
 {
   // a requisição deu certo, agora vou guardar o usuário
   var user = {};
-  $("#form-step-4").serializeArray().map(function(x){
-    user[x.name] = x.value;
-  });
 
   $("#form-step-3").serializeArray().map(function(x){
     user[x.name] = x.value;
   });
-
-  user['user_sex'] = $("#form-step-4 input[type='radio']:checked").val();
-  user['user_id_profile'] = 1;
-
-  // Retira as mascaras
-  user['user_cpf'] = unmask(user['user_cpf']);
-  user['user_phone'] = unmask(user['user_phone']);
-  user['user_addr_cep'] = unmask(user['user_addr_cep']);
-
-  // Conversão de data
-  //user['user_birth'] = brDatetoUsa(user['user_birth']);
 
   return user;
 }

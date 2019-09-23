@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Models\User;
@@ -35,17 +36,7 @@ class SignUpController extends Controller
 	{
 		$rules = [
 			/* VALIDAÇÃO DO USUÁRIO */
-	      	'email' => 'required|unique:users',
 	      	'name' => 'required',
-	      	'user_cpf' => 'required|unique:users',
-	      	'user_birth' => 'required|date_format:d/m/Y',
-	      	'password' => 'required',
-	      	'user_addr_cep' => 'required',
-	      	'user_addr_street' => 'required',
-	      	'user_addr_number' => 'required',
-	      	'user_addr_district' => 'required',
-	      	'user_addr_city' => 'required',
-	      	'user_addr_state' => 'required',
 
 	      	/* VALIDAÇÃO DA EMPRESA */
 	      	'company_cnpj' => 'required|unique:companies',
@@ -79,62 +70,35 @@ class SignUpController extends Controller
 	}
 
 	public function signup(Request $request)
-	{		
-		$userData 						= $request->input('user');
-		$companyData 					= $request->input('company');
+    {
+        $userData = $request->input('user');
+        $companyData = $request->input('company');
 
-		$validation = $this->validateData( array_merge($userData, $companyData) );
+        $validation = $this->validateData(array_merge($userData, $companyData));
 
+        if (!$validation['status']) {
+            return response( ['status' => 'error', 'message' => $validation['message']], 422 );
+        }
 
-		if ( !$validation['status'] )
-		{
-			return response( ['status' => 'error', 'message' => $validation['message']], 422 );
-		}
-		else
-		{
-			// criptografia da senha
-			$userData['password'] = bcrypt($userData['password']);
+        try {
+            DB::transaction(function () use ($companyData, $userData) {
+                $companyData['company_status'] = 1;
+                $companyData['company_manager'] = $userData['name'];
+                Company::create($companyData);
+            });
 
-			$company = []; // empresa a ser criada
+            return response()->json(['status' => 'success', 'message' => 'Cadastrado concluido com sucesso.']);
+        } catch (\Throwable $e) {
+            $errorCode = 422;
+            return response()
+                ->json([
+                    'status' => 'error',
+                    'message' => 'Cadastrado não concluído, tente novamente.'
+                ], $errorCode);
+        }
+    }
 
-			// Cadastro da empresa no banco
-			try {
-				$companyData['company_status'] 	= 0;
-				//dd($companyData);
-				$company = Company::create($companyData);
-			}
-			catch(Exception $e){
-
-				$errorCode = 422;
-				return response()->json(['status' => 'error', 'message' => 'Cadastrado não concluído, tente novamente.'], $errorCode);
-			}
-
-			// Tento Criar o Usuário
-			$userData['user_id_company'] 	= $company->company_id;
-			$userData['users_avatar'] 		= 'default-user-avatar.png';
-			$userData['user_id_profile']	= 3; // Administrador da Empresa
-			$userData['user_birth']			= Carbon::createFromFormat('d/m/Y', $userData['user_birth'])->format('Y-m-d');
-
-			try {
-				$user = User::create($userData);
-			}
-			catch(Exception $e) {
-				$errorCode = 422;
-
-				// Caso tenha alguma falha no cadastro do usuário, devo excluir tb a Empresa
-				$company->delete();
-
-				return response(['status' => 'error', 'message' => ['Cadstrado não concluído, tente novamente.']], $errorCode);
-			}
-
-			//Mail::to('excelencesoft@gmail.com')->send(new UserRegistered($user, true)); // envia para edvan
-			//Mail::to($user)->send(new UserRegistered($user));
-
-			return response()->json(['status' => 'success', 'message' => 'Cadastrado concluido com sucesso.']);
-			}
-	}
-
-	public function checkCNPJ(Request $request)
+    public function checkCNPJ(Request $request)
 	{
 		$rules = [
 			'company_cnpj' => 'unique:companies'
