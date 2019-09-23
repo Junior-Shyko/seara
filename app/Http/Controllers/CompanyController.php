@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Auth , DB;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Str;
+use Throwable;
 use Yajra\Datatables\Facades\Datatables;
 use Carbon\Carbon;
 
@@ -117,10 +118,11 @@ class CompanyController extends Controller
     public function destroy(Company $company)
     {
         try {
-          $company->delete();
-          return redirect()->back()->with('success' , 'Igreja excluída com sucesso');
-        } catch (Exception $e) {
-          return redirect()->back()->with('error' , 'Ocorreu um erro: '.$e->getMessage());
+            $company->company_status = 0;
+            $company->save();
+            return response()->json(['status' => 'success', 'message' => 'Cliente desativado com sucesso']);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => 'Não foi possível desativar o cliente, tente novamente mais tarde']);
         }
     }
 
@@ -192,61 +194,54 @@ class CompanyController extends Controller
     public function dataTable()
     {
         $company_id = Auth::user()->user_id_company;
-
         $companies = Company::select([
-
             'company_id',
             'company_name',
             'company_fantasy',
             'company_cnpj',
             'created_at',
-            'company_manager'
-
+            'company_manager',
         ])
-        ->where('company_id', '<>', $company_id)
-        ->where('company_status', 1)
-        ->orderBy('created_at', 'desc');
+            ->where('company_id', '<>', $company_id)
+            ->where('company_status', 1)
+            ->orderBy('created_at', 'desc');
 
-        $dataTable = Datatables::of( $companies );
+        $dataTable = Datatables::of($companies);
 
         $dataTable->addColumn(
-
             'action',
-
-            function( $company )
-            {
-                return $this->actions( $company->company_id );
+            function($company) {
+                return $this->actions($company->company_id);
             }
-
         );
 
         $dataTable->editColumn(
-
             'created_at',
-
-            function( $company )
-            {
-                $created_at = new Carbon( $company->created_at );
+            function($company) {
+                $created_at = new Carbon($company->created_at);
                 return $created_at->format('d/m/Y à\s H:i:s');
             }
-
         );
 
         return $dataTable->make(true);
-
     }
 
-    private function actions( $company_id )
+    private function actions($companyId)
     {
-        return $this->actionButton( 
-            $company_id, 
-            'Editar Empresa', 
-            'editCompany', 
-            'fa-pencil' 
-        );
+        return implode("", [
+            $this->actionButton(
+                $companyId,
+                'Editar Empresa',
+                'editCompany',
+                'fa-pencil'
+            ),
+            $this->actionButton(
+                $companyId,
+                'Desativar empresa',
+                'deactivateCompany',
+                'fa-ban',
+                'btn-danger'
+            )
+        ]);
     }
-
-
-
-    
 }

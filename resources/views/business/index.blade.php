@@ -61,23 +61,45 @@
 
 @push('scripts')
 
-<script>
-  
-$(document).ready(function(){
-  var colunas = [
-    { data: 'company_name', name: 'company_name' },
-    { data: 'company_fantasy', name: 'company_fantasy' },
-    { data: 'company_cnpj', name: 'company_cnpj' },
-    { data: 'company_manager', name: 'company_manager' },
-    { data: 'created_at', name: 'created_at' },
-    { data: 'action', name: 'action', orderable: false, searchable: false }
-  ];
+  <script>
+    var colunas = [
+      { data: 'company_name', name: 'company_name' },
+      { data: 'company_fantasy', name: 'company_fantasy' },
+      { data: 'company_cnpj', name: 'company_cnpj' },
+      { data: 'company_manager', name: 'company_manager' },
+      { data: 'created_at', name: 'created_at' },
+      { data: 'action', name: 'action', orderable: false, searchable: false }
+    ];
 
-  var companyTable = new SearaTable('company-table', 'companies/dataTable', colunas, 'cliente', 'clientes');
+    var companyTable = new SearaTable('company-table', 'companies/dataTable', colunas, 'cliente', 'clientes');
 
-  companyTable.loadTable();
-});
+    $(document).ready(function(){
+      companyTable.loadTable();
+    });
 
-</script>
+    function deactivateCompany(id) {
+      swal({
+        title: 'Atenção',
+        text: 'A empresa será desativada, deseja continuar?',
+        type: 'warning',
+        showCancelButton: true
+      }).then(function() {
+        SearaLoader.showModal('Desativando empresa...');
+        var company = new ResourceModel('companies');
+
+        company.delete(id, function (response) {
+          notify.response(response);
+          companyTable.reloadTable();
+        }).fail(function (jqXHR) {
+          notify.response(jqXHR.responseJSON);
+        }).always(function(){
+          SearaLoader.hideModal();
+        });
+
+      });
+
+    }
+
+  </script>
 
 @endpush
