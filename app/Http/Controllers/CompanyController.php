@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\Company\CompanyDataProvider;
 use Exception;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -243,5 +244,11 @@ class CompanyController extends Controller
                 'btn-danger'
             )
         ]);
+    }
+
+    public function getCompanyData(string $cnpj, CompanyDataProvider $companyDataProvider)
+    {
+        $data = $companyDataProvider->getCompanyData($cnpj);
+        return response()->json($data->toArray());
     }
 }

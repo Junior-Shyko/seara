@@ -18,6 +18,7 @@ Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/cadastro', 'SignUpController@index');
 Route::post('/cadastro', 'SignUpController@signup');
 Route::post('/cadastro/checkCNPJ', 'SignUpController@checkCNPJ');
+Route::get('/cnpj/autocomplete/{cnpj}', 'CompanyController@getCompanyData');
 
 // Home
 Route::group(['prefix' => '/'], function(){

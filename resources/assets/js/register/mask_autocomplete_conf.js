@@ -4,12 +4,12 @@
 function requestCnpj()
 {
   // url do recietaws
-  var url = 'http://receitaws.com.br/v1/cnpj/'+$("#company_cnpj").inputmask("unmaskedvalue");
+  // var url = 'http://receitaws.com.br/v1/cnpj/'+$("#company_cnpj").inputmask("unmaskedvalue");
+    var url = baseURL('/cnpj/autocomplete/' + $("#company_cnpj").inputmask("unmaskedvalue"));
 
   return $.ajax({
     url: url,
-    dataType: 'jsonp',
-    jsonp: 'callback',
+    dataType: 'json',
     success: function(data){
       $("#company_name").val(data.nome);
       $("#company_fantasy").val(data.fantasia);

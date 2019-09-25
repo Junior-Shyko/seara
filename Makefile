@@ -1,5 +1,6 @@
-.PHONY: run assets
+PHP_BIN ?= docker-compose exec php php
 
+.PHONY: setup
 setup:
 	@cp .env.dist .env
 	@docker-compose up -d
@@ -16,5 +17,10 @@ setup:
 vendor: composer.json composer.lock
 	@docker-compose exec php composer install
 
+.PHONY: assets
 assets:
 	@docker-compose exec node npm run dev
+
+.PHONY: tests
+tests: 	vendor
+	@$(PHP_BIN) vendor/bin/phpunit --testsuite Unit
