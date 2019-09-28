@@ -24,6 +24,7 @@ class Company extends Model
         'company_brand_logo',
         'company_status',
         'company_manager',
+        'company_type',
     ];
     //
 

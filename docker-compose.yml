@@ -9,14 +9,17 @@ services:
     environment:
       - MYSQL_DATABASE=seara
       - MYSQL_ROOT_PASSWORD=root
+  dbtest:
+    image: mariadb:10
+    environment:
+      - MYSQL_DATABASE=seara
+      - MYSQL_ROOT_PASSWORD=root
   php:
     image: fcoedno/php:7.1-fpm-dev
     volumes:
       - ./:/code
       - composercache:/.composer
     working_dir: /code
-    environment:
-      - APP_ENV=dev
   web:
     image: fcoedno/nginx:1.13.8-dev
     volumes:

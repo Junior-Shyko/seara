@@ -22,5 +22,16 @@ assets:
 	@docker-compose exec node npm run dev
 
 .PHONY: tests
-tests: 	vendor
+unit: vendor
 	@$(PHP_BIN) vendor/bin/phpunit --testsuite Unit
+
+.PHONY: integration
+integration: vendor
+	@$(PHP_BIN) vendor/bin/phpunit --testsuite Integration
+
+.PHONY: feature
+feature: vendor
+	@$(PHP_BIN)	vendor/bin/phpunit --testsuite Feature
+
+tests: vendor
+	@$(PHP_BIN)	vendor/bin/phpunit
