@@ -14,6 +14,10 @@ class CompanyImporter
      * @var CompanyRepository
      */
     private $repository;
+    /**
+     * @var callable
+     */
+    private $listener;
 
     public function __construct(
         Extractor $extractor,
@@ -21,6 +25,7 @@ class CompanyImporter
     ) {
         $this->extractor = $extractor;
         $this->repository = $repository;
+        $this->listener = function () {};
     }
 
     public function import(string $path)
@@ -28,6 +33,19 @@ class CompanyImporter
         $companies = $this->extractor->extract($path);
         foreach ($companies as $company) {
             $this->repository->save($company);
+            ($this->listener)($company);
         }
+    }
+
+    /**
+     * Sets an optional callback to be executed after every time a company is saved.
+     *
+     * The callback receives the company data as single argument.
+     *
+     * @param callable $listener
+     */
+    public function setListener(callable $listener)
+    {
+        $this->listener = $listener;
     }
 }

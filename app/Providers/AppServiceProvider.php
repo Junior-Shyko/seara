@@ -16,8 +16,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-
-    protected $defer = true;
     /**
      * Bootstrap any application services.
      *

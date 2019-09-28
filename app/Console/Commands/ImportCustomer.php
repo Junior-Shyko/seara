@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Service\Company\CompanyImporter;
+use DB;
 use Illuminate\Console\Command;
 
 class ImportCustomer extends Command
@@ -45,7 +46,19 @@ class ImportCustomer extends Command
     {
         $filePath = $this->argument('file');
         $this->info("Importing data from file {$filePath}");
-        $this->importer->import($filePath);
+        $this->importer->setListener(function (array $company) {
+            $this->info('Finishing import of the company: ');
+            $this->table(['Cnpj', 'Responsável', 'Fantasia'], [
+                [
+                    $company['company_cnpj'],
+                    $company['company_manager'],
+                    $company['company_fantasy'],
+                ]
+            ]);
+        });
+        DB::transaction(function () use ($filePath) {
+            $this->importer->import($filePath);
+        });
         return 0;
     }
 }
