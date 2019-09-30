@@ -199,33 +199,49 @@ SearaTable.prototype.reloadTable = function() {
   $("#" + this.tableID).DataTable().ajax.reload();
 }
 
-SearaTable.prototype.loadTable = function (){
-    let table = $('#'+this.tableID).DataTable({
-      processing: true,
-      serverSide: true,
-      buttons: [
-        'copy', 'excel', 'pdf', 'csv'
-      ],
-      ajax: this.url,
-      columns: this.columns,
-      language: {
-        "lengthMenu": "Exibir _MENU_ " + this.plural + " por página",
-        "zeroRecords": "Nenhum " + this.singular + " cadastrado para essa pesquisa",
-        "infoEmpty": "Exibindo 0 de 0 " + this.plural,
-        "emptyTable": "Nenhum " + this.singular + " cadastrado",
-        "info": "Exibindo página _PAGE_ de _PAGES_",
-        "infoFiltered": "(filtrados de _MAX_ " + this.plural + ")",
-        "search": "Pesquisar:",
-        "paginate": {
-          "previous": "Anterior",
-          "next": "Próximo",
-          "first": "Primeiro",
-          "last": "Último"
+SearaTable.prototype.loadTable = function () {
+  let table = $('#'+this.tableID).DataTable({
+    processing: true,
+    serverSide: true,
+    dom: 'lBfrtip',
+    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+    buttons: [
+      {
+        extend: 'pdf',
+        exportOptions: {
+          columns: ':visible'
         }
+      },
+      {
+        extend: 'csv',
+        exportOptions: {
+          columns: ':visible'
+        }
+      },
+      {
+        extend: 'colvis',
+        text: 'Selecionar colunas'
+      },
+    ],
+    ajax: this.url,
+    columns: this.columns,
+    language: {
+      "lengthMenu": "Exibir _MENU_ " + this.plural + " por página",
+      "zeroRecords": "Nenhum " + this.singular + " cadastrado para essa pesquisa",
+      "infoEmpty": "Exibindo 0 de 0 " + this.plural,
+      "emptyTable": "Nenhum " + this.singular + " cadastrado",
+      "info": "Exibindo página _PAGE_ de _PAGES_",
+      "infoFiltered": "(filtrados de _MAX_ " + this.plural + ")",
+      "search": "Pesquisar:",
+      "paginate": {
+        "previous": "Anterior",
+        "next": "Próximo",
+        "first": "Primeiro",
+        "last": "Último"
       }
-    });
+    }
+  });
 
   let selector = $('#company-table_wrapper > div:nth-child(1) > div:nth-child(1)');
-  // console.log(selector);
   table.buttons().container().appendTo(selector);
 };
