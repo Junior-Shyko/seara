@@ -17,7 +17,7 @@ $.LoadingOverlaySetup({
 
 /**
  * Object Constructor que encapsula o acesso a recursos no sistema
- * @param {str} resourceURL URL base do recurso
+ * @param {string} resourceURL URL base do recurso
  */
 function ResourceModel(resourceURL){
   this.resourceURL = resourceURL;
@@ -200,10 +200,12 @@ SearaTable.prototype.reloadTable = function() {
 }
 
 SearaTable.prototype.loadTable = function (){
-
-    $('#'+this.tableID).DataTable({
+    let table = $('#'+this.tableID).DataTable({
       processing: true,
       serverSide: true,
+      buttons: [
+        'copy', 'excel', 'pdf', 'csv'
+      ],
       ajax: this.url,
       columns: this.columns,
       language: {
@@ -222,5 +224,8 @@ SearaTable.prototype.loadTable = function (){
         }
       }
     });
-    
-}
+
+  let selector = $('#company-table_wrapper > div:nth-child(1) > div:nth-child(1)');
+  // console.log(selector);
+  table.buttons().container().appendTo(selector);
+};

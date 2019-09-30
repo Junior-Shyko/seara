@@ -7,6 +7,12 @@ function packForm(formSel, data = {})
   return data;
 }
 
+function populateForm(formSelector, data) {
+  $.each(data, function(key, value){
+    $('[name='+key+']', formSelector).val(value);
+  });
+}
+
 function brDatetoUsa(datestring)
 {
   var dateSplitted = datestring.split('/');

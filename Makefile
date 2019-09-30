@@ -17,8 +17,15 @@ setup:
 vendor: composer.json composer.lock
 	@docker-compose exec php composer install
 
+assets-vendor: bower.json .bowerrc
+	@docker-compose exec node bower install --allow-root
+
 .PHONY: assets
-assets:
+assets: assets-vendor
+	@docker-compose exec node gulp
+
+.PHONY: watch
+watch: assets-vendor
 	@docker-compose exec node npm run dev
 
 .PHONY: tests
