@@ -39,6 +39,7 @@
     "gasparesganga-jquery-loading-overlay": "^1.5.3",
     "sweetalert2": "^6.6.4",
     "jquery-serialize-object": "2.5.0",
-    "bootstrap-fileinput": "4.4.2"
+    "bootstrap-fileinput": "4.4.2",
+    "pdfmake": "^0.1.60"
   }
 }

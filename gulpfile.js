@@ -53,6 +53,8 @@ elixir(function(mix) {
 
     // Scripts Básicos
     mix.scripts([
+        './vendor/bower_components/pdfmake/build/pdfmake.min.js',
+        './vendor/bower_components/pdfmake/build/vfs_fonts.js',
         './vendor/bower_components/gentelella/vendors/jquery/dist/jquery.min.js', // JQUERy
         './vendor/bower_components/gentelella/vendors/bootstrap/dist/js/bootstrap.min.js', //bootstrap
         './vendor/bower_components/gentelella/vendors/nprogress/nprogress.js', //NProgress
