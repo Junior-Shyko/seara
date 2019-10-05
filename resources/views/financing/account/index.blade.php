@@ -17,7 +17,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="col-md-12">
-                        <a><button class="btn btn-primary pull-right">Cadastrar Conta</button></a>
+                        <button id="create-account-btn" class="btn btn-primary pull-right">Cadastrar Conta</button>
                     </div>
                     <div class="x_content">
                         <div class="panel">

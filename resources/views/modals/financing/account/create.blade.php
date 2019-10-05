@@ -1,5 +1,5 @@
 <div id="modal-account" class="modal fade" aria-hidden=true>
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-md">
 
         <!-- Modal -->
         <div class="modal-content">
@@ -24,7 +24,7 @@
                             <div class="col-md-4 col-sm-4 col-xs-12">
                                 <label for="type">Tipo</label>
                                 <select name="type" id="type" class="form-control">
-                                    <option value="checking_acount">Conta corrente</option>
+                                    <option value="checking_account">Conta corrente</option>
                                     <option value="money">Dinheiro</option>
                                     <option value="investment">Investimentos</option>
                                     <option value="other">Outro</option>

@@ -11,6 +11,8 @@ use App\Service\Company\DelayedCompanyDataProvider;
 use App\Service\Company\EloquentCompanyRepository;
 use App\Service\Company\Extractor;
 use App\Service\Company\ReceitaWsCompanyDataProvider;
+use App\Service\Financing\Account\AccountRepository;
+use App\Service\Financing\Account\EloquentAccountRepository;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,5 +44,6 @@ class AppServiceProvider extends ServiceProvider
             return $app->make(CompanyImporterFactory::class)
                 ->make();
         });
+        $this->app->bind(AccountRepository::class, EloquentAccountRepository::class);
     }
 }

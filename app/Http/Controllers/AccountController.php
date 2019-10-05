@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAccount;
+use App\Service\Financing\Account\CreateAccount;
 use Illuminate\Http\Request;
-use App\Account;
-use App\Box;
-use DB, Auth;
+use DB;
+use Throwable;
 
 class AccountController extends Controller
 {
@@ -32,11 +33,27 @@ class AccountController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreAccount $request
+     * @param CreateAccount $createAccount
+     * @return void
+     * @throws Throwable
      */
-    public function store(Request $request)
+    public function store(StoreAccount $request, CreateAccount $createAccount)
     {
+        try {
+            DB::transaction(function () use ($request, $createAccount) {
+                $createAccount->execute($request->all());
+            });
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta salva com sucesso'
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível salvar a conta, tente novamente'
+            ], 400);
+        }
     }
 
     /**
