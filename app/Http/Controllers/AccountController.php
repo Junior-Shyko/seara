@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Account;
 use App\Http\Requests\StoreAccount;
 use App\Service\Financing\Account\CreateAccount;
+use App\Traits\ActionTable;
+use Carbon\Carbon;
+use Datatables;
 use Illuminate\Http\Request;
 use DB;
 use Throwable;
 
 class AccountController extends Controller
 {
+    use ActionTable;
+
     /**
      * Display a listing of the resource.
      *
@@ -98,5 +104,45 @@ class AccountController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function dataTable()
+    {
+        $query = DB::table('account')->select();
+        $datatable = Datatables::of($query);
+
+        $datatable->addColumn('balance', function () {
+            return 0.00;
+        });
+
+        $datatable->addColumn('action', function ($account) {
+            return $this->actionButtons($account->id, [
+                ['Editar conta', 'editAccount', 'fa fa-pencil'],
+                ['Arquivar conta', 'archiveAccount', 'fa fa-ban', 'btn-danger']
+            ]);
+        });
+
+        $datatable->editColumn(
+            'created_at',
+            function($account) {
+                $created_at = new Carbon($account->created_at);
+                return $created_at->format('d/m/Y à\s H:i:s');
+            }
+        );
+
+        $datatable->editColumn('type', function ($account) {
+            switch ($account->type) {
+                case 'money':
+                    return 'Dinheiro';
+                case 'checking_account':
+                    return 'Conta corrente';
+                case 'investment':
+                    return 'Investimento';
+                default:
+                    return 'Outro';
+            }
+        });
+
+        return $datatable->make(true);
     }
 }

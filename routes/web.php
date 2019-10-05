@@ -74,6 +74,7 @@ Route::resource('caixa' , 'BoxController');
 Route::post('abrir-caixa' , 'BoxController@open_box');
 Route::post('fechar-caixa' , 'BoxController@close_box');
 
+Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
 Route::resource('lancar' , 'EntryController');

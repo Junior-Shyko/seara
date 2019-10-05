@@ -23,12 +23,13 @@
                         <div class="panel">
                             <div class="panel-body">
                                 <div class="table-responsive">
-                                    <table class="table table-hover" id="company-table">
+                                    <table class="table table-hover" id="account-table">
                                         <thead>
                                         <tr>
                                             <th>Nome</th>
                                             <th>Tipo</th>
                                             <th>Saldo</th>
+                                            <th>Criado em</th>
                                             <th>Ações</th>
                                         </tr>
                                         </thead>
