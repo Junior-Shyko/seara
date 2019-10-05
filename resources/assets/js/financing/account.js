@@ -6,6 +6,7 @@ let AccountModule = (function () {
         {data: 'type', name: 'type'},
         {data: 'balance', name: 'balance'},
         {data: 'created_at', name: 'created_at'},
+        {data: 'status', name: 'status'},
         {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
     ];
     let accountTable = new SearaTable('account-table', 'conta/dataTable', columns, 'conta', 'contas');
@@ -35,11 +36,35 @@ let AccountModule = (function () {
         });
     }
 
+    function archiveAccount(id) {
+        swal({
+            title: 'Atenção',
+            text: 'A conta será arquivada, deseja continuar?',
+            type: 'warning',
+            showCancelButton: true
+        }).then(function() {
+            SearaLoader.showModal('Arquivando conta...');
+            accountResource.delete(id, function (response) {
+                notify.response(response);
+                accountTable.reloadTable();
+            }).fail(function (jqXHR) {
+                notify.response(jqXHR.responseJSON);
+            }).always(function(){
+                SearaLoader.hideModal();
+            });
+        });
+    }
+
     return {
-        index: index
+        index: index,
+        archiveAccount: archiveAccount
     };
 })();
 
 $(document).ready(function () {
     AccountModule.index();
 });
+
+function archiveAccount(id) {
+    AccountModule.archiveAccount(id);
+}

@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 
 class EloquentAccountRepository implements AccountRepository
 {
-    public function save(array $accountData)
+    public function save(array $accountData): void
     {
         $account = new Account();
         $account->fill($accountData);
@@ -19,5 +19,21 @@ class EloquentAccountRepository implements AccountRepository
     public function nextIdentity(): string
     {
         return Uuid::uuid4()->toString();
+    }
+
+    public function update(string $id, array $accountData): void
+    {
+        $account = $this->find($id);
+        $account
+            ->fill($accountData)
+            ->save();
+    }
+
+    public function find(string $id): Account
+    {
+        if ($account = Account::find($id)) {
+            return $account;
+        }
+        throw AccountNotFound::withId($id);
     }
 }

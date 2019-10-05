@@ -13,9 +13,8 @@ class Account extends Model
 {
     protected $table = 'account';
 
-    protected $fillable = [
-        'id',
-        'name',
-        'type'
+    protected $guarded = [
+        'created_at',
+        'updated_at',
     ];
 }

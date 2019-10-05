@@ -18,7 +18,7 @@ class CreateAccountTable extends Migration
             $table->string('name');
             $table->enum('type', ['checking_account', 'money', 'investment', 'other']);
             $table->timestamps();
-            $table->softDeletes();
+            $table->timestamp('archived_at')->nullable();
         });
     }
 

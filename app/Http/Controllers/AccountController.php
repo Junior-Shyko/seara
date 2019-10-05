@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Account;
 use App\Http\Requests\StoreAccount;
+use App\Service\Financing\Account\ArchiveAccount;
 use App\Service\Financing\Account\CreateAccount;
 use App\Traits\ActionTable;
 use Carbon\Carbon;
@@ -98,12 +99,26 @@ class AccountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $id
+     * @param ArchiveAccount $archiveAccount
+     * @return void
      */
-    public function destroy($id)
+    public function destroy($id, ArchiveAccount $archiveAccount)
     {
-        //
+        try {
+            DB::transaction(function () use ($id, $archiveAccount) {
+                $archiveAccount->execute($id);
+            });
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta arquivada com sucesso'
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível arquivar a conta, tente novamente'
+            ]);
+        }
     }
 
     public function dataTable()
@@ -120,6 +135,13 @@ class AccountController extends Controller
                 ['Editar conta', 'editAccount', 'fa fa-pencil'],
                 ['Arquivar conta', 'archiveAccount', 'fa fa-ban', 'btn-danger']
             ]);
+        });
+
+        $datatable->addColumn('status', function ($account) {
+            if ($account->archived_at) {
+                return 'Arquivado';
+            }
+            return 'Ativo';
         });
 
         $datatable->editColumn(
@@ -141,6 +163,14 @@ class AccountController extends Controller
                 default:
                     return 'Outro';
             }
+        });
+
+        $datatable->setRowClass(function ($account) {
+            if (null !== $account->archived_at) {
+                return 'text-danger';
+            }
+
+            return '';
         });
 
         return $datatable->make(true);

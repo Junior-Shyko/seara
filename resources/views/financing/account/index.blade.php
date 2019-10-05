@@ -30,6 +30,7 @@
                                             <th>Tipo</th>
                                             <th>Saldo</th>
                                             <th>Criado em</th>
+                                            <th>Status</th>
                                             <th>Ações</th>
                                         </tr>
                                         </thead>
