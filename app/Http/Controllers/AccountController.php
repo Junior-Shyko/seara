@@ -16,7 +16,6 @@ class AccountController extends Controller
      */
     public function index()
     {
-       return "CConta";
     }
 
     /**
@@ -37,17 +36,6 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        //Create 2017-06-08 by Excellence Soft
-        if($request->ajax()){
-            try {
-                $account = Account::create($request->all());
-                return response()->json(['message' , 'success']);
-            } catch (Exception $e) {
-                return response()->json(['message' , 'error'.$e->getMessege()]);
-            }
-
-        }
-        //dd($request->all());
     }
 
     /**
@@ -58,15 +46,6 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        //$desc_account = Account::where('accounts_id' , $id)->get();
-           // DB::enableQueryLog();
-        $desc_account = DB::table('accounts')
-                ->join('type_accounts', 'accounts.accounts_id_type_account' , '=' , 'type_accounts.type_accounts_id' )
-                ->where('accounts.accounts_id', '=', $id)
-                ->get();
-               
-        //return DB::getQueryLog();
-    return response()->json([$desc_account]);
     }
 
     /**
@@ -102,16 +81,4 @@ class AccountController extends Controller
     {
         //
     }
-
-     /**
-     * Shows all records.
-     *
-     * 
-     * @return data
-     */
-     public function getAccount()
-     {
-        $account = Account::all();
-        return response()->json([$account]);
-     }
 }

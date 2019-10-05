@@ -60,8 +60,11 @@
                 </ul>
               </li>
 
-              <li><a href="{{url('caixa')}}"><i class="fa fa-calculator" aria-hidden="true"></i> Caixa <span class="fa fa-chevron-down"></span></a>
-                
+              <li>
+                  <a><i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+                      <li><a href="{{ url('contas') }}">Contas</a></li>
+                  </ul>
               </li>
 
               <li><a><i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
