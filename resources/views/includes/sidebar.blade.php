@@ -63,7 +63,7 @@
               <li>
                   <a><i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
-                      <li><a href="{{ url('contas') }}">Contas</a></li>
+                      <li><a href="{{ url('conta') }}">Contas</a></li>
                   </ul>
               </li>
 

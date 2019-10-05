@@ -14,12 +14,11 @@ class CreateAccountTable extends Migration
     public function up()
     {
         Schema::create('account', function (Blueprint $table) {
-            $table
-                ->increments('id')
-                ->string('name')
-                ->enum('type', ['checking_account', 'money', 'investment', 'other'])
-                ->timestamps()
-                ->softDeletes();
+            $table->uuid('id');
+            $table->string('name');
+            $table->enum('type', ['checking_account', 'money', 'investment', 'other']);
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -148,18 +148,11 @@ elixir(function(mix) {
         'customer/customer.js',
     ], 'public/js/customer.min.js');
 
-    // Caixa
-
-    mix.scripts(
-
-        [
-            './vendor/bower_components/jquery-serialize-object/jquery.serialize-object.js',
-            'box.js'
-        ],
-
-        'public/js/box.min.js'
-
-    );
+    // Financing > accounts
+    mix.scripts([
+        'helpers.js',
+        'financing/account.js'
+    ], 'public/js/financing/account.min.js');
 
     /**************/
     /* Copy Fonts */
