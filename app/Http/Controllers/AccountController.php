@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Account;
 use App\Http\Requests\StoreAccount;
+use App\Http\Requests\UpdateAccountRequest;
+use App\Service\Financing\Account\AccountRepository;
 use App\Service\Financing\Account\ArchiveAccount;
 use App\Service\Financing\Account\CreateAccount;
 use App\Traits\ActionTable;
 use Carbon\Carbon;
 use Datatables;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use DB;
+use Illuminate\Http\Response;
 use Throwable;
 
 class AccountController extends Controller
@@ -20,21 +22,11 @@ class AccountController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         return view('financing.account.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -66,34 +58,38 @@ class AccountController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @param AccountRepository $accountRepository
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show($id, AccountRepository $accountRepository)
     {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $account = $accountRepository->find($id)->jsonSerialize();
+        return response()->json($account);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateAccountRequest $request
+     * @param int $id
+     * @param AccountRepository $repository
+     * @return void
      */
-    public function update(Request $request, $id)
+    public function update(UpdateAccountRequest $request, $id, AccountRepository $repository)
     {
-        //
+        try {
+            $repository->update($id, $request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta salva com sucesso',
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível atualizar conta, tente novamente'
+            ]);
+        }
     }
 
     /**
@@ -123,7 +119,10 @@ class AccountController extends Controller
 
     public function dataTable()
     {
-        $query = DB::table('account')->select();
+        $query = DB::table('account')
+            ->select()
+            ->whereNull('archived_at');
+
         $datatable = Datatables::of($query);
 
         $datatable->addColumn('balance', function () {
@@ -135,13 +134,6 @@ class AccountController extends Controller
                 ['Editar conta', 'editAccount', 'fa fa-pencil'],
                 ['Arquivar conta', 'archiveAccount', 'fa fa-ban', 'btn-danger']
             ]);
-        });
-
-        $datatable->addColumn('status', function ($account) {
-            if ($account->archived_at) {
-                return 'Arquivado';
-            }
-            return 'Ativo';
         });
 
         $datatable->editColumn(
@@ -163,14 +155,6 @@ class AccountController extends Controller
                 default:
                     return 'Outro';
             }
-        });
-
-        $datatable->setRowClass(function ($account) {
-            if (null !== $account->archived_at) {
-                return 'text-danger';
-            }
-
-            return '';
         });
 
         return $datatable->make(true);
