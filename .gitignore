@@ -9,3 +9,4 @@ Homestead.json
 deploy.conf
 /.phpstorm.meta.php
 /_ide_helper.php
+/cypress/videos
