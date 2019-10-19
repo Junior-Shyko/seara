@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property string $id
@@ -13,8 +12,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class IncomeCategory extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'income_category';
 
     protected $guarded = [

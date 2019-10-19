@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Financing;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreIncomeCategoryRequest;
+use App\Http\Requests\UpdateIncomeCategoryRequest;
 use App\Service\Core\Transactor\Transactor;
 use App\Service\Financing\IncomeCategory\CreateIncomeCategory;
+use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use App\Traits\ActionTable;
 use Carbon\Carbon;
 use DB;
@@ -50,6 +52,32 @@ class IncomeCategoryController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Não foi possível salvar a categoria, tente novamente!'
+            ]);
+        }
+    }
+
+    public function show(string $id, IncomeCategoryRepository $repository)
+    {
+        $incomeCategory = $repository->find($id)
+            ->jsonSerialize();
+        return response()->json($incomeCategory);
+    }
+
+    public function update(
+        string $id,
+        UpdateIncomeCategoryRequest $request,
+        IncomeCategoryRepository $repository
+    ) {
+        try {
+            $repository->update($id, $request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta atualizada com sucesso'
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível atualizar a categoria, tente novamente'
             ]);
         }
     }

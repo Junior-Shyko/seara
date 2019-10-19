@@ -15,11 +15,20 @@ let IncomeCategoryModule = (function () {
         crud.initialize();
     }
 
+    function editIncomeCategory(id) {
+        crud.editResource(id);
+    }
+
     return {
         index: index,
+        editIncomeCategory: editIncomeCategory
     };
 })();
 
 $(() => {
     IncomeCategoryModule.index();
 });
+
+function editIncomeCategory(id) {
+    IncomeCategoryModule.editIncomeCategory(id);
+}

@@ -28,8 +28,39 @@ describe('Financing > Income category page', () => {
         cy.get('input[name=name]').type('Contratos');
         cy.get('[data-cy=submit]').click();
 
-        // cy.get('[data-cy=table]')
-        //     .find('tr:first')
-        //     .should('contain', 'Contratos');
+        cy.get('[data-cy=table]')
+            .find('tbody > tr:first')
+            .should('contain', 'Contratos');
     });
+
+    it('Updates an income category', () => {
+        cy.server();
+        cy.route('/income-category/dataTable*').as('dataTable');
+
+        cy.visit('/categoria-receita');
+        cy.window().then((win) => {
+            let $ = win.$;
+            let incomeCategoryResource = new win.ResourceModel('income-category');
+            incomeCategoryResource.create({
+                name: 'Contratos'
+            });
+        });
+
+        cy.wait('@dataTable').then(() => {
+            cy.window().then(win => {
+                win.$('#table-income-category').DataTable().ajax.reload();
+            });
+        });
+
+        cy.get('[data-cy=table]')
+            .find('tbody > tr:first i.fa.fa-pencil')
+            .click();
+
+        cy.get('input[name=name]').type('{selectAll}Venda de certificados');
+        cy.get('[data-cy=submit]').click();
+
+        cy.get('[data-cy=table]')
+            .find('tbody > tr:first > td:first')
+            .should('have.text', 'Venda de certificados');
+    })
 });
