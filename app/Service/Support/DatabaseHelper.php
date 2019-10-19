@@ -22,7 +22,8 @@ class DatabaseHelper
     ];
 
     private const SEEDERS = [
-        'login_spec' => [\TestUserSeeder::class]
+        'login_spec' => [\TestUserSeeder::class],
+        'financing.account_spec' => [\TestUserSeeder::class],
     ];
 
     public static function cleanDatabase()
