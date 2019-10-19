@@ -18,10 +18,12 @@ class DatabaseHelper
         'receipt_common',
         'receipt_company',
         'companies',
-        'account'
+        'account',
+        'income_category',
     ];
 
     private const SEEDERS = [
+        'user' => [\TestUserSeeder::class],
         'login_spec' => [\TestUserSeeder::class],
         'financing.account_spec' => [\TestUserSeeder::class],
     ];

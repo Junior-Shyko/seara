@@ -11,7 +11,7 @@
   <meta name="_token" content="{{ csrf_token() }}">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>Dasboard Seara Contabilidade</title>
+  <title>{{ $title ?? 'Dasboard Seara Contabilidade' }}</title>
 
   <!-- Gentelella -->
   <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">

@@ -88,9 +88,10 @@ Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
 Route::resource('lancar' , 'EntryController');
-//
 
-// Route::controller('recibo-empresa', 'ReceiptDatatablesController', [
-//     'anyData'  => 'datatables.data',
-//     'getIndex' => 'recibo-empresa'
-// ]);
+// Categoria de receitas
+Route::get('categoria-receita', 'Financing\IncomeCategoryController@index');
+Route::get('income-category/dataTable', 'Financing\IncomeCategoryController@dataTable');
+Route::resource('income-category', 'Financing\IncomeCategoryController', [
+    'only' => ['store', 'update', 'destroy', 'show']
+]);

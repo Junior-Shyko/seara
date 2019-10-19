@@ -154,6 +154,13 @@ elixir(function(mix) {
         'financing/account.js'
     ], 'public/js/financing/account.min.js');
 
+    // Financing > income category
+    mix.scripts([
+        'helpers.js',
+        'crud.js',
+        'financing/income_category.js'
+    ], 'public/js/financing/income_category.min.js');
+
     /**************/
     /* Copy Fonts */
     /**************/

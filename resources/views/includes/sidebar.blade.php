@@ -61,9 +61,14 @@
               </li>
 
               <li>
-                  <a><i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
+                  <a data-cy="financing-module">
+                      <i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span>
+                  </a>
                   <ul class="nav child_menu">
                       <li><a href="{{ url('conta') }}">Contas</a></li>
+                      <li data-cy="income-category">
+                          <a href="{{ url('categoria-receita') }}">Categorias de Receita</a>
+                      </li>
                   </ul>
               </li>
 
