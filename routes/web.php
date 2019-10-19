@@ -11,15 +11,7 @@
 |
 */
 
-use App\Service\Support\DatabaseHelper;
-
-Route::get('seed/{seed}', function ($seed) {
-    if (!App::environment(['local', 'testing'])) {
-        abort(404);
-    }
-    DatabaseHelper::cleanDatabase();
-    DatabaseHelper::seedDatabase($seed);
-});
+Route::get('seed/{seed}', 'SeedController');
 
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');

@@ -42,3 +42,7 @@ feature: vendor
 
 tests: vendor
 	@$(PHP_BIN)	vendor/bin/phpunit
+
+.PHONY: e2e
+e2e:
+	npm run cy:run

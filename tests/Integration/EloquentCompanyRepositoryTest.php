@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use App\Service\Company\EloquentCompanyRepository;
-use DB;
+use App\Service\Core\Util\DatabaseCleaner;
 use Tests\TestCase;
 
 class EloquentCompanyRepositoryTest extends TestCase
@@ -13,13 +13,7 @@ class EloquentCompanyRepositoryTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->artisan('migrate');
-    }
-
-    protected function tearDown()
-    {
-        DB::table('companies')->delete();
-        parent::tearDown();
+        DatabaseCleaner::cleanDatabase();
     }
 
     /**

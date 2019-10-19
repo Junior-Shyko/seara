@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
+use App\Service\Core\Util\DatabaseCleaner;
 use App\Service\Financing\Account\AccountNotFound;
 use App\Service\Financing\Account\EloquentAccountRepository;
 use Tests\TestCase;
@@ -18,7 +19,7 @@ class EloquentAccountRepositoryTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->artisan('migrate');
+        DatabaseCleaner::cleanDatabase();
         $this->repository = new EloquentAccountRepository();
     }
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Support;
+namespace App\Service\Core\Util;
 
 use DB;
 
-class DatabaseHelper
+class DatabaseCleaner
 {
     private const TABLES = [
         'tagging_tags',
@@ -22,26 +22,10 @@ class DatabaseHelper
         'income_category',
     ];
 
-    private const SEEDERS = [
-        'user' => [\TestUserSeeder::class],
-        'login_spec' => [\TestUserSeeder::class],
-        'financing.account_spec' => [\TestUserSeeder::class],
-    ];
-
     public static function cleanDatabase()
     {
         foreach (self::TABLES as $table) {
             DB::table($table)->delete();
-        }
-    }
-
-    public static function seedDatabase(string $seed)
-    {
-        $seeders = self::SEEDERS[$seed];
-        foreach ($seeders as $seeder) {
-            app()
-                ->make($seeder)
-                ->run();
         }
     }
 }

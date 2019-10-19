@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Tests\Integration\Service\Core\Transactor;
 
 use App\Service\Core\Transactor\EloquentTransactor;
-use App\Service\Support\DatabaseHelper;
+use App\Service\Core\Util\DatabaseCleaner;
 use DB;
+use Exception;
 use Tests\TestCase;
 use Throwable;
 use TypeError;
-use Exception;
 
 class EloquentTransactorTest extends TestCase
 {
     protected function setUp()
     {
         parent::setUp();
-        DatabaseHelper::cleanDatabase();;
+        DatabaseCleaner::cleanDatabase();
     }
 
     /**
