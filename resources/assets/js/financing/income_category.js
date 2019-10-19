@@ -19,9 +19,14 @@ let IncomeCategoryModule = (function () {
         crud.editResource(id);
     }
 
+    function archiveIncomeCategory(id) {
+        crud.destroyResource(id, 'A categoria sera arquivada, deseja continuar?');
+    }
+
     return {
         index: index,
-        editIncomeCategory: editIncomeCategory
+        editIncomeCategory: editIncomeCategory,
+        archiveIncomeCategory: archiveIncomeCategory
     };
 })();
 
@@ -31,4 +36,8 @@ $(() => {
 
 function editIncomeCategory(id) {
     IncomeCategoryModule.editIncomeCategory(id);
+}
+
+function archiveIncomeCategory(id) {
+    IncomeCategoryModule.archiveIncomeCategory(id);
 }

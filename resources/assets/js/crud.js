@@ -49,16 +49,16 @@ class Crud {
         });
     }
 
-    deleteResource(id, message) {
+    destroyResource(id, confirmationText) {
         const thisCrud = this;
         swal({
             title: 'Atenção',
-            text: message,
+            text: confirmationText,
             type: 'warning',
             showCancelButton: true
         }).then(function() {
             SearaLoader.showModal('Aguarde ...');
-            thisCrud.delete(id, function (response) {
+            thisCrud.resourceModel.delete(id, function (response) {
                 notify.response(response);
                 thisCrud.resourceTable.reloadTable();
             }).fail(function (jqXHR) {

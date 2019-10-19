@@ -12,6 +12,7 @@ use App\Service\Financing\IncomeCategory\CreateIncomeCategory;
 use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use App\Traits\ActionTable;
 use Carbon\Carbon;
+use DateTime;
 use DB;
 use Throwable;
 use Yajra\Datatables\Facades\Datatables;
@@ -72,7 +73,7 @@ class IncomeCategoryController extends Controller
             $repository->update($id, $request->all());
             return response()->json([
                 'status' => 'success',
-                'message' => 'Conta atualizada com sucesso'
+                'message' => 'Categoria atualizada com sucesso'
             ]);
         } catch (Throwable $exception) {
             return response()->json([
@@ -82,10 +83,22 @@ class IncomeCategoryController extends Controller
         }
     }
 
+    public function destroy(string $id, IncomeCategoryRepository $repository)
+    {
+        $repository->update($id, [
+            'archived_at' => new DateTime(),
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Categoria arquivada com sucesso'
+        ]);
+    }
+
     public function dataTable()
     {
         $query = DB::table('income_category')
-            ->select();
+            ->select()
+            ->whereNull('archived_at');
 
         $datatable = Datatables::of($query);
 
