@@ -6,7 +6,12 @@ namespace App\Service\Core\Util;
 
 class SeederRunner
 {
-    public static function runSeeder(string $seederClass)
+    public static function create()
+    {
+        return new self();
+    }
+
+    public function run(string $seederClass)
     {
         app()->make($seederClass)
             ->run();
