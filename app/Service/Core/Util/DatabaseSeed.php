@@ -8,8 +8,6 @@ class DatabaseSeed
 {
     private const SEEDERS = [
         'user' => [\TestUserSeeder::class],
-        'login_spec' => [\TestUserSeeder::class],
-        'financing.account_spec' => [\TestUserSeeder::class],
     ];
 
     /**

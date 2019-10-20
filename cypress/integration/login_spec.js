@@ -1,6 +1,6 @@
 describe('Login flow', () => {
     beforeEach(() => {
-        cy.seed('login_spec');
+        cy.seed('user');
     });
 
     it('Redirects the user to the login page when not logged in', () => {
