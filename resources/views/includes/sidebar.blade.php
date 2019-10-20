@@ -69,6 +69,9 @@
                       <li data-cy="income-category">
                           <a href="{{ url('categoria-receita') }}">Categorias de Receita</a>
                       </li>
+                      <li data-cy="receivable">
+                          <a href="{{ url('contas-a-receber') }}">Contas a Receber</a>
+                      </li>
                   </ul>
               </li>
 

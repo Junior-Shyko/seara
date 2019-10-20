@@ -87,3 +87,6 @@ Route::get('income-category/dataTable', 'Financing\IncomeCategoryController@data
 Route::resource('income-category', 'Financing\IncomeCategoryController', [
     'only' => ['store', 'update', 'destroy', 'show']
 ]);
+
+// Contas a receber
+Route::get('contas-a-receber', 'Financing\ReceivableController@index');
