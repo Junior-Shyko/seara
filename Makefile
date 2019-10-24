@@ -1,10 +1,12 @@
 PHP_BIN ?= docker-compose exec php php
+DEP_BIN ?= bin/dep.sh
 
 .PHONY: setup
 setup:
 	@cp .env.dist .env
 	@docker-compose up -d
 	@docker-compose exec php composer install
+	@docker-compose exec php composer run-script setup
 	@docker-compose exec php php artisan ide-helper:generate
 	@docker-compose exec php php artisan ide-helper:meta
 	@docker-compose exec node npm install gulp@3.x laravel-elixir
@@ -45,4 +47,12 @@ tests: vendor
 
 .PHONY: e2e
 e2e:
-	npm run cy:run
+	npm run cy:dry-run
+
+.PHONY: build
+build:
+	@bin/build.sh
+
+.PHONY: deploy
+deploy: tests e2e build
+	@bin/dep.sh deploy

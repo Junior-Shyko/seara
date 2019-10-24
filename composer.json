@@ -1,5 +1,5 @@
 {
-    "name": "florientr/laravel-gentelella",
+    "name": "fcoedno/seara",
     "description": "The Laravel 5.4 framework with Gentelella template",
     "keywords": [
       "framework",
@@ -22,7 +22,7 @@
     "version": "4.2.0",
     "type": "project",
     "require": {
-        "php": "7.1.*",
+        "php": "7.2.*|7.1.*",
         "laravel/framework": "5.4.*",
         "thomaswelton/laravel-gravatar": "~1.0",
         "rtconner/laravel-tagging": "~2.2",
@@ -44,7 +44,8 @@
         "phpunit/phpunit": "~5.7",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*",
-        "barryvdh/laravel-ide-helper": "2.2.3"
+        "barryvdh/laravel-ide-helper": "2.2.3",
+        "deployer/deployer": "^6.5"
     },
     "autoload": {
         "classmap": [
@@ -66,7 +67,7 @@
         "post-create-project-cmd": [
             "php artisan key:generate"
         ],
-        "post-install-cmd": [
+        "setup": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
             "php artisan optimize"
         ],

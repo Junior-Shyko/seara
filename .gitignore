@@ -11,3 +11,4 @@ deploy.conf
 /_ide_helper.php
 /cypress/videos
 npm-debug.log
+/build

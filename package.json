@@ -4,6 +4,7 @@
     "prod": "gulp --production",
     "dev": "gulp watch",
     "cy:run": "cypress run",
+    "cy:dry-run": "cypress run --config video=false",
     "cy:open": "cypress open"
   },
   "devDependencies": {

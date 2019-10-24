@@ -15,6 +15,7 @@
 
   <!-- Gentelella -->
   <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">
+  <link rel="icon" href="{{ asset('img/favicon.png')}}">
 
   <script type="text/javascript">
     var url_project = "{{url('/')}}";
