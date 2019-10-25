@@ -26,11 +26,13 @@
                                     <table class="table table-hover" data-cy="table" id="table-receivable">
                                         <thead>
                                         <tr>
-                                            <th>Descrição</th>
-                                            <th>Valor</th>
                                             <th>Vencimento</th>
+                                            <th>Dt. Pgto</th>
+                                            <th>Descrição</th>
+                                            <th>Categoria</th>
+                                            <th>Conta</th>
+                                            <th>Valor</th>
                                             <th>Cliente</th>
-                                            <th>Dt. Pagamento</th>
                                             <th>Ações</th>
                                         </tr>
                                         </thead>
@@ -50,10 +52,10 @@
     </div>
     <!-- /page content -->
 
-{{--    @include('modals.financing.income_category.create')--}}
+    @include('financing.receivable.modal_receivable')
 
 @endsection
 
 @push('scripts')
-{{--    <script type="text/javascript" language="javascript" src="{{elixir('js/financing/income_category.min.js')}}"></script>--}}
+    <script type="text/javascript" language="javascript" src="{{elixir('js/financing/receivable.min.js')}}"></script>
 @endpush

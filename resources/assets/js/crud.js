@@ -26,12 +26,21 @@ class Crud {
         this.$submitBtn.on('click', () => {
             let id = this.$resourceId.val();
 
+            if (!this.$form.parsley().validate()) {
+                return;
+            }
+
             if ('' === id) {
                 this._storeResource();
                 return;
             }
 
             this._updateAccount(id);
+        });
+
+        const thisCrud = this;
+        this.$resourceModal.on('shown.bs.modal', function () {
+            thisCrud.$form.find('input:first:visible').focus();
         });
     }
 
@@ -41,6 +50,7 @@ class Crud {
         this.resourceModel.read(id, function (data) {
             thisCrud._showForm();
             populateForm(thisCrud.formSel, data);
+            reloadAllMasks();
             thisCrud.$resourceId.val(id);
         }).fail(function (jqXHR) {
             notify.response(jqXHR.responseJSON);
@@ -72,6 +82,7 @@ class Crud {
     _showForm() {
         this.$resourceId.val('');
         this.$form.trigger('reset');
+        this.$form.parsley().reset();
         this.$resourceModal.modal('show');
     }
 

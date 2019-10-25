@@ -6,6 +6,7 @@ namespace App\Service\Financing\IncomeCategory;
 
 use App\IncomeCategory;
 use App\Service\Core\UuidIdentifier;
+use Illuminate\Database\Eloquent\Collection;
 
 class EloquentIncomeCategoryRepository implements IncomeCategoryRepository
 {
@@ -31,5 +32,10 @@ class EloquentIncomeCategoryRepository implements IncomeCategoryRepository
         $category = $this->find($id);
         $category->fill($categoryData)
             ->save();
+    }
+
+    public function findAll(): Collection
+    {
+        return IncomeCategory::all();
     }
 }
