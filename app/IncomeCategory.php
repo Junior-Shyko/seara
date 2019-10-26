@@ -20,4 +20,8 @@ class IncomeCategory extends Model
     ];
 
     protected $dates = ['archived_at'];
+
+    protected $casts = [
+        'id' => 'string'
+    ];
 }

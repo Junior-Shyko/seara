@@ -20,10 +20,12 @@ class CreateReceivableTable extends Migration
             $table->string('description');
             $table->uuid('income_category_id');
             $table->uuid('account_id');
-            $table->uuid('customer_id')->nullable();
+            $table->unsignedInteger('company_id')->nullable();
             $table->uuid('sequence_id')->nullable();
             $table->integer('sequence_number')->nullable();
+            $table->integer('sequence_count')->nullable();
             $table->date('payment_date')->nullable();
+            $table->timestamps();
 
             $table->primary('id');
 
@@ -34,6 +36,10 @@ class CreateReceivableTable extends Migration
             $table->foreign('account_id')
                 ->references('id')
                 ->on('account');
+
+            $table->foreign('company_id')
+                ->references('company_id')
+                ->on('companies');
 
             $table->unique(['sequence_id', 'sequence_number']);
         });

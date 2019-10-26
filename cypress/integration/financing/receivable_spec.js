@@ -22,6 +22,8 @@ describe('Financing > Receivables page', () => {
     });
 
     it('Creates and lists a receivable', () => {
+        cy.visit('/contas-a-receber');
+
         cy.get('[data-cy=create-btn]').click();
 
         cy.get('input[name=amount]')

@@ -55,6 +55,25 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-md-8 col-sm-8 col-sm-12">
+                                <label for="company_id">Cliente</label>
+                                <select class="form-control" name="company_id" id="company_id">
+                                    <option value="">Nenhum</option>
+                                    @foreach($companies as $company)
+                                        <option value="{{ $company->company_id }}">
+                                            {{ $company->company_fantasy ?? $company->company_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <label for="repeat_for">Repertir por (meses)</label>
+                                <input type="number" class="form-control" id="repeat_for" name="repeat_for">
+                            </div>
+                        </div>
                     </div>
                 </form> <!-- Fim do form -->
 

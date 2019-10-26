@@ -17,6 +17,8 @@ use App\Service\Financing\Account\AccountRepository;
 use App\Service\Financing\Account\EloquentAccountRepository;
 use App\Service\Financing\IncomeCategory\EloquentIncomeCategoryRepository;
 use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
+use App\Service\Financing\Receivable\EloquentReceivableRepository;
+use App\Service\Financing\Receivable\ReceivableRepository;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -52,5 +54,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AccountRepository::class, EloquentAccountRepository::class);
         $this->app->bind(IncomeCategoryRepository::class, EloquentIncomeCategoryRepository::class);
         $this->app->bind(Transactor::class, EloquentTransactor::class);
+        $this->app->bind(ReceivableRepository::class, EloquentReceivableRepository::class);
     }
 }
