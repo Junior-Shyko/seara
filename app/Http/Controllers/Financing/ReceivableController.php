@@ -9,8 +9,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReceivableRequest;
 use App\IncomeCategory;
 use App\Models\Company;
+use App\Receivable;
 use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use App\Service\Financing\Receivable\CreateReceivable;
+use App\Traits\ActionTable;
 use Carbon\Carbon;
 use Datatables;
 use DB;
@@ -18,6 +20,8 @@ use Throwable;
 
 class ReceivableController extends Controller
 {
+    use ActionTable;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -51,12 +55,29 @@ class ReceivableController extends Controller
         }
     }
 
+    public function destroy(string $id)
+    {
+        try {
+            Receivable::destroy($id);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta removida com sucesso!'
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível remover essa conta'
+            ], 500);
+        }
+    }
+
     public function dataTable()
     {
         $now = Carbon::now();
 
         $query = DB::table('receivable')
             ->select([
+                'receivable.id',
                 'receivable.due_date',
                 'receivable.payment_date',
                 'receivable.description',
@@ -99,7 +120,10 @@ class ReceivableController extends Controller
         $dataTable = Datatables::of($query);
 
         $dataTable->addColumn('action', function ($receivable) {
-            return '';
+            return $this->actionButtons($receivable->id, [
+                ['Editar', 'editReceivable', 'fa fa-pencil'],
+                ['Remover', 'deleteReceivable', 'fa fa-ban', 'btn-danger']
+            ]);
         });
 
         $dataTable->editColumn('due_date', function ($receivable) {

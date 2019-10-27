@@ -21,11 +21,20 @@ let ReceivableModule = (function () {
         crud.initialize();
     }
 
+    function deleteReceivable(id) {
+        crud.destroyResource(id, 'Essa conta a receber será removida e não pode ser desfeito, deseja continuar?');
+    }
+
     return {
-        index: index
+        index,
+        deleteReceivable
     };
 })();
 
 $(() => {
     ReceivableModule.index();
 });
+
+function deleteReceivable(id) {
+    ReceivableModule.deleteReceivable(id);
+}
