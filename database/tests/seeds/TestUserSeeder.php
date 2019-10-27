@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Database\Seeder;
+namespace Tests\Seeds;
+
+use DB;
+use DateTime;
 
 class TestUserSeeder extends Seeder
 {

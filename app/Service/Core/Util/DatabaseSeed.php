@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Service\Core\Util;
 
+use Tests\Seeds\ReceivableSpecSeeder;
+use Tests\Seeds\TestUserSeeder;
+
 class DatabaseSeed
 {
     private const SEEDERS = [
-        'user' => [\TestUserSeeder::class],
+        'user' => [TestUserSeeder::class],
         'receivable_spec' => [
-            \TestUserSeeder::class,
-            \ReceivableSpecSeeder::class
+            TestUserSeeder::class,
+            ReceivableSpecSeeder::class
         ]
     ];
 

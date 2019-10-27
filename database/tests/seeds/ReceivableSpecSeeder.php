@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+namespace Tests\Seeds;
+
 use App\Service\Core\Util\UuidGenerator;
-use Illuminate\Database\Seeder;
+use DB;
 
 class ReceivableSpecSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         DB::table('income_category')->insert([
             ['id' => UuidGenerator::generate(), 'name' => 'Venda de Certificados'],

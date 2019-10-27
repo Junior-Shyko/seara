@@ -19,6 +19,9 @@ let ReceivableModule = (function () {
 
     function index() {
         crud.initialize();
+        $('#modal-receivable').on('hidden.bs.modal', function () {
+            $('#repeat_for').closest('div').show();
+        });
     }
 
     function deleteReceivable(id) {
@@ -26,21 +29,45 @@ let ReceivableModule = (function () {
     }
 
     function editReceivable(id) {
+        $('#repeat_for').closest('div').hide();
         crud.editResource(id);
+    }
+
+    function payReceivable(id) {
+        $('#modal-pay-receivable').modal('show');
+        $('#payment_date').val(formattedCurrentDate);
+        reloadAllMasks();
+
+        $('#form-pay-receivable').off('submit');
+        $('#form-pay-receivable').on('submit', function () {
+            SearaLoader.showModal('Efetivando conta...');
+            SearaAjax.put('/receivable/payment/' + id, {
+                payment_date: $('#payment_date').val()
+            })
+                .then(function (response) {
+                    notify.response(response);
+                    $('#modal-pay-receivable').modal('hide');
+                    reloadTable('table-receivable');
+                })
+                .fail(function (jqXHR) {
+                    notify.response(jqXHR.responseJSON);
+                })
+                .always(function () {
+                    SearaLoader.hideModal();
+                })
+        });
     }
 
     return {
         index,
         deleteReceivable,
-        editReceivable
+        editReceivable,
+        payReceivable
     };
 })();
 
 $(() => {
     ReceivableModule.index();
-    $('#modal-receivable').on('hidden.bs.modal', function () {
-        $('#repeat_for').closest('div').show();
-    });
 });
 
 function deleteReceivable(id) {
@@ -48,6 +75,9 @@ function deleteReceivable(id) {
 }
 
 function editReceivable(id) {
-    $('#repeat_for').closest('div').hide();
     ReceivableModule.editReceivable(id);
+}
+
+function payReceivable(id) {
+    ReceivableModule.payReceivable(id);
 }

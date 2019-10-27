@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Financing;
 
 use App\Account;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PayReceivableRequest;
 use App\Http\Requests\StoreReceivableRequest;
 use App\Http\Requests\UpdateReceivableRequest;
 use App\IncomeCategory;
@@ -103,6 +104,25 @@ class ReceivableController extends Controller
         }
     }
 
+    public function payReceivable(
+        string $id,
+        PayReceivableRequest $request,
+        ReceivableRepository $repository
+    ) {
+        try {
+            $repository->update($id, $request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta efetivada com sucesso'
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível efetivar a conta'
+            ]);
+        }
+    }
+
     public function dataTable()
     {
         $now = Carbon::now();
@@ -153,8 +173,9 @@ class ReceivableController extends Controller
 
         $dataTable->addColumn('action', function ($receivable) {
             return $this->actionButtons($receivable->id, [
+                ['Efetivar conta', 'payReceivable', 'fa fa-check'],
                 ['Editar', 'editReceivable', 'fa fa-pencil'],
-                ['Remover', 'deleteReceivable', 'fa fa-ban', 'btn-danger']
+                ['Remover', 'deleteReceivable', 'fa fa-ban', 'btn-danger'],
             ]);
         });
 

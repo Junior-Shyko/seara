@@ -17,9 +17,9 @@ class DatabaseCleaner
         'users',
         'receipt_common',
         'receipt_company',
-        'companies',
-        'settings',
         'receivable',
+        'settings',
+        'companies',
         'account',
         'income_category',
     ];

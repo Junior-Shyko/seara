@@ -53,6 +53,7 @@
     <!-- /page content -->
 
     @include('financing.receivable.modal_receivable')
+    @include('financing.receivable.modal_pay_receivable')
 
 @endsection
 
