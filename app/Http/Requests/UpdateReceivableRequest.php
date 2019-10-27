@@ -8,7 +8,7 @@ namespace App\Http\Requests;
 use App\Service\Core\Transformation\FormatBrDate;
 use App\Service\Core\Transformation\FormatMoney;
 
-class StoreReceivableRequest extends Request
+class UpdateReceivableRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,8 +33,6 @@ class StoreReceivableRequest extends Request
             'description' => 'required|string',
             'income_category_id' => 'required|string',
             'account_id' => 'required|string',
-            // client_id
-            // repeat_for
         ];
     }
 
@@ -54,7 +52,6 @@ class StoreReceivableRequest extends Request
         $this->transform([
             'amount' => [new FormatMoney()],
             'due_date' => [new FormatBrDate()],
-            'repeat_for' => 'intval',
         ]);
     }
 }

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Financing\Receivable;
 
+use App\Receivable;
 use App\Service\Financing\Receivable\CreateReceivable;
+use App\Service\Financing\Receivable\ReceivableNotFound;
 use App\Service\Financing\Receivable\ReceivableRepository;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
@@ -107,6 +109,15 @@ class CreateReceivableTest extends TestCase implements ReceivableRepository
     public function nextIdentity(): string
     {
         return 'customuuid';
+    }
+
+    public function find(string $id): Receivable
+    {
+        throw ReceivableNotFound::withId($id);
+    }
+
+    public function update(string $id, array $receivable): void
+    {
     }
 
     private function assertSavedSequenceWithDueDates(array $receivable, $allDueDates)

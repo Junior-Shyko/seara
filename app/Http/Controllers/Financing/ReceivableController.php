@@ -7,11 +7,16 @@ namespace App\Http\Controllers\Financing;
 use App\Account;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReceivableRequest;
+use App\Http\Requests\UpdateReceivableRequest;
 use App\IncomeCategory;
 use App\Models\Company;
 use App\Receivable;
+use App\Service\Core\Transformation\ArrayTransformer;
+use App\Service\Core\Transformation\Operations\FloatToMoney;
+use App\Service\Core\Transformation\Operations\UsaDateToBr;
 use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use App\Service\Financing\Receivable\CreateReceivable;
+use App\Service\Financing\Receivable\ReceivableRepository;
 use App\Traits\ActionTable;
 use Carbon\Carbon;
 use Datatables;
@@ -68,6 +73,33 @@ class ReceivableController extends Controller
                 'status' => 'error',
                 'message' => 'Não foi possível remover essa conta'
             ], 500);
+        }
+    }
+
+    public function show(string $id, ReceivableRepository $repository, ArrayTransformer $transformer)
+    {
+        $receivable = $repository->find($id)
+            ->jsonSerialize();
+        $receivable = $transformer->transform($receivable, [
+            'due_date' => [new UsaDateToBr()],
+            'amount' => [new FloatToMoney()]
+        ]);
+        return response()->json($receivable);
+    }
+
+    public function update(string $id, UpdateReceivableRequest $request, ReceivableRepository $repository)
+    {
+        try {
+            $repository->update($id, $request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta salva com sucesso'
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível atualizar a conta'
+            ]);
         }
     }
 

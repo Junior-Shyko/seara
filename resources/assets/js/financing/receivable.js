@@ -25,16 +25,29 @@ let ReceivableModule = (function () {
         crud.destroyResource(id, 'Essa conta a receber será removida e não pode ser desfeito, deseja continuar?');
     }
 
+    function editReceivable(id) {
+        crud.editResource(id);
+    }
+
     return {
         index,
-        deleteReceivable
+        deleteReceivable,
+        editReceivable
     };
 })();
 
 $(() => {
     ReceivableModule.index();
+    $('#modal-receivable').on('hidden.bs.modal', function () {
+        $('#repeat_for').closest('div').show();
+    });
 });
 
 function deleteReceivable(id) {
     ReceivableModule.deleteReceivable(id);
+}
+
+function editReceivable(id) {
+    $('#repeat_for').closest('div').hide();
+    ReceivableModule.editReceivable(id);
 }

@@ -20,4 +20,26 @@ class EloquentReceivableRepository implements ReceivableRepository
         $model->fill($receivable);
         $model->save();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function find(string $id): Receivable
+    {
+        if ($receivable = Receivable::find($id)) {
+            return $receivable;
+        }
+
+        throw ReceivableNotFound::withId($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function update(string $id, array $receivable): void
+    {
+        $model = $this->find($id);
+        $model->fill($receivable);
+        $model->save();
+    }
 }
