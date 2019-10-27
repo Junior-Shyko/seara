@@ -8,12 +8,14 @@ class Crud {
         this.$submitBtn = $('#form-save-' + resourceName + '-btn');
         this.$resourceId = $('#' + resourceName + '-id');
         this.$form = $(this.formSel);
+        this.$advancedSearchForm = $('#advanced-search-' + resourceName);
         this.resourceTable = new SearaTable(
             'table-' + resourceName,
             resourceName + '/dataTable',
             dataTableColumns,
             singularName,
-            pluralName
+            pluralName,
+            () => packForm('#advanced-search-' + resourceName)
         );
     }
 
@@ -41,6 +43,10 @@ class Crud {
         const thisCrud = this;
         this.$resourceModal.on('shown.bs.modal', function () {
             thisCrud.$form.find('input:first:visible').focus();
+        });
+
+        this.$advancedSearchForm.on('change', () => {
+            thisCrud.resourceTable.reloadTable();
         });
     }
 

@@ -185,13 +185,14 @@ var SearaAjax = (function(){
 
 }());
 
-function SearaTable(tableID, url, columns, singular = 'registro', plural = 'registros'){
+function SearaTable(tableID, url, columns, singular = 'registro', plural = 'registros', dataFunc = () => {}){
 
   this.tableID = tableID;
   this.url = url;
   this.columns = columns;
   this.singular = singular;
   this.plural = plural;
+  this.dataFunc = dataFunc;
 
 };
 
@@ -200,6 +201,7 @@ SearaTable.prototype.reloadTable = function() {
 }
 
 SearaTable.prototype.loadTable = function () {
+  let thisSearaTable = this;
   let table = $('#'+this.tableID).DataTable({
     processing: true,
     serverSide: true,
@@ -223,7 +225,12 @@ SearaTable.prototype.loadTable = function () {
         text: 'Selecionar colunas'
       },
     ],
-    ajax: this.url,
+    ajax: {
+      url: this.url,
+      data: d => {
+        d.query = thisSearaTable.dataFunc();
+      }
+    },
     columns: this.columns,
     language: {
       "lengthMenu": "Exibir _MENU_ " + this.plural + " por página",

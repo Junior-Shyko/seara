@@ -18,10 +18,12 @@ use App\Service\Core\Transformation\Operations\UsaDateToBr;
 use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use App\Service\Financing\Receivable\CreateReceivable;
 use App\Service\Financing\Receivable\ReceivableRepository;
+use App\Service\Financing\Receivable\ReceivableTableFactory;
 use App\Traits\ActionTable;
 use Carbon\Carbon;
 use Datatables;
 use DB;
+use Illuminate\Http\Request;
 use Throwable;
 
 class ReceivableController extends Controller
@@ -123,89 +125,8 @@ class ReceivableController extends Controller
         }
     }
 
-    public function dataTable()
+    public function dataTable(ReceivableTableFactory $receivableTable)
     {
-        $now = Carbon::now();
-
-        $query = DB::table('receivable')
-            ->select([
-                'receivable.id',
-                'receivable.due_date',
-                'receivable.payment_date',
-                'receivable.description',
-                'income_category.name as category',
-                'account.name as account',
-                'receivable.amount',
-                'companies.company_fantasy as customer',
-                'receivable.sequence_number',
-                'receivable.sequence_count',
-            ])
-            ->join(
-                'income_category',
-                'receivable.income_category_id',
-                '=',
-                'income_category.id'
-            )
-            ->join(
-                'account',
-                'receivable.account_id',
-                '=',
-                'account.id'
-            )
-            ->leftJoin(
-                'companies',
-                'receivable.company_id',
-                'companies.company_id'
-            )
-            ->whereNull('payment_date')
-            ->where(function ($query) use ($now) {
-                $query
-                    ->whereDate('due_date', '<=', $now->format('Y-m-d'))
-                    ->orWhere(function ($query) use ($now) {
-                        $query->whereMonth('due_date', '<=', (int) $now->format('t'))
-                            ->whereYear('due_date', '<=', (int) $now->format('Y'));
-                    });
-                ;
-            })
-        ;
-
-        $dataTable = Datatables::of($query);
-
-        $dataTable->addColumn('action', function ($receivable) {
-            return $this->actionButtons($receivable->id, [
-                ['Efetivar conta', 'payReceivable', 'fa fa-check'],
-                ['Editar', 'editReceivable', 'fa fa-pencil'],
-                ['Remover', 'deleteReceivable', 'fa fa-ban', 'btn-danger'],
-            ]);
-        });
-
-        $dataTable->editColumn('due_date', function ($receivable) {
-            return Carbon::createFromFormat('Y-m-d', $receivable->due_date)
-                ->format('d/m/Y');
-        });
-
-        $dataTable->editColumn('amount', function ($receivable) {
-            return number_format(
-                $receivable->amount,
-                2,
-                ',',
-                '.'
-            );
-        });
-
-        $dataTable->editColumn('description', function ($receivable) {
-            if (! $receivable->sequence_number) {
-                return $receivable->description;
-            }
-
-            return sprintf(
-                '%s (%d/%d)',
-                $receivable->description,
-                $receivable->sequence_number,
-                $receivable->sequence_count
-            );
-        });
-
-        return $dataTable->make(true);
+        return $receivableTable->make();
     }
 }
