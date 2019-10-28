@@ -39,7 +39,7 @@
                                                             <option value="none">Sem cliente</option>
                                                             @foreach($companies as $company)
                                                                 <option value="{{ $company->company_id }}">
-                                                                    {{ $company->company_fantasy ?? $company->company_name }}
+                                                                    {{ $company->company_name ?? $company->company_fantasy }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
