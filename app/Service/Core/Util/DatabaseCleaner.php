@@ -17,6 +17,8 @@ class DatabaseCleaner
         'users',
         'receipt_common',
         'receipt_company',
+        'receivable',
+        'settings',
         'companies',
         'account',
         'income_category',
@@ -24,8 +26,10 @@ class DatabaseCleaner
 
     public static function cleanDatabase()
     {
-        foreach (self::TABLES as $table) {
-            DB::table($table)->delete();
-        }
+        DB::transaction(function () {
+            foreach (self::TABLES as $table) {
+                DB::table($table)->delete();
+            }
+        });
     }
 }

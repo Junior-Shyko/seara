@@ -73,11 +73,16 @@ elixir(function(mix) {
         './vendor/bower_components/datatables.net-buttons/js/buttons.html5.js', // Datatables
         './vendor/bower_components/datatables.net-buttons/js/buttons.colVis.js', // Datatables
         './vendor/bower_components/datatables.net-buttons-bs/js/buttons.bootstrap.min.js', // Datatables
+        './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
+        './vendor/bower_components/gentelella/vendors/parsleyjs/dist/i18n/pt-br.js',
+        './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+        'jquery.maskMoney.js',
 
+        'mask.js',
         'seara.js',
         'notify.js',
         'gentelella/helpers/smartresize.js',
-        'gentelella/custom.js'
+        'gentelella/custom.js',
     ], 'public/js/gentelella.min.js');
 
     // Registro
@@ -161,6 +166,14 @@ elixir(function(mix) {
         'financing/income_category.js'
     ], 'public/js/financing/income_category.min.js');
     mix.version('public/js/financing/income_category.min.js');
+
+    // Financing > receivable
+    mix.scripts([
+        'helpers.js',
+        'crud.js',
+        'financing/receivable.js'
+    ], 'public/js/financing/receivable.min.js');
+    mix.version('public/js/financing/receivable.min.js');
 
     /**************/
     /* Copy Fonts */

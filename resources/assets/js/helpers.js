@@ -24,3 +24,14 @@ function usaDatetoBr(datestring)
   var dateSplitted = datestring.split('-');
   return dateSplitted[2] + '/' + dateSplitted[1] + '/' + dateSplitted[0];
 }
+
+function formattedCurrentDate() {
+  const now = new Date();
+  return now.getDate().toString().padStart(2, '0')
+    + now.getMonth().toString().padStart(2, '0')
+    + now.getFullYear().toString();
+}
+
+function reloadTable(tableId) {
+  $("#" + tableId).DataTable().ajax.reload();
+}

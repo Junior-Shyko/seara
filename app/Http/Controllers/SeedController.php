@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App;
 use App\Service\Core\Util\DatabaseCleaner;
-use App\Service\Core\Util\DatabaseTestSeeder;
+use App\Service\Core\Util\DatabaseSeed;
 
 class SeedController extends Controller
 {
@@ -16,6 +16,6 @@ class SeedController extends Controller
             abort(404);
         }
         DatabaseCleaner::cleanDatabase();
-        DatabaseTestSeeder::seedDatabase($seed);
+        DatabaseSeed::seedDatabase($seed);
     }
 }

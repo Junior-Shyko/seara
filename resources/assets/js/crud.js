@@ -8,12 +8,14 @@ class Crud {
         this.$submitBtn = $('#form-save-' + resourceName + '-btn');
         this.$resourceId = $('#' + resourceName + '-id');
         this.$form = $(this.formSel);
+        this.$advancedSearchForm = $('#advanced-search-' + resourceName);
         this.resourceTable = new SearaTable(
             'table-' + resourceName,
             resourceName + '/dataTable',
             dataTableColumns,
             singularName,
-            pluralName
+            pluralName,
+            () => packForm('#advanced-search-' + resourceName)
         );
     }
 
@@ -26,12 +28,25 @@ class Crud {
         this.$submitBtn.on('click', () => {
             let id = this.$resourceId.val();
 
+            if (!this.$form.parsley().validate()) {
+                return;
+            }
+
             if ('' === id) {
                 this._storeResource();
                 return;
             }
 
             this._updateAccount(id);
+        });
+
+        const thisCrud = this;
+        this.$resourceModal.on('shown.bs.modal', function () {
+            thisCrud.$form.find('input:first:visible').focus();
+        });
+
+        this.$advancedSearchForm.on('change', () => {
+            thisCrud.resourceTable.reloadTable();
         });
     }
 
@@ -41,6 +56,7 @@ class Crud {
         this.resourceModel.read(id, function (data) {
             thisCrud._showForm();
             populateForm(thisCrud.formSel, data);
+            reloadAllMasks();
             thisCrud.$resourceId.val(id);
         }).fail(function (jqXHR) {
             notify.response(jqXHR.responseJSON);
@@ -72,6 +88,7 @@ class Crud {
     _showForm() {
         this.$resourceId.val('');
         this.$form.trigger('reset');
+        this.$form.parsley().reset();
         this.$resourceModal.modal('show');
     }
 

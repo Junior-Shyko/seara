@@ -1,6 +1,6 @@
 describe('Financing > Account page', () => {
     beforeEach(() => {
-        cy.seed('financing.account_spec');
+        cy.seed('user');
         cy.login();
     });
 

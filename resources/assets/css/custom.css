@@ -4243,3 +4243,8 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 td.nowrap {
     white-space: nowrap;
 }
+
+td.action {
+    white-space: nowrap;
+    text-align: right;
+}

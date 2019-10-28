@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Financing\IncomeCategory;
 
+use App\Account;
 use App\IncomeCategory;
 use App\Service\Core\UuidRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 interface IncomeCategoryRepository extends UuidRepository
 {
@@ -27,4 +29,10 @@ interface IncomeCategoryRepository extends UuidRepository
      * @param array $categoryData
      */
     public function update(string $id, array $categoryData): void;
+
+    /**
+     * Finds all income categories
+     * @return Collection|IncomeCategory[]
+     */
+    public function findAll(): Collection;
 }
