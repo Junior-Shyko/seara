@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\Receipt\CreateReceipt;
+use App\Service\Receipt\GenerateReceiptPdf;
 use Auth;
 use Exception;
 use PDF;
@@ -49,24 +51,22 @@ class ReceiptCompanyController extends Controller
   	return view('receipt-company.create');
   }
 
-  /**
-  * Store a newly created resource in storage.
-  *
-  * @param  \Illuminate\Http\Request  $request
-  * @return \Illuminate\Http\Response
-  */
-  public function store(Request $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param CreateReceipt $createReceipt
+     * @return \Illuminate\Http\Response
+     */
+  public function store(Request $request, CreateReceipt $createReceipt)
   {
   	try {
-  		$request['receipt_extensive_value'] = Monetary::numberToExt($request['receipt_value']);
-  		$receipt = ReceiptCompany::create($request->all());
-  	}
-  	catch(Exception $e) {
+  	    $createReceipt->execute($request->all());
+        return response(['status' => 'success', 'message' => "O recibo foi criado!"]);
+  	} catch(Exception $e) {
   		$errorCode = 400;
   		return response(['status' => 'error', 'code' => $errorCode, 'message' => $e->getMessage()], $errorCode);
   	}
-
-  	return response(['status' => 'success', 'message' => "O recibo foi criado!"]);
   }
 
   /**
@@ -141,30 +141,12 @@ class ReceiptCompanyController extends Controller
 
   }
 
-  public function generatePDF(Request $request, ReceiptCompany $receipt)
+  public function generatePDF(Request $request, ReceiptCompany $receipt, GenerateReceiptPdf $generateReceiptPdf)
   {
-
-  	PDF::setOptions([
-
-  		'dpi' => 72,
-  		'defaultPaperSize' => 'a4'
-
-  		]);
-
-  	$pdf_name = 'recibo-'.$receipt->receipt_date.'.pdf';
-
-  	$vias = $request->vias;
-  	$company = Auth::user()->company;
-  	$setting = $this->getReceiptSettings();
-
-  	$pdf = PDF::loadView('receipt-pdf.vias', compact('vias', 'company', 'receipt', 'setting'));
-
-  	ini_set('memory_limit', '-1');
-
-  	return $pdf->stream($pdf_name);
-
-	// Caso a requisição seja inválida, retorno para a lista de recibos
-	// return redirect('/recibo-empresa');
+      return $generateReceiptPdf->execute(
+          (int) $request->vias,
+          $receipt
+      );
   }
 
   public function anyData()

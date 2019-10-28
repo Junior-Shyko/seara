@@ -52,7 +52,7 @@ class ReceivableTableFactory implements QueryFilter
                 'income_category.name as category',
                 'account.name as account',
                 'receivable.amount',
-                'companies.company_fantasy as customer',
+                DB::raw('coalesce(companies.company_fantasy, companies.company_name) as customer'),
                 'receivable.sequence_number',
                 'receivable.sequence_count',
             ])
@@ -147,11 +147,18 @@ class ReceivableTableFactory implements QueryFilter
 
     private function addActionColumn($receivable)
     {
-        return $this->actionButtons($receivable->id, [
+        $buttons = '';
+        if (!empty($receivable->customer)) {
+            $buttons .= $this->actionButton($receivable->id, 'Gerar Recibo', 'generateReceipt', 'fa fa-file');
+        }
+        
+        $buttons .= $this->actionButtons($receivable->id, [
             ['Efetivar conta', 'payReceivable', 'fa fa-check'],
             ['Editar', 'editReceivable', 'fa fa-pencil'],
             ['Remover', 'deleteReceivable', 'fa fa-ban', 'btn-danger'],
         ]);
+
+        return $buttons;
     }
 
     private function editDueDate($receivable)

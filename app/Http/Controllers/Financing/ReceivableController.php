@@ -17,6 +17,7 @@ use App\Service\Core\Transformation\Operations\FloatToMoney;
 use App\Service\Core\Transformation\Operations\UsaDateToBr;
 use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use App\Service\Financing\Receivable\CreateReceivable;
+use App\Service\Financing\Receivable\GenerateReceiptReceivable;
 use App\Service\Financing\Receivable\ReceivableRepository;
 use App\Service\Financing\Receivable\ReceivableTableFactory;
 use App\Traits\ActionTable;
@@ -121,6 +122,23 @@ class ReceivableController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Não foi possível efetivar a conta'
+            ]);
+        }
+    }
+
+    public function generateReceipt(string $id, GenerateReceiptReceivable $generateReceiptReceivable)
+    {
+        try {
+            $receipt = $generateReceiptReceivable->execute($id);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Recibo gerado com sucesso!',
+                'location' => url("receipt-company/{$receipt->receipt_id}/pdf?vias=2")
+            ]);
+        } catch (Throwable $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível gerar o recibo, tente novamente'
             ]);
         }
     }

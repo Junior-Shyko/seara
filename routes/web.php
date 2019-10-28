@@ -92,6 +92,7 @@ Route::resource('income-category', 'Financing\IncomeCategoryController', [
 Route::get('contas-a-receber', 'Financing\ReceivableController@index');
 Route::get('receivable/dataTable', 'Financing\ReceivableController@dataTable');
 Route::put('receivable/payment/{id}', 'Financing\ReceivableController@payReceivable');
+Route::put('receivable/{id}/receipt', 'Financing\ReceivableController@generateReceipt');
 Route::resource('receivable', 'Financing\ReceivableController',[
     'only' => ['store', 'update', 'destroy', 'show']
 ]);

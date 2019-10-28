@@ -7,7 +7,7 @@ let ReceivableModule = (function () {
         {data: 'account', name: 'account'},
         {data: 'amount', name: 'amount'},
         {data: 'customer', name: 'customer'},
-        {data: 'action', name: 'action', orderable: false, searchable: false},
+        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'action'},
     ];
 
     const crud = new Crud(
@@ -58,11 +58,31 @@ let ReceivableModule = (function () {
         });
     }
 
+    function generateReceipt(id) {
+        swal({
+            title: 'Geração de Recibo',
+            text: 'Um novo recibo com as informações dessa conta será gerado, deseja continuar?',
+            type: 'warning',
+            showCancelButton: true
+        }).then(function() {
+            SearaLoader.showModal('Gerando Recibo ...');
+            SearaAjax.put('/receivable/' + id + '/receipt', {}, function (response) {
+                notify.response(response);
+                window.open(response.location,'_blank');
+            }).fail(function (jqXHR) {
+                notify.response(jqXHR.responseJSON);
+            }).always(function(){
+                SearaLoader.hideModal();
+            });
+        });
+    }
+
     return {
         index,
         deleteReceivable,
         editReceivable,
-        payReceivable
+        payReceivable,
+        generateReceipt
     };
 })();
 
@@ -80,4 +100,8 @@ function editReceivable(id) {
 
 function payReceivable(id) {
     ReceivableModule.payReceivable(id);
+}
+
+function generateReceipt(id) {
+    ReceivableModule.generateReceipt(id);
 }
