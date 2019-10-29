@@ -74,6 +74,7 @@ elixir(function(mix) {
         './vendor/bower_components/datatables.net-buttons/js/buttons.html5.js', // Datatables
         './vendor/bower_components/datatables.net-buttons/js/buttons.colVis.js', // Datatables
         './vendor/bower_components/datatables.net-buttons-bs/js/buttons.bootstrap.min.js', // Datatables
+        './vendor/bower_components/jszip/dist/jszip.min.js',
         './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
         './vendor/bower_components/gentelella/vendors/parsleyjs/dist/i18n/pt-br.js',
         './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',

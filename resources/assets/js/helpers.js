@@ -28,10 +28,23 @@ function usaDatetoBr(datestring)
 function formattedCurrentDate() {
   const now = new Date();
   return now.getDate().toString().padStart(2, '0')
-    + now.getMonth().toString().padStart(2, '0')
+    + (now.getMonth() + 1).toString().padStart(2, '0')
     + now.getFullYear().toString();
 }
 
 function reloadTable(tableId) {
   $("#" + tableId).DataTable().ajax.reload();
+}
+
+function convertBrCoinToFloat(valor){
+
+  if(valor === ""){
+    valor =  0;
+  }else{
+    valor = valor.replace(".","");
+    valor = valor.replace(",",".");
+    valor = parseFloat(valor);
+  }
+  return valor;
+
 }

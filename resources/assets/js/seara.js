@@ -221,9 +221,23 @@ SearaTable.prototype.loadTable = function () {
         }
       },
       {
+        extend: 'excelHtml5',
+        exportOptions: {
+          columns: ':visible',
+          format: {
+            body: function ( data, row, column, node ) {
+                if (node.className.split(/\s+/).includes("formatted_number")) {
+                    return convertBrCoinToFloat(data);
+                }
+                return data;
+            }
+          }
+        }
+      },
+      {
         extend: 'colvis',
         text: 'Selecionar colunas'
-      },
+      }
     ],
     ajax: {
       url: this.url,

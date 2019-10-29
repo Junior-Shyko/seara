@@ -40,6 +40,7 @@
     "sweetalert2": "^6.6.4",
     "jquery-serialize-object": "2.5.0",
     "bootstrap-fileinput": "4.4.2",
-    "pdfmake": "^0.1.60"
+    "pdfmake": "^0.1.60",
+    "jszip": "^3.2.2"
   }
 }

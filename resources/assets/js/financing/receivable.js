@@ -5,7 +5,7 @@ let ReceivableModule = (function () {
         {data: 'description', name: 'description'},
         {data: 'category', name: 'category'},
         {data: 'account', name: 'account'},
-        {data: 'amount', name: 'amount'},
+        {data: 'amount', name: 'amount', className: 'formatted_number'},
         {data: 'manager', name: 'manager'},
         {data: 'customer', name: 'customer'},
         {data: 'action', name: 'action', orderable: false, searchable: false, className: 'action'},

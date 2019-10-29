@@ -54,5 +54,6 @@ build:
 	@bin/build.sh
 
 .PHONY: deploy
-deploy: tests e2e build
+deploy: tests e2e
+	@bin/build.sh
 	@bin/dep.sh deploy
