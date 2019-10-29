@@ -43,37 +43,8 @@ class ReceivableTableFactory implements QueryFilter
 
     private function getQuery(): Builder
     {
-        $query = DB::table('receivable')
-            ->select([
-                'receivable.id',
-                'receivable.due_date',
-                'receivable.payment_date',
-                'receivable.description',
-                'income_category.name as category',
-                'account.name as account',
-                'receivable.amount',
-                DB::raw('coalesce(companies.company_fantasy, companies.company_name) as customer'),
-                'receivable.sequence_number',
-                'receivable.sequence_count',
-            ])
-            ->join(
-                'income_category',
-                'receivable.income_category_id',
-                '=',
-                'income_category.id'
-            )
-            ->join(
-                'account',
-                'receivable.account_id',
-                '=',
-                'account.id'
-            )
-            ->leftJoin(
-                'companies',
-                'receivable.company_id',
-                'companies.company_id'
-            );
-
+        $query = DB::table('receivable_view')
+            ->select();
         return $query;
     }
 
@@ -86,6 +57,8 @@ class ReceivableTableFactory implements QueryFilter
             ->transform($filters, [
                 'due_date_start' => [new FormatBrDate()],
                 'due_date_end' => [new FormatBrDate()],
+                'payment_date_start' => [new FormatBrDate()],
+                'payment_date_end' => [new FormatBrDate()],
             ]);
 
         if (!array_filter($filters)) {
@@ -95,7 +68,16 @@ class ReceivableTableFactory implements QueryFilter
 
         $this->applyStatusFilter($filters['status'] ?? null, $query);
         $this->applyCustomerFilter($filters['customer'] ?? null, $query);
-        $this->applyPeriodFilter($filters['due_date_start'] ?? null, $filters['due_date_end'] ?? null, $query);
+        $this->applyDueDateFilter(
+            $filters['due_date_start'] ?? null,
+            $filters['due_date_end'] ?? null,
+            $query
+        );
+        $this->applyPaymentDateFilter(
+            $filters['payment_date_start'] ?? null,
+            $filters['payment_date_end'] ?? null,
+            $query
+        );
     }
 
     private function applyDefaultFilter(Builder $query)
@@ -138,11 +120,38 @@ class ReceivableTableFactory implements QueryFilter
         }
 
         if ('none' === $customer) {
-            $query->whereNull('receivable.company_id');
+            $query->whereNull('company_id');
             return;
         }
 
-        $query->where('receivable.company_id', '=', $customer);
+        $query->where('company_id', '=', $customer);
+    }
+
+    private function applyDueDateFilter($start, $end, Builder $query)
+    {
+        if (null === $start && null === $end) {
+            $this->applyDefaultPeriodFilter($query);
+            return;
+        }
+
+        if (null !== $start) {
+            $query->whereDate('due_date', '>=', $start);
+        }
+
+        if (null !== $end) {
+            $query->whereDate('due_date', '<=', $end);
+        }
+    }
+
+    private function applyPaymentDateFilter($start, $end, Builder $query)
+    {
+        if (null !== $start) {
+            $query->whereDate('payment_date', '>=', $start);
+        }
+
+        if (null !== $end) {
+            $query->whereDate('payment_date', '<=', $end);
+        }
     }
 
     private function addActionColumn($receivable)
@@ -151,7 +160,7 @@ class ReceivableTableFactory implements QueryFilter
         if (!empty($receivable->customer)) {
             $buttons .= $this->actionButton($receivable->id, 'Gerar Recibo', 'generateReceipt', 'fa fa-file');
         }
-        
+
         $buttons .= $this->actionButtons($receivable->id, [
             ['Efetivar conta', 'payReceivable', 'fa fa-check'],
             ['Editar', 'editReceivable', 'fa fa-pencil'],
@@ -166,18 +175,18 @@ class ReceivableTableFactory implements QueryFilter
         return $this->formatDateToBr($receivable->due_date);
     }
 
+    private function formatDateToBr($date)
+    {
+        return Carbon::createFromFormat('Y-m-d', $date)
+            ->format('d/m/Y');
+    }
+
     private function editPaymentDate($receivable)
     {
         if ($paymentDate = $receivable->payment_date) {
             return $this->formatDateToBr($paymentDate);
         }
         return null;
-    }
-
-    private function formatDateToBr($date)
-    {
-        return Carbon::createFromFormat('Y-m-d', $date)
-            ->format('d/m/Y');
     }
 
     private function editAmount($receivable)
@@ -202,21 +211,5 @@ class ReceivableTableFactory implements QueryFilter
             $receivable->sequence_number,
             $receivable->sequence_count
         );
-    }
-
-    private function applyPeriodFilter($start, $end, Builder $query)
-    {
-        if (null === $start && null === $end) {
-            $this->applyDefaultPeriodFilter($query);
-            return;
-        }
-
-        if (null !== $start) {
-            $query->whereDate('due_date', '>=', $start);
-        }
-
-        if (null !== $end) {
-            $query->whereDate('due_date', '<=', $end);
-        }
     }
 }

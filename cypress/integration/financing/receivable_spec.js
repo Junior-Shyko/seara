@@ -32,10 +32,12 @@ describe('Financing > Receivables page', () => {
             .type('20092019');
         cy.get('input[name=description]')
             .type('Serviços de contabilidade');
-        cy.get('select[name=income_category_id]')
-            .select('Venda de contratos');
-        cy.get('select[name=account_id]')
-            .select('Itaú');
+
+        cy.get('#select2-income_category_id-container').click();
+        cy.get('.select2-search__field').type('Venda de contratos{enter}');
+
+        cy.get('#select2-account_id-container').click();
+        cy.get('.select2-search__field').type('Itaú{enter}');
 
         cy.get('[data-cy=submit]').click();
 

@@ -32,7 +32,7 @@ before('deploy:symlink', 'artisan:migrate');
 
 desc('Update code');
 task('deploy:update_code', function () {
-    upload('build/', '{{release_path}}');
+    upload('build/code/', '{{release_path}}');
 });
 
 desc('Create storage folders');

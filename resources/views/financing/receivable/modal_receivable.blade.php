@@ -36,7 +36,7 @@
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <label for="income_category_id">Categoria</label>
-                                <select required name="income_category_id" id="income_category_id" class="form-control">
+                                <select required name="income_category_id" id="income_category_id" class="form-control select2">
                                     @foreach($incomeCategories as $incomeCategory)
                                         <option value="{{ $incomeCategory->id }}">
                                             {{ $incomeCategory->name }}
@@ -46,7 +46,7 @@
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <label for="account_id">Conta</label>
-                                <select required name="account_id" id="account_id" class="form-control">
+                                <select required name="account_id" id="account_id" class="form-control select2">
                                     @foreach($accounts as $account)
                                         <option value="{{ $account->id }}">
                                             {{ $account->name }}
@@ -59,7 +59,7 @@
                         <div class="row">
                             <div class="col-md-8 col-sm-8 col-sm-12">
                                 <label for="company_id">Cliente</label>
-                                <select class="form-control" name="company_id" id="company_id">
+                                <select class="form-control select2" name="company_id" id="company_id">
                                     <option value="">Nenhum</option>
                                     @foreach($companies as $company)
                                         <option value="{{ $company->company_id }}">

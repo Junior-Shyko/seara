@@ -4,6 +4,7 @@ services:
     image: mariadb:10
     volumes:
       - database:/var/lib/mysql
+      - ./files:/opt/files
     ports:
       - 4242:3306
     environment:

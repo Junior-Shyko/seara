@@ -27,6 +27,7 @@ elixir(function(mix) {
         './vendor/bower_components/gentelella/vendors/pnotify/dist/pnotify.nonblock.css',
         './vendor/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
         './vendor/bower_components/datatables.net-buttons-bs/css/buttons.bootstrap.css',
+        './vendor/bower_components/gentelella/vendors/select2/dist/css/select2.min.css',
         'custom.css'
     ], 'public/css/gentelella.min.css');
 
@@ -76,9 +77,11 @@ elixir(function(mix) {
         './vendor/bower_components/gentelella/vendors/parsleyjs/dist/parsley.min.js',
         './vendor/bower_components/gentelella/vendors/parsleyjs/dist/i18n/pt-br.js',
         './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+        './vendor/bower_components/gentelella/vendors/select2/dist/js/select2.full.min.js',
         'jquery.maskMoney.js',
 
         'mask.js',
+        'select2.js',
         'seara.js',
         'notify.js',
         'gentelella/helpers/smartresize.js',

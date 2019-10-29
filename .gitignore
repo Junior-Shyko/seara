@@ -12,3 +12,4 @@ deploy.conf
 /cypress/videos
 npm-debug.log
 /build
+/files

@@ -34,7 +34,7 @@
                                                 <div class="row">
                                                     <div class="col-md-8">
                                                         <label>Cliente</label>
-                                                        <select name="customer" class="form-control">
+                                                        <select name="customer" class="form-control select2">
                                                             <option value=""></option>
                                                             <option value="none">Sem cliente</option>
                                                             @foreach($companies as $company)
@@ -46,7 +46,7 @@
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label>Status</label>
-                                                        <select name="status" class="form-control">
+                                                        <select name="status" class="form-control select2">
                                                             <option value=""></option>
                                                             <option value="all">Todas</option>
                                                             <option value="effective">Efetivada</option>
@@ -55,6 +55,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
+                                                    <div class="col-md-3">
+                                                        <label>Data de pagamento de</label>
+                                                        <input type="text" class="form-control date-mask" name="payment_date_start">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Data de pagamento até</label>
+                                                        <input type="text" class="form-control date-mask" name="payment_date_end">
+                                                    </div>
                                                     <div class="col-md-3">
                                                         <label>Vencimento de</label>
                                                         <input type="text" class="form-control date-mask" name="due_date_start">
@@ -84,6 +92,7 @@
                                             <th>Categoria</th>
                                             <th>Conta</th>
                                             <th>Valor</th>
+                                            <th>Responsável</th>
                                             <th>Cliente</th>
                                             <th>Ações</th>
                                         </tr>

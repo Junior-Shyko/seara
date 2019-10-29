@@ -4240,11 +4240,16 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
   overflow:auto !important; /*prevent datatables overflowing its container*/
 }
 
-td.nowrap {
+.nowrap {
     white-space: nowrap;
 }
 
 td.action {
     white-space: nowrap;
     text-align: right;
+}
+
+.select2-container {
+    width: 100% !important;
+    padding: 0;
 }

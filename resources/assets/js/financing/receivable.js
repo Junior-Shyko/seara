@@ -1,11 +1,12 @@
 let ReceivableModule = (function () {
     const columns = [
         {data: 'due_date', name: 'due_date'},
-        {data: 'payment_date', name: 'payment_date'},
+        {data: 'payment_date', name: 'payment_date', className: 'nowrap'},
         {data: 'description', name: 'description'},
         {data: 'category', name: 'category'},
         {data: 'account', name: 'account'},
         {data: 'amount', name: 'amount'},
+        {data: 'manager', name: 'manager'},
         {data: 'customer', name: 'customer'},
         {data: 'action', name: 'action', orderable: false, searchable: false, className: 'action'},
     ];
