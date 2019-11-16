@@ -59,6 +59,12 @@ task('cache:clear', function () {
     run('php {{release_path}}/artisan view:clear');
 });
 
+desc('Migrates database');
+task('artisan:migrate', function () {
+    run('php {{release_path}}/artisan migrate --force');
+    run('php {{release_path}}/artisan migrate:view');
+});
+
 /**
  * Main task
  */
