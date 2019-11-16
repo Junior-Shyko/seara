@@ -21,6 +21,7 @@ class InsertPaymentsFromReceivable extends Migration
                     'id' => UuidGenerator::generate(),
                     'amount' => $receivable->amount,
                     'receivable_id' => $receivable->id,
+                    'payment_date' => $receivable->payment_date,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ];

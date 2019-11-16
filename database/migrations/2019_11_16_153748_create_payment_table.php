@@ -16,6 +16,7 @@ class CreatePaymentTable extends Migration
         Schema::create('payment', function (Blueprint $table) {
             $table->uuid('id');
             $table->float('amount');
+            $table->date('payment_date');
             $table->uuid('receivable_id');
             $table->timestamps();
 
