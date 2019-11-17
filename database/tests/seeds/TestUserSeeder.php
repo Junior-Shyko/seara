@@ -9,7 +9,7 @@ use DateTime;
 
 class TestUserSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         DB::table('companies')->insert([
             'company_id' => 1,

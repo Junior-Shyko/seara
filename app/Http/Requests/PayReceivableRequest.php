@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Service\Core\Transformation\FormatBrDate;
+use App\Service\Core\Transformation\FormatMoney;
 
 class PayReceivableRequest extends Request
 {
@@ -27,6 +28,7 @@ class PayReceivableRequest extends Request
     {
         return [
             'payment_date' => 'required|date_format:Y-m-d',
+            'amount' => 'required|numeric',
         ];
     }
 
@@ -34,6 +36,7 @@ class PayReceivableRequest extends Request
     {
         return [
             'payment_date' => 'Data de pagamento',
+            'amount' => 'Valor pago'
         ];
     }
 
@@ -41,6 +44,7 @@ class PayReceivableRequest extends Request
     {
         $this->transform([
             'payment_date' => [new FormatBrDate()],
+            'amount' => [new FormatMoney()],
         ]);
     }
 }

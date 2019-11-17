@@ -92,6 +92,7 @@
                                             <th>Categoria</th>
                                             <th>Conta</th>
                                             <th>Valor</th>
+                                            <th>Valor Pago</th>
                                             <th>Responsável</th>
                                             <th>Cliente</th>
                                             <th>Ações</th>

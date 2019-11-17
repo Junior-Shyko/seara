@@ -36,6 +36,7 @@ class ReceivableTableFactory implements QueryFilter
             ->addColumn('action', Closure::fromCallable([$this, 'addActionColumn']))
             ->editColumn('due_date', Closure::fromCallable([$this, 'editDueDate']))
             ->editColumn('amount', Closure::fromCallable([$this, 'editAmount']))
+            ->editColumn('paid_amount', Closure::fromCallable([$this, 'editPaidAmount']))
             ->editColumn('description', Closure::fromCallable([$this, 'editDescription']))
             ->editColumn('payment_date', Closure::fromCallable([$this, 'editPaymentDate']))
             ->build();
@@ -82,7 +83,10 @@ class ReceivableTableFactory implements QueryFilter
 
     private function applyDefaultFilter(Builder $query)
     {
-        $query->whereNull('payment_date');
+        $query->where(function (Builder $query) {
+            $query->whereNull('paid_amount')
+                ->orWhereColumn('paid_amount', '<', 'amount');
+        });
         $this->applyDefaultPeriodFilter($query);
     }
 
@@ -193,6 +197,21 @@ class ReceivableTableFactory implements QueryFilter
     {
         return number_format(
             $receivable->amount,
+            2,
+            ',',
+            '.'
+        );
+    }
+
+    private function editPaidAmount($receivable)
+    {
+        $paidAmount = $receivable->paid_amount;
+        if (null === $paidAmount) {
+            return '';
+        }
+
+        return number_format(
+            $paidAmount,
             2,
             ',',
             '.'

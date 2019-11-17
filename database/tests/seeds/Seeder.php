@@ -6,5 +6,5 @@ namespace Tests\Seeds;
 
 abstract class Seeder
 {
-    abstract public function run();
+    abstract public function run(): void;
 }

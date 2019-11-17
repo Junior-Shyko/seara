@@ -6,6 +6,7 @@ let ReceivableModule = (function () {
         {data: 'category', name: 'category'},
         {data: 'account', name: 'account'},
         {data: 'amount', name: 'amount', className: 'formatted_number'},
+        {data: 'paid_amount', name: 'paid_amount', className: 'formatted_number'},
         {data: 'manager', name: 'manager'},
         {data: 'customer', name: 'customer'},
         {data: 'action', name: 'action', orderable: false, searchable: false, className: 'action'},
@@ -42,9 +43,7 @@ let ReceivableModule = (function () {
         $('#form-pay-receivable').off('submit');
         $('#form-pay-receivable').on('submit', function () {
             SearaLoader.showModal('Efetivando conta...');
-            SearaAjax.put('/receivable/payment/' + id, {
-                payment_date: $('#payment_date').val()
-            })
+            SearaAjax.put('/receivable/payment/' + id, packForm('#form-pay-receivable'))
                 .then(function (response) {
                     notify.response(response);
                     $('#modal-pay-receivable').modal('hide');

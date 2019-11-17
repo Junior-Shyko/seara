@@ -1,8 +1,7 @@
 select
     `receivable`.`id` as `id`,
     `receivable`.`due_date` as `due_date`,
-    `receivable`.`payment_date` as `payment_date`,
-    -- (select date(`payment_date`) from `payment` where `receivable_id` = `receivable`.`id` order by `payment_date` desc limit 1) as `payment_date`,
+    (select date(`payment_date`) from `payment` where `receivable_id` = `receivable`.`id` order by `payment_date` desc limit 1) as `payment_date`,
     `receivable`.`description` as `description`,
     `income_category`.`name` as `category`,
     `account`.`name` as `account`,

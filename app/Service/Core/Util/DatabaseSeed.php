@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Core\Util;
 
-use Tests\Seeds\ReceivableSpecSeeder;
+use Tests\Seeds\ReceivableSpec;
 use Tests\Seeds\TestUserSeeder;
 
 class DatabaseSeed
@@ -12,8 +12,8 @@ class DatabaseSeed
     private const SEEDERS = [
         'user' => [TestUserSeeder::class],
         'receivable_spec' => [
-            TestUserSeeder::class,
-            ReceivableSpecSeeder::class
+            'accounts_and_categories' => [ReceivableSpec\AccountAndCategoriesSeeder::class],
+            'partial_payment' => [ReceivableSpec\PartialPaymentSeeder::class],
         ]
     ];
 

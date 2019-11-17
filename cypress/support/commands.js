@@ -5,6 +5,10 @@ Cypress.Commands.add('seed', seed => {
     cy.request('/seed/' + seed);
 });
 
+Cypress.Commands.add('cleanDatabase', () => {
+    cy.request('/seed/clean');
+});
+
 Cypress.Commands.add('login', () => {
     cy.request('/login')
         .its('body')

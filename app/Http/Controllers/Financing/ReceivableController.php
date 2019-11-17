@@ -16,6 +16,7 @@ use App\Service\Core\Transformation\ArrayTransformer;
 use App\Service\Core\Transformation\Operations\FloatToMoney;
 use App\Service\Core\Transformation\Operations\UsaDateToBr;
 use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
+use App\Service\Financing\Payment\CreatePayment;
 use App\Service\Financing\Receivable\CreateReceivable;
 use App\Service\Financing\Receivable\GenerateReceiptReceivable;
 use App\Service\Financing\Receivable\ReceivableRepository;
@@ -110,10 +111,12 @@ class ReceivableController extends Controller
     public function payReceivable(
         string $id,
         PayReceivableRequest $request,
-        ReceivableRepository $repository
+        CreatePayment $createPayment
     ) {
         try {
-            $repository->update($id, $request->all());
+            $paymentData = $request->all();
+            $paymentData['receivable_id'] = $id;
+            $createPayment->execute($paymentData);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Conta efetivada com sucesso'

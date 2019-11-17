@@ -1,7 +1,19 @@
+import {assertFirstRowContains} from "../../support/assertions";
+
 describe('Financing > Receivables page', () => {
     beforeEach(() => {
-        cy.seed('receivable_spec');
+        cy.cleanDatabase();
+        cy.seed('user');
         cy.login();
+        cy.server();
+        cy.route({
+            method: 'GET',
+            url: '/receivable/dataTable*'
+        }).as('dataTable');
+        cy.route({
+            method: 'PUT',
+            url: '/receivable/payment/*'
+        }).as('payReceivable');
     });
 
     it('Loads the receivables page', () => {
@@ -22,11 +34,12 @@ describe('Financing > Receivables page', () => {
     });
 
     it('Creates and lists a receivable', () => {
+        cy.seed('receivable_spec.accounts_and_categories');
         cy.visit('/contas-a-receber');
 
         cy.get('[data-cy=create-btn]').click();
 
-        cy.get('input[name=amount]')
+        cy.get('input[name=amount]:visible')
             .type('57000');
         cy.get('input[name=due_date]')
             .type('20092019');
@@ -41,17 +54,49 @@ describe('Financing > Receivables page', () => {
 
         cy.get('[data-cy=submit]').click();
 
+        assertFirstRowContains([
+            '20/09/2019',
+            null, // ignore
+            'Serviços de contabilidade',
+            'Venda de contratos',
+            'Itaú',
+            '570'
+        ]);
+    });
+
+    it('Partially pays a receivable', () => {
+        cy.seed('receivable_spec.partial_payment');
+        cy.visit('/contas-a-receber');
+
         cy.get('[data-cy=table]')
-            .find('tbody tr:first td:first')
-            .should('contain', '20/09/2019') // due date
-            .next()
-            .next()
-            .should('contain', 'Serviços de contabilidade') // description
-            .next()
-            .should('contain', 'Venda de contratos') // category
-            .next()
-            .should('contain', 'Itaú') // account
-            .next()
-            .should('contain', '570') // amount
+            .find('tbody tr:first i.fa.fa-check')
+            .click();
+
+        cy.get('input[name=amount]:visible')
+            .type('110,48')
+            .get('[data-cy=pay-receivable]')
+            .click();
+
+        cy.wait('@payReceivable');
+        cy.wait('@dataTable');
+        cy.wait(500);
+
+        cy.get('[data-cy=table]')
+            .find('tbody tr:first td')
+            .eq(6)
+            .should('contain', '110,48');
+
+        cy.get('[data-cy=table]')
+            .find('tbody tr:first i.fa.fa-check')
+            .click();
+
+        cy.get('input[name=amount]:visible')
+            .type('314,73')
+            .get('[data-cy=pay-receivable]')
+            .click();
+
+        cy.get('[data-cy=table]')
+            .find('tbody tr')
+            .should('not.contain', 'Mensalidade')
     });
 });

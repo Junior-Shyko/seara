@@ -15,7 +15,12 @@ class SeedController extends Controller
         if (!App::environment(['local', 'testing'])) {
             abort(404);
         }
-        DatabaseCleaner::cleanDatabase();
+
+        if ('clean' === $seed) {
+            DatabaseCleaner::cleanDatabase();
+            return;
+        }
+
         DatabaseSeed::seedDatabase($seed);
     }
 }
