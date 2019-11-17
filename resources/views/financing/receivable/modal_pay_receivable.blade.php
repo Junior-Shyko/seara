@@ -13,7 +13,7 @@
             <!-- Modal Body -->
             <div class="modal-body">
                 <!-- Formulário  -->
-                <form id="form-pay-receivable" data-parsley-validate autocomplete="off" action="javascript:;">
+                <form id="form-pay-receivable" data-parsley-validate="true" autocomplete="off" action="javascript:;">
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12">

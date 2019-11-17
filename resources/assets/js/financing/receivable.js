@@ -37,17 +37,25 @@ let ReceivableModule = (function () {
 
     function payReceivable(id) {
         $('#modal-pay-receivable').modal('show');
+        let remainingAmount = $('#receivable-' + id).data('remainingAmount');
         let data = {
             payment_date: formattedCurrentDate(),
-            amount: $('#receivable-' + id).data('remainingAmount')
+            amount: remainingAmount
         };
         populateForm('#form-pay-receivable', data);
         reloadAllMasks();
 
         $('#form-pay-receivable').off('submit');
         $('#form-pay-receivable').on('submit', function () {
+            if (!$('#form-pay-receivable').parsley().validate()) {
+                return;
+            }
+
             SearaLoader.showModal('Efetivando conta...');
-            SearaAjax.put('/receivable/payment/' + id, packForm('#form-pay-receivable'))
+            let data = packForm('#form-pay-receivable');
+            data.remaining_amount = remainingAmount;
+
+            SearaAjax.put('/receivable/payment/' + id, data)
                 .then(function (response) {
                     notify.response(response);
                     $('#modal-pay-receivable').modal('hide');

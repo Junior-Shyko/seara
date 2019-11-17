@@ -26,9 +26,11 @@ class PayReceivableRequest extends Request
      */
     public function rules()
     {
+        $remainingAmount = $this->request->get('remaining_amount');
+        $this->request->remove('remaining_amount');
         return [
             'payment_date' => 'required|date_format:Y-m-d',
-            'amount' => 'required|numeric',
+            'amount' => "required|numeric|min:0|max:{$remainingAmount}",
         ];
     }
 
@@ -45,6 +47,7 @@ class PayReceivableRequest extends Request
         $this->transform([
             'payment_date' => [new FormatBrDate()],
             'amount' => [new FormatMoney()],
+            'remaining_amount' => [new FormatMoney()],
         ]);
     }
 }
