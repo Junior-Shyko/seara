@@ -39,6 +39,17 @@ class ReceivableTableFactory implements QueryFilter
             ->editColumn('paid_amount', Closure::fromCallable([$this, 'editPaidAmount']))
             ->editColumn('description', Closure::fromCallable([$this, 'editDescription']))
             ->editColumn('payment_date', Closure::fromCallable([$this, 'editPaymentDate']))
+            ->setRowData([
+                'remainingAmount' => function ($receivable) {
+                    $remainingAmount = $receivable->amount - ($receivable->paid_amount ?? 0);
+                    return $this->formatMoney($remainingAmount);
+                }
+            ])
+            ->setRowAttr([
+                'id' => function ($receivable) {
+                    return 'receivable-' . $receivable->id;
+                }
+            ])
             ->build();
     }
 
@@ -195,27 +206,13 @@ class ReceivableTableFactory implements QueryFilter
 
     private function editAmount($receivable)
     {
-        return number_format(
-            $receivable->amount,
-            2,
-            ',',
-            '.'
-        );
+        return $this->formatMoney($receivable->amount);
     }
 
     private function editPaidAmount($receivable)
     {
         $paidAmount = $receivable->paid_amount;
-        if (null === $paidAmount) {
-            return '';
-        }
-
-        return number_format(
-            $paidAmount,
-            2,
-            ',',
-            '.'
-        );
+        return $this->formatMoney($paidAmount);
     }
 
     private function editDescription($receivable)
@@ -229,6 +226,20 @@ class ReceivableTableFactory implements QueryFilter
             $receivable->description,
             $receivable->sequence_number,
             $receivable->sequence_count
+        );
+    }
+
+    private function formatMoney($amount)
+    {
+        if (null === $amount) {
+            return '';
+        }
+
+        return number_format(
+            $amount,
+            2,
+            ',',
+            '.'
         );
     }
 }

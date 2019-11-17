@@ -37,7 +37,11 @@ let ReceivableModule = (function () {
 
     function payReceivable(id) {
         $('#modal-pay-receivable').modal('show');
-        $('#payment_date').val(formattedCurrentDate);
+        let data = {
+            payment_date: formattedCurrentDate(),
+            amount: $('#receivable-' + id).data('remainingAmount')
+        };
+        populateForm('#form-pay-receivable', data);
         reloadAllMasks();
 
         $('#form-pay-receivable').off('submit');

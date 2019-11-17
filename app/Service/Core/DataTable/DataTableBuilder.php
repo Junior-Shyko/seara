@@ -31,6 +31,14 @@ final class DataTableBuilder
      * @var Request
      */
     private $request;
+    /**
+     * @var callable
+     */
+    private $rowData;
+    /**
+     * @var callable
+     */
+    private $rowAttr;
 
     public function __construct(Request $request)
     {
@@ -65,6 +73,32 @@ final class DataTableBuilder
     {
         $builder = clone $this;
         $builder->edits[$column] = $callback;
+        return $builder;
+    }
+
+    /**
+     * Sets the row data
+     *
+     * @param array $rowData
+     * @return $this
+     */
+    public function setRowData(array $rowData): self
+    {
+        $builder = clone $this;
+        $builder->rowData = $rowData;
+        return $builder;
+    }
+
+    /**
+     * Sets the row attributes
+     *
+     * @param array $rowAttr
+     * @return $this
+     */
+    public function setRowAttr(array $rowAttr): self
+    {
+        $builder = clone $this;
+        $builder->rowAttr = $rowAttr;
         return $builder;
     }
 
@@ -107,6 +141,14 @@ final class DataTableBuilder
 
         foreach ($this->edits as $column => $callback) {
             $dataTable->editColumn($column, $callback);
+        }
+
+        if (is_array($this->rowData)) {
+            $dataTable->setRowData($this->rowData);
+        }
+
+        if (is_array($this->rowAttr)) {
+            $dataTable->setRowAttr($this->rowAttr);
         }
 
         return $dataTable->make(true);
