@@ -73,7 +73,7 @@ describe('Financing > Receivables page', () => {
             .click();
 
         cy.get('input[name=amount]:visible')
-            .type('110,48')
+            .type('{selectAll}110,48')
             .get('[data-cy=pay-receivable]')
             .click();
 
@@ -91,7 +91,7 @@ describe('Financing > Receivables page', () => {
             .click();
 
         cy.get('input[name=amount]:visible')
-            .type('314,73')
+            .type('{selectAll}314,73')
             .get('[data-cy=pay-receivable]')
             .click();
 

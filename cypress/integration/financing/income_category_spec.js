@@ -14,6 +14,7 @@ describe('Financing > Income category page', () => {
     }
 
     beforeEach(() => {
+        cy.cleanDatabase();
         cy.seed('user');
         cy.login();
         cy.server();

@@ -1,5 +1,6 @@
 describe('Financing > Account page', () => {
     beforeEach(() => {
+        cy.cleanDatabase();
         cy.seed('user');
         cy.login();
     });

@@ -1,5 +1,6 @@
 describe('Login flow', () => {
     beforeEach(() => {
+        cy.cleanDatabase();
         cy.seed('user');
     });
 
