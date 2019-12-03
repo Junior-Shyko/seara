@@ -11,6 +11,8 @@ use App\Http\Requests\StoreReceivableRequest;
 use App\Http\Requests\UpdateReceivableRequest;
 use App\IncomeCategory;
 use App\Models\Company;
+use App\Payment;
+use App\PaymentPart;
 use App\Receivable;
 use App\Service\Core\Transformation\ArrayTransformer;
 use App\Service\Core\Transformation\Operations\FloatToMoney;
@@ -68,7 +70,16 @@ class ReceivableController extends Controller
     public function destroy(string $id)
     {
         try {
+            $paymentPart = PaymentPart::query()
+                ->where('receivable_id', '=', $id)
+                ->first();
+
+            if ($paymentPart) {
+                Payment::destroy($paymentPart->payment_id);
+            }
+
             Receivable::destroy($id);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Conta removida com sucesso!'
