@@ -5,7 +5,7 @@ select
     `receivable`.`description` as `description`,
     `income_category`.`name` as `category`,
     `account`.`name` as `account`,
-    (select sum(`amount`) from `payment_part` where `receivable_id` = `receivable`.`id`) as `paid_amount`,
+    coalesce((select sum(`amount`) from `payment_part` where `receivable_id` = `receivable`.`id`), 0) as `paid_amount`,
     `receivable`.`amount` as `amount`,
     coalesce(`companies`.`company_name`, `companies`.`company_fantasy`) as `customer`,
     `companies`.`company_manager` as `manager`,

@@ -21,6 +21,7 @@ use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use App\Service\Financing\Payment\CreatePayment;
 use App\Service\Financing\Receivable\CreateReceivable;
 use App\Service\Financing\Receivable\GenerateReceiptReceivable;
+use App\Service\Financing\Receivable\PayReceivable;
 use App\Service\Financing\Receivable\ReceivableRepository;
 use App\Service\Financing\Receivable\ReceivableTableFactory;
 use App\Traits\ActionTable;
@@ -122,7 +123,7 @@ class ReceivableController extends Controller
     public function payReceivable(
         string $id,
         PayReceivableRequest $request,
-        CreatePayment $createPayment
+        PayReceivable $createPayment
     ) {
         try {
             $paymentData = $request->all();

@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\DropTables;
 use App\Console\Commands\ImportCustomer;
 use App\Console\Commands\MigrateViews;
 use Illuminate\Console\Scheduling\Schedule;
@@ -17,6 +18,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         ImportCustomer::class,
         MigrateViews::class,
+        DropTables::class,
     ];
 
     /**

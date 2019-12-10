@@ -6,6 +6,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property float $amount
+ */
 class Receivable extends Model
 {
     protected $table = 'receivable';

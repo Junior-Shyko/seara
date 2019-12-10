@@ -30,7 +30,7 @@ class PayReceivableRequest extends Request
         $this->request->remove('remaining_amount');
         return [
             'payment_date' => 'required|date_format:Y-m-d',
-            'amount' => "required|numeric|min:0|max:{$remainingAmount}",
+            'amount' => "required|numeric|min:0",
         ];
     }
 

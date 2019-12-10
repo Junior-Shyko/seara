@@ -118,12 +118,12 @@ class ReceivableTableFactory implements QueryFilter
     private function applyStatusFilter($status, Builder $query)
     {
         if (null === $status || 'pending' === $status) {
-            $query->whereNull('payment_date');
+            $query->whereColumn('paid_amount', '<', 'amount');
             return;
         }
 
         if ('effective' === $status) {
-            $query->whereNotNull('payment_date');
+            $query->whereColumn('paid_amount', '>=', 'amount');
             return;
         }
     }
