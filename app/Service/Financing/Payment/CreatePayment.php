@@ -7,7 +7,6 @@ namespace App\Service\Financing\Payment;
 use App\Payment;
 use App\PaymentPart;
 use App\Service\Core\Util\UuidGenerator;
-use Carbon\Carbon;
 
 class CreatePayment
 {
@@ -19,7 +18,7 @@ class CreatePayment
         $parts = collect($parts)
             ->map(function (array $part) use ($payment) {
                 $part['payment_id'] = $payment->id;
-                $part['payment_date'] = Carbon::now();
+                $part['payment_date'] = $payment->payment_date;
                 return $part;
             });
 
