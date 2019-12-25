@@ -19,11 +19,46 @@ let ReceivableModule = (function () {
         columns
     );
 
+    function updateDebtReliefAmount() {
+        let amount = convertBrCoinToFloat($('#pay-receivable-amount').val());
+        let lateFeeAmount = convertBrCoinToFloat(
+            $('#pay-receivable-late-fee-amount').val()
+        );
+
+        let debtReliefAmount = amount - lateFeeAmount;
+
+        populatePayReceivableForm({
+            debt_relief_amount: formatFloatToBrCoin(debtReliefAmount)
+        });
+    }
+
     function index() {
         crud.initialize();
         $('#modal-receivable').on('hidden.bs.modal', function () {
             $('#repeat_for').closest('div').show();
         });
+
+    }
+
+    function registerAmountEvents(remainingAmount) {
+        $('#pay-receivable-amount').off('change');
+        $('#pay-receivable-late-fee-amount').off('change');
+
+        $('#pay-receivable-amount').on('change', () => {
+            let totalAmount = convertBrCoinToFloat(
+                $('#pay-receivable-amount').val()
+            );
+
+            let differenceToTheRemainingAmount = totalAmount - remainingAmount;
+            if (differenceToTheRemainingAmount > 0) {
+                populatePayReceivableForm({
+                    late_fee_amount: formatFloatToBrCoin(differenceToTheRemainingAmount)
+                });
+            }
+
+            updateDebtReliefAmount();
+        });
+        $("#pay-receivable-late-fee-amount").on('change', updateDebtReliefAmount);
     }
 
     function deleteReceivable(id) {
@@ -40,10 +75,13 @@ let ReceivableModule = (function () {
         let remainingAmount = $('#receivable-' + id).data('remainingAmount');
         let data = {
             payment_date: formattedCurrentDate(),
-            amount: remainingAmount
+            amount: remainingAmount,
+            debt_relief_amount: remainingAmount,
+            late_fee_amount: "0,00"
         };
         populateForm('#form-pay-receivable', data);
         reloadAllMasks();
+        registerAmountEvents(convertBrCoinToFloat(remainingAmount));
 
         $('#form-pay-receivable').off('submit');
         $('#form-pay-receivable').on('submit', function () {
@@ -68,6 +106,10 @@ let ReceivableModule = (function () {
                     SearaLoader.hideModal();
                 })
         });
+    }
+
+    function populatePayReceivableForm(data) {
+        populateForm('#form-pay-receivable', data);
     }
 
     function generateReceipt(id) {

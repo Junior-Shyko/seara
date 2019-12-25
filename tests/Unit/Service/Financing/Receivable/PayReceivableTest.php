@@ -7,12 +7,14 @@ namespace Tests\Unit\Service\Financing\Receivable;
 use App\Receivable;
 use App\Service\Core\Util\UuidGenerator;
 use App\Service\Financing\Payment\CreatePayment;
+use App\Service\Financing\Receivable\CreateReceivable;
 use App\Service\Financing\Receivable\PayReceivable;
 use App\Service\Financing\Receivable\PendingReceivable\PendingReceivable;
 use App\Service\Financing\Receivable\PendingReceivable\PendingReceivableQuery;
 use App\Service\Financing\Receivable\ReceivableRepository;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class PayReceivableTest extends TestCase
 {
@@ -115,6 +117,107 @@ class PayReceivableTest extends TestCase
                 'amount' => $paymentData['amount'],
                 'payment_date' => $paymentData['payment_date'],
             ], [
+                [
+                    'receivable_id' => $pendingReceivables[0]->getReceivableId(),
+                    'amount' => $pendingReceivables[0]->getPendingAmount(),
+                ],
+                [
+                    'receivable_id' => $pendingReceivables[1]->getReceivableId(),
+                    'amount' => $pendingReceivables[1]->getPendingAmount(),
+                ],
+                [
+                    'receivable_id' => $pendingReceivables[2]->getReceivableId(),
+                    'amount' => $pendingReceivables[2]->getPendingAmount(),
+                ],
+                [
+                    'receivable_id' => $pendingReceivables[3]->getReceivableId(),
+                    'amount' => 300,
+                ],
+            ])
+            ->shouldBeCalled();
+
+        $payReceivable = new PayReceivable(
+            $createPayment->reveal(),
+            $receivableRepository->reveal(),
+            $pendingReceivableQuery->reveal()
+        );
+
+        $payReceivable->execute($paymentData);
+    }
+
+    /**
+     * @test
+     */
+    public function it_generates_a_receivable_and_the_corresponding_part_when_it_has_a_late_fee_amount()
+    {
+        $receivableId = UuidGenerator::generate();
+        $lateFeeReceivableId = UuidGenerator::generate();
+
+        $receivable = (new Receivable())
+            ->fill([
+                'id' => $receivableId,
+                'amount' => 42,
+                'due_date' => Carbon::create(2018, 10, 01),
+                'income_category_id' => 'category_id',
+                'account_id' => 'account_id',
+                'company_id' => 4254
+            ]);
+
+        $lateFeeReceivableData = [
+            'id' => $lateFeeReceivableId,
+            'amount' => 10.50,
+            'due_date' => $receivable->due_date,
+            'description' => 'Juros/multa',
+            'income_category_id' => $receivable->income_category_id,
+            'account_id' => $receivable->account_id,
+            'company_id' => $receivable->company_id
+        ];
+
+        $paymentData = [
+            'amount' => 682.50,
+            'payment_date' => '2019-01-01',
+            'receivable_id' => $receivableId,
+            'late_fee_amount' => 10.50,
+        ];
+
+        /** @var PendingReceivable[] $pendingReceivables */
+        $pendingReceivables = [
+            new PendingReceivable($receivableId, 42),
+            new PendingReceivable(UuidGenerator::generate(), 120),
+            new PendingReceivable(UuidGenerator::generate(), 210),
+            new PendingReceivable(UuidGenerator::generate(), 500),
+            new PendingReceivable(UuidGenerator::generate(), 220)
+        ];
+
+        $receivableRepository = $this->prophesize(ReceivableRepository::class);
+        $receivableRepository
+            ->find($receivableId)
+            ->willReturn($receivable);
+
+        $receivableRepository
+            ->nextIdentity()
+            ->willReturn($lateFeeReceivableId);
+
+        $receivableRepository
+            ->save($lateFeeReceivableData)
+            ->shouldBeCalled();
+
+        $pendingReceivableQuery = $this->prophesize(PendingReceivableQuery::class);
+        $pendingReceivableQuery
+            ->nextPendingReceivables($receivable)
+            ->willReturn($pendingReceivables);
+
+
+        $createPayment = $this->prophesize(CreatePayment::class);
+        $createPayment
+            ->execute([
+                'amount' => $paymentData['amount'],
+                'payment_date' => $paymentData['payment_date'],
+            ], [
+                [
+                    'receivable_id' => $lateFeeReceivableId,
+                    'amount' => 10.50,
+                ],
                 [
                     'receivable_id' => $pendingReceivables[0]->getReceivableId(),
                     'amount' => $pendingReceivables[0]->getPendingAmount(),

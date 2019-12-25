@@ -26,11 +26,13 @@ class PayReceivableRequest extends Request
      */
     public function rules()
     {
-        $remainingAmount = $this->request->get('remaining_amount');
+        $totalAmount = $this->request->get('amount');
+
         $this->request->remove('remaining_amount');
         return [
             'payment_date' => 'required|date_format:Y-m-d',
             'amount' => "required|numeric|min:0",
+            'amount_parts' => "required|numeric|min:0|max:{$totalAmount}"
         ];
     }
 
@@ -38,7 +40,8 @@ class PayReceivableRequest extends Request
     {
         return [
             'payment_date' => 'Data de pagamento',
-            'amount' => 'Valor pago'
+            'amount' => 'Valor pago',
+            'amount_parts' => 'Valor de multa/juros + abatimento'
         ];
     }
 
@@ -48,6 +51,14 @@ class PayReceivableRequest extends Request
             'payment_date' => [new FormatBrDate()],
             'amount' => [new FormatMoney()],
             'remaining_amount' => [new FormatMoney()],
+            'late_fee_amount' => [new FormatMoney()],
+            'debt_relief_amount' => [new FormatMoney()],
+            'amount_parts' => []
         ]);
+
+        $lateFeeAmount = $this->request->get('late_fee_amount');
+        $debtReliefAmount = $this->request->get('debt_relief_amount');
+
+        $this->request->set('amount_parts', round($lateFeeAmount + $debtReliefAmount, 2));
     }
 }

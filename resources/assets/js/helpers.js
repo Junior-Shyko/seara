@@ -48,3 +48,12 @@ function convertBrCoinToFloat(valor){
   return valor;
 
 }
+
+function formatFloatToBrCoin(value) {
+  let formatter = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
+
+  return formatter.format(value).replace('R$', '').trim();
+}
