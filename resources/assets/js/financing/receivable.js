@@ -74,11 +74,14 @@ let ReceivableModule = (function () {
         $('#modal-pay-receivable').modal('show');
         let remainingAmount = $('#receivable-' + id).data('remainingAmount');
         let data = {
-            payment_date: formattedCurrentDate(),
+            // payment_date: formattedCurrentDate(),
             amount: remainingAmount,
             debt_relief_amount: remainingAmount,
             late_fee_amount: "0,00"
         };
+        if ($('#payment_date').val().trim() === '') {
+            data.payment_date = formattedCurrentDate();
+        }
         populateForm('#form-pay-receivable', data);
         reloadAllMasks();
         registerAmountEvents(convertBrCoinToFloat(remainingAmount));
