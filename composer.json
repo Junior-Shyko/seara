@@ -37,7 +37,8 @@
         "guzzlehttp/guzzle": "~6.0",
       "ext-json": "*",
         "league/csv": "^9.0",
-        "ramsey/uuid": "^3.8"
+        "ramsey/uuid": "^3.8",
+        "phpoffice/phpspreadsheet": "^1.10"
     },
     "require-dev": {
         "mockery/mockery": "0.9.*",
