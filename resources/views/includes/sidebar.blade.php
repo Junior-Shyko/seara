@@ -26,76 +26,81 @@
 
         <!-- sidebar menu -->
         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-          <div class="menu_section">
-            <!-- <h3><br></h3> -->
-            <ul class="nav side-menu">
-              <li>
-                <a href="{{url('/')}}"><i class="fa fa-home"></i> Home</a>
-              </li>
-              @if(Auth::user()->profile == 'admin' || Auth::user()->profile == 'owner')
-              <li>
-                <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
-              </li>
-              @endif
-              @if(Auth::user()->profile == 'owner')
-                <li>
-                  <a href="{{url('companies')}}"><i class="fa fa-building"></i> Clientes</a>
-                </li>
-                <li>
-                  <a>
-                    <i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span>
-                  </a>
-                  <ul class="nav child_menu">
-                    <li><a href="{{url('cadastro')}}">Igreja</a></li>
-                    <li><a href="#">Usuário</a></li>
-                    <li><a href="#">Histórico</a></li>
-                  </ul>
-                </li>
-              @endif
-              <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                  <li><a href="{{ url('recibo-comum') }}">Comum</a></li>
-                  <li><a href="{{url('recibo-empresa')}}">Empresa</a></li>
-                  <li><a href="#">R.P.A</a></li>
+            <div class="menu_section">
+                <!-- <h3><br></h3> -->
+                <ul class="nav side-menu">
+                    <li>
+                        <a href="{{url('/')}}"><i class="fa fa-home"></i> Home</a>
+                    </li>
+                    @if(Auth::user()->profile == 'admin' || Auth::user()->profile == 'owner')
+                        <li>
+                            <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
+                        </li>
+                    @endif
+                    @if(Auth::user()->profile == 'owner')
+                        <li>
+                            <a href="{{url('companies')}}"><i class="fa fa-building"></i> Clientes</a>
+                        </li>
+                        <li>
+                            <a>
+                                <i class="fa fa-pencil-square" aria-hidden="true"></i> Cadastro <span class="fa fa-chevron-down"></span>
+                            </a>
+                            <ul class="nav child_menu">
+                                <li><a href="{{url('cadastro')}}">Igreja</a></li>
+                                <li><a href="#">Usuário</a></li>
+                                <li><a href="#">Histórico</a></li>
+                            </ul>
+                        </li>
+                    @endif
+                    <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{{ url('recibo-comum') }}">Comum</a></li>
+                            <li><a href="{{url('recibo-empresa')}}">Empresa</a></li>
+                            <li><a href="#">R.P.A</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a data-cy="financing-module">
+                            <i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <li><a href="{{ url('conta') }}">Contas</a></li>
+                            <li data-cy="income-category">
+                                <a href="{{ url('categoria-receita') }}">Categorias de Receita</a>
+                            </li>
+                            <li data-cy="receivable">
+                                <a href="{{ url('contas-a-receber') }}">Contas a Receber</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a data-cy="report-module">
+                            <i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span>
+                        </a>
+                        <ul class="nav child_menu">
+                            <li>
+                                <a data-cy="report-debt-and-payment" href="{{ url('relatorio/dividas-e-pagamentos') }}">Dívidas e Pagamentos</a>
+                            </li>
+                            {{--                  <li><a href="#">Usuário</a></li>--}}
+                            {{--                  <li><a href="#">Igreja</a></li>--}}
+                            {{--                  <li><a>Contrato<span class="fa fa-chevron-down"></span></a>--}}
+                            {{--                    <ul class="nav child_menu">--}}
+                            {{--                      <li class="sub_menu"><a href="level2.html">Locação</a>--}}
+                            {{--                      </li>--}}
+                            {{--                      <li><a href="#level2_1">Serviço Voluntário</a>--}}
+                            {{--                      </li>--}}
+                            {{--                      <li><a href="#level2_2">Level Two</a>--}}
+                            {{--                      </li>--}}
+                            {{--                    </ul>--}}
+                            {{--                  </li>--}}
+                        </ul>
+                    </li>
+
+
                 </ul>
-              </li>
-
-              <li>
-                  <a data-cy="financing-module">
-                      <i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span>
-                  </a>
-                  <ul class="nav child_menu">
-                      <li><a href="{{ url('conta') }}">Contas</a></li>
-                      <li data-cy="income-category">
-                          <a href="{{ url('categoria-receita') }}">Categorias de Receita</a>
-                      </li>
-                      <li data-cy="receivable">
-                          <a href="{{ url('contas-a-receber') }}">Contas a Receber</a>
-                      </li>
-                  </ul>
-              </li>
-
-              <li><a><i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                  <li><a href="#">Caixa</a></li>
-                  <li><a href="#">Usuário</a></li>
-                  <li><a href="#">Igreja</a></li>
-                  <li><a>Contrato<span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li class="sub_menu"><a href="level2.html">Locação</a>
-                      </li>
-                      <li><a href="#level2_1">Serviço Voluntário</a>
-                      </li>
-                      <li><a href="#level2_2">Level Two</a>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-
-
-            </ul>
-          </div>
+            </div>
 
 
         </div>

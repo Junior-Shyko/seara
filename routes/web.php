@@ -96,3 +96,8 @@ Route::put('receivable/{id}/receipt', 'Financing\ReceivableController@generateRe
 Route::resource('receivable', 'Financing\ReceivableController',[
     'only' => ['store', 'update', 'destroy', 'show']
 ]);
+
+// Relatórios
+Route::get('relatorio/dividas-e-pagamentos', 'Report\DebtAndPaymentController@index');
+Route::post('report/debt-and-payment', 'Report\DebtAndPaymentController@generateReport');
+
