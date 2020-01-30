@@ -34,6 +34,6 @@ class EloquentDebtReportProvider implements DebtReportProvider
         $companyName = $company->company_fantasy ?? $company->company_name;
         $companyManager = $company->company_manager;
 
-        return new DebtReportResultSet($companyName, $companyManager, $results);
+        return new DebtReportResultSet($companyName, $companyManager, array_values($results));
     }
 }
