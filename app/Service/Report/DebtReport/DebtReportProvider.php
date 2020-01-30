@@ -7,7 +7,8 @@ namespace App\Service\Report\DebtReport;
 interface DebtReportProvider
 {
     /**
-     * Returns the debt report result data for the given company
+     * Returns the debt report result data for the given company. The
+     * data is expected to be already sorted by date
      *
      * @param int $companyId
      * @return DebtReportResultSet

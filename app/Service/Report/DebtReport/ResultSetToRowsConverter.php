@@ -6,29 +6,30 @@ namespace App\Service\Report\DebtReport;
 
 class ResultSetToRowsConverter
 {
-    private const BALANCE_FORMULA = '=INDIRECT("R[-1]C", 0) + INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)';
-
-    private const FIRST_BALANCE_FORMULA = '=INDIRECT("RC[-2]", 0)';
-
-    public function convert(DebtReportResultSet $resultSet): array
+    public function convert(DebtReportResultSet $resultSet, $initialRow): array
     {
-        $rows = $this->convertResultSetToRows($resultSet);
-        $rows = $this->fixFirstBalanceFormula($rows);
-        return $this->addTotals($rows);
+        $rows = $this->convertResultSetToRows($resultSet, $initialRow);
+        $rows = $this->fixFirstBalanceFormula($rows, $initialRow);
+        return $this->addTotals($rows, $initialRow);
     }
 
-    private function convertResultSetToRows(DebtReportResultSet $resultSet)
+    private function convertResultSetToRows(DebtReportResultSet $resultSet, $initialRow)
     {
-        return array_map(function (DebtReportResult $result) {
+        $rows = [];
+
+        foreach ($resultSet as $idx => $result) {
             if ($result->getAmount() > 0) {
-                return $this->convertToPaidAmount($result);
+                $rows[] = $this->convertToPaidAmount($result, $idx + $initialRow);
+                continue;
             }
 
-            return $this->convertToDebtAmount($result);
-        }, $resultSet->toArray());
+            $rows[] = $this->convertToDebtAmount($result, $idx + $initialRow);
+        }
+
+        return $rows;
     }
 
-    private function convertToPaidAmount(DebtReportResult $result): array
+    private function convertToPaidAmount(DebtReportResult $result, int $rowNumber): array
     {
         return [
             null,
@@ -37,11 +38,11 @@ class ResultSetToRowsConverter
             $result->getDescription(),
             null,
             number_format(abs($result->getAmount()), 2),
-            self::BALANCE_FORMULA
+            $this->buildBalance($rowNumber)
         ];
     }
 
-    private function convertToDebtAmount(DebtReportResult $result): array
+    private function convertToDebtAmount(DebtReportResult $result, int $rowNumber): array
     {
         $effectiveDate = $result->getEffectiveDate()->copy();
         $previousMonth = $result->getEffectiveDate()->subMonth();
@@ -53,32 +54,41 @@ class ResultSetToRowsConverter
             $result->getDescription(),
             number_format(abs($result->getAmount()), 2),
             null,
-            self::BALANCE_FORMULA
+            $this->buildBalance($rowNumber)
         ];
     }
 
-    private function fixFirstBalanceFormula(array $rows): array
+    private function fixFirstBalanceFormula(array $rows, int $initialRow): array
     {
         if (count($rows) == 0) {
             return $rows;
         }
 
-        $rows[0][6] = self::FIRST_BALANCE_FORMULA;
+        $rows[0][6] = "=E{$initialRow}-F{$initialRow}";
         return $rows;
     }
 
-    private function addTotals(array $rows): array
+    private function addTotals(array $rows, int $initialRow): array
     {
+        $lastRowNumber = $initialRow + count($rows) - 1;
+        $totalRowNumber = $lastRowNumber + 1;
+
         $rows[] = [
             null,
             null,
             null,
             null,
-            '=SUM(E4:INDIRECT("R[-1]C", 0))',
-            '=SUM(F4:INDIRECT("R[-1]C", 0))',
-            '=INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)',
+            "=SUM(E4:E{$lastRowNumber})",
+            "=SUM(F4:F{$lastRowNumber})",
+            "=E{$totalRowNumber}-F{$totalRowNumber}",
         ];
 
         return $rows;
+    }
+
+    private function buildBalance(int $rowNumber): string
+    {
+        $lastRowNumber = $rowNumber - 1;
+        return "=G{$lastRowNumber}+E{$rowNumber}-F{$rowNumber}";
     }
 }

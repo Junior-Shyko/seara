@@ -58,16 +58,16 @@ class ResultSetToRowsConverterTest extends TestCase
 
         $expectedRows = [
 
-            ['09', '2019', '10/10/2019', 'Mensalidade',  '210.50',     null, '=INDIRECT("RC[-2]", 0)'],
-            ['10', '2019', '10/11/2019', 'Mensalidade',  '210.50',     null, '=INDIRECT("R[-1]C", 0) + INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)'],
-            ['11', '2019', '10/12/2019', 'Mensalidade',  '210.50',     null, '=INDIRECT("R[-1]C", 0) + INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)'],
-            [null,   null, '23/12/2019',   'Pagamento',      null, '623.48', '=INDIRECT("R[-1]C", 0) + INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)'],
-            ['12', '2019', '10/01/2020', 'Mensalidade',  '210.50',     null, '=INDIRECT("R[-1]C", 0) + INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)'],
-            ['01', '2020', '10/02/2020', 'Mensalidade',  '220.80',     null, '=INDIRECT("R[-1]C", 0) + INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)'],
+            ['09', '2019', '10/10/2019', 'Mensalidade',  '210.50',     null, '=E4-F4'],
+            ['10', '2019', '10/11/2019', 'Mensalidade',  '210.50',     null, '=G4+E5-F5'],
+            ['11', '2019', '10/12/2019', 'Mensalidade',  '210.50',     null, '=G5+E6-F6'],
+            [null,   null, '23/12/2019',   'Pagamento',      null, '623.48', '=G6+E7-F7'],
+            ['12', '2019', '10/01/2020', 'Mensalidade',  '210.50',     null, '=G7+E8-F8'],
+            ['01', '2020', '10/02/2020', 'Mensalidade',  '220.80',     null, '=G8+E9-F9'],
 
-            [null, null, null, null, '=SUM(E4:INDIRECT("R[-1]C", 0))', '=SUM(F4:INDIRECT("R[-1]C", 0))', '=INDIRECT("RC[-2]", 0) - INDIRECT("RC[-1]", 0)'],
+            [null, null, null, null, '=SUM(E4:E9)', '=SUM(F4:F9)', '=E10-F10'],
         ];
 
-        $this->assertEquals($expectedRows, $converter->convert($resultSet));
+        $this->assertEquals($expectedRows, $converter->convert($resultSet, 4));
     }
 }

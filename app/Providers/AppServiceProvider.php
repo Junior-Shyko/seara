@@ -21,6 +21,10 @@ use App\Service\Financing\Receivable\EloquentReceivableRepository;
 use App\Service\Financing\Receivable\PendingReceivable\EloquentPendingReceivable;
 use App\Service\Financing\Receivable\PendingReceivable\PendingReceivableQuery;
 use App\Service\Financing\Receivable\ReceivableRepository;
+use App\Service\Report\DebtReport\DebtReportFormatter;
+use App\Service\Report\DebtReport\DebtReportProvider;
+use App\Service\Report\DebtReport\EloquentDebtReportProvider;
+use App\Service\Report\DebtReport\ExcelReportFormatter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
@@ -58,5 +62,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Transactor::class, EloquentTransactor::class);
         $this->app->bind(ReceivableRepository::class, EloquentReceivableRepository::class);
         $this->app->bind(PendingReceivableQuery::class, EloquentPendingReceivable::class);
+
+        $this->app->bind(DebtReportProvider::class, EloquentDebtReportProvider::class);
+        $this->app->bind(DebtReportFormatter::class, ExcelReportFormatter::class);
     }
 }

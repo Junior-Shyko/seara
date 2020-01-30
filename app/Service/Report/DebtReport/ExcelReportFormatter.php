@@ -120,7 +120,7 @@ class ExcelReportFormatter implements DebtReportFormatter
     ): self {
         $sheet = $spreadsheet->getActiveSheet();
 
-        $rows = $this->resultSetConverter->convert($resultSet);
+        $rows = $this->resultSetConverter->convert($resultSet, 4);
         $sheet->fromArray($rows, null, 'A4');
 
         $lastRowIdx = $this->calculateLastRowIndex($resultSet);
@@ -178,7 +178,6 @@ class ExcelReportFormatter implements DebtReportFormatter
         $tempFile = @tempnam(File::sysGetTempDir(), 'phpxltmp');
 
         $writer = new Xlsx($spreadsheet);
-        $writer->setPreCalculateFormulas(false);
         $writer->save($tempFile);
 
         return new SplFileInfo($tempFile);
