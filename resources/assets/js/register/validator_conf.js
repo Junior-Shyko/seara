@@ -1,11 +1,14 @@
 function validarCNPJ(cnpj) {
-
     cnpj = cnpj.replace(/[^\d]+/g,'');
 
     if(cnpj == '') return false;
 
     if (cnpj.length != 14)
         return false;
+
+    if (cnpj.startsWith("000")) {
+        return validaCPF(cnpj.slice(3));
+    }
 
     // Elimina CNPJs invalidos conhecidos
     if (cnpj == "00000000000000" ||
