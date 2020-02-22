@@ -16,9 +16,9 @@ final class DataTableBuilder
      */
     private $adds = [];
     /**
-     * @var array
+     * @var Formatter[]
      */
-    private $edits = [];
+    private $formatters = [];
     /**
      * @var Builder
      */
@@ -66,13 +66,13 @@ final class DataTableBuilder
      * Edits a column value before generating the table
      *
      * @param string $column
-     * @param callable $callback
+     * @param Formatter $formatter
      * @return $this
      */
-    public function editColumn(string $column, callable $callback): self
+    public function formatColumn(string $column, Formatter $formatter): self
     {
         $builder = clone $this;
-        $builder->edits[$column] = $callback;
+        $builder->formatters[$column] = $formatter;
         return $builder;
     }
 
@@ -135,12 +135,14 @@ final class DataTableBuilder
         $this->filter->apply($this->request->get('query', []), $this->query);
         $dataTable = Datatables::of($this->query);
 
-        foreach ($this->adds as $column => $callback) {
-            $dataTable->addColumn($column, $callback);
+        foreach ($this->adds as $column => $formatter) {
+            $dataTable->addColumn($column, $formatter);
         }
 
-        foreach ($this->edits as $column => $callback) {
-            $dataTable->editColumn($column, $callback);
+        foreach ($this->formatters as $column => $formatter) {
+            $dataTable->editColumn($column, function ($row) use ($formatter, $column) {
+                return $formatter->format($row->{$column}, $row);
+            });
         }
 
         if (is_array($this->rowData)) {

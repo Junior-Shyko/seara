@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Financing\Receivable;
 
 use App\Service\Core\DataTable\DataTableBuilder;
+use App\Service\Core\DataTable\Formatters\Format;
 use App\Service\Core\DataTable\QueryFilter;
 use App\Service\Core\Transformation\ArrayTransformer;
 use App\Service\Core\Transformation\FormatBrDate;
@@ -34,11 +35,11 @@ class ReceivableTableFactory implements QueryFilter
             ->withQuery($this->getQuery())
             ->withFilter($this)
             ->addColumn('action', Closure::fromCallable([$this, 'addActionColumn']))
-            ->editColumn('due_date', Closure::fromCallable([$this, 'editDueDate']))
-            ->editColumn('amount', Closure::fromCallable([$this, 'editAmount']))
-            ->editColumn('paid_amount', Closure::fromCallable([$this, 'editPaidAmount']))
-            ->editColumn('description', Closure::fromCallable([$this, 'editDescription']))
-            ->editColumn('payment_date', Closure::fromCallable([$this, 'editPaymentDate']))
+            ->formatColumn('due_date', Format::asDate())
+            ->formatColumn('amount', Format::asCurrency())
+            ->formatColumn('paid_amount', Format::asCurrency())
+            ->formatColumn('description', Format::using(Closure::fromCallable([$this, 'editDescription'])))
+            ->formatColumn('payment_date', Format::asDate())
             ->setRowData([
                 'remainingAmount' => function ($receivable) {
                     $remainingAmount = $receivable->amount - ($receivable->paid_amount ?? 0);
@@ -185,45 +186,15 @@ class ReceivableTableFactory implements QueryFilter
         return $buttons;
     }
 
-    private function editDueDate($receivable)
-    {
-        return $this->formatDateToBr($receivable->due_date);
-    }
-
-    private function formatDateToBr($date)
-    {
-        return Carbon::createFromFormat('Y-m-d', $date)
-            ->format('d/m/Y');
-    }
-
-    private function editPaymentDate($receivable)
-    {
-        if ($paymentDate = $receivable->payment_date) {
-            return $this->formatDateToBr($paymentDate);
-        }
-        return null;
-    }
-
-    private function editAmount($receivable)
-    {
-        return $this->formatMoney($receivable->amount);
-    }
-
-    private function editPaidAmount($receivable)
-    {
-        $paidAmount = $receivable->paid_amount;
-        return $this->formatMoney($paidAmount);
-    }
-
-    private function editDescription($receivable)
+    private function editDescription(string $description, $receivable)
     {
         if (!$receivable->sequence_number) {
-            return $receivable->description;
+            return $description;
         }
 
         return sprintf(
             '%s (%d/%d)',
-            $receivable->description,
+            $description,
             $receivable->sequence_number,
             $receivable->sequence_count
         );
