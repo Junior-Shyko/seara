@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Core\DataTable;
 
-use App\Service\Core\DataTable\Formatters\DateFormatter;
-use App\Service\Core\DataTable\Formatters\MoneyFormatter;
+use App\Service\Core\DataTable\Formatters\Format;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -16,7 +15,7 @@ class FormattersTest extends TestCase
      */
     public function it_parses_floats_into_money_format()
     {
-        $formatter = new MoneyFormatter();
+        $formatter = Format::asCurrency();
 
         $row = new stdClass();
         $row->amount = 1987.95;
@@ -31,13 +30,25 @@ class FormattersTest extends TestCase
      */
     public function it_formats_dates()
     {
-        $formatter = new DateFormatter(
-            'Y-m-d',
-            'd/m/Y'
-        );
+        $formatter = Format::asDate();
 
         $row = new stdClass();
         $row->date = '1994-09-21';
+
+        $formattedDate = $formatter->format($row->date, $row);
+
+        $this->assertSame('21/09/1994', $formattedDate);
+    }
+
+    /**
+     * @test
+     */
+    public function it_formats_dates_using_fallback_source_formats()
+    {
+        $formatter = Format::asDate();
+
+        $row = new stdClass();
+        $row->date = '1994-09-21 01:00:00';
 
         $formattedDate = $formatter->format($row->date, $row);
 

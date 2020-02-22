@@ -1,5 +1,6 @@
 let PaymentModule = (function () {
     const columns = [
+        {data: 'company_manager', name: 'company_manager'},
         {data: 'customer', name: 'customer'},
         {data: 'payment_date', name: 'payment_date'},
         {data: 'created_at', name: 'created_at'},

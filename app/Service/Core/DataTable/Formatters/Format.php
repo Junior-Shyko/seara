@@ -16,7 +16,7 @@ class Format
 
     public static function asDate(): DateFormatter
     {
-        return new DateFormatter('Y-m-d', 'd/m/Y');
+        return new DateFormatter(['Y-m-d', 'Y-m-d H:i:s'], 'd/m/Y');
     }
 
     /**

@@ -6,6 +6,7 @@ namespace App\Service\Financing\Payment;
 
 use App\Service\Core\DataTable\DataTableBuilder;
 use App\Service\Core\DataTable\DataTableResponseFactory;
+use App\Service\Core\DataTable\Formatters\Format;
 use App\Service\Core\DataTable\QueryFilter;
 use DB;
 use Illuminate\Database\Query\Builder;
@@ -30,6 +31,10 @@ class PaymentTableFactory implements QueryFilter, DataTableResponseFactory
     {
         return $this->builder
             ->withQuery($this->getQuery())
+            ->formatColumn('payment_date', Format::asDate())
+            ->formatColumn('amount', Format::asCurrency())
+            ->formatColumn('created_at', Format::asDate())
+            ->addColumn('action', function () {return '';})
             ->build();
     }
 

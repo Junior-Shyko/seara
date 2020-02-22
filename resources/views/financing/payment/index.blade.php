@@ -90,6 +90,7 @@
                                     <table class="table table-hover" data-cy="table" id="table-payment">
                                         <thead>
                                         <tr>
+                                            <th>Responsável</th>
                                             <th>Cliente</th>
                                             <th>Data de Pagamento</th>
                                             <th>Data de Cadastro</th>
