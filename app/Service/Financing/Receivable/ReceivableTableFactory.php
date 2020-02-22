@@ -178,7 +178,7 @@ class ReceivableTableFactory implements QueryFilter
         }
 
         $buttons .= $this->actionButtons($receivable->id, [
-            ['Efetivar conta', 'payReceivable', 'fa fa-check'],
+            ['Efetivar conta', 'payReceivable', 'fa fa-check', 'btn-success'],
             ['Editar', 'editReceivable', 'fa fa-pencil'],
             ['Remover', 'deleteReceivable', 'fa fa-ban', 'btn-danger'],
         ]);
