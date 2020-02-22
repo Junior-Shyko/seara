@@ -179,6 +179,14 @@ elixir(function(mix) {
     ], 'public/js/financing/receivable.min.js');
     mix.version('public/js/financing/receivable.min.js');
 
+    // Financing > payment
+    mix.scripts([
+        'helpers.js',
+        'crud.js',
+        'financing/payment.js'
+    ], 'public/js/financing/payment.min.js');
+    mix.version('public/js/financing/payment.min.js');
+
     /**************/
     /* Copy Fonts */
     /**************/

@@ -72,6 +72,9 @@
                             <li data-cy="receivable">
                                 <a href="{{ url('contas-a-receber') }}">Contas a Receber</a>
                             </li>
+                            <li data-cy="payment">
+                                <a href="{{ url('pagamentos') }}">Pagamentos</a>
+                            </li>
                         </ul>
                     </li>
 
