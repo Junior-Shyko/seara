@@ -8,12 +8,16 @@ use App\Service\Core\DataTable\DataTableBuilder;
 use App\Service\Core\DataTable\DataTableResponseFactory;
 use App\Service\Core\DataTable\Formatters\Format;
 use App\Service\Core\DataTable\QueryFilter;
+use App\Traits\ActionTable;
+use Closure;
 use DB;
 use Illuminate\Database\Query\Builder;
 use Symfony\Component\HttpFoundation\Response;
 
 class PaymentTableFactory implements QueryFilter, DataTableResponseFactory
 {
+    use ActionTable;
+
     /**
      * @var DataTableBuilder
      */
@@ -34,7 +38,7 @@ class PaymentTableFactory implements QueryFilter, DataTableResponseFactory
             ->formatColumn('payment_date', Format::asDate())
             ->formatColumn('amount', Format::asCurrency())
             ->formatColumn('created_at', Format::asDate())
-            ->addColumn('action', function () {return '';})
+            ->addColumn('action', Closure::fromCallable([$this, 'addActionColumn']))
             ->build();
     }
 
@@ -50,5 +54,13 @@ class PaymentTableFactory implements QueryFilter, DataTableResponseFactory
     public function apply(array $filters, Builder $query): void
     {
         // TODO: Implement apply() method.
+    }
+
+    private function addActionColumn($payment)
+    {
+        return $this->actionButtons($payment->id, [
+            ['Editar', 'editPayment', 'fa fa-pencil'],
+            ['Remover', 'deletePayment', 'fa fa-ban', 'btn-danger'],
+        ]);
     }
 }
