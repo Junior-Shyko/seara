@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0af3d049d8ac22c05d29cc659d268724",
+    "content-hash": "66d1d98bdbbbff365894693ceb70c795",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2406,16 +2406,16 @@
         },
         {
             "name": "spatie/data-transfer-object",
-            "version": "1.11.0",
+            "version": "1.13.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/data-transfer-object.git",
-                "reference": "80794120988fd7e2aa3dda2e7e258c9cb51cae34"
+                "reference": "2f6291620f1f067508b7d80d3b0346609adc265e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/data-transfer-object/zipball/80794120988fd7e2aa3dda2e7e258c9cb51cae34",
-                "reference": "80794120988fd7e2aa3dda2e7e258c9cb51cae34",
+                "url": "https://api.github.com/repos/spatie/data-transfer-object/zipball/2f6291620f1f067508b7d80d3b0346609adc265e",
+                "reference": "2f6291620f1f067508b7d80d3b0346609adc265e",
                 "shasum": ""
             },
             "require": {
@@ -2449,7 +2449,7 @@
                 "data-transfer-object",
                 "spatie"
             ],
-            "time": "2019-11-28T13:46:41+00:00"
+            "time": "2020-01-29T15:10:20+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

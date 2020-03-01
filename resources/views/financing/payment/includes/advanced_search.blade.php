@@ -12,25 +12,16 @@
                         <form id="advanced-search-payment">
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <div class="col-md-12">
                                         <label>Cliente</label>
                                         <select name="customer" class="form-control select2">
                                             <option value=""></option>
                                             <option value="none">Sem cliente</option>
-                                            {{--                                                            @foreach($companies as $company)--}}
-                                            {{--                                                                <option value="{{ $company->company_id }}">--}}
-                                            {{--                                                                    {{ $company->company_manager }} / {{ $company->company_name ?? $company->company_fantasy }}--}}
-                                            {{--                                                                </option>--}}
-                                            {{--                                                            @endforeach--}}
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Status</label>
-                                        <select name="status" class="form-control select2">
-                                            <option value=""></option>
-                                            <option value="all">Todas</option>
-                                            <option value="effective">Efetivada</option>
-                                            <option value="pending">Pendente</option>
+                                            @foreach($companies as $company)
+                                                <option value="{{ $company->company_id }}">
+                                                    {{ $company->company_manager }} / {{ $company->company_name ?? $company->company_fantasy }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -44,12 +35,12 @@
                                         <input type="text" class="form-control date-mask" name="payment_date_end">
                                     </div>
                                     <div class="col-md-3">
-                                        <label>Vencimento de</label>
-                                        <input type="text" class="form-control date-mask" name="due_date_start">
+                                        <label>Data de cadastro de</label>
+                                        <input type="text" class="form-control date-mask" name="created_date_start">
                                     </div>
                                     <div class="col-md-3">
-                                        <label>Vencimento até</label>
-                                        <input type="text" class="form-control date-mask" name="due_date_end">
+                                        <label>Data de cadastro até</label>
+                                        <input type="text" class="form-control date-mask" name="created_date_end">
                                     </div>
                                 </div>
                             </div>

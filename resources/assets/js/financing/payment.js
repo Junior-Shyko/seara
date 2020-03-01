@@ -18,8 +18,18 @@ let PaymentModule = (function () {
         crud.initialize();
     }
 
+    function deletePayment(id) {
+        crud.destroyResource(id, 'Deseja excluir esse pagamento?')
+    }
+
+    function editPayment(id) {
+        crud.editResource(id);
+    }
+
     return {
         index: index,
+        deletePayment: deletePayment,
+        editPayment: editPayment
     };
 })();
 
@@ -27,3 +37,10 @@ $(() => {
     PaymentModule.index();
 });
 
+function deletePayment(id) {
+    PaymentModule.deletePayment(id);
+}
+
+function editPayment(id) {
+    PaymentModule.editPayment(id);
+}

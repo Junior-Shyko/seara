@@ -17,11 +17,14 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button id="create-payment-btn" class="btn btn-primary pull-right" data-cy="create-btn">Cadastrar Pagamento</button>
-                            </div>
-                        </div>
+{{--                        <div class="row">--}}
+{{--                            <div class="col-md-12">--}}
+{{--                                <button id="create-payment-btn" class="btn btn-primary pull-right" data-cy="create-btn">Cadastrar Pagamento</button>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
+                        @include('financing.payment.includes.advanced_search')
+
                         <div class="panel">
                             <div class="panel-body">
                                 <div class="table-responsive">

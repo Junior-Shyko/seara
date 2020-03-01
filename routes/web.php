@@ -104,4 +104,6 @@ Route::post('report/debt-and-payment', 'Report\DebtAndPaymentController@generate
 // Pagamentos
 Route::get('pagamentos', 'Financing\PaymentController@index');
 Route::get('payment/dataTable', 'Financing\PaymentController@dataTable');
-
+Route::resource('payment', 'Financing\PaymentController', [
+    'only' => ['show', 'update', 'destroy']
+]);
