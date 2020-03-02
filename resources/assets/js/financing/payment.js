@@ -4,7 +4,7 @@ let PaymentModule = (function () {
         {data: 'customer', name: 'customer'},
         {data: 'payment_date', name: 'payment_date'},
         {data: 'created_at', name: 'created_at'},
-        {data: 'amount', name: 'amount'},
+        {data: 'amount', name: 'amount', className: 'formatted_number'},
         {data: 'action', name: 'action', orderable: false, searchable: false}
     ];
     const crud = new Crud(
