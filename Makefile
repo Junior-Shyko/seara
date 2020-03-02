@@ -16,6 +16,11 @@ setup:
 	@docker-compose exec node gulp
 	@docker-compose exec php chmod -R 777 storage
 
+.PHONY: dbtest
+dbtest:
+	@docker-compose exec phptest php artisan migrate
+	@docker-compose exec phptest php artisan migrate:views
+
 vendor: composer.json composer.lock
 	@docker-compose exec php composer install
 
@@ -54,6 +59,6 @@ build:
 	@bin/build.sh
 
 .PHONY: deploy
-deploy: tests e2e
+deploy: dbtest tests e2e
 	@bin/build.sh
 	@bin/dep.sh deploy

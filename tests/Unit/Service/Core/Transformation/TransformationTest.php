@@ -37,6 +37,15 @@ class TransformationTest extends TestCase
         $this->assertSame('2019-05-20', $this->call(FormatBrDate::class, $input));
     }
 
+    /**
+     * @test
+     */
+    public function it_formats_br_dates_with_two_digits_to_usa_format()
+    {
+        $input = '20/05/19';
+        $this->assertSame('2019-05-20', $this->call(FormatBrDate::class, $input));
+    }
+
     private function call(string $class, $input)
     {
         $transformation = new $class;

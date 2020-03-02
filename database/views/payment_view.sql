@@ -6,4 +6,5 @@ select
 from payment_part
     left join receivable on payment_part.receivable_id = receivable.id
     left join payment on payment_part.payment_id = payment.id
-    left join companies on receivable.company_id = companies.company_id;
+    left join companies on receivable.company_id = companies.company_id
+group by payment_part.payment_id;
