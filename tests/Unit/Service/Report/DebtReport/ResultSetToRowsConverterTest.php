@@ -41,7 +41,7 @@ class ResultSetToRowsConverterTest extends TestCase
                 new DebtReportResult(
                     Carbon::create(2019, 12, 23),
                     'Pagamento',
-                    623.48
+                    1623.48
                 ),
                 new DebtReportResult(
                     Carbon::create(2020, 01, 10),
@@ -58,12 +58,12 @@ class ResultSetToRowsConverterTest extends TestCase
 
         $expectedRows = [
 
-            ['09', '2019', '10/10/2019', 'Mensalidade',  '210.50',     null, '=E4-F4'],
-            ['10', '2019', '10/11/2019', 'Mensalidade',  '210.50',     null, '=G4+E5-F5'],
-            ['11', '2019', '10/12/2019', 'Mensalidade',  '210.50',     null, '=G5+E6-F6'],
-            [null,   null, '23/12/2019',   'Pagamento',      null, '623.48', '=G6+E7-F7'],
-            ['12', '2019', '10/01/2020', 'Mensalidade',  '210.50',     null, '=G7+E8-F8'],
-            ['01', '2020', '10/02/2020', 'Mensalidade',  '220.80',     null, '=G8+E9-F9'],
+            ['09', '2019', '10/10/2019', 'Mensalidade',  210.50,     null, '=E4-F4'],
+            ['10', '2019', '10/11/2019', 'Mensalidade',  210.50,     null, '=G4+E5-F5'],
+            ['11', '2019', '10/12/2019', 'Mensalidade',  210.50,     null, '=G5+E6-F6'],
+            [null,   null, '23/12/2019',   'Pagamento',      null, 1623.48, '=G6+E7-F7'],
+            ['12', '2019', '10/01/2020', 'Mensalidade',  210.50,     null, '=G7+E8-F8'],
+            ['01', '2020', '10/02/2020', 'Mensalidade',  220.80,     null, '=G8+E9-F9'],
 
             [null, null, null, null, '=SUM(E4:E9)', '=SUM(F4:F9)', '=E10-F10'],
         ];

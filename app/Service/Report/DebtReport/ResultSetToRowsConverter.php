@@ -37,7 +37,7 @@ class ResultSetToRowsConverter
             $result->getEffectiveDate()->format('d/m/Y'),
             $result->getDescription(),
             null,
-            number_format(abs($result->getAmount()), 2),
+            abs($result->getAmount()),
             $this->buildBalance($rowNumber)
         ];
     }
@@ -52,7 +52,7 @@ class ResultSetToRowsConverter
             $previousMonth->format('Y'),
             $effectiveDate->format('d/m/Y'),
             $result->getDescription(),
-            number_format(abs($result->getAmount()), 2),
+            abs($result->getAmount()),
             null,
             $this->buildBalance($rowNumber)
         ];
