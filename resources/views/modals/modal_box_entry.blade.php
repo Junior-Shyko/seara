@@ -73,7 +73,7 @@
                     <div class="ln_solid"></div>
                     <div class="col-md-8 col-sm-8 col-xs-12 form-group has-feedback">
                    
-                         <input type="hidden" name="entries_id_box" id="entries_id_box" value="{{(count($box) == 0 ? '' : $box[0]->boxies_id)}} ">
+                         {{-- <input type="hidden" name="entries_id_box" id="entries_id_box" value="{{(count($box) == 0 ? '' : $box[0]->boxies_id)}} "> --}}
                     </div>
                 {{Form::close()}}
             </div>
