@@ -8,6 +8,7 @@
 <div class="right_col" role="main">
    
     <div class="row">
+        @include('msg.message')
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
@@ -25,40 +26,43 @@
                                     <option value="2">Despesa</option>
                                 </select>
                             </div>
-                            <div class="col-sm-9">
-                                <label for="">Nome da conta</label>
+                            <div class="col-md-9">
+                                <label class="col-form-label">Nome da conta</label>
+                                <input type="text" name="accountlaunch_name" class="form-control">
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="">Histórico da conta</label>
                                 <div class="input-group">
-                                    <input type="text" name="accountlaunch_name" class="form-control" placeholder="Nome da conta">
+                                    <input type="text" name="accountlaunch_history" id="" class="form-control">
                                     <span class="input-group-btn">
-                                    <button type="button" class="btn btn-primary" id="btn-save-account-launch">Salvar</button>
+                                    <button type="button" class="btn btn-primary" id="btn-save-account-launch">Salvar conta</button>
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="divider-dashed"></div>
-                        <input type="text" name="accountlaunch_id_user" value="{{Auth::user()->id}}">
+                        <input type="hidden" name="accountlaunch_id_user" value="{{Auth::user()->id}}">
                     </form>
                 </div>
             </div>
         </div>
     </div>
     <div class="x_panel">
-        @include('msg.message')
         <div class="x_title">
             <h2>Conta <small>Todas as contas</small></h2>
             <div class="clearfix"></div>
         </div>
         <div class="x_content">
             <div class="right-col">
-                <table id="receipts-table" class="table table-hover">
+                <table id="account-launch-table" class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Emitente</th>
-                            <th>Referente a</th>
-                            <th>Valor</th>
-                            <th>Local</th>
-                            <th>Data</th>
-                            <th>Ações</th>
+                            <th>Tipo da Conta</th>
+                            <th>Nome da Conta</th>
+                            <th>Histórico</th>
+                            <th>Criada em</th>
+                            <th>Criada por</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                 </table>
@@ -67,8 +71,29 @@
     </div>
 </div>
 <!-- /page content -->
-{{-- @include('modals.receipt.receipt')
-@include('modals.receipt.delete') --}}
+
+@include('modals.launch.modal_account_launch')
+@component('components.modal_delete_comp')
+<form action="{{url('launch/account/delete')}}" method="POST">
+    {!! csrf_field() !!}
+    <p>
+        <h4 class="text-danger">
+            Deseja realmente excluir essa conta do movimento de Caixa?
+        </h4>
+    </p>
+    <p>
+        <h4 id="nameAccountDeleteModal">Conta: </h4>
+        <h4 id="typeAccountDeleteModal">Tipo da Conta: </h4>
+        
+    </p>
+    <input type="text" name="id" id="idAccountLaunch">
+    <input type="text" name="table" value="account_launches">
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+        <button type="submit" class="btn btn-danger"> EXCLUIR </button>
+    </div>
+</form>
+@endcomponent
 @endsection
 @push('stylesheets')
 {{-- 
