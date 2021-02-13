@@ -50,15 +50,14 @@
         </div>
         <div class="x_content">
             <div class="right-col">
-                <table id="receipts-table" class="table table-hover">
+                <table id="account-launch-table" class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Emitente</th>
-                            <th>Referente a</th>
-                            <th>Valor</th>
-                            <th>Local</th>
-                            <th>Data</th>
-                            <th>Ações</th>
+                            <th>Tipo da Conta</th>
+                            <th>Nome da Conta</th>
+                            <th>Criada em</th>
+                            <th>Criada por</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                 </table>
@@ -67,8 +66,9 @@
     </div>
 </div>
 <!-- /page content -->
-{{-- @include('modals.receipt.receipt')
-@include('modals.receipt.delete') --}}
+
+@include('modals.launch.modal_account_launch')
+
 @endsection
 @push('stylesheets')
 {{-- 
