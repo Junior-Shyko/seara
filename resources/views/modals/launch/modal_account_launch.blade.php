@@ -24,6 +24,12 @@
                         <input type="text" name="accountlaunch_name" class="form-control" id="modalAccountlaunch_name">
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <label for="">Histórico da conta</label>
+                    <div class="form-group">
+                        <input type="text" name="accountlaunch_history" class="form-control" id="modalAccountlaunch_history">
+                    </div>
+                </div>
             </div>
         </div>
         <div class="modal-footer">

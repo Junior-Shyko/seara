@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AccountLaunch;
 use Illuminate\Http\Request;
 use Datatables, DB;
+use Carbon\Carbon;
 
 class AccountLaunchController extends Controller
 {
@@ -103,12 +104,18 @@ class AccountLaunchController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\AccountLaunch  $accountLaunch
+     * @param  $_REQUEST
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AccountLaunch $accountLaunch)
+    public function destroy(Request $request)
     {
-        //
+       $deleteAccount = AccountLaunch::find($request->id);
+       try {
+        $deleteAccount->delete();
+        return redirect()->back()->with('success' , 'Conta Excluida com sucesso.');
+       } catch (\Throwable $th) {
+        return redirect()->back()->with('error' , 'Não deu para excluir essa conta, tente novamente mais tarde.');
+       }
     }
 
     public function getDataTable() {
@@ -122,21 +129,34 @@ class AccountLaunchController extends Controller
         ->editColumn('accountlaunch_type', function ($accountLaunch) {
             $type = "";
             if($accountLaunch->accountlaunch_type == 1){
-                return "Entrada";
+                return "Receita";
             }else{
-                return "Saida";
+                return "Despesa";
             }
         })
         ->editColumn('accountlaunch_id_user', function ($accountLaunch) {
             return $accountLaunch->name;
+        })
+        ->editColumn('created_at', function ($accountLaunch) {
+            $created_at = new Carbon( $accountLaunch->created_at );
+              return $created_at->format('d/m/Y á\s H:i:s');
+        })
+        ->editColumn('accountlaunch_history', function ($accountLaunch) {
+            return strtr($accountLaunch->accountlaunch_history, 0, 20);
         })
         ->addColumn('action', function ($accountLaunch) {
             return '<button class="btn btn-primary" type="button" title="Editar esse registro" data-toggle="modal"
             data-id="'.$accountLaunch->id.'"
             data-name="'.$accountLaunch->accountlaunch_name.'"
             data-type="'.$accountLaunch->accountlaunch_type.'"
+            data-history="'.$accountLaunch->accountlaunch_history.'"
             data-target="#modalEditAccountLaunch"><i class="fa fa-edit"></i> Editar</button>
-                    <button class="btn btn-danger" type="button">
+                    <button class="btn btn-danger" type="button" title="Excluir esse registro" 
+            data-toggle="modal"
+            data-id="'.$accountLaunch->id.'"
+            data-name="'.$accountLaunch->accountlaunch_name.'"
+            data-type="'.$accountLaunch->accountlaunch_type.'"
+            data-target="#modalDeleteComponent">
                     <i class="fa fa-trash"> Excluir</i>
                     </button>';
         })->make(true);
