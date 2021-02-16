@@ -8,6 +8,7 @@
 <div class="right_col" role="main">
    
     <div class="row">
+        @include('msg.message')
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
@@ -56,6 +57,7 @@
                 <table id="account-launch-table" class="table table-hover">
                     <thead>
                         <tr>
+                            <th>Código da Conta</th>
                             <th>Tipo da Conta</th>
                             <th>Nome da Conta</th>
                             <th>Histórico</th>

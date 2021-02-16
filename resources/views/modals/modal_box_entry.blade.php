@@ -23,8 +23,16 @@
                         <div class="x_content bs-example-popovers">
                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
                                 <div class="col-md-3 form-group">
-                                    <input type="text" name="entries_id_account" class="form-control" id="cod_account" placeholder="Cod. Conta">
+                                    <label class="control-label">Conta </label><small style="color:#949494;    margin-left: 40px;"> Pesquise pelo nome</small>  
+                                   <select required name="account_id" id="cod_account" class="form-control select2">
+                                    @foreach($accounts as $account)
+                                        <option value="{{ $account->id }}">
+                                            {{ $account->accountlaunch_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 </div>
+
                                 <div class="col-md-6 form-group">
                                     <label class="control-label text-primary" id="label_desc_account">Decrição da conta</label>
 

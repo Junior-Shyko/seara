@@ -11,6 +11,10 @@ $(document).ready(function () {
                 type: response.status,
                 styling: 'bootstrap3'
             });
+            $("#account-launch-table").DataTable().ajax.reload();
+            $("#form-account-launch").each (function(){
+              this.reset();
+            });
 		})
 		.fail(function(jqXHR){
 			notify.response(jqXHR.responseJSON);
@@ -25,6 +29,7 @@ $(document).ready(function () {
 
 $(function () {
     let colunas = [
+        {data: 'id', name: 'id'},
         {data: 'accountlaunch_type', name: 'accountlaunch_type'},
         {data: 'accountlaunch_name', name: 'accountlaunch_name'},
         {data: 'accountlaunch_history', name: 'accountlaunch_history'},

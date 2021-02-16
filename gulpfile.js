@@ -191,7 +191,13 @@ elixir(function(mix) {
     mix.scripts([
         'launch/account_launch.js'
     ], 'public/js/launch/account_launch.min.js');
-    mix.version('public/js/launch/account_launch.min.js');
+    mix.version('public/js/launch/account_launch.min.js');    
+
+    // Launch
+    mix.scripts([
+        'launch/entry.js'
+    ], 'public/js/launch/entry.min.js');
+    mix.version('public/js/launch/entry.min.js');
 
     /**************/
     /* Copy Fonts */

@@ -161,4 +161,13 @@ class AccountLaunchController extends Controller
                     </button>';
         })->make(true);
     }
+
+    public function search($id) {
+        try {
+            $account = AccountLaunch::findOrFail($id);
+            return response()->json($account);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage());
+        }
+    }
 }

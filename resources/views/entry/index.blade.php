@@ -45,7 +45,7 @@
 @endpush
 
 @push('scripts')
-<script type="text/javascript" language="javascript" src="{{asset('js/financing/entry.min.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{asset('js/launch/entry.min.js')}}"></script>
 
 {{-- <script type="text/javascript" language="javascript" src="{{asset('js/receipt-common.min.js')}}"></script> --}}
 @endpush

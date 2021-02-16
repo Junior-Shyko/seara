@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Entry;
 use App\FunctionGeneral;
+use App\AccountLaunch;
 
 class EntryController extends Controller
 {
@@ -15,7 +16,8 @@ class EntryController extends Controller
      */
     public function index()
     {
-        return view('entry.index');
+        $accounts = AccountLaunch::get();
+        return view('entry.index', compact('accounts'));
     }
 
     /**
