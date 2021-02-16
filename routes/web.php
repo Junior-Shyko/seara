@@ -84,6 +84,9 @@ Route::resource('lancar' , 'EntryController');
 Route::group(['prefix' => 'launch'], function () {
     Route::get('account'	, 'AccountLaunchController@index');
     Route::post('account/create', 'AccountLaunchController@store');
+    Route::get('account/all' , 'AccountLaunchController@getDataTable');
+    Route::put('account/{id}' , 'AccountLaunchController@update');
+    Route::post('account/delete' , 'AccountLaunchController@destroy');
 });
 
 

@@ -35,26 +35,18 @@
                                     <input type="text" name="accountlaunch_history" id="" class="form-control">
                                     <span class="input-group-btn">
                                     <button type="button" class="btn btn-primary" id="btn-save-account-launch">Salvar conta</button>
-                            <div class="col-sm-9">
-                                <label for="">Nome da conta</label>
-                                <div class="input-group">
-                                    <input type="text" name="accountlaunch_name" class="form-control" placeholder="Nome da conta">
-                                    <span class="input-group-btn">
-                                    <button type="button" class="btn btn-primary" id="btn-save-account-launch">Salvar</button>
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="divider-dashed"></div>
                         <input type="hidden" name="accountlaunch_id_user" value="{{Auth::user()->id}}">
-                        <input type="text" name="accountlaunch_id_user" value="{{Auth::user()->id}}">
                     </form>
                 </div>
             </div>
         </div>
     </div>
     <div class="x_panel">
-        @include('msg.message')
         <div class="x_title">
             <h2>Conta <small>Todas as contas</small></h2>
             <div class="clearfix"></div>
@@ -70,15 +62,6 @@
                             <th>Criada em</th>
                             <th>Criada por</th>
                             <th>Ação</th>
-                <table id="receipts-table" class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Emitente</th>
-                            <th>Referente a</th>
-                            <th>Valor</th>
-                            <th>Local</th>
-                            <th>Data</th>
-                            <th>Ações</th>
                         </tr>
                     </thead>
                 </table>
@@ -110,8 +93,6 @@
     </div>
 </form>
 @endcomponent
-{{-- @include('modals.receipt.receipt')
-@include('modals.receipt.delete') --}}
 @endsection
 @push('stylesheets')
 {{-- 
