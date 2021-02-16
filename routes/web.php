@@ -80,6 +80,12 @@ Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
 Route::resource('lancar' , 'EntryController');
+// PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
+Route::group(['prefix' => 'launch'], function () {
+    Route::get('account'	, 'AccountLaunchController@index');
+    Route::post('account/create', 'AccountLaunchController@store');
+});
+
 
 // Categoria de receitas
 Route::get('categoria-receita', 'Financing\IncomeCategoryController@index');

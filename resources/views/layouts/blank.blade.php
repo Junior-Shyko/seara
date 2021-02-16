@@ -28,7 +28,7 @@
 
 </head>
 
-<body class="nav-md">
+<body class="nav-md" id="app">
   <div class="container body">
     <div class="main_container">
 
@@ -64,5 +64,12 @@
 
   @stack('scripts')
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+  </script>
 </body>
 </html>

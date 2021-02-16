@@ -61,7 +61,6 @@ class HomeController extends Controller
             //TOTAL DE USUÁRIOS
             $tot_users      = User::where('user_id_company' , Auth::user()->user_id_company);
             
-
             return view('home_basic' , compact('company' , 'tot_users' ));
         }
     }

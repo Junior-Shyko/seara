@@ -187,6 +187,12 @@ elixir(function(mix) {
     ], 'public/js/financing/payment.min.js');
     mix.version('public/js/financing/payment.min.js');
 
+    // Account Launch
+    mix.scripts([
+        'launch/account_launch.js'
+    ], 'public/js/launch/account_launch.min.js');
+    mix.version('public/js/launch/account_launch.min.js');
+
     /**************/
     /* Copy Fonts */
     /**************/

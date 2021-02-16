@@ -13,3 +13,4 @@ deploy.conf
 npm-debug.log
 /build
 /files
+docker-compose.yml
