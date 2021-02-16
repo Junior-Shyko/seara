@@ -8,10 +8,6 @@
 <div class="right_col" role="main">
    
     <div class="row">
-<<<<<<< HEAD
-        @include('msg.message')
-=======
->>>>>>> master
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
@@ -29,7 +25,6 @@
                                     <option value="2">Despesa</option>
                                 </select>
                             </div>
-<<<<<<< HEAD
                             <div class="col-md-9">
                                 <label class="col-form-label">Nome da conta</label>
                                 <input type="text" name="accountlaunch_name" class="form-control">
@@ -40,41 +35,32 @@
                                     <input type="text" name="accountlaunch_history" id="" class="form-control">
                                     <span class="input-group-btn">
                                     <button type="button" class="btn btn-primary" id="btn-save-account-launch">Salvar conta</button>
-=======
                             <div class="col-sm-9">
                                 <label for="">Nome da conta</label>
                                 <div class="input-group">
                                     <input type="text" name="accountlaunch_name" class="form-control" placeholder="Nome da conta">
                                     <span class="input-group-btn">
                                     <button type="button" class="btn btn-primary" id="btn-save-account-launch">Salvar</button>
->>>>>>> master
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="divider-dashed"></div>
-<<<<<<< HEAD
                         <input type="hidden" name="accountlaunch_id_user" value="{{Auth::user()->id}}">
-=======
                         <input type="text" name="accountlaunch_id_user" value="{{Auth::user()->id}}">
->>>>>>> master
                     </form>
                 </div>
             </div>
         </div>
     </div>
     <div class="x_panel">
-<<<<<<< HEAD
-=======
         @include('msg.message')
->>>>>>> master
         <div class="x_title">
             <h2>Conta <small>Todas as contas</small></h2>
             <div class="clearfix"></div>
         </div>
         <div class="x_content">
             <div class="right-col">
-<<<<<<< HEAD
                 <table id="account-launch-table" class="table table-hover">
                     <thead>
                         <tr>
@@ -84,7 +70,6 @@
                             <th>Criada em</th>
                             <th>Criada por</th>
                             <th>Ação</th>
-=======
                 <table id="receipts-table" class="table table-hover">
                     <thead>
                         <tr>
@@ -94,7 +79,6 @@
                             <th>Local</th>
                             <th>Data</th>
                             <th>Ações</th>
->>>>>>> master
                         </tr>
                     </thead>
                 </table>
@@ -103,7 +87,6 @@
     </div>
 </div>
 <!-- /page content -->
-<<<<<<< HEAD
 
 @include('modals.launch.modal_account_launch')
 @component('components.modal_delete_comp')
@@ -127,10 +110,8 @@
     </div>
 </form>
 @endcomponent
-=======
 {{-- @include('modals.receipt.receipt')
 @include('modals.receipt.delete') --}}
->>>>>>> master
 @endsection
 @push('stylesheets')
 {{-- 

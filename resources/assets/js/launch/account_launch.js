@@ -2,8 +2,6 @@ $(document).ready(function () {
     $("#btn-save-account-launch").click(function (e) { 
         e.preventDefault();
         var form = $("#form-account-launch").serialize();
-<<<<<<< HEAD
-=======
         // $.ajax({
         //     type: "POST",
         //     url: SearaApp.baseURL+'launch/account/create',
@@ -27,7 +25,6 @@ $(document).ready(function () {
         //         styling: 'bootstrap3'
         //     });
         // });
->>>>>>> master
         SearaAjax.post('launch/account/create', form, function( response ){
 			// notify.response(response);
 			// companyTable.reloadTable();
@@ -47,7 +44,6 @@ $(document).ready(function () {
             console.log('hideModal');
 		});
     });
-<<<<<<< HEAD
 });
 
 $(function () {
@@ -112,6 +108,4 @@ $(function () {
             SearaLoader.hideModal();
         })
     });
-=======
->>>>>>> master
 });
