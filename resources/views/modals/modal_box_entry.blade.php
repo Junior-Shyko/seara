@@ -45,7 +45,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="divider-dashed"></div>
                     <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback">
                         
                         {{Form::selectRange('entries_day', 01, 31, date('d'), ['class' =>'form-control has-feedback-left' , 'id' => 'entries_day'])}}
