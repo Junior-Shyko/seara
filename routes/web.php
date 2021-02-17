@@ -40,8 +40,6 @@ Route::group(['prefix' => 'companies'], function () {
 
 Route::resource('companies', 'CompanyController');
 
-
-
 // USUÁRIOS
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
 Route::resource('users', 'UserController');
@@ -79,7 +77,9 @@ Route::post('fechar-caixa' , 'BoxController@close_box');
 Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
+Route::resource('tipo-conta', 'AccountTypeController');
 Route::resource('lancar' , 'EntryController');
+
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
     Route::get('account'	, 'AccountLaunchController@index');

@@ -34,11 +34,12 @@
                                 </div>
 
                                 <div class="col-md-6 form-group">
-                                    <label class="control-label text-primary" id="label_desc_account">Decrição da conta</label>
-
+                                    <label class="control-label" id="label_desc_account">Decrição da conta</label>
                                 </div>
                                 <div class="col-md-3 form-group">
-                                    <label class="control-label text-primary" id="label_desc_type">Tipo da conta: </label>
+                                    <label class="control-label text-primary">Tipo da conta: </label>
+                                    <br>
+                                    <label class="control-label" id="label_desc_type">. . .</label>
 
                                 </div>
 

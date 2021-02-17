@@ -8,7 +8,9 @@ $(document).ready(function () {
     console.log({codAccount});	
 	    $.get(SearaApp.baseURL+'/launch/account/search/'+codAccount, function(data) {
 	    	/*optional stuff to do after success */
-	    	console.log(data);
+            console.log(data);
+            $("#label_desc_type").html(data.accountlaunch_type);
+            $("#entries_description").val(data.accountlaunch_history);
 	    });
     });
 });

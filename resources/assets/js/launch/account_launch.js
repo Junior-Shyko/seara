@@ -90,4 +90,24 @@ $(function () {
             SearaLoader.hideModal();
         })
     });
+
+    $("#btn-save-type-account").click(function (e) { 
+        e.preventDefault();
+        var dataForm = {
+            account_types_name: $('#account_types_name').val(),
+            account_types_id_user: $('#account_types_id_user').val()
+        };
+        $.ajax({
+            type: "post",
+            url: SearaApp.baseURL+'tipo-conta',
+            data: dataForm,
+            dataType: "json",
+            success: function (response) {
+                notify.response(response);
+            }
+        });
+        // SearaAjax.post('tipo-conta', dataForm, function( response ){
+        //     notify.response(response);
+        // });
+    });
 });

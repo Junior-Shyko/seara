@@ -20,11 +20,44 @@
                         <div class="form-group row">
                             <div class="col-md-3">
                                 <label class="col-form-label">Tipo da conta</label>
-                                <select name="accountlaunch_type" id="" class="form-control">
-                                    <option value="">--Selecione--</option>
-                                    <option value="1">Receitas</option>
-                                    <option value="2">Despesa</option>
-                                </select>
+                               
+                                <div class="input-group">
+                                    <select name="accountlaunch_type" id="" class="form-control">
+                                        <option value="">--Selecione--</option>
+                                        <option value="1">Receitas</option>
+                                        <option value="2">Despesa</option>
+                                    </select>
+                                    <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#modalSaveType" title="Cadastar tipo de conta">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                    </span>
+                                </div>
+                                <!-- Modal -->
+<div class="modal fade" id="modalSaveType" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Criar Tipo de conta</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="">Tipo de conta</label>
+                        <input type="text" name="account_types_name" id="account_types_name" class="form-control" placeholder="Digite o tipo da conta">
+                        <input type="hidden" name="account_types_id_user" id="account_types_id_user" value="{{Auth::user()->id}}">
+                    </div>
+                </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btn-save-type-account">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
                             </div>
                             <div class="col-md-9">
                                 <label class="col-form-label">Nome da conta</label>
