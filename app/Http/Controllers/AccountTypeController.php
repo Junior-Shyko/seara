@@ -36,11 +36,14 @@ class AccountTypeController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
+        if(empty($request->account_types_name)) {
+            return response(['message' => 'Você precisa preenchar o nome', 'status' => 'error'], 500);
+        }
         try {
-            AccountType::create($request->all());
-            return response(['status' => 'success','message' => 'Tipo de conta cadastrada'],200);
+             AccountType::create($request->all());
+            return response()->json(['status' => 'success','message' => 'Tipo de conta cadastrada'],200);
         } catch (\Throwable $th) {
-            return response(['message' => 'Error: '.$th->getMessage()], 500);
+            return response(['message' => 'Ocorreu um erro inesperado.', 'status' => 'error'], 500);
         }
         
     }

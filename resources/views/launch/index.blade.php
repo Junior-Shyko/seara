@@ -22,10 +22,12 @@
                                 <label class="col-form-label">Tipo da conta</label>
                                
                                 <div class="input-group">
-                                    <select name="accountlaunch_type" id="" class="form-control">
-                                        <option value="">--Selecione--</option>
-                                        <option value="1">Receitas</option>
-                                        <option value="2">Despesa</option>
+                                    <select name="accountlaunch_type" id="" class="form-control select2">
+                                        @foreach($typeAccount as $typeAccounts)
+                                            <option value="{{ $typeAccounts->id }}">
+                                                {{ $typeAccounts->account_types_name }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     <span class="input-group-btn">
                                     <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#modalSaveType" title="Cadastar tipo de conta">
@@ -106,7 +108,7 @@
 </div>
 <!-- /page content -->
 
-@include('modals.launch.modal_account_launch')
+@include('modals.launch.modal_account_launch', [$typeAccount])
 @component('components.modal_delete_comp')
 <form action="{{url('launch/account/delete')}}" method="POST">
     {!! csrf_field() !!}

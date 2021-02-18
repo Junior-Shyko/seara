@@ -11,11 +11,13 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="col-form-label">Tipo da conta</label>
-                        <select name="accountlaunch_type" id="modalAccountlaunch_type" class="form-control">
-                            <option value="">--Selecione--</option>
-                            <option value="1">Receitas</option>
-                            <option value="2">Despesa</option>
-                        </select>
+                        <select required name="accountlaunch_type" id="modalAccountlaunch_type" class="form-control select2">
+                            @foreach($typeAccount as $account)
+                                <option value="{{ $account->id }}">
+                                    {{ $account->account_types_name }}
+                                </option>
+                            @endforeach
+                        </select>   
                     </div>
                 </div>
                 <div class="col-md-8">
