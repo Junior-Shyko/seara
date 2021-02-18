@@ -39,15 +39,14 @@ class AccountLaunchController extends Controller
      */
     public function store(Request $request)
     {
-        if(empty($request['accountlaunch_type']) || empty($request['accountlaunch_name'])) {
+        if(empty($request['accountlaunch_type']) || empty($request['accountlaunch_name'])|| empty($request['account_launches_referring'])) {
             return response( ['status' => 'error', 'message' => 'Todos os campos são obrigatórios'], 422 );
         }
         try {
             AccountLaunch::create($request->all());
             return response( ['status' => 'success', 'message' => 'Conta cadastrada com sucesso'], 200 );
         } catch (\Throwable $th) {
-            //throw ;
-            dump($th);
+            return response( ['status' => 'error', 'message' => 'Um erro inesperado'], 502 );
         }
     }
 

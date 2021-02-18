@@ -29,7 +29,7 @@ $(document).ready(function () {
 
 $(function () {
     let colunas = [
-        {data: 'id', name: 'id'},
+        {data: 'idAccountLaunch', name: 'idAccountLaunch'},
         {data: 'account_types_name', name: 'account_types_name'},
         {data: 'accountlaunch_name', name: 'accountlaunch_name'},
         {data: 'accountlaunch_history', name: 'accountlaunch_history'},
