@@ -13,4 +13,8 @@ $(document).ready(function () {
             $("#entries_description").val(data.accountlaunch_history);
 	    });
     });
+    $('#cod_account').select2({
+      placeholder: 'Escolha a conta',
+      allowClear: true
+    });
 });

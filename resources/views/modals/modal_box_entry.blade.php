@@ -25,6 +25,7 @@
                                 <div class="col-md-3 form-group">
                                     <label class="control-label">Conta </label><small style="color:#949494;    margin-left: 40px;"> Pesquise pelo nome</small>  
                                    <select required name="account_id" id="cod_account" class="form-control select2">
+                                    <option value=""></option>
                                     @foreach($accounts as $account)
                                         <option value="{{ $account->id }}">
                                             {{ $account->accountlaunch_name }}
