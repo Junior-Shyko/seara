@@ -22,7 +22,7 @@
                         </div>
                         <div class="x_content bs-example-popovers">
                             <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-4 form-group">
                                     <label class="control-label">Conta </label><small style="color:#949494;    margin-left: 40px;"> Pesquise pelo nome</small>  
                                    <select required name="account_id" id="cod_account" class="form-control select2">
                                     <option value=""></option>
@@ -34,14 +34,15 @@
                                 </select>
                                 </div>
 
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label" id="label_desc_account">Decrição da conta</label>
-                                </div>
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-4 form-group">
                                     <label class="control-label text-primary">Tipo da conta: </label>
                                     <br>
                                     <label class="control-label" id="label_desc_type">. . .</label>
 
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label for="">Referente a:</label> <br>
+                                    <label class="control-label" id="account_launches_referring">...</label>
                                 </div>
 
                             </div>

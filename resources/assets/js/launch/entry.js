@@ -2,7 +2,18 @@ $(document).ready(function () {
     //$("#modal-entry").modal('show');
     $("#lancar_conta").modal('show');
     hideDivs();
-    
+    $('#entries_decimate').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    $('#box_offer').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    $('#entries_other').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    $('#entries_end').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
     $("#cod_account").change(function(event) {
     hideDivs();   
     	/* Act on the event */
@@ -10,9 +21,10 @@ $(document).ready(function () {
     console.log({codAccount});	
 	    $.get(SearaApp.baseURL+'/launch/account/search/'+codAccount, function(data) {
 	    	/*optional stuff to do after success */
-            console.log(data[0].account_launches_referring);
-            $("#label_desc_type").html(data.account_types_name);
-            $("#entries_description").val(data.accountlaunch_history);
+            console.log(data[0]);
+            $("#label_desc_type").html(data[0].account_types_name);
+            $("#entries_description").val(data[0].accountlaunch_history);
+            $("#account_launches_referring").html(data[0].account_launches_referring);
             switch(data[0].account_launches_referring) {
                 case 'Dizimo':
                     $("#divEntradas").show();
@@ -27,6 +39,12 @@ $(document).ready(function () {
                     $("#diventries_other").show();
                     break;
             }
+            if(data[0].account_types_name == 'Despesa') {
+                hideDivs(); 
+                $("#idSaida").show();
+                $("#diventries_end").show();
+            }
+
 	    });
     });
     $('#cod_account').select2({

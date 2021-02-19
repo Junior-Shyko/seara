@@ -195,6 +195,8 @@ elixir(function(mix) {
 
     // Launch
     mix.scripts([
+        'jquery.maskMoney.js',
+        'mask.js',
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
     mix.version('public/js/launch/entry.min.js');
