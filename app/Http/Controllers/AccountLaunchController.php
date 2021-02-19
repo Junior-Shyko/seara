@@ -161,7 +161,12 @@ class AccountLaunchController extends Controller
 
     public function search($id) {
         try {
-            $account = AccountLaunch::findOrFail($id);
+            $account = DB::table('account_launches')
+            ->join('users', 'account_launches.accountlaunch_id_user', '=', 'users.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->where('account_launches.id','=',$id)
+            ->select('account_launches.*','account_launches.id as idAccountLaunch', 'users.id as id_user', 'users.name', 'account_types.id as idTypeAccount', 'account_types.*')
+            ->get();        
             return response()->json($account);
         } catch (Exception $e) {
             return response()->json($e->getMessage());

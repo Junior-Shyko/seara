@@ -17,7 +17,7 @@
                 
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Conta <small>Digite o código da conta desejada</small></h2>
+                            <h2>Caixa <small>Movimentação do caixa</small></h2>
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content bs-example-popovers">
@@ -56,26 +56,26 @@
                         <input type="text" name="entries_description" class="form-control" id="entries_description" placeholder="Histórico">
                         <span class="fa fa-edit form-control-feedback right" aria-hidden="true"></span>
                     </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback" id="divEntradas">
                         <small>ENTRADAS</small>
                     </div>
-                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
+                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback" id="diventries_decimate">
                         <input type="text" name="entries_decimate"  class="form-control has-feedback-left" id="entries_decimate" placeholder="Dízimo">
                         <span class="fa fa-money form-control-feedback left" id="" aria-hidden="true"></span>
                     </div>
-                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
+                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback" id="divbox_offer">
                         <input type="text" name="entries_offer" class="form-control has-feedback-left" id="box_offer" placeholder="Oferta">
                         <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                     </div>
-                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
+                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback" id="diventries_other">
                         <input type="text" name="entries_other"  class="form-control has-feedback-left" id="entries_other" placeholder="Outras">
                          
                         <span class="fa fa-money form-control-feedback left" aria-hidden="true"></span>
                     </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback">
+                    <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback" id="idSaida">
                         <small>SAÍDA</small>
                     </div>
-                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
+                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback" id="diventries_end">
                         <input type="text" name="entries_end"  class="form-control"  id="entries_end" placeholder="Saída">
                         <span class="fa fa-money form-control-feedback right" aria-hidden="true"></span>
                     </div>
