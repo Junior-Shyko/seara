@@ -79,12 +79,12 @@
                     </li>
 
                     <li>
-                        <a data-cy="report-module">
+                        <a data-cy="account-launches-module">
                             <i class="fa fa-list-alt" aria-hidden="true"></i> Lançamento Caixa <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
                             <li>
-                                <a data-cy="report-debt-and-payment" href="{{ url('launch/account') }}">Contas</a>
+                                <a href="{{ url('launch/account') }}">Contas</a>
                             </li>
                         </ul>
                     </li>

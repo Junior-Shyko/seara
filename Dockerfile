@@ -12,9 +12,7 @@ RUN gulp
 FROM php:7.2.23-cli-alpine as back_builder
 WORKDIR /code
 RUN apk update --no-cache && apk add --no-cache git
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php \
-    && rm composer-setup.php \
+RUN curl https://getcomposer.org/composer-1.phar -o composer.phar -LR -z composer.phar \
     && chmod +x composer.phar \
     && mv composer.phar /usr/local/bin/composer
 # Instal dependencies
@@ -33,12 +31,6 @@ COPY routes ./routes
 COPY app ./app
 COPY artisan ./
 RUN composer dump-autoload -o && composer run-script setup
-
-FROM php:7.2.23-cli-alpine as deployer
-RUN apk update --no-cache \
-    && apk add --no-cache openssh-client \
-    && apk add --no-cache rsync
-RUN mkdir -p ~/.ssh && echo StrictHostKeyChecking no >> ~/.ssh/config
 
 FROM alpine:3.4
 COPY --from=back_builder /code /code
