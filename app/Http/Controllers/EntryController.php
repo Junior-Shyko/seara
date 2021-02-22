@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Entry;
 use App\FunctionGeneral;
 use App\AccountLaunch;
+use Auth, DB;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use Carbon\Carbon;
 
 class EntryController extends Controller
 {
@@ -17,7 +21,13 @@ class EntryController extends Controller
     public function index()
     {
         $accounts = AccountLaunch::get();
-        return view('entry.index', compact('accounts'));
+        $month = Carbon::now()->month;
+        
+        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
+        $total = Entry::whereMonth('created_at', $month-1)->whereNotIn('accountlaunch_type',[$typeEnd[0]->id])->get();
+        $totalPrevius = $total->sum('entries_value');
+
+        return view('entry.index', compact('accounts', 'totalPrevius'));
     }
 
     /**
@@ -38,7 +48,24 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $entry = Entry::create($request->all());
+            return response()->json([
+                'message' => 'Conta lançada',
+                'status' => 'success',
+                'id'=>$entry->id],200);
+        } catch (BadResponseException $e) {
+            dump($e->getMessage());
+        }
+
+        // if($request->hasFile('file')){
+        //     if($request->file('file')->isValid()){
+        //         $nameUniqid = uniqid(date('HisYmd'));
+        //         $extension = $request->file->extension();
+        //         $nameFile = $nameUniqid.'_'.$user->user_id_company.'.'.$extension;
+        //         $request->file->storeAs('box', $nameFile);
+        //     }
+        // }
     }
 
     /**
@@ -121,5 +148,19 @@ class EntryController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
         }
+    }
+
+    public function upload(Request $request) {
+        $user = Auth::user();
+        if($request->hasFile('file')){
+            if($request->file('file')->isValid()){
+                $nameUniqid = uniqid(date('HisYmd'));
+                $extension = $request->file->extension();
+                $nameFile = $nameUniqid.'_'.$user->user_id_company.'.'.$extension;
+                $request->file->storeAs('box', $nameFile);
+            }
+        }
+        
+        return response()->json(['message' => 'success', 'status' => 'success'], 200);
     }
 }

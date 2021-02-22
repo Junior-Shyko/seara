@@ -1,11 +1,12 @@
 @extends('layouts.blank')
 @push('stylesheets')
 <!-- Example -->
-<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
+<link href="{{ url("css/entry.min.css") }}" rel="stylesheet">
 @endpush
 @section('main_container')
 <!-- page content -->
 <div class="right_col" role="main">
+
     <div class="row">
         @include('msg.message')
         <div class="col-md-12">
@@ -114,7 +115,7 @@
     </div>
 </div>
 <!-- /page content -->
-@include('modals.launch.modal_account_launch', [$typeAccount])
+@include('modals.launch.modal_account_launch', [$typeAccount, $totalPrevius])
 @component('components.modal_delete_comp')
 <form action="{{url('launch/account/delete')}}" method="POST">
     {!! csrf_field() !!}

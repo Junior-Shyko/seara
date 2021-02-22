@@ -33,10 +33,12 @@
           </div>
 
         </div>
+        
       </div>
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
     @include('modals.modal_box_entry')
+    @include('modals.modal_upload_launch')
     <!-- /page content -->
 @endsection
 

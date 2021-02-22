@@ -195,12 +195,17 @@ elixir(function(mix) {
 
     // Launch
     mix.scripts([
+        'dropzone.min.js',
         'jquery.maskMoney.js',
         'mask.js',
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
     mix.version('public/js/launch/entry.min.js');
 
+    mix.styles([
+        'basic.min.css',
+        'dropzone.min.css'
+    ], 'public/css/entry.min.css');
     /**************/
     /* Copy Fonts */
     /**************/
