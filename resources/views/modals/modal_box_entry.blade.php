@@ -47,7 +47,7 @@
                 <div class="row alert alert-info">
                     <p>
                         <strong>MÊS / ANO: </strong>{{ \Carbon\Carbon::now()->month . ' / '. \Carbon\Carbon::now()->year }}
-                        <label class="pull-right">Saldo Anterior: R$ {{number_format($totalPrevius,2,",",".")}}</label>
+                        <label class="pull-right">Saldo Anterior: R$ {{number_format($totalPreviusPositive,2,",",".")}}</label>
                     </p>
                 </div>
                 <form class="form-horizontal form-label-left input_mask" id="form_entry">

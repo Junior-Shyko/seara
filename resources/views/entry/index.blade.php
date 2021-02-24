@@ -21,11 +21,11 @@
             <table id="entry-table" class="table table-hover">
               <thead>
                 <tr>
-                  <th>Emitente</th>
-                  <th>Referente a</th>
+                  <th>Dia</th>
+                  <th>Histórico</th>
                   <th>Valor</th>
-                  <th>Local</th>
-                  <th>Data</th>
+                  <th>Tipo</th>
+                  <th>Lançado por</th>
                   <th>Ações</th>
                 </tr>
               </thead>

@@ -80,6 +80,7 @@ Route::resource('conta' , 'AccountController');
 Route::resource('tipo-conta', 'AccountTypeController');
 Route::resource('lancar' , 'EntryController');
 Route::post('caixa/upload' , 'EntryController@upload');
+Route::get('all-launch', 'EntryController@getAll');
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
     Route::get('account'	, 'AccountLaunchController@index');

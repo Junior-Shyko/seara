@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Entry;
 use App\FunctionGeneral;
+use App\Seara\Monetary;
 use App\AccountLaunch;
 use Auth, DB;
+use Validator, Datatables;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Carbon\Carbon;
@@ -24,10 +26,33 @@ class EntryController extends Controller
         $month = Carbon::now()->month;
         
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        $total = Entry::whereMonth('created_at', $month-1)->whereNotIn('accountlaunch_type',[$typeEnd[0]->id])->get();
-        $totalPrevius = $total->sum('entries_value');
+        // $total = Entry::whereMonth('created_at', $month-1)->whereNotIn('accountlaunch_type',[$typeEnd[0]->id])->get();
+        // $totalPrevius = $total->sum('entries_value');
 
-        return view('entry.index', compact('accounts', 'totalPrevius'));
+        // $users = DB::table('users')
+        //     ->join('contacts', 'users.id', '=', 'contacts.user_id')
+        //     ->join('orders', 'users.id', '=', 'orders.user_id')
+        //     ->select('users.*', 'contacts.phone', 'orders.price')
+        //     ->get();
+
+        $totPlus = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+                    ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                    ->whereMonth('entries.created_at', $month-1)->whereNotIn('account_launches.accountlaunch_type',[$typeEnd[0]->id])
+                    ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+
+        $totNeg = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+                    ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                    ->whereMonth('entries.created_at', $month-1)
+                    ->where('account_types.account_types_name','=','Despesa')
+                    ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+
+        $totalPreviusPositive = $totPlus->sum('entries_value');
+        $totalPreviusNegative = $totNeg->sum('entries_value');
+        //dump($totalPreviusPositive);
+        // dump($totalPreviusNegative);
+        // dump($totPlus);
+        // dump($totNeg);
+        return view('entry.index', compact('accounts', 'totalPreviusPositive'));
     }
 
     /**
@@ -48,12 +73,29 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'entries_description' => 'required',
+            'entries_id_account' => 'required',
+            'entries_value' => 'required'            
+        ];
+
+        $validator = Validator::make( $request->all(), $rules );
+
+        if ( $validator->fails() )
+        {
+            $messages = $validator->errors()->all();
+            return response( ['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422 );
+        }
+
         try {
+            $reques = Monetary::money_real($request['entries_value']);
+            $request['entries_value'] = $reques;
             $entry = Entry::create($request->all());
+
             return response()->json([
                 'message' => 'Conta lançada',
                 'status' => 'success',
-                'id'=>$entry->id],200);
+                'id'=>$entry->entries_id],200);
         } catch (BadResponseException $e) {
             dump($e->getMessage());
         }
@@ -162,5 +204,19 @@ class EntryController extends Controller
         }
         
         return response()->json(['message' => 'success', 'status' => 'success'], 200);
+    }
+
+    public function getAll() {
+        $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
+                ->select('users.id as idUser', 'users.name', 'entries.*')
+                ->get();
+        return Datatables::of($mov)
+            ->editColumn('entries_id_user', function ($mov) {
+                return $mov->name;
+            })
+            ->editColumn('entries_value', function ($mov) {
+                return number_format($mov->entries_value,2,',','.');
+            })
+            ->make(true);
     }
 }
