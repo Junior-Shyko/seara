@@ -13,7 +13,7 @@
         @include('msg.message')
         <div class="x_title">
           <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
-          <button class="btn btn-primary pull-right"  data-toggle="modal" data-target="#modal-entry">Lançar Movimento</button>
+          <button class="btn btn-primary pull-right"  data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</button>
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -39,6 +39,28 @@
     {{-- @include('modals.entry.modal_lauch') --}}
     @include('modals.modal_box_entry')
     @include('modals.modal_upload_launch')
+@component('components.modal_delete_comp')
+<form action="{{url('lancar/delete')}}" method="post">
+    {!! csrf_field() !!}
+    <div class="row">
+      <div class="alert alert-danger">
+        <h4 >
+            Deseja realmente excluir esse lançamento do caixa?
+        </h4>
+        <small>Essa ação é inreversível, não dá para voltar atrás.</small>
+      </div>
+      <div class="text-center">
+        <h4>Histórico: <label  id="historyLaunchDeleteModal"></label></h4>
+        <h4>Tipo: <label id="typeLaunchDeleteModal"></label> </h4>
+      </div>
+      <input type="hidden" name="id" id="idDelete">
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+          <button type="submit" class="btn btn-danger"> EXCLUIR </button>
+      </div>
+    </div>
+</form>
+@endcomponent
     <!-- /page content -->
 @endsection
 

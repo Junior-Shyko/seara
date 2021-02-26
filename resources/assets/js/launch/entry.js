@@ -1,18 +1,20 @@
 $(document).ready(function () {
-    //$("#modal-entry").modal('show');
-    $("#lancar_conta").modal('show');
+    //$("#modalUploadLaunch").modal('show');
+    //$("#lancar_conta").modal('show');
     hideDivs();
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
     
-    $("#form_entry").dropzone({ 
+    $("#form-upload-entry").dropzone({ 
         url: "/caixa/upload",
-        autoProcessQueue: false,
+        autoProcessQueue: true,
         dictDefaultMessage: "Arraste seus arquivos para essa área ou click para localizar",
-        maxFilesize: 6,
+        maxFiles: 2,
         clickable: true,
-        uploadMultiple: true
+        uploadMultiple: true,
+        paramName: 'file',
+        addRemoveLinks: true
     }); 
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
@@ -21,7 +23,8 @@ $(document).ready(function () {
             console.log(response)
             $("#lancar_conta").modal('hide');
             $("#modalUploadLaunch").modal('show');
-
+            $(".idEntry").val(response.id);
+            $("#entry-table").DataTable().ajax.reload();
             // notify.response(response);
             // companyTable.reloadTable();
             // new PNotify({
@@ -46,6 +49,27 @@ $(document).ready(function () {
 
     });
 
+    $('#modalDeleteComponent').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var launchName = button.data('name') 
+        var type = button.data('type')
+        var id = button.data('id')
+        var modal = $(this)
+        modal.find('#historyLaunchDeleteModal').text(launchName)
+        modal.find('#typeLaunchDeleteModal').text(type)
+        modal.find('#idDelete').val(id)
+    })
+
+    $('#modalUploadLaunch').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // Button that triggered the modal
+      var recipient = button.data('whatever') // Extract info from data-* attributes
+      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      var modal = $(this)
+      modal.find('.modal-title').text('New message to ' + recipient)
+      modal.find('.modal-body input').val(recipient)
+    })
+
     $("#cod_account").change(function(event) {
     hideDivs();
     	/* Act on the event */
@@ -62,6 +86,9 @@ $(document).ready(function () {
     $('#cod_account').select2({
       placeholder: 'Escolha a conta',
       allowClear: true
+    });
+    $('#myDatepicker2').datetimepicker({
+        format: 'DD.MM.YYYY'
     });
 });
 
@@ -91,6 +118,20 @@ $(document).on('click', '#close-preview', function(){
 });
 
 $(function() {
+    let colunas = [
+        {data: 'entries_day', name: 'entries_day'},
+        {data: 'entries_description', name: 'entries_description'},
+        {data: 'entries_value', name: 'entries_value'},
+        {data: 'entries_id_account', name: 'entries_id_account'},
+        {data: 'entries_id_user', name: 'entries_id_user'},
+        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
+    ];
+    $('#entry-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: SearaApp.baseURL+'all-launch',
+        columns: colunas
+    });
     // Create the close button
     var closebtn = $('<button/>', {
         type:"button",

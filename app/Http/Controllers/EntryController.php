@@ -181,11 +181,10 @@ class EntryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        
         try {
-            $entry = Entry::where('entries_id' , $id)->delete();
+            $entry = Entry::where('entries_id' , $request->id)->delete();
             return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
@@ -194,21 +193,49 @@ class EntryController extends Controller
 
     public function upload(Request $request) {
         $user = Auth::user();
-        if($request->hasFile('file')){
-            if($request->file('file')->isValid()){
-                $nameUniqid = uniqid(date('HisYmd'));
-                $extension = $request->file->extension();
-                $nameFile = $nameUniqid.'_'.$user->user_id_company.'.'.$extension;
-                $request->file->storeAs('box', $nameFile);
+        $total = count($_FILES['file']['name']);
+        // Loop through each file
+        for( $i=0 ; $i < ($total+1) ; $i++ ) {
+
+          //Get the temp file path
+          $tmpFilePath = $_FILES['file']['tmp_name'][$i];
+
+          //Make sure we have a file path
+          if ($tmpFilePath != ""){
+            //Setup our new file path
+            $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
+
+            //Upload the file into the temp dir
+            if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+
+              return response()->json(['message' => 'success', 'status' => 'success'], 200);
+
             }
+          }
         }
+        //dump($request->all());
+        // if($request->hasFile('file')){
+
+        //     if($request->file('file')->isValid()){
+                
+        //         $nameUniqid = uniqid(date('HisYmd'));
+        //         $extension = $request->file->extension();
+        //         $nameFile = $nameUniqid.'_'.$user->user_id_company.'.'.$extension;
+        //         dump($nameFile);
+        //         dump($request->all());
+        //         $request->file->storeAs('box', $nameFile);
+        //     }
+        // }
         
-        return response()->json(['message' => 'success', 'status' => 'success'], 200);
+        // return response()->json(['message' => 'success', 'status' => 'success'], 200);
     }
 
     public function getAll() {
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
-                ->select('users.id as idUser', 'users.name', 'entries.*')
+                ->join('account_launches','entries.entries_id_account','=','account_launches.id')
+                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
+                ->orderBy('entries_day', 'asc')
                 ->get();
         return Datatables::of($mov)
             ->editColumn('entries_id_user', function ($mov) {
@@ -216,6 +243,20 @@ class EntryController extends Controller
             })
             ->editColumn('entries_value', function ($mov) {
                 return number_format($mov->entries_value,2,',','.');
+            })
+            ->editColumn('entries_id_account', function ($mov) {
+                return $mov->account_types_name;
+            })
+            ->addColumn('action', function ($mov) {
+                return '<button class="btn btn-primary btn-xs" type="button" title="Editar Registro">
+                <i class="fa fa-edit"></i></button>
+                <button class="btn btn-danger btn-xs" type="button" title="Excluir Registro"
+                data-toggle="modal"
+                data-id="'.$mov->entries_id.'"
+                data-name="'.$mov->entries_description.'"
+                data-type="'.$mov->account_types_name.'"
+                data-target="#modalDeleteComponent">
+                <i class="fa fa-trash"></i></button>';
             })
             ->make(true);
     }
