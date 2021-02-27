@@ -97,7 +97,7 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-4">
             <ul class="list-group">
               <li class="list-group-item day">Dia:</li>
               <li class="list-group-item his">Histórico:</li>
@@ -106,7 +106,7 @@
               <li class="list-group-item created">Criado:</li>
             </ul>
           </div>
-          <div class="col-md-12">
+          <div class="col-md-8">
             <div id="filesEntri">
             </div>
           </div>
