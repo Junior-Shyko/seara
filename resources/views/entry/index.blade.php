@@ -12,26 +12,20 @@
       <div class="row">
         <div class="tile_count">
           <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Atual</span>
+            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Banco</span>
             <div class="count">{{number_format($monthActual,2,",",".")}}</div>
             <span class="count_bottom text-info">Valores do caixa desse mês</span>
             
           </div>
 
           <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Receitas do mẽs</span>
+            <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Caixa</span>
             <div class="count">{{number_format($actualPos,2,",",".")}}</div>
             <span class="count_bottom text-success">Valores do mês atual</span>
           </div>
 
           <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-danger"><i class="fa fa-money  text-danger"></i> Despesas do mẽs</span>
-            <div class="count">{{number_format($actualNeg,2,",",".")}}</div>
-            <span class="count_bottom text-danger">Valores do mês atual</span>
-          </div>
-
-          <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Saldo Atual</span>
+            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Geral</span>
             <div class="count">{{number_format($currentBalance,2,",",".")}}</div>
             <span class="count_bottom text-info">Valores do mês atual</span>
           </div>
@@ -103,27 +97,26 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-12">
             <ul class="list-group">
-              <li class="list-group-item day">Cras justo odio</li>
-              <li class="list-group-item his">Dapibus ac facilisis in</li>
-              <li class="list-group-item value">Morbi leo risus</li>
-              <li class="list-group-item account">Porta ac consectetur ac</li>
-              <li class="list-group-item created">Vestibulum at eros</li>
+              <li class="list-group-item day">Dia:</li>
+              <li class="list-group-item his">Histórico:</li>
+              <li class="list-group-item value">Valor:</li>
+              <li class="list-group-item account">Conta: </li>
+              <li class="list-group-item created">Criado:</li>
             </ul>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-12">
             <div id="filesEntri">
-              <div class="col-md-12 col-xs-6"> 
-                <a href="#" class="thumbnail"> <img alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMzE5IiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMxOSAxODAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MTgwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTc3ZTUxODhiNTQgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxNnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNzdlNTE4OGI1NCI+PHJlY3Qgd2lkdGg9IjMxOSIgaGVpZ2h0PSIxODAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMTcuOTc2NTYyNSIgeT0iOTcuMiI+MzE5eDE4MDwvdGV4dD48L2c+PC9nPjwvc3ZnPg==" data-holder-rendered="true"> </a>
-              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary">
+          <i class="fa fa-edit"></i> Alterar Lançamento
+        </button>
       </div>
     </div>
   </div>
@@ -136,6 +129,7 @@
 @endpush
 
 @push('scripts')
+
 <script type="text/javascript" language="javascript" src="{{asset('js/launch/entry.min.js')}}"></script>
 
 {{-- <script type="text/javascript" language="javascript" src="{{asset('js/receipt-common.min.js')}}"></script> --}}

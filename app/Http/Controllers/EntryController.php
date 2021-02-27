@@ -267,10 +267,13 @@ class EntryController extends Controller
             ->addColumn('action', function ($mov) {
                 return '<button class="btn btn-primary btn-xs" type="button" title="Editar Registro">
                 <i class="fa fa-edit"></i></button>
-                <button class="btn btn-dark btn-xs" type="button" onclick="showInfo('.$mov->entries_id.')" title="Informação do Registro"
+                <button class="btn btn-dark btn-xs" type="button" title="Informação do Registro"
+                data-toggle="modal"
+                data-id="'.$mov->entries_id.'"
                 data-day="'.$mov->entries_day.'"
                 data-his="'.$mov->entries_description.'"
-                data-val="'.$mov->entries_value.'">
+                data-val="'.$mov->entries_value.'"
+                data-target="#modalInfoLaunch">
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>
                 <button class="btn btn-danger btn-xs" type="button" title="Excluir Registro"
                 data-toggle="modal"

@@ -198,6 +198,7 @@ elixir(function(mix) {
         'dropzone.min.js',
         'jquery.maskMoney.js',
         'mask.js',
+        'helpers.js',
         './node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.js',
         './node_modules/lightbox2/dist/js/lightbox.min.js',
         'launch/entry.js'
