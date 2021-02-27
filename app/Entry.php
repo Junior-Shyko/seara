@@ -16,6 +16,7 @@ class Entry extends Model
         'entries_id_user' ,
         'entries_value' ,
         'entries_id_box' ,
-        'entries_file'
+        'entries_file',
+        'entries_date_launch'
     ];
 }

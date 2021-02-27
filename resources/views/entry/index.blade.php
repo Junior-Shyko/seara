@@ -9,6 +9,34 @@
 
     <!-- page content -->
     <div class="right_col" role="main">
+      <div class="row">
+        <div class="tile_count">
+          <div class="col-md-3 col-sm-6  tile_stats_count">
+            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Atual</span>
+            <div class="count">{{number_format($monthActual,2,",",".")}}</div>
+            <span class="count_bottom text-info">Valores do caixa desse mês</span>
+          </div>
+
+          <div class="col-md-3 col-sm-6  tile_stats_count">
+            <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Receitas do mẽs</span>
+            <div class="count">{{number_format($actualPos,2,",",".")}}</div>
+            <span class="count_bottom text-success">Valores do mês atual</span>
+          </div>
+
+          <div class="col-md-3 col-sm-6  tile_stats_count">
+            <span class="count_top text-danger"><i class="fa fa-money  text-danger"></i> Despesas do mẽs</span>
+            <div class="count">{{number_format($actualNeg,2,",",".")}}</div>
+            <span class="count_bottom text-danger">Valores do mês atual</span>
+          </div>
+
+          <div class="col-md-3 col-sm-6  tile_stats_count">
+            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Saldo Atual</span>
+            <div class="count">{{number_format($currentBalance,2,",",".")}}</div>
+            <span class="count_bottom text-info">Valores do mês atual</span>
+          </div>
+        </div>
+
+      </div>
       <div class="x_panel">
         @include('msg.message')
         <div class="x_title">

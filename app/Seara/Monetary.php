@@ -2,6 +2,8 @@
 
 namespace App\Seara;
 
+use App\Entry;
+
 class Monetary {
     private static $unidades = array("um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", "dez", "onze", "doze",
                                      "treze", "quatorze", "quinze", "dezesseis", "dezessete", "dezoito", "dezenove");
@@ -85,5 +87,29 @@ class Monetary {
         $replace = array('', '.');
         $valor = str_replace($source, $replace, $get_valor); //remove os pontos e substitui a virgula pelo ponto
         return $valor; //retorna o valor formatado para gravar no banco
+    }
+
+    /**
+     * params $type = Id da conta que não deseja incluir no calculo
+     */
+    static public function getValuePerMonth($month , $type = null) {
+        $value = 0;
+        $total = 0;
+        if($type) {
+            $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->whereMonth('entries.entries_date_launch', $month)->whereNotIn('account_launches.accountlaunch_type',[$type])
+            ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+            $total = $value->sum('entries_value');
+        }else{
+            //VALOR NEGATIVOS
+            $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->whereMonth('entries.entries_date_launch', $month)
+            ->where('account_types.account_types_name','=','Despesa')
+            ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+            $total = $value->sum('entries_value');
+        }
+        return $total;
     }
 }

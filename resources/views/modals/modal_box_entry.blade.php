@@ -44,36 +44,24 @@
                 <h4 class="modal-title" id="myModalLabel">Lançamento no Caixa</h4>
             </div>
             <div class="modal-body">
-                <div class="row alert alert-info">
+                <div class="row alert alert-info" id="infoMonthLaunch">
                     <p>
                         <strong>MÊS / ANO: </strong>{{ \Carbon\Carbon::now()->month . ' / '. \Carbon\Carbon::now()->year }}
-                        <label class="pull-right">Saldo Anterior: R$ {{number_format($totalPreviusPositive,2,",",".")}}</label>
+                        <label class="pull-right">Saldo Anterior: R$ {{number_format($totalGeral,2,",",".")}}</label>
                     </p>
                 </div>
                 <div class="row">
-                    <div>
-
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Lançar atual</a></li>
-    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Lançar retroativo</a></li>
-    
-  </ul>
-
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="home">
-        @include('entry.form', ['type' => 'actual'])
-    </div>
-    <div role="tabpanel" class="tab-pane" id="profile">
-     @include('entry.form', ['type' => 'retroactive'])
-    </div>
-
-  </div>
-
-</div>
-                    
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-default pull-left" id="launchMonth">Lançamento do mês</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-dark pull-right" id="castRetroactive">Lançar Retroativo</button>
+                        
+                        </div>
+                    </div>
                 </div>
+                @include('entry.form')
             </div>
         </div>
     </div>

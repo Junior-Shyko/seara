@@ -16,6 +16,7 @@ class EntryTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
         for ($i = 0; $i < 10; $i++) {
+            $date = $faker->dateTimeBetween($startDate = '-30 days', $endDate = 'now');
             Entry::insert([
                 'entries_id_account' => $faker->numberBetween($min = 19, $max = 26),
                 'entries_day' => $faker->numberBetween($min = 19, $max = 26),
@@ -24,7 +25,8 @@ class EntryTableSeeder extends Seeder
                 'entries_id_user' => 4,
                 'entries_value' => $faker->randomFloat($nbMaxDecimals = NULL, $min = 0, $max = NULL),
                 'entries_file' => 'null',
-                'created_at' => $faker->dateTimeBetween($startDate = '-30 days', $endDate = 'now')
+                'created_at' => $date,
+                'entries_date_launch' => $date
             ]);
           }
     }

@@ -1,11 +1,26 @@
 $(document).ready(function () {
     //$("#modalUploadLaunch").modal('show');
     //$("#lancar_conta").modal('show');
+    $("#divRectroativeLaunch").hide();
+    $("#dateRetroactive").hide();
     hideDivs();
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    
+    let colunas = [
+        {data: 'entries_day', name: 'entries_day'},
+        {data: 'entries_description', name: 'entries_description'},
+        {data: 'entries_value', name: 'entries_value'},
+        {data: 'entries_id_account', name: 'entries_id_account'},
+        {data: 'entries_id_user', name: 'entries_id_user'},
+        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
+    ];
+    $('#entry-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: SearaApp.baseURL+'all-launch',
+        columns: colunas
+    });
     $("#form-upload-entry").dropzone({ 
         url: "/caixa/upload",
         autoProcessQueue: true,
@@ -87,8 +102,10 @@ $(document).ready(function () {
       placeholder: 'Escolha a conta',
       allowClear: true
     });
-    $('#myDatepicker2').datetimepicker({
-        format: 'DD.MM.YYYY'
+    $.datetimepicker.setLocale('pt-BR');
+    $('#dateRetroactive').datetimepicker({
+        timepicker:false,
+        format:'d/m/Y'
     });
 });
 
@@ -116,22 +133,36 @@ $(document).on('click', '#close-preview', function(){
         }
     );    
 });
-
+$("#castRetroactive").click(function (e) { 
+    e.preventDefault();
+    $("#save_entry").html('<i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar retroativo');
+    $("#save_entry").removeClass('alert-primary');
+    $("#save_entry").addClass('btn-dark');
+    $("#infoMonthLaunch").removeClass('alert-info');
+    $("#infoMonthLaunch").addClass('btn-dark');
+    $("#divRectroativeLaunch").show();
+    $("#divActualLaunch").hide();
+    $("#entries_day").hide();
+    $("#dateRetroactive").show();
+    $("#typeLaunch").val('retroactive');
+    $("#dateRetroactive").attr('name','entries_day'); 
+});
+$("#launchMonth").click(function (e) { 
+    e.preventDefault();
+    $("#save_entry").html('<i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar Lançamento');
+    $("#infoMonthLaunch").addClass('alert-info');
+    $("#infoMonthLaunch").removeClass('btn-dark');
+    $("#save_entry").removeClass('btn-dark');
+    $("#save_entry").addClass('alert-primary');
+    $("#divRectroativeLaunch").hide();
+    $("#divActualLaunch").show();
+    $("#typeLaunch").val('actual');
+    $("#entries_day").show();
+    $("#dateRetroactive").removeAttr('name');
+    console.log($("#dateRetroactive"));
+});
 $(function() {
-    let colunas = [
-        {data: 'entries_day', name: 'entries_day'},
-        {data: 'entries_description', name: 'entries_description'},
-        {data: 'entries_value', name: 'entries_value'},
-        {data: 'entries_id_account', name: 'entries_id_account'},
-        {data: 'entries_id_user', name: 'entries_id_user'},
-        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
-    ];
-    $('#entry-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: SearaApp.baseURL+'all-launch',
-        columns: colunas
-    });
+    
     // Create the close button
     var closebtn = $('<button/>', {
         type:"button",

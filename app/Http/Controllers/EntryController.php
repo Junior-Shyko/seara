@@ -24,35 +24,21 @@ class EntryController extends Controller
     {
         $accounts = AccountLaunch::get();
         $month = Carbon::now()->month;
+
         
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        // $total = Entry::whereMonth('created_at', $month-1)->whereNotIn('accountlaunch_type',[$typeEnd[0]->id])->get();
-        // $totalPrevius = $total->sum('entries_value');
-
-        // $users = DB::table('users')
-        //     ->join('contacts', 'users.id', '=', 'contacts.user_id')
-        //     ->join('orders', 'users.id', '=', 'orders.user_id')
-        //     ->select('users.*', 'contacts.phone', 'orders.price')
-        //     ->get();
-
-        $totPlus = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
-                    ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                    ->whereMonth('entries.created_at', $month-1)->whereNotIn('account_launches.accountlaunch_type',[$typeEnd[0]->id])
-                    ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
-
-        $totNeg = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
-                    ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                    ->whereMonth('entries.created_at', $month-1)
-                    ->where('account_types.account_types_name','=','Despesa')
-                    ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
-
-        $totalPreviusPositive = $totPlus->sum('entries_value');
-        $totalPreviusNegative = $totNeg->sum('entries_value');
-        //dump($totalPreviusPositive);
-        // dump($totalPreviusNegative);
-        // dump($totPlus);
-        // dump($totNeg);
-        return view('entry.index', compact('accounts', 'totalPreviusPositive'));
+        $monthPlus = ($month - 1);
+        $totPlus = Monetary::getValuePerMonth($monthPlus , $typeEnd[0]->id);
+        $totNeg = Monetary::getValuePerMonth($monthPlus);
+        
+        $totalGeral = ($totPlus - $totNeg);
+        
+        $actualPos = Monetary::getValuePerMonth($month , $typeEnd[0]->id);
+        $actualNeg = Monetary::getValuePerMonth($month);
+        $monthActual = ($actualPos - $actualNeg);
+        $currentBalance = ($monthActual + $totalGeral);
+       
+        return view('entry.index', compact('accounts', 'totalGeral', 'monthActual', 'actualPos', 'actualNeg','currentBalance'));
     }
 
     /**
@@ -87,6 +73,21 @@ class EntryController extends Controller
             return response( ['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422 );
         }
 
+        if($request->type == 'retroactive') {
+            $timeCarbon = Carbon::now();
+            $time = $timeCarbon->format('H:i:s');
+
+            $created_at = FunctionGeneral::DataBRtoMySQL($request->entries_day);
+            $d    = Carbon::parse($created_at);
+            $d->format('l');
+            
+            //dump($d->format('d')); 
+            $request['entries_day'] = $d->format('d');
+            $request['entries_date_launch'] = $created_at.' '.$time;
+
+        }else{
+            $request['entries_date_launch'] = Carbon::now();
+        }
         try {
             $reques = Monetary::money_real($request['entries_value']);
             $request['entries_value'] = $reques;
@@ -231,9 +232,12 @@ class EntryController extends Controller
     }
 
     public function getAll() {
+        $month = Carbon::now()->month;
+
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
                 ->join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                ->whereMonth('entries.entries_date_launch', $month)
                 ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
                 ->orderBy('entries_day', 'asc')
                 ->get();

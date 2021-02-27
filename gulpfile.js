@@ -198,13 +198,15 @@ elixir(function(mix) {
         'dropzone.min.js',
         'jquery.maskMoney.js',
         'mask.js',
+        './node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.js',
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
     mix.version('public/js/launch/entry.min.js');
 
     mix.styles([
         'basic.min.css',
-        'dropzone.min.css'
+        'dropzone.min.css',
+        './node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css'
     ], 'public/css/entry.min.css');
     /**************/
     /* Copy Fonts */
