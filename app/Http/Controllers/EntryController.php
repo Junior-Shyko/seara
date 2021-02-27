@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Entry;
+use App\FileLaunch;
 use App\FunctionGeneral;
 use App\Seara\Monetary;
 use App\AccountLaunch;
@@ -194,41 +195,47 @@ class EntryController extends Controller
 
     public function upload(Request $request) {
         $user = Auth::user();
+       
         $total = count($_FILES['file']['name']);
-        // Loop through each file
-        for( $i=0 ; $i < ($total+1) ; $i++ ) {
-
+        $totalFile = 0;
+        $uploadSuccess = false;
+        // // Loop through each file
+        for( $i=0 ; $i < ($total) ; $i++ ) {
+            $totalFile++;
           //Get the temp file path
           $tmpFilePath = $_FILES['file']['tmp_name'][$i];
-
+            
           //Make sure we have a file path
-          if ($tmpFilePath != ""){
+            if ($tmpFilePath != ""){
             //Setup our new file path
-            $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
+                $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
+                $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
+               
+                // //Upload the file into the temp dir
+                if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    $datetime = Carbon::now();
+                    $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
+                    $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
+                    FileLaunch::insert([
+                        'file_launches_name' => $newNameFile.'.'.$ext, 
+                        'file_launches_id_entry' => $request->idEntry,
+                        'created_at' => $datetime,
+                        'updated_at' => $datetime
+                    ]);
+                    if($totalFile == $total){
+                        $uploadSuccess = true;
+                    }
+                    //return response()->json(['message' => 'success', 'status' => 'success'], 200);
 
-            //Upload the file into the temp dir
-            if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-
-              return response()->json(['message' => 'success', 'status' => 'success'], 200);
-
+                }
             }
-          }
         }
-        //dump($request->all());
-        // if($request->hasFile('file')){
-
-        //     if($request->file('file')->isValid()){
-                
-        //         $nameUniqid = uniqid(date('HisYmd'));
-        //         $extension = $request->file->extension();
-        //         $nameFile = $nameUniqid.'_'.$user->user_id_company.'.'.$extension;
-        //         dump($nameFile);
-        //         dump($request->all());
-        //         $request->file->storeAs('box', $nameFile);
-        //     }
-        // }
-        
-        // return response()->json(['message' => 'success', 'status' => 'success'], 200);
+        if($uploadSuccess) {
+            return response()->json(['message' => 'Arquivo enviado com sucesso', 'status' => 'success'], 200);
+        }else{
+            return response()->json(['message' => 'Ocorreu um erro inesperado, tente novamente mais tarde', 'status' => 'error'], 500);
+        }
+       
     }
 
     public function getAll() {

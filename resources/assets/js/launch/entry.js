@@ -1,6 +1,6 @@
 $(document).ready(function () {
     //$("#modalUploadLaunch").modal('show');
-    //$("#lancar_conta").modal('show');
+    $("#lancar_conta").modal('show');
     $("#divRectroativeLaunch").hide();
     $("#dateRetroactive").hide();
     hideDivs();
@@ -21,15 +21,36 @@ $(document).ready(function () {
         ajax: SearaApp.baseURL+'all-launch',
         columns: colunas
     });
+    
+    Dropzone.autoDiscover = false;
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     $("#form-upload-entry").dropzone({ 
         url: "/caixa/upload",
         autoProcessQueue: true,
         dictDefaultMessage: "Arraste seus arquivos para essa área ou click para localizar",
-        maxFiles: 2,
+        maxFiles: 4,
+        dictMaxFilesExceeded: 'Você nao pode enviar mais arquivo',
+        maxFilesize: 1,
+        dictFileTooBig: 'O Arquivo excedeu o limite máximo permitido',
         clickable: true,
         uploadMultiple: true,
-        paramName: 'file',
-        addRemoveLinks: true
+        addRemoveLinks: true,
+        dictRemoveFile: 'Remover',
+        acceptedFiles: 'image/png, image/jpeg, application/pdf',
+        headers: {
+            'x-csrf-token': CSRF_TOKEN,
+        },
+        init: function () {
+            this.on("success", function (file, response) {
+                console.log(response);
+                notify.response(response);
+            });
+            this.on("error", function (file, error, xhr) {
+                console.log({file})
+                console.log({error})
+                console.log({hr})
+            });
+        }
     }); 
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
@@ -42,12 +63,12 @@ $(document).ready(function () {
             $("#entry-table").DataTable().ajax.reload();
             // notify.response(response);
             // companyTable.reloadTable();
-            // new PNotify({
-            //     title: 'Sucesso',
-            //     text: response.message,
-            //     type: response.status,
-            //     styling: 'bootstrap3'
-            // });
+            new PNotify({
+                title: 'Sucesso',
+                text: response.message,
+                type: response.status,
+                styling: 'bootstrap3'
+            });
             // $("#account-launch-table").DataTable().ajax.reload();
             // $("#form-account-launch").each (function(){
             //   this.reset();
@@ -120,19 +141,6 @@ function showDivs() {
     $("#diventries_value").show();
     $("#entries_value").show();
 }
-
-$(document).on('click', '#close-preview', function(){ 
-    $('.image-preview').popover('hide');
-    // Hover befor close the preview
-    $('.image-preview').hover(
-        function () {
-           $('.image-preview').popover('show');
-        }, 
-         function () {
-           $('.image-preview').popover('hide');
-        }
-    );    
-});
 $("#castRetroactive").click(function (e) { 
     e.preventDefault();
     $("#save_entry").html('<i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar retroativo');
@@ -160,50 +168,4 @@ $("#launchMonth").click(function (e) {
     $("#entries_day").show();
     $("#dateRetroactive").removeAttr('name');
     console.log($("#dateRetroactive"));
-});
-$(function() {
-    
-    // Create the close button
-    var closebtn = $('<button/>', {
-        type:"button",
-        text: 'x',
-        id: 'close-preview',
-        style: 'font-size: initial;',
-    });
-    closebtn.attr("class","close pull-right");
-    // Set the popover default content
-    $('.image-preview').popover({
-        trigger:'manual',
-        html:true,
-        title: "<strong>Visualização do arquivo</strong>"+$(closebtn)[0].outerHTML,
-        content: "There's no image",
-        placement:'bottom'
-    });
-    // Clear event
-    $('.image-preview-clear').click(function(){
-        $('.image-preview').attr("data-content","").popover('hide');
-        $('.image-preview-filename').val("");
-        $('.image-preview-clear').hide();
-        $('.image-preview-input input:file').val("");
-        $(".image-preview-input-title").text("Browse"); 
-    }); 
-    // Create the preview image
-    $(".image-preview-input input:file").change(function (){     
-        var img = $('<img/>', {
-            id: 'dynamic',
-            width:250,
-            height:200
-        });      
-        var file = this.files[0];
-        var reader = new FileReader();
-        // Set preview image into the popover data-content
-        reader.onload = function (e) {
-            $(".image-preview-input-title").text("Procurar");
-            $(".image-preview-clear").show();
-            $(".image-preview-filename").val(file.name);            
-            img.attr('src', e.target.result);
-            $(".image-preview").attr("data-content",$(img)[0].outerHTML).popover("show");
-        }        
-        reader.readAsDataURL(file);
-    });  
 });
