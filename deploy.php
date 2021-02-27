@@ -17,6 +17,19 @@ add('shared_dirs', []);
 add('writable_dirs', []);
 set('allow_anonymous_stats', false);
 
+set('bin/composer', function () {
+    if (commandExist('composer')) {
+        $composer = locateBinaryPath('composer');
+    }
+
+    if (empty($composer)) {
+        run("cd {{release_path}} && curl https://getcomposer.org/composer-1.phar -o composer.phar -LR -z composer.phar");
+        $composer = '{{release_path}}/composer.phar';
+    }
+
+    return '{{bin/php}} ' . $composer;
+});
+
 // Hosts
 
 host('production')

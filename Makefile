@@ -3,18 +3,18 @@ DEP_BIN ?= bin/dep.sh
 
 .PHONY: setup
 setup:
-	@cp .env.dist .env
-	@docker-compose up -d
-	@docker-compose exec php composer install
-	@docker-compose exec php composer run-script setup
-	@docker-compose exec php php artisan ide-helper:generate
-	@docker-compose exec php php artisan ide-helper:meta
-	@docker-compose exec node npm install gulp@3.x laravel-elixir
-	@docker-compose exec node bower install --allow-root
-	@docker-compose exec php php artisan key:generate
-	@docker-compose exec php php artisan migrate
-	@docker-compose exec node gulp
-	@docker-compose exec php chmod -R 777 storage
+	cp .env.example .env
+	docker-compose up -d
+	docker-compose exec php composer install
+	docker-compose exec php composer run-script setup
+	docker-compose exec php php artisan ide-helper:generate
+	docker-compose exec php php artisan ide-helper:meta
+	docker-compose exec node npm install gulp@3.x laravel-elixir
+	docker-compose exec node bower install --allow-root
+	docker-compose exec php php artisan key:generate
+	docker-compose exec php php artisan migrate
+	docker-compose exec node gulp
+	docker-compose exec php chmod -R 777 storage
 
 .PHONY: dbtest
 dbtest:
@@ -59,6 +59,10 @@ build:
 	@bin/build.sh
 
 .PHONY: deploy
-deploy: dbtest tests e2e
-	@bin/build.sh
-	@bin/dep.sh deploy
+deploy: dbtest tests e2e deployer
+	bin/build.sh
+	bin/dep.sh deploy
+
+.PHONY: deployer
+deployer:
+	docker build -t deployer -f docker/deployer/Dockerfile .
