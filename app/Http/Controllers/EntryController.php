@@ -185,6 +185,11 @@ class EntryController extends Controller
      */
     public function destroy(Request $request)
     {
+        $files = FileLaunch::where('file_launches_id_entry','=',$request->id)->get();
+
+        foreach ($files as $key => $value) {
+            FileLaunch::where('id',$value->id)->delete();
+        }
         try {
             $entry = Entry::where('entries_id' , $request->id)->delete();
             return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
@@ -195,7 +200,7 @@ class EntryController extends Controller
 
     public function upload(Request $request) {
         $user = Auth::user();
-       
+        
         $total = count($_FILES['file']['name']);
         $totalFile = 0;
         $uploadSuccess = false;
@@ -212,10 +217,11 @@ class EntryController extends Controller
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
                
                 // //Upload the file into the temp dir
-                if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-                    $datetime = Carbon::now();
-                    $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
-                    $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
+                $datetime = Carbon::now();
+                $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
+                $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
+                if(move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext)) {
+                    
                     FileLaunch::insert([
                         'file_launches_name' => $newNameFile.'.'.$ext, 
                         'file_launches_id_entry' => $request->idEntry,
@@ -248,7 +254,7 @@ class EntryController extends Controller
                 ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
                 ->orderBy('entries_day', 'asc')
                 ->get();
-        return Datatables::of($mov)
+        return Datatables::of($mov)->addIndexColumn()
             ->editColumn('entries_id_user', function ($mov) {
                 return $mov->name;
             })
@@ -261,14 +267,33 @@ class EntryController extends Controller
             ->addColumn('action', function ($mov) {
                 return '<button class="btn btn-primary btn-xs" type="button" title="Editar Registro">
                 <i class="fa fa-edit"></i></button>
+                <button class="btn btn-dark btn-xs" type="button" onclick="showInfo('.$mov->entries_id.')" title="Informação do Registro"
+                data-day="'.$mov->entries_day.'"
+                data-his="'.$mov->entries_description.'"
+                data-val="'.$mov->entries_value.'">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>
                 <button class="btn btn-danger btn-xs" type="button" title="Excluir Registro"
                 data-toggle="modal"
                 data-id="'.$mov->entries_id.'"
                 data-name="'.$mov->entries_description.'"
                 data-type="'.$mov->account_types_name.'"
                 data-target="#modalDeleteComponent">
-                <i class="fa fa-trash"></i></button>';
+                <i class="fa fa-trash"></i></button>
+                ';
             })
+            ->rawColumns(['entries_description', 'action'])
             ->make(true);
+    }
+
+    public function info($id) {
+        //Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
+        $info = Entry::join('file_launches', 'file_launches.file_launches_id_entry','=','entries.entries_id')
+        ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
+        ->join('users', 'entries.entries_id_user', '=', 'users.id')
+        ->where('entries.entries_id','=',$id)
+        ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+        ->get();
+        return $info;
     }
 }

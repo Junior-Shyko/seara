@@ -1,12 +1,13 @@
 $(document).ready(function () {
     //$("#modalUploadLaunch").modal('show');
-    $("#lancar_conta").modal('show');
+    //$("#lancar_conta").modal('show');
     $("#divRectroativeLaunch").hide();
     $("#dateRetroactive").hide();
     hideDivs();
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
+    
     let colunas = [
         {data: 'entries_day', name: 'entries_day'},
         {data: 'entries_description', name: 'entries_description'},
@@ -24,8 +25,10 @@ $(document).ready(function () {
     
     Dropzone.autoDiscover = false;
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    var idEntry = $("#idEntry").val();
     $("#form-upload-entry").dropzone({ 
         url: "/caixa/upload",
+        params: idEntry,
         autoProcessQueue: true,
         dictDefaultMessage: "Arraste seus arquivos para essa área ou click para localizar",
         maxFiles: 4,
@@ -169,3 +172,24 @@ $("#launchMonth").click(function (e) {
     $("#dateRetroactive").removeAttr('name');
     console.log($("#dateRetroactive"));
 });
+
+function showInfo(id) {
+    $.get('info-launch/'+id,
+        function (data, textStatus, jqXHR) {
+            $(".day").html('Dia: '+data[0].entries_day);
+            $(".his").html('Histórico: '+data[0].entries_description);
+            $(".value").html('Dia: '+data[0].entries_value);
+            $(".account").html('Conta: '+data[0].accountlaunch_name);
+            $(".type").html('Dia: '+data[0].account_types_name);
+            $(".created").html('Criado em: '+data[0].createEntry);
+            $(".per").html('Por: '+data[0].nameUser);
+            $.each(data, function (indexInArray, valueOfElement) { 
+                 console.log(valueOfElement);
+                 $("#filesEntri").append('<div class="col-md-12 col-xs-6">'+
+                '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
+            });
+            
+        }
+    );
+    $("#modalInfoLaunch").modal('show');
+}

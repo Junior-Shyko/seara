@@ -40,6 +40,7 @@
           <div class="row">
             <form class="dropzone" id="form-upload-entry"  enctype="multipart/form-data">
               {{ csrf_field() }}
+              <input type="hidden" name="idEntry" class="idEntry">
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -49,6 +50,7 @@
           </div>
         </div>
         <div class="modal-footer">
+          
           {{-- <input type="text" name="idEntry" class="idEntry">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary">Save changes</button> --}}

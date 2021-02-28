@@ -15,6 +15,7 @@
             <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Atual</span>
             <div class="count">{{number_format($monthActual,2,",",".")}}</div>
             <span class="count_bottom text-info">Valores do caixa desse mês</span>
+            
           </div>
 
           <div class="col-md-3 col-sm-6  tile_stats_count">
@@ -42,6 +43,7 @@
         <div class="x_title">
           <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
           <button class="btn btn-primary pull-right"  data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</button>
+          
           <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -89,6 +91,43 @@
     </div>
 </form>
 @endcomponent
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalInfoLaunch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Informação completo do lançamento</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-group">
+              <li class="list-group-item day">Cras justo odio</li>
+              <li class="list-group-item his">Dapibus ac facilisis in</li>
+              <li class="list-group-item value">Morbi leo risus</li>
+              <li class="list-group-item account">Porta ac consectetur ac</li>
+              <li class="list-group-item created">Vestibulum at eros</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <div id="filesEntri">
+              <div class="col-md-12 col-xs-6"> 
+                <a href="#" class="thumbnail"> <img alt="100%x180" data-src="holder.js/100%x180" style="height: 180px; width: 100%; display: block;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMzE5IiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDMxOSAxODAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MTgwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTc3ZTUxODhiNTQgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxNnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNzdlNTE4OGI1NCI+PHJlY3Qgd2lkdGg9IjMxOSIgaGVpZ2h0PSIxODAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMTcuOTc2NTYyNSIgeT0iOTcuMiI+MzE5eDE4MDwvdGV4dD48L2c+PC9nPjwvc3ZnPg==" data-holder-rendered="true"> </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- /page content -->
 @endsection
 
