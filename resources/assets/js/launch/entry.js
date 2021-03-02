@@ -111,6 +111,7 @@ $(document).ready(function () {
         var id = button.data('id')
         $.get('info-launch/'+id,
         function (data, textStatus, jqXHR) { 
+            $("#linkEdit").attr('href', SearaApp.baseURL+ 'lancar/' +data[0].entries_id+'/edit');
             var dt = dataAtualFormatada(data[0].createEntry);
             $(".day").html('Dia: '+data[0].entries_day);
             $(".his").html('Histórico: '+data[0].entries_description);
@@ -122,7 +123,7 @@ $(document).ready(function () {
                 $.each(data, function (indexInArray, valueOfElement) { 
                     console.log(valueOfElement);
                     var dt = dataAtualFormatada(valueOfElement.createEntry);
-                    $("#filesEntri").append('<div class="col-md-12 col-xs-12">'+
+                    $("#filesEntri").append('<div class="col-md-6 col-xs-12">'+
                     '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
                 });
             }

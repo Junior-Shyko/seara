@@ -113,10 +113,10 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">
-          <i class="fa fa-edit"></i> Alterar Lançamento
-        </button>
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fechar</button>
+          <a id="linkEdit" class="btn btn-primary">
+            <i class="fa fa-edit"></i> Alterar Lançamento
+          </a>
       </div>
     </div>
   </div>

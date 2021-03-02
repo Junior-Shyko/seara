@@ -131,7 +131,15 @@ class EntryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $launch =  Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
+        ->join('users', 'entries.entries_id_user', '=', 'users.id')
+        ->where('entries.entries_id','=',$id)
+        ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+        ->get();
+        $files = FileLaunch::where('file_launches_id_entry','=',$id)->get();
+        $accounts = AccountLaunch::get();
+        return view('entry.edit', compact('id','launch', 'files', 'accounts'));
     }
 
     /**
@@ -143,7 +151,7 @@ class EntryController extends Controller
      */
     public function update(Request $request, $id)
     {
-       
+       dd($request->all());
         if(isset($request['entries_decimate']))
         {
             $entries_decimate                 = $request['entries_decimate'];    
