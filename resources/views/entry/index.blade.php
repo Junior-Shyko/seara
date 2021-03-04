@@ -13,21 +13,26 @@
         <div class="tile_count">
           <div class="col-md-3 col-sm-6  tile_stats_count">
             <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Banco</span>
-            <div class="count">{{number_format($monthActual,2,",",".")}}</div>
-            <span class="count_bottom text-info">Valores do caixa desse mês</span>
-            
+            <div class="count">{{number_format($totBanco,2,",",".")}}</div>
+            <span class="count_bottom text-info">Valores do caixa Banco</span>
           </div>
 
           <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Caixa</span>
-            <div class="count">{{number_format($actualPos,2,",",".")}}</div>
-            <span class="count_bottom text-success">Valores do mês atual</span>
+            <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Caixa igreja</span>
+            <div class="count">{{number_format($toalIgreja,2,",",".")}}</div>
+            <span class="count_bottom text-success">Valores do caixa da igreja</span>
           </div>
 
           <div class="col-md-3 col-sm-6  tile_stats_count">
             <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Geral</span>
-            <div class="count">{{number_format($currentBalance,2,",",".")}}</div>
-            <span class="count_bottom text-info">Valores do mês atual</span>
+            <div class="count">{{number_format($totalGeral,2,",",".")}}</div>
+            <span class="count_bottom text-info">Valor dos dois caixas juntos</span>
+          </div>
+
+          <div class="col-md-3 col-sm-6  tile_stats_count">
+            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Saldo Atual</span>
+            <div class="count">{{number_format($saldo,2,",",".")}}</div>
+            <span class="count_bottom text-info">Seu valor atual de caixa</span>
           </div>
         </div>
 

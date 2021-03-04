@@ -29,17 +29,27 @@ class EntryController extends Controller
         
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
         $monthPlus = ($month - 1);
-        $totPlus = Monetary::getValuePerMonth($monthPlus , $typeEnd[0]->id);
-        $totNeg = Monetary::getValuePerMonth($monthPlus);
+        $bankReceita = Monetary::getValuePerMonth($monthPlus , $typeEnd[0]->id, true);
+        $bankDespesa = Monetary::getValuePerMonth($monthPlus , null, true);
+        $totBanco = ($bankReceita - $bankDespesa);
         
-        $totalGeral = ($totPlus - $totNeg);
         
-        $actualPos = Monetary::getValuePerMonth($month , $typeEnd[0]->id);
-        $actualNeg = Monetary::getValuePerMonth($month);
-        $monthActual = ($actualPos - $actualNeg);
-        $currentBalance = ($monthActual + $totalGeral);
-       
-        return view('entry.index', compact('accounts', 'totalGeral', 'monthActual', 'actualPos', 'actualNeg','currentBalance'));
+        $igrejaReceita = Monetary::getValuePerMonth($monthPlus, $typeEnd[0]->id, false);
+        $igrejaDespesa = Monetary::getValuePerMonth($monthPlus, null, false);
+        $toalIgreja = ($igrejaReceita - $igrejaDespesa);
+        dump($igrejaReceita);
+        dump($igrejaDespesa);
+        //$totalGeral = ($totBank + $totLoc);
+        
+        // $actualPos = Monetary::getValuePerMonth($month , $typeEnd[0]->id);
+        // $actualNeg = Monetary::getValuePerMonth($month);
+        // $monthActual = ($actualPos - $actualNeg);
+        // $currentBalance = ($monthActual + $totalGeral);
+        $totalGeral  = ($totBanco + $toalIgreja);
+        $saldoGer = Monetary::getValueBox();
+        $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
+        //dump($saldo);
+        return view('entry.index', compact('accounts', 'totalGeral', 'monthActual', 'actualPos', 'actualNeg','currentBalance', 'saldo' , 'toalIgreja', 'totBanco'));
     }
 
     /**
@@ -151,34 +161,13 @@ class EntryController extends Controller
      */
     public function update(Request $request, $id)
     {
-       dd($request->all());
-        if(isset($request['entries_decimate']))
-        {
-            $entries_decimate                 = $request['entries_decimate'];    
-            $request['entries_decimate']    = FunctionGeneral::moeda($entries_decimate );
-        }
-        if(isset($request['entries_offer']))
-        {
-            $entries_offer                 = $request['entries_offer'];    
-            $request['entries_offer']    = FunctionGeneral::moeda($entries_offer );
-        }
-        if(isset($request['entries_other']))
-        {
-            $entries_other                 = $request['entries_other'];    
-            $request['entries_other']    = FunctionGeneral::moeda($entries_other );
-        }
-        if(isset($request['entries_end']))
-        {
-            $entries_end                 = $request['entries_end'];    
-            $request['entries_end']    = FunctionGeneral::moeda($entries_end );
-        }
-        
-
+        $val = Monetary::money_real($request['entries_value']);
+        $request['entries_value'] = $val;
         $input = $request->all();
         $input = $request->except('_method' , '_token');
         
         try {
-            $up_entry = Entry::where('entries_id' , $id)->update($input);
+            Entry::where('entries_id' , $id)->update($input);
             return redirect()->back()->with('success' , 'Lançamento alterado com sucesso');
         } catch (Exception $e) {
             return redirect()->back()->with('error' ,  'Ocorreu um erro');
@@ -273,8 +262,8 @@ class EntryController extends Controller
                 return $mov->account_types_name;
             })
             ->addColumn('action', function ($mov) {
-                return '<button class="btn btn-primary btn-xs" type="button" title="Editar Registro">
-                <i class="fa fa-edit"></i></button>
+                return '<a href="'.url('lancar/'.$mov->entries_id.'/edit').'" class="btn btn-primary btn-xs" type="button" title="Editar Registro">
+                <i class="fa fa-edit"></i></a>
                 <button class="btn btn-dark btn-xs" type="button" title="Informação do Registro"
                 data-toggle="modal"
                 data-id="'.$mov->entries_id.'"
@@ -306,5 +295,16 @@ class EntryController extends Controller
         ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
         ->get();
         return $info;
+    }
+
+    public function deleteFile(Request $request) {
+        $file = FileLaunch::find($request->id);
+        $file->delete();
+        $filename = public_path('img/images/'.$file->file_launches_name);
+        if (file_exists($filename) ) {
+           if( unlink($filename) ) {
+            return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
+           }
+        }
     }
 }

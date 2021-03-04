@@ -18,6 +18,7 @@ class Entry extends Model
         'entries_id_box' ,
         'entries_file',
         'entries_date_launch',
-        'updated_at'
+        'updated_at',
+        'entries_bank'
     ];
 }

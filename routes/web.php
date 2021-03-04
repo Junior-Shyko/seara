@@ -83,6 +83,7 @@ Route::post('caixa/upload' , 'EntryController@upload');
 Route::get('all-launch', 'EntryController@getAll');
 Route::post('lancar/delete' , 'EntryController@destroy');
 Route::get('info-launch/{id}' , 'EntryController@info');
+Route::post('lancar/file/delete', 'EntryController@deleteFile');
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
     Route::get('account'	, 'AccountLaunchController@index');

@@ -3,6 +3,7 @@
 namespace App\Seara;
 
 use App\Entry;
+use DB;
 
 class Monetary {
     private static $unidades = array("um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", "dez", "onze", "doze",
@@ -92,24 +93,91 @@ class Monetary {
     /**
      * params $type = Id da conta que não deseja incluir no calculo
      */
-    static public function getValuePerMonth($month , $type = null) {
+    static public function getValuePerMonth($month , $type = null, $bank) {
         $value = 0;
         $total = 0;
+        //TIPO RECEITA
         if($type) {
-            $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
-            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->whereMonth('entries.entries_date_launch', $month)->whereNotIn('account_launches.accountlaunch_type',[$type])
-            ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
-            $total = $value->sum('entries_value');
+            //SE FOR UMA CONSULTA PARA O CAIXA DO BANCO
+            if($bank) {
+                $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                ->whereMonth('entries.entries_date_launch', $month)
+                ->whereNotIn('account_launches.accountlaunch_type',[$type])
+                ->where(function ($query) {
+                    $query->where('entries_bank', '=', 1);
+                })
+                ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+               
+                $total = $value->sum('entries_value');
+            }else{
+                $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                ->whereMonth('entries.entries_date_launch', $month)
+                ->whereNotIn('account_launches.accountlaunch_type',[$type])
+                ->where('entries_bank', '=', 0)
+                ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+               
+                $total = $value->sum('entries_value');
+            }
+            
         }else{
             //VALOR NEGATIVOS
-            $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+            if($bank) {
+                $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                ->whereMonth('entries.entries_date_launch', $month)
+                ->where('account_types.account_types_name','=','Despesa')
+                ->where(function ($query) {
+                    $query->where('entries_bank', '=', 1);
+                })
+                ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+                $total = $value->sum('entries_value');
+            }else{
+                $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                //->whereMonth('entries.entries_date_launch', $month)
+                ->where('account_types.account_types_name','=','Despesa')
+                ->where(function ($query) {
+                    $query->where('entries_bank', '=', 0);
+                })
+                ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+                $total = $value->sum('entries_value');
+            }
+            
+        }
+        //dump($total);
+        return $total;
+    }
+    /**
+     * Undocumented function
+     *
+     * @param [type] $month
+     * @param [type] $type
+     * @return void
+     */
+    static public function getValueBox() {
+        $totalRec = 0;
+        $totalDes = 0;
+        $total = 0;
+        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
+        //dump($typeEnd[0]->id);
+        //SOMENTE AS ENTRADAS(receitas)
+        $valueRec = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->whereMonth('entries.entries_date_launch', $month)
+            //->whereMonth('entries.entries_date_launch', $month)
+            ->whereNotIn('account_launches.accountlaunch_type',[$typeEnd[0]->id])
+            ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+            $totalRec = $valueRec->sum('entries_value');
+        
+        // SOMENTE AS SAÍDAS(despesas)
+        $valueDes = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            //->whereMonth('entries.entries_date_launch', $month)
             ->where('account_types.account_types_name','=','Despesa')
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
-            $total = $value->sum('entries_value');
-        }
-        return $total;
+            $totalDes = $valueDes->sum('entries_value');
+
+        return ['receitas' => $totalRec, 'despesas' => $totalDes];
     }
 }

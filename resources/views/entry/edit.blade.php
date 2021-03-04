@@ -1,30 +1,15 @@
 @extends('layouts.blank')
 @push('stylesheets')
-<!-- Example -->
-<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
+<style>
+    .img_edit {
+        height: 100px;
+        width: 100px;
+    }
+</style>
 @endpush
 @section('main_container')
 <!-- page content -->
 <div class="right_col" role="main">
-    <div class="row">
-        <div class="tile_count">
-            <div class="col-md-3 col-sm-6  tile_stats_count">
-                <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Banco</span>
-                <div class="count">254</div>
-                <span class="count_bottom text-info">Valores do caixa desse mês</span>
-            </div>
-            <div class="col-md-3 col-sm-6  tile_stats_count">
-                <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Caixa</span>
-                <div class="count">2545</div>
-                <span class="count_bottom text-success">Valores do mês atual</span>
-            </div>
-            <div class="col-md-3 col-sm-6  tile_stats_count">
-                <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Geral</span>
-                <div class="count">5484</div>
-                <span class="count_bottom text-info">Valores do mês atual</span>
-            </div>
-        </div>
-    </div>
     <div class="x_panel">
         @include('msg.message')
         <div class="x_title">
@@ -41,7 +26,6 @@
                         <div class="col-md-4 col-sm-6 form-group">
                             <label for="">Conta:</label>
                             <select name="entries_id_account" id="cod_account" class="form-control select2">
-                                <option value=""></option>
                                 @foreach($accounts as $account)
                                 <option value="{{ $account->id }}">
                                     {{ $account->accountlaunch_name }}
@@ -70,16 +54,18 @@
                         </div>
                         <div class="col-md-4 col-sm-6 form-group">
                             <label for="">Valor:</label>
-                            <input type="text" class="form-control" name="entries_value" value="{{$launch[0]->entries_value}}">
+                            <input type="text" class="form-control" 
+                            id="entries_value"
+                            name="entries_value" value="{{number_format($launch[0]->entries_value,2,',','.')}}">
                         </div>
                         <div class="col-md-8 col-sm-6 form-group">
                             <label for="">Tipo de caixa:</label>
                             <div class="">
                                 <label class="btn btn-primary">
-                                <input type="radio" class="flat" checked name="iCheck"> Banco
+                                <input type="radio" checked name="entries_bank" value="true"> Banco
                                 </label>
                                 <label class="btn btn-primary">
-                                <input type="radio" class="flat" name="iCheck"> Local
+                                <input type="radio" name="entries_bank" value="false"> Local
                                 </label>
                             </div>
                         </div>
@@ -88,10 +74,10 @@
                         <div class="col-md-12 col-sm-12">
                             <hr>
                             <div class="form-group pull-right">
-                                <button type="button" class="btn btn-default">
+                                <a href="{{url('lancar')}}" class="btn btn-default">
                                 <i class="fa fa-close"></i>
                                 Sair
-                                </button>
+                                </a>
                                 <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-save"></i>
                                 Salvar alteração
@@ -102,54 +88,106 @@
                     {{Form::close()}}
                 </div>
                 {{-- IMAGENS  --}}
+            </div>
+        </div>
+
+        <div class="x_content">
+            <div class="right-col">
                 <div class="row">
                     <div class="x_title">
-                        <h2>Arquivos {{$id}}<small>Todos os arquivos enviados.</small></h2>
+                        <div class="row">
+                            <br>
+                            <div class="ln_solid"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h2>Arquivos <small>Todos os arquivos enviados.</small></h2>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-success pull-right"
+                                    data-toggle="modal"
+                                    data-id="{{$id}}"
+                                    data-target="#modalUploadLaunch">
+                                        <i class="fa fa-plus"></i>
+                                        Adicionar
+                                    </a>
+                                <a href="{{url('lancar/'.$id.'/edit')}}"  class="btn btn-info pull-right" title="Atualizar arquivos">
+                                    <i class="fa fa-refresh"></i>
+                                </a>    
+                            </div>
+                        </div>
                         <div class="clearfix"></div>
+                        
                     </div>
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
+                                <th>Arquivo</th>
+                                <th>Enviado</th>
+                                <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($files as $file)
                             <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
+                                <td>
+                                    <a href="{{url('/img/images/'.$file->file_launches_name)}}" target="_blanck">
+                                        <img src="{{url('/img/images/'.$file->file_launches_name)}}" class="img_edit">
+                                    </a>
+                                </td>
+                                <td>
+                                    {{$file->created_at}}
+                                </td>
+                                <td>
+                                    <a href="#modalDeleteComponent" data-toggle="modal" data-id="{{$file->id}}" class="btn btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                        Excluir
+                                    </a>
+                                    
+                                </td>
                             </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
+                            @endforeach
+                            
+                        
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+@include('modals.modal_upload_launch')
+@component('components.modal_delete_comp')
+<form action="{{url('lancar/file/delete')}}" method="post">
+    {!! csrf_field() !!}
+    <div class="row">
+      <div class="alert alert-danger">
+        <h4 >
+            Deseja realmente excluir esse arquivo?
+        </h4>
+        <small>Essa ação é inreversível, não dá para voltar atrás.</small>
+      </div>
+      <input type="hidden" name="id" id="idDelete">
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+          <button type="submit" class="btn btn-danger"> EXCLUIR </button>
+      </div>
+    </div>
+</form>
+@endcomponent
 <!-- /page content -->
 @endsection
 @push('stylesheets')
-{{-- 
-<link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}">
---}}
+
+<link rel="stylesheet" type="text/css" href="{{url('css/entry.min.css')}}">
+
 @endpush
 @push('scripts')
+<script>
+    var idAccont = '{{$launch[0]->entries_id_account}}';
+    $('#cod_account').val(idAccont).trigger('change');
+</script>
 <script type="text/javascript" language="javascript" src="{{asset('js/launch/entry.min.js')}}"></script>
 {{-- <script type="text/javascript" language="javascript" src="{{asset('js/receipt-common.min.js')}}"></script> --}}
 @endpush

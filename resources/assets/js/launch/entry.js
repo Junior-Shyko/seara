@@ -2,7 +2,9 @@
 $(document).ready(function () {
     //$("#modalUploadLaunch").modal('show');
     //$("#lancar_conta").modal('show');
-
+    $('#entries_value').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
     $("#divRectroativeLaunch").hide();
     $("#dateRetroactive").hide();
     let colunas = [
@@ -98,12 +100,11 @@ $(document).ready(function () {
 
     $('#modalUploadLaunch').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget) // Button that triggered the modal
-      var recipient = button.data('whatever') // Extract info from data-* attributes
+      var id = button.data('id') // Extract info from data-* attributes
       // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
       // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
       var modal = $(this)
-      modal.find('.modal-title').text('New message to ' + recipient)
-      modal.find('.modal-body input').val(recipient)
+      modal.find('.idEntry').val(id);
     })
     
     $('#modalInfoLaunch').on('show.bs.modal', function (event) {
