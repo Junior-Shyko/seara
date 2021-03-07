@@ -45,15 +45,15 @@
             </div>
             <div class="modal-body">
                 <div class="row alert alert-info" id="infoMonthLaunch">
-                    <p>
+                    <p id="monthYear">
                         <strong>MÊS / ANO: </strong>{{ \Carbon\Carbon::now()->month . ' / '. \Carbon\Carbon::now()->year }}
-                        <label class="pull-right">Saldo Anterior: R$ {{number_format($totalGeral,2,",",".")}}</label>
                     </p>
+                    <p id="monthYearRetroactive"></p>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-default pull-left" id="launchMonth">Lançamento do mês</button>
+                            <button type="button" class="btn btn-primary pull-left" id="launchMonth">Lançamento do mês</button>
                         </div>
                         <div class="col-md-6">
                             <button type="button" class="btn btn-dark pull-right" id="castRetroactive">Lançar Retroativo</button>

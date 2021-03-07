@@ -39,7 +39,7 @@ class AccountLaunchController extends Controller
      */
     public function store(Request $request)
     {
-        if(empty($request['accountlaunch_type']) || empty($request['accountlaunch_name'])|| empty($request['account_launches_referring'])) {
+        if(empty($request['accountlaunch_type']) || empty($request['accountlaunch_name'])) {
             return response( ['status' => 'error', 'message' => 'Todos os campos são obrigatórios'], 422 );
         }
         try {

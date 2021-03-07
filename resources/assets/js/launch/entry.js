@@ -1,12 +1,12 @@
 
 $(document).ready(function () {
     //$("#modalUploadLaunch").modal('show');
-    //$("#lancar_conta").modal('show');
+    $("#lancar_conta").modal('show');
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
     $("#divRectroativeLaunch").hide();
-    $("#dateRetroactive").hide();
+    //$("#dateRetroactive").hide();
     let colunas = [
         {data: 'entries_day', name: 'entries_day'},
         {data: 'entries_description', name: 'entries_description'},
@@ -26,7 +26,7 @@ $(document).ready(function () {
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     var idEntry = $("#idEntry").val();
     $("#form-upload-entry").dropzone({ 
-        url: "/caixa/upload",
+        url: SearaApp.baseURL+"caixa/upload",
         params: idEntry,
         autoProcessQueue: true,
         dictDefaultMessage: "Arraste seus arquivos para essa área ou click para localizar",
@@ -180,9 +180,11 @@ $("#castRetroactive").click(function (e) {
     $("#divRectroativeLaunch").show();
     $("#divActualLaunch").hide();
     $("#entries_day").hide();
-    $("#dateRetroactive").show();
     $("#typeLaunch").val('retroactive');
     $("#dateRetroactive").attr('name','entries_day'); 
+    $("#monthYear").hide();
+    $("#monthYearRetroactive").show();
+    $("#monthYearRetroactive").append('<label for="Parent">Lançamento retroativo.</label>');
 });
 $("#launchMonth").click(function (e) { 
     e.preventDefault();
@@ -195,8 +197,9 @@ $("#launchMonth").click(function (e) {
     $("#divActualLaunch").show();
     $("#typeLaunch").val('actual');
     $("#entries_day").show();
-    $("#dateRetroactive").removeAttr('name');
-    console.log($("#dateRetroactive"));
+    $("#monthYear").show();
+    $("#monthYearRetroactive").hide();
+    $('label[for=Parent]').remove();
 });
 
 function showInfo(id) {

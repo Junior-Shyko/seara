@@ -3,7 +3,7 @@
 namespace App\Seara;
 
 use App\Entry;
-use DB;
+use DB, Auth;
 
 class Monetary {
     private static $unidades = array("um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", "dez", "onze", "doze",
@@ -93,31 +93,32 @@ class Monetary {
     /**
      * params $type = Id da conta que não deseja incluir no calculo
      */
-    static public function getValuePerMonth($month , $type = null, $bank) {
+    static public function getValueBoxFeed($type = null, $bank, $id_company) {
         $value = 0;
         $total = 0;
         //TIPO RECEITA
         if($type) {
             //SE FOR UMA CONSULTA PARA O CAIXA DO BANCO
             if($bank) {
+                DB::enableQueryLog();
                 $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                ->whereMonth('entries.entries_date_launch', $month)
+                // ->whereMonth('entries.entries_date_launch', $month)
                 ->whereNotIn('account_launches.accountlaunch_type',[$type])
-                ->where(function ($query) {
-                    $query->where('entries_bank', '=', 1);
-                })
+                ->where('entries.entries_bank', '=', 1)
+                ->where('account_types.account_types_name','=','Receita')
+                ->where('entries.entries_id_company', '=', $id_company)
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
-               
+                //dump(DB::getQueryLog());
                 $total = $value->sum('entries_value');
             }else{
                 $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                ->whereMonth('entries.entries_date_launch', $month)
-                ->whereNotIn('account_launches.accountlaunch_type',[$type])
-                ->where('entries_bank', '=', 0)
+                // ->whereMonth('entries.entries_date_launch', $month)
+                ->where('entries.entries_bank', '=', 0)
+                ->where('account_types.account_types_name','=','Receita')
+                ->where('entries.entries_id_company', '=', $id_company)
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
-               
                 $total = $value->sum('entries_value');
             }
             
@@ -126,11 +127,11 @@ class Monetary {
             if($bank) {
                 $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                ->whereMonth('entries.entries_date_launch', $month)
                 ->where('account_types.account_types_name','=','Despesa')
                 ->where(function ($query) {
                     $query->where('entries_bank', '=', 1);
                 })
+                ->where('entries.entries_id_company', '=', $id_company)
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
                 $total = $value->sum('entries_value');
             }else{
@@ -141,6 +142,7 @@ class Monetary {
                 ->where(function ($query) {
                     $query->where('entries_bank', '=', 0);
                 })
+                ->where('entries.entries_id_company', '=', $id_company)
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
                 $total = $value->sum('entries_value');
             }
@@ -160,6 +162,7 @@ class Monetary {
         $totalRec = 0;
         $totalDes = 0;
         $total = 0;
+        $id_company = Auth::user()->user_id_company;
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
         //dump($typeEnd[0]->id);
         //SOMENTE AS ENTRADAS(receitas)
@@ -167,6 +170,7 @@ class Monetary {
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             //->whereMonth('entries.entries_date_launch', $month)
             ->whereNotIn('account_launches.accountlaunch_type',[$typeEnd[0]->id])
+            ->where('entries.entries_id_company', '=', $id_company)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
             $totalRec = $valueRec->sum('entries_value');
         
@@ -175,6 +179,7 @@ class Monetary {
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             //->whereMonth('entries.entries_date_launch', $month)
             ->where('account_types.account_types_name','=','Despesa')
+            ->where('entries.entries_id_company', '=', $id_company)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
             $totalDes = $valueDes->sum('entries_value');
 

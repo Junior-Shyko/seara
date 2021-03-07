@@ -12,27 +12,27 @@
       <div class="row">
         <div class="tile_count">
           <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Banco</span>
+            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Saldo Banco</span>
             <div class="count">{{number_format($totBanco,2,",",".")}}</div>
-            <span class="count_bottom text-info">Valores do caixa Banco</span>
+            <span class="count_bottom text-info">Valores do caixa no banco</span>
           </div>
 
           <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Caixa igreja</span>
-            <div class="count">{{number_format($toalIgreja,2,",",".")}}</div>
-            <span class="count_bottom text-success">Valores do caixa da igreja</span>
+            <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Saldo Interno</span>
+            <div class="count">{{number_format($totIgreja,2,",",".")}}</div>
+            <span class="count_bottom text-success">Valores do caixa interno</span>
           </div>
 
-          <div class="col-md-3 col-sm-6  tile_stats_count">
+          {{-- <div class="col-md-3 col-sm-6  tile_stats_count">
             <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Caixa Geral</span>
             <div class="count">{{number_format($totalGeral,2,",",".")}}</div>
             <span class="count_bottom text-info">Valor dos dois caixas juntos</span>
-          </div>
+          </div> --}}
 
           <div class="col-md-3 col-sm-6  tile_stats_count">
-            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Saldo Atual</span>
+            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Saldo Geral</span>
             <div class="count">{{number_format($saldo,2,",",".")}}</div>
-            <span class="count_bottom text-info">Seu valor atual de caixa</span>
+            <span class="count_bottom text-info">Seu valor atual de caixa geral</span>
           </div>
         </div>
 

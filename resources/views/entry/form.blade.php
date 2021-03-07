@@ -21,37 +21,62 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-6 form-group">
+                <div class="col-md-8 col-sm-6 col-xs-6 form-group">
                     <label class="control-label">Tipo da conta: </label>
                     <br>
                     <label class="control-label text-primary" id="label_desc_type">. . .</label>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-6 form-group">
-                    <label class="control-label">Referente a:</label>
-                    <br>
-                    <label class="control-label text-primary" id="account_launches_referring">...</label>
+               
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback" id="divActualLaunch">
+                        <label for="">Dia</label>
+                        {{Form::selectRange('entries_day', 01, 31, date('d'), ['class' =>'form-control has-feedback-left' , 'id' => 'entries_day'])}}
+                        <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback" id="divRectroativeLaunch" >
+                        <label for="">Data</label>
+                        <div class='input-group date'>
+                            <input type='text' class="form-control"  id='dateRetroactive'/>
+                        </div>
+                    </div>
+                    <div class="col-md-9 col-sm-9 col-xs-12 form-group has-feedback">
+                        <label for="">Histórico</label>
+                        <input type="text" name="entries_description" class="form-control" id="entries_description" placeholder="Histórico">
+                        <span class="fa fa-edit form-control-feedback right" aria-hidden="true"></span>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback" id="divActualLaunch">
-                {{Form::selectRange('entries_day', 01, 31, date('d'), ['class' =>'form-control has-feedback-left' , 'id' => 'entries_day'])}}
-                <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback" id="divRectroativeLaunch" >
-                <div class='input-group date'>
-                    <input type='text' class="form-control"  id='dateRetroactive'/>
+           <div class="col-md-12">
+            <div class="form-group">
+                <div class="col-md-4">
+                    <label for="">Valor</label>
+                    <div class="form-group" id="diventries_value">
+                        <div class="input-group date">
+                            <input type="text" class="form-control has-feedback-left"  name="entries_value" id="entries_value" >
+                            
+                            <span class="fa fa-money form-control-feedback left"></span>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-sm-6 col-xs-12 form-group has-feedback" >
+                    <label>Caixa</label>
+                    <p>
+                        <label class="btn btn-primary flat">
+                            <input type="radio" name="entries_bank" value="1"> Banco
+                        </label>
+                        <label class="btn btn-primary flat">
+                            <input type="radio" checked name="entries_bank" value="0"> Interno
+                        </label>
+                    </p>
+                    
+                    
                 </div>
             </div>
-            <div class="col-md-9 col-sm-9 col-xs-12 form-group has-feedback">
-                <input type="text" name="entries_description" class="form-control" id="entries_description" placeholder="Histórico">
-                <span class="fa fa-edit form-control-feedback right" aria-hidden="true"></span>
-            </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 form-group has-feedback" id="divEntradas">
-                <small>VALOR</small>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback" id="diventries_value">
-                <input type="text" name="entries_value"  class="form-control has-feedback-left" id="entries_value" placeholder="Qual o valor?">
-                <span class="fa fa-money form-control-feedback left" id="" aria-hidden="true"></span>
-            </div>
+           </div>
             <div class="col-md-8 col-sm-8 col-xs-12 form-group has-feedback">
                 <input type="hidden" name="entries_id_company" id="entries_id_company" value="{{Auth::user()->user_id_company}}">
                 <input type="hidden" name="entries_id_user" id="entries_id_user" value="{{Auth::user()->id}}">
@@ -61,7 +86,7 @@
     </div>
     <div class="form-group row">
         <div class="col-md-12 col-sm-12 offset-md-3">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
             <button type="button" class="btn btn-primary pull-right" id="save_entry">Salvar Lançamento 
             <i class="fa fa-floppy-o" aria-hidden="true"></i>
             </button>

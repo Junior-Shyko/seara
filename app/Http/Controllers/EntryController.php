@@ -29,27 +29,28 @@ class EntryController extends Controller
         
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
         $monthPlus = ($month - 1);
-        $bankReceita = Monetary::getValuePerMonth($monthPlus , $typeEnd[0]->id, true);
-        $bankDespesa = Monetary::getValuePerMonth($monthPlus , null, true);
+        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
+        $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
         $totBanco = ($bankReceita - $bankDespesa);
+        // dump($bankReceita);
+        // dump($bankDespesa);
+        // dump($totBanco);
+        // dump("--");
+        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, Auth::user()->user_id_company);
+        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, Auth::user()->user_id_company);
         
-        
-        $igrejaReceita = Monetary::getValuePerMonth($monthPlus, $typeEnd[0]->id, false);
-        $igrejaDespesa = Monetary::getValuePerMonth($monthPlus, null, false);
-        $toalIgreja = ($igrejaReceita - $igrejaDespesa);
-        dump($igrejaReceita);
-        dump($igrejaDespesa);
-        //$totalGeral = ($totBank + $totLoc);
-        
-        // $actualPos = Monetary::getValuePerMonth($month , $typeEnd[0]->id);
-        // $actualNeg = Monetary::getValuePerMonth($month);
-        // $monthActual = ($actualPos - $actualNeg);
-        // $currentBalance = ($monthActual + $totalGeral);
-        $totalGeral  = ($totBanco + $toalIgreja);
+        // dump($igrejaReceita);
+        // dump($igrejaDespesa);
+        $totIgreja = ($igrejaReceita - $igrejaDespesa);
+        // dump($totIgreja);
+        // dump("--");
+        // dd();
+        $totalGeral  = ($totBanco + $totIgreja);
         $saldoGer = Monetary::getValueBox();
         $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
-        //dump($saldo);
-        return view('entry.index', compact('accounts', 'totalGeral', 'monthActual', 'actualPos', 'actualNeg','currentBalance', 'saldo' , 'toalIgreja', 'totBanco'));
+        // dump($saldo);
+        
+        return view('entry.index', compact('accounts', 'totalGeral', 'saldo' , 'totIgreja', 'totBanco'));
     }
 
     /**
@@ -248,6 +249,7 @@ class EntryController extends Controller
                 ->join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
                 ->whereMonth('entries.entries_date_launch', $month)
+                ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
                 ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
                 ->orderBy('entries_day', 'asc')
                 ->get();

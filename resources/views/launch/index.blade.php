@@ -6,13 +6,13 @@
 @section('main_container')
 <!-- page content -->
 <div class="right_col" role="main">
-
     <div class="row">
         @include('msg.message')
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Conta <small>Criar conta de lançamento para o caixa</small></h2>
+                    <a href="{{url('lancar')}}" class="btn btn-primary pull-right">Ir para lançamento</a>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -64,15 +64,7 @@
                                 <label class="col-form-label">Nome da conta</label>
                                 <input type="text" name="accountlaunch_name" class="form-control">
                             </div>
-                            <div class="col-md-3">
-                                <label class="col-form-label">Referente</label>
-                                <select name="account_launches_referring" class="form-control">
-                                    <option value="">--Selecione--</option>
-                                    <option value="Dizimo">Dízimo</option>
-                                    <option value="Ofertas">Ofertas</option>
-                                    <option value="Outros">Outros</option>
-                                </select>
-                            </div>
+                            
                             <div class="col-sm-12">
                                 <label for="">Histórico da conta</label>
                                 <div class="input-group">
@@ -115,7 +107,7 @@
     </div>
 </div>
 <!-- /page content -->
-@include('modals.launch.modal_account_launch', [$typeAccount, $totalPrevius])
+@include('modals.launch.modal_account_launch', [$typeAccount])
 @component('components.modal_delete_comp')
 <form action="{{url('launch/account/delete')}}" method="POST">
     {!! csrf_field() !!}
