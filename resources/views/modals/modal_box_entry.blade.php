@@ -44,21 +44,14 @@
                 <h4 class="modal-title" id="myModalLabel">Lançamento no Caixa</h4>
             </div>
             <div class="modal-body">
-                <div class="row alert alert-info" id="infoMonthLaunch">
-                    <p id="monthYear">
-                        <strong>MÊS / ANO: </strong>{{ \Carbon\Carbon::now()->month . ' / '. \Carbon\Carbon::now()->year }}
-                    </p>
-                    <p id="monthYearRetroactive"></p>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-primary pull-left" id="launchMonth">Lançamento do mês</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-dark pull-right" id="castRetroactive">Lançar Retroativo</button>
-                        
-                        </div>
+                <div class="row alert alert-info" id="infoMonthLaunch">                    
+                    <div class="col-md-6">
+                        <p id="monthYear">
+                            <strong>MÊS / ANO: </strong>{{ \Carbon\Carbon::now()->month . ' / '. \Carbon\Carbon::now()->year }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="pull-right">Saldo Atual: {{number_format($saldo,2,",",".")}}</h4>
                     </div>
                 </div>
                 @include('entry.form')

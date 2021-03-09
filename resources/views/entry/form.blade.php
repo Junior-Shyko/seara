@@ -30,15 +30,10 @@
             </div>
             <div class="col-md-12">
                 <div class="form-group">
-                    <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback" id="divActualLaunch">
-                        <label for="">Dia</label>
-                        {{Form::selectRange('entries_day', 01, 31, date('d'), ['class' =>'form-control has-feedback-left' , 'id' => 'entries_day'])}}
-                        <span class="fa fa-calendar form-control-feedback left" aria-hidden="true"></span>
-                    </div>
                     <div class="col-md-3 col-sm-3 col-xs-12 form-group has-feedback" id="divRectroativeLaunch" >
                         <label for="">Data</label>
                         <div class='input-group date'>
-                            <input type='text' class="form-control"  id='dateRetroactive'/>
+                            <input type='text' name="entries_date_launch" class="form-control date-mask"  id='dateRetroactive' value="{{date('d/m/Y')}}"/>
                         </div>
                     </div>
                     <div class="col-md-9 col-sm-9 col-xs-12 form-group has-feedback">

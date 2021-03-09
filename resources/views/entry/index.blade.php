@@ -40,8 +40,32 @@
       <div class="x_panel">
         @include('msg.message')
         <div class="x_title">
-          <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
-          <button class="btn btn-primary pull-right"  data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</button>
+          <div class="col-md-6">
+            <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
+          </div>
+          <div class="col-md-6">
+            <button class="btn btn-primary pull-right"  data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</button>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="col-md-5">
+                <label for="">Data Inicial</label>
+                <input type="text" name="dateInitial" class="form-control date-mask" id="dateInitial">
+              </div>
+              <div class="col-md-5">
+                <label for="">Data Final</label>
+                <input type="text" name="dateEnd" class="form-control date-mask" id="dateEnd">
+              </div>
+              <div class="col-md-2">
+                <label for="">Pesquisar</label>
+                <button class="btn btn-primary" onclick="searchPeriod()">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          
           
           <div class="clearfix"></div>
         </div>
@@ -66,7 +90,7 @@
       </div>
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
-    @include('modals.modal_box_entry')
+    @include('modals.modal_box_entry',['saldo' => $saldo])
     @include('modals.modal_upload_launch')
 @component('components.modal_delete_comp')
 <form action="{{url('lancar/delete')}}" method="post">
@@ -134,7 +158,15 @@
 @endpush
 
 @push('scripts')
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.min.js" integrity="sha512-1IpxmBdyZx3okPiZ14mzw6+pOGa690uDmcdjqvT310Kwv3NRcjvL/aOtoSprEyvkDdAb7ZtM2um6KrLqLOY97w==" crossorigin="anonymous"></script>
+<script>
+  console.log(moment().format());
+  var dtInit = moment().add(-30, 'days').format('DD/MM/YYYY');
+  var today = moment().format('DD/MM/YYYY');
+  $("#dateInitial").val(dtInit);
+  $("#dateEnd").val(today);
+</script>
 <script type="text/javascript" language="javascript" src="{{asset('js/launch/entry.min.js')}}"></script>
 
 {{-- <script type="text/javascript" language="javascript" src="{{asset('js/receipt-common.min.js')}}"></script> --}}

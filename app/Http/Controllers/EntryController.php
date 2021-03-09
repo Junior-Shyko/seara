@@ -71,6 +71,7 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
+        
         $rules = [
             'entries_description' => 'required',
             'entries_id_account' => 'required',
@@ -84,22 +85,9 @@ class EntryController extends Controller
             $messages = $validator->errors()->all();
             return response( ['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422 );
         }
+        $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
+        $request['entries_date_launch'] = $date_launch;
 
-        if($request->type == 'retroactive') {
-            $timeCarbon = Carbon::now();
-            $time = $timeCarbon->format('H:i:s');
-
-            $created_at = FunctionGeneral::DataBRtoMySQL($request->entries_day);
-            $d    = Carbon::parse($created_at);
-            $d->format('l');
-            
-            //dump($d->format('d')); 
-            $request['entries_day'] = $d->format('d');
-            $request['entries_date_launch'] = $created_at.' '.$time;
-
-        }else{
-            $request['entries_date_launch'] = Carbon::now();
-        }
         try {
             $reques = Monetary::money_real($request['entries_value']);
             $request['entries_value'] = $reques;
@@ -112,15 +100,6 @@ class EntryController extends Controller
         } catch (BadResponseException $e) {
             dump($e->getMessage());
         }
-
-        // if($request->hasFile('file')){
-        //     if($request->file('file')->isValid()){
-        //         $nameUniqid = uniqid(date('HisYmd'));
-        //         $extension = $request->file->extension();
-        //         $nameFile = $nameUniqid.'_'.$user->user_id_company.'.'.$extension;
-        //         $request->file->storeAs('box', $nameFile);
-        //     }
-        // }
     }
 
     /**
@@ -242,18 +221,40 @@ class EntryController extends Controller
        
     }
 
-    public function getAll() {
-        $month = Carbon::now()->month;
+    public function getAll(Request $request) {
+
+        $dtIni = $request->dtIni;
+        $dtEnd = $request->dtEnd;
+        if(isset($request->dtIni) && empty($request->dtIni)) {
+            $startDate = Carbon::now();
+            $dtIni = $startDate->startOfMonth();  
+        }elseif(!isset($request->dtIni)) {
+            $startDate = Carbon::now();
+            $dtIni = $startDate->startOfMonth(); 
+        }
+        if(isset($request->dtEnd) && empty($request->dtEnd)) {
+            $endDate = Carbon::now();
+            $dtEnd = $endDate->startOfMonth(); 
+        }elseif(!isset($request->dtEnd)) {
+            $endDate = Carbon::now();
+            $dtEnd = $endDate->lastOfMonth(); 
+        }
 
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
                 ->join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                ->whereMonth('entries.entries_date_launch', $month)
+                ->where('entries.entries_date_launch','>=', $dtIni)
+                ->where('entries.entries_date_launch','<=', $dtEnd)
                 ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
                 ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
-                ->orderBy('entries_day', 'asc')
+                ->orderBy('entries_date_launch', 'asc')
                 ->get();
+
         return Datatables::of($mov)->addIndexColumn()
+            ->editColumn('entries_date_launch', function ($mov) {
+                $date = new Carbon($mov->entries_date_launch);
+                return $date->format('d/m/Y');
+            })
             ->editColumn('entries_id_user', function ($mov) {
                 return $mov->name;
             })

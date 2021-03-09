@@ -1,14 +1,14 @@
 
 $(document).ready(function () {
     //$("#modalUploadLaunch").modal('show');
-    $("#lancar_conta").modal('show');
+    //$("#lancar_conta").modal('show');
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    $("#divRectroativeLaunch").hide();
+    
     //$("#dateRetroactive").hide();
     let colunas = [
-        {data: 'entries_day', name: 'entries_day'},
+        {data: 'entries_date_launch', name: 'entries_date_launch'},
         {data: 'entries_description', name: 'entries_description'},
         {data: 'entries_value', name: 'entries_value'},
         {data: 'entries_id_account', name: 'entries_id_account'},
@@ -99,10 +99,8 @@ $(document).ready(function () {
     })
 
     $('#modalUploadLaunch').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget) // Button that triggered the modal
-      var id = button.data('id') // Extract info from data-* attributes
-      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      var button = $(event.relatedTarget)
+      var id = button.data('id') 
       var modal = $(this)
       modal.find('.idEntry').val(id);
     })
@@ -131,7 +129,6 @@ $(document).ready(function () {
         );
     })
     $('#modalInfoLaunch').on('hidden.bs.modal', function (e) {
-        console.log('excluo tudo');
         $("#filesEntri div").remove();
     })
 
@@ -157,6 +154,15 @@ $(document).ready(function () {
         timepicker:false,
         format:'d/m/Y'
     });
+    $('#dateInitial').datetimepicker({
+        timepicker:false,
+        format:'d/m/Y',
+        startDate:'-30d'
+    });
+    $('#dateEnd').datetimepicker({
+        timepicker:false,
+        format:'d/m/Y'
+    });
 });
 
 function hideDivs() {
@@ -170,39 +176,35 @@ function showDivs() {
     $("#diventries_value").show();
     $("#entries_value").show();
 }
-$("#castRetroactive").click(function (e) { 
-    e.preventDefault();
-    $("#save_entry").html('<i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar retroativo');
-    $("#save_entry").removeClass('alert-primary');
-    $("#save_entry").addClass('btn-dark');
-    $("#infoMonthLaunch").removeClass('alert-info');
-    $("#infoMonthLaunch").addClass('btn-dark');
-    $("#divRectroativeLaunch").show();
-    $("#divActualLaunch").hide();
-    $("#entries_day").hide();
-    $("#typeLaunch").val('retroactive');
-    $("#dateRetroactive").attr('name','entries_day'); 
-    $("#monthYear").hide();
-    $("#monthYearRetroactive").show();
-    $("#monthYearRetroactive").append('<label for="Parent">Lançamento retroativo.</label>');
-});
-$("#launchMonth").click(function (e) { 
-    e.preventDefault();
-    $("#save_entry").html('<i class="fa fa-floppy-o" aria-hidden="true"></i> Salvar Lançamento');
-    $("#infoMonthLaunch").addClass('alert-info');
-    $("#infoMonthLaunch").removeClass('btn-dark');
-    $("#save_entry").removeClass('btn-dark');
-    $("#save_entry").addClass('alert-primary');
-    $("#divRectroativeLaunch").hide();
-    $("#divActualLaunch").show();
-    $("#typeLaunch").val('actual');
-    $("#entries_day").show();
-    $("#monthYear").show();
-    $("#monthYearRetroactive").hide();
-    $('label[for=Parent]').remove();
-});
 
-function showInfo(id) {
-  
-    $("#modalInfoLaunch").modal('show');
+
+function searchPeriod() {
+    var init = brDatetoUsa($("#dateInitial").val())
+    var end = brDatetoUsa($("#dateEnd").val())
+    let colunas = [
+        {data: 'entries_date_launch', name: 'entries_date_launch'},
+        {data: 'entries_description', name: 'entries_description'},
+        {data: 'entries_value', name: 'entries_value'},
+        {data: 'entries_id_account', name: 'entries_id_account'},
+        {data: 'entries_id_user', name: 'entries_id_user'},
+        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
+    ];
+    var table = $('#entry-table');
+
+    $('#entry-table').empty();
+    $('#entry-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
+        columns: colunas
+    });
+    // $.ajax({
+    //     type: "GET",
+    //     url: SearaApp.baseURL+"/all-launch",
+    //     data: {dtIni : init, dtEnd: end},
+    //     dataType: "json",
+    //     success: function (response) {
+    //         console.log(response)
+    //     }
+    // });
 }
