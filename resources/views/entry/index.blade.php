@@ -84,7 +84,7 @@
               </thead>
             </table>
           </div>
-
+          <h1 id="total"></h1>
         </div>
         
       </div>
@@ -160,6 +160,7 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.min.js" integrity="sha512-1IpxmBdyZx3okPiZ14mzw6+pOGa690uDmcdjqvT310Kwv3NRcjvL/aOtoSprEyvkDdAb7ZtM2um6KrLqLOY97w==" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.24/api/sum().js"></script>
 <script>
   console.log(moment().format());
   var dtInit = moment().add(-30, 'days').format('DD/MM/YYYY');

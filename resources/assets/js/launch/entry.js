@@ -7,6 +7,19 @@ $(document).ready(function () {
     );
     
     //$("#dateRetroactive").hide();
+    jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
+        return this.flatten().reduce( function ( a, b ) {
+            if ( typeof a === 'string' ) {
+                a = a.replace(/[^\d.-]/g, '') * 1;
+            }
+            if ( typeof b === 'string' ) {
+                b = b.replace(/[^\d.-]/g, '') * 1;
+            }
+     
+            return a + b;
+        }, 0 );
+    } );
+
     let colunas = [
         {data: 'entries_date_launch', name: 'entries_date_launch'},
         {data: 'entries_description', name: 'entries_description'},
@@ -19,9 +32,18 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: SearaApp.baseURL+'all-launch',
-        columns: colunas
+        columns: colunas,
+        drawCallback: function () {
+            var api = this.api();
+            var sum = 0;
+            $( api.table().footer() ).html(
+                sum = api.column( 2, {page:'current'} ).data().sum()                
+            );
+            console.log({sum})
+          }
     });
-    
+    // var sum = $('#entry-table').DataTable().column(4).data().sum();
+
     Dropzone.autoDiscover = false;
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     var idEntry = $("#idEntry").val();
@@ -181,23 +203,68 @@ function showDivs() {
 function searchPeriod() {
     var init = brDatetoUsa($("#dateInitial").val())
     var end = brDatetoUsa($("#dateEnd").val())
-    let colunas = [
-        {data: 'entries_date_launch', name: 'entries_date_launch'},
-        {data: 'entries_description', name: 'entries_description'},
-        {data: 'entries_value', name: 'entries_value'},
-        {data: 'entries_id_account', name: 'entries_id_account'},
-        {data: 'entries_id_user', name: 'entries_id_user'},
-        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
-    ];
-    var table = $('#entry-table');
-
-    $('#entry-table').empty();
-    $('#entry-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
-        columns: colunas
-    });
+    //http://localhost:91/all-launch?dtIni=2021-02-07&dtEnd=2021-03-09
+    if ( $.fn.dataTable.isDataTable( '#entry-table' ) ) {
+        let colunas = [
+            {data: 'entries_date_launch', name: 'entries_date_launch'},
+            {data: 'entries_description', name: 'entries_description'},
+            {data: 'entries_value', name: 'entries_value'},
+            {data: 'entries_id_account', name: 'entries_id_account'},
+            {data: 'entries_id_user', name: 'entries_id_user'},
+            {data: 'action', name: 'action', orderable: false}
+        ];
+        
+        //var table = $('#entry-table').DataTable();
+        var table = $('#entry-table').DataTable( {
+            paging: false,
+            retrieve: true
+        } );
+        table.destroy();
+        table = $('#entry-table').DataTable( {            
+            ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
+            columns: colunas,
+            order: [[ 0, "asc" ]],
+            drawCallback: function () {
+                var api = this.api();
+                var sum = 0;
+                $( api.table().footer() ).html(
+                    sum = api.column( 2, {page:'current'} ).data().sum()                
+                );
+                console.log({sum})
+              }
+        } );
+        // $('#entry-table').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
+        //     columns: colunas
+        // });
+    }
+    else {
+        table = $('#entry-table').DataTable( {
+            paging: false
+        } );
+        console.log('primeiro else');
+    }
+    // let colunas = [
+    //     {data: 'entries_date_launch', name: 'entries_date_launch'},
+    //     {data: 'entries_description', name: 'entries_description'},
+    //     {data: 'entries_value', name: 'entries_value'},
+    //     {data: 'entries_id_account', name: 'entries_id_account'},
+    //     {data: 'entries_id_user', name: 'entries_id_user'},
+    //     {data: 'action', name: 'action', orderable: false}
+    // ];
+    
+    // console.log(SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end);
+    // $('#entry-table').DataTable({
+    //     "bDestroy": true
+    // });
+    // $('#entry-table').DataTable({
+    //     processing: true,
+    //     serverSide: true,
+    //     ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
+    //     columns: colunas
+    // });
     // $.ajax({
     //     type: "GET",
     //     url: SearaApp.baseURL+"/all-launch",

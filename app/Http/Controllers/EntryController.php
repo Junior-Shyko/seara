@@ -239,7 +239,7 @@ class EntryController extends Controller
             $endDate = Carbon::now();
             $dtEnd = $endDate->lastOfMonth(); 
         }
-
+        //DB::enableQueryLog();
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
                 ->join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
@@ -247,9 +247,9 @@ class EntryController extends Controller
                 ->where('entries.entries_date_launch','<=', $dtEnd)
                 ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
                 ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
-                ->orderBy('entries_date_launch', 'asc')
+                ->orderBy('entries.entries_date_launch', 'asc')
                 ->get();
-
+        //dd(DB::getQueryLog());
         return Datatables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {
                 $date = new Carbon($mov->entries_date_launch);
