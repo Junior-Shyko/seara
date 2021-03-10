@@ -25,10 +25,10 @@ class EntryController extends Controller
     {
         $accounts = AccountLaunch::get();
         $month = Carbon::now()->month;
-
+        $monthPlus = ($month - 1);
         
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        $monthPlus = ($month - 1);
+        
         $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
         $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
         $totBanco = ($bankReceita - $bankDespesa);
@@ -44,13 +44,11 @@ class EntryController extends Controller
         $totIgreja = ($igrejaReceita - $igrejaDespesa);
         // dump($totIgreja);
         // dump("--");
-        // dd();
-        $totalGeral  = ($totBanco + $totIgreja);
         $saldoGer = Monetary::getValueBox();
         $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
         // dump($saldo);
         
-        return view('entry.index', compact('accounts', 'totalGeral', 'saldo' , 'totIgreja', 'totBanco'));
+        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco'));
     }
 
     /**
@@ -309,5 +307,29 @@ class EntryController extends Controller
             return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
            }
         }
+    }
+
+    public function bank() {
+        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
+        
+        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
+        $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
+        $totBanco = ($bankReceita - $bankDespesa);
+        return response()->json($totBanco);
+    }
+
+    public function internal() {
+        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
+        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, Auth::user()->user_id_company);
+        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, Auth::user()->user_id_company);
+
+        $totIgreja = ($igrejaReceita - $igrejaDespesa);
+        return response()->json($totIgreja);
+    }
+
+    public function general() {
+        $saldoGer = Monetary::getValueBox();
+        $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
+        return response()->json($saldo);
     }
 }

@@ -42,8 +42,7 @@ $(document).ready(function () {
             console.log({sum})
           }
     });
-    // var sum = $('#entry-table').DataTable().column(4).data().sum();
-
+    
     Dropzone.autoDiscover = false;
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     var idEntry = $("#idEntry").val();
@@ -76,34 +75,33 @@ $(document).ready(function () {
             });
         }
     }); 
+    //valores do caixa banco
+    bankBalance();
+    internalBalance();
+    general();
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
 
         SearaAjax.post('lancar', form, function( response ){
-            console.log(response)
             $("#lancar_conta").modal('hide');
             $("#modalUploadLaunch").modal('show');
             $(".idEntry").val(response.id);
             $("#entry-table").DataTable().ajax.reload();
-            // notify.response(response);
-            // companyTable.reloadTable();
+            bankBalance();
+            internalBalance();
+            general();
             new PNotify({
                 title: 'Sucesso',
                 text: response.message,
                 type: response.status,
                 styling: 'bootstrap3'
             });
-            // $("#account-launch-table").DataTable().ajax.reload();
-            // $("#form-account-launch").each (function(){
-            //   this.reset();
-            // });
         })
         .fail(function(jqXHR){
             notify.response(jqXHR.responseJSON);
             console.log(jqXHR);
         })
         .always(function(){
-            //SearaLoader.hideModal();
             console.log('hideModal');
         });
 
@@ -187,6 +185,42 @@ $(document).ready(function () {
     });
 });
 
+function bankBalance() {
+    $.ajax({
+        type: "GET",
+        url: SearaApp.baseURL + 'api/saldo-banco',
+        dataType: "json",
+        success: function (response) {
+            var value = formatFloatToBrCoin(response)
+            $("#bankBalance").html(value);
+        }
+    });
+}
+
+function internalBalance() {
+    $.ajax({
+        type: "GET",
+        url: SearaApp.baseURL + 'api/saldo-interno',
+        dataType: "json",
+        success: function (response) {
+            var value = formatFloatToBrCoin(response)
+            $("#internalBalance").html(value);
+        }
+    });
+}
+
+function general() {
+    $.ajax({
+        type: "GET",
+        url: SearaApp.baseURL + 'api/saldo-geral',
+        dataType: "json",
+        success: function (response) {
+            var value = formatFloatToBrCoin(response)
+            $("#generalBalance").html(value);
+        }
+    });
+}
+
 function hideDivs() {
     $("#divEntradas").hide();
     $("#diventries_value").hide();
@@ -199,11 +233,9 @@ function showDivs() {
     $("#entries_value").show();
 }
 
-
 function searchPeriod() {
     var init = brDatetoUsa($("#dateInitial").val())
     var end = brDatetoUsa($("#dateEnd").val())
-    //http://localhost:91/all-launch?dtIni=2021-02-07&dtEnd=2021-03-09
     if ( $.fn.dataTable.isDataTable( '#entry-table' ) ) {
         let colunas = [
             {data: 'entries_date_launch', name: 'entries_date_launch'},
@@ -213,8 +245,7 @@ function searchPeriod() {
             {data: 'entries_id_user', name: 'entries_id_user'},
             {data: 'action', name: 'action', orderable: false}
         ];
-        
-        //var table = $('#entry-table').DataTable();
+
         var table = $('#entry-table').DataTable( {
             paging: false,
             retrieve: true
@@ -233,12 +264,6 @@ function searchPeriod() {
                 console.log({sum})
               }
         } );
-        // $('#entry-table').DataTable({
-        //     processing: true,
-        //     serverSide: true,
-        //     ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
-        //     columns: colunas
-        // });
     }
     else {
         table = $('#entry-table').DataTable( {
@@ -246,32 +271,4 @@ function searchPeriod() {
         } );
         console.log('primeiro else');
     }
-    // let colunas = [
-    //     {data: 'entries_date_launch', name: 'entries_date_launch'},
-    //     {data: 'entries_description', name: 'entries_description'},
-    //     {data: 'entries_value', name: 'entries_value'},
-    //     {data: 'entries_id_account', name: 'entries_id_account'},
-    //     {data: 'entries_id_user', name: 'entries_id_user'},
-    //     {data: 'action', name: 'action', orderable: false}
-    // ];
-    
-    // console.log(SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end);
-    // $('#entry-table').DataTable({
-    //     "bDestroy": true
-    // });
-    // $('#entry-table').DataTable({
-    //     processing: true,
-    //     serverSide: true,
-    //     ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
-    //     columns: colunas
-    // });
-    // $.ajax({
-    //     type: "GET",
-    //     url: SearaApp.baseURL+"/all-launch",
-    //     data: {dtIni : init, dtEnd: end},
-    //     dataType: "json",
-    //     success: function (response) {
-    //         console.log(response)
-    //     }
-    // });
 }
