@@ -84,7 +84,7 @@ Route::get('all-launch', 'EntryController@getAll');
 Route::post('lancar/delete' , 'EntryController@destroy');
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
-Route::post('lancar/relatorio' , 'EntryController@reportBox');
+Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}' , 'EntryController@reportBox');
 Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-banco' , 'EntryController@bank');
     Route::get('saldo-interno' , 'EntryController@internal');

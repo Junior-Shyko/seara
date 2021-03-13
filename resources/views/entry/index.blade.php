@@ -59,17 +59,14 @@
             </div>
           </div>
           <div class="col-md-6">
-            <form action="{{url('lancar/relatorio')}}" method="post">
-              {{ csrf_field() }}
-              <button type="submit" class="btn btn-app pull-right" title="Imprimir consulta">
-                <i class="fa fa-print"></i> Imprimir
-              </button>
-              <input type="text" name="dtinit" id="inputDtInit">
-              <input type="text" name="dtend" id="inputDtEnd">
-            </form>
-            <a href="{{url('lancar')}}" class="btn btn-app pull-right" title="Limpa a consulta  atual">
-              <i class="fa fa-hourglass" aria-hidden="true"></i> Limpar
+           
+            <a class="btn btn-app pull-right" id="btn-print-report" title="Imprime a consulta escolhida" onclick="showReport()">
+              <i class="fa fa-print"></i> Imprimir
+
             </a>
+            {{-- <a href="{{url('lancar')}}" class="btn btn-app pull-right" title="Limpa a consulta  atual">
+              <i class="fa fa-hourglass" aria-hidden="true"></i> Limpar
+            </a> --}}
           </div>
           <div class="clearfix"></div>
         </div>
@@ -134,11 +131,15 @@
               <li class="list-group-item his">Histórico:</li>
               <li class="list-group-item value">Valor:</li>
               <li class="list-group-item account">Conta: </li>
-              <li class="list-group-item created">Criado:</li>
+              <li class="list-group-item per">Criado:</li>
             </ul>
           </div>
           <div class="col-md-8">
+            <div class="col-md-12">
+              <label class="badge">Arquivos</label>
+             </div>
             <div id="filesEntri">
+             
             </div>
           </div>
         </div>
@@ -168,8 +169,9 @@
   var today = moment().endOf("month").format("DD/MM/YYYY");;
   $("#dateInitial").val(dtInit);
   $("#dateEnd").val(today);
-  $("#inputDtInit").val(dtInit);
-  $("#inputDtEnd").val(today);
+  $("#inputDtInit").val(btoa(dtInit));
+  $("#inputDtEnd").val(btoa(today));
+
 </script>
 <script type="text/javascript" language="javascript" src="{{asset('js/launch/entry.min.js')}}"></script>
 

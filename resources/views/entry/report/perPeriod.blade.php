@@ -1,17 +1,23 @@
 @extends('layouts.report.layout')
 @push('stylesheets')
 <style>
-   
+   .title-company {
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #c5c5c5;
+    width: 100%;
+}
 </style>
 <!-- Example -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+
 
 @endpush
 @section('main_container')
 <div class="container">
     <div class="row">
         <div class="col-md-12 text-center">
-            {{$entries[0]->company_name}}
+            <label class="title-company">{{$entries[0]->company_name}}</label>
             <caption class="text-center">Movimento do caixa</caption>
         </div>
         <div class="col-md-12">
@@ -41,15 +47,22 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach ($entries as $entry)
                 <tr>
-                    <th>2021-03-13 00:00:00</th>
-                    <td>20</td>
-                    <td>Recebimento de oferta de missões</td>
-                    <td>Receita</td>
-                    <td>200.0</td>
-                    <td>0</td>
+                    <th style="width: 10%">
+                        {{ \Carbon\Carbon::parse($entry->entries_date_launch)->format('d/m/Y')}} 
+                    </th>
+                    <td>{{$entry->accountlaunch_name}}</td>
+                    <td>{{$entry->accountlaunch_history}}</td>
+                    <td style="width: 10%">{{$entry->account_types_name}}</td>
+                    <td>{{ number_format($entry->entries_value,2,',','.') }}</td>
+                    @if ($entry->entries_bank == 0)
+                        <td style="width: 10%">Interno</td>
+                    @else
+                        <td style="width: 10%">Banco</td>
+                    @endif
                 </tr>
-                
+                @endforeach
             </tbody>
         </table>
     </div>

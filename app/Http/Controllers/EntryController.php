@@ -141,9 +141,24 @@ class EntryController extends Controller
     {
         $val = Monetary::money_real($request['entries_value']);
         $request['entries_value'] = $val;
+        $rules = [
+            'entries_description' => 'required',
+            'entries_id_account' => 'required',
+            'entries_value' => 'required'
+        ];
+
+        $validator = Validator::make( $request->all(), $rules );
+
+        if ( $validator->fails() )
+        {
+            $validator->errors()->all();
+            return response( ['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422 );
+        }
+        $date_launch = FunctionGeneral::DataBRtoMySQL($request['entries_date_launch']);
+        $request['entries_date_launch'] = $date_launch;
+
         $input = $request->all();
         $input = $request->except('_method' , '_token');
-        
         try {
             Entry::where('entries_id' , $id)->update($input);
             return redirect()->back()->with('success' , 'Lançamento alterado com sucesso');
@@ -288,13 +303,24 @@ class EntryController extends Controller
 
     public function info($id) {
         //Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
-        $info = Entry::join('file_launches', 'file_launches.file_launches_id_entry','=','entries.entries_id')
-        ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
-        ->join('users', 'entries.entries_id_user', '=', 'users.id')
-        ->where('entries.entries_id','=',$id)
-        ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
-        ->get();
+        $file = FileLaunch::where('file_launches_id_entry', $id)->get();
+
+        if(count($file) > 0){
+            $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
+            ->join('users', 'entries.entries_id_user', '=', 'users.id')
+            ->join('file_launches', 'file_launches.file_launches_id_entry','=','entries.entries_id')
+            ->where('entries.entries_id','=',$id)
+            ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+            ->get();
+        }else{
+            $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
+            ->join('users', 'entries.entries_id_user', '=', 'users.id')
+            ->where('entries.entries_id','=',$id)
+            ->select('entries.*',  'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.entries_date_launch as createEntry', 'users.name as nameUser')->get();
+        }
+        
         return $info;
     }
 
@@ -333,25 +359,28 @@ class EntryController extends Controller
         return response()->json($saldo);
     }
 
-    public function reportBox(Request $request) {
+    public function reportBox($dateInit, $dateEnd) {
+        
+        $dtinit = FunctionGeneral::DataBRtoMySQL(base64_decode($dateInit));
+        $dtend  = FunctionGeneral::DataBRtoMySQL(base64_decode($dateEnd));
+        $per    = Monetary::getValueBoxPerPeriodo($dtinit, $dtend);
+        $total  = ($per['receitas'] - $per['despesas']);
 
-        $dtinit = FunctionGeneral::DataBRtoMySQL($request->dtinit);
-        $dtend = FunctionGeneral::DataBRtoMySQL($request->dtend);
-        $per = Monetary::getValueBoxPerPeriodo($dtinit, $dtend);
-        $total = ($per['receitas'] - $per['despesas']);
-
-        $perInitial = $request->dtinit;
-        $perEnd = $request->dtend;
+        $perInitial = base64_decode($dateInit);
+        $perEnd = base64_decode($dateEnd);
         $entries = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
+        ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
         ->where('entries_date_launch', '>=', $dtinit)
-        ->where('entries_date_launch', '<=', $dtend)->get();
+        ->where('entries_date_launch', '<=', $dtend)
+        ->orderBy('entries_date_launch', 'asc')->get();
+        
         $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
             'defaultPaperSize' =>  'a4']); 
-
         return $pdf->stream();
-        // return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd'));
+        // return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total'));
     }
 }
