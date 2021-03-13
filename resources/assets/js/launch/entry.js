@@ -5,7 +5,7 @@ $(document).ready(function () {
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    
+   
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
         return this.flatten().reduce( function ( a, b ) {
@@ -132,18 +132,18 @@ $(document).ready(function () {
         function (data, textStatus, jqXHR) { 
             $("#linkEdit").attr('href', SearaApp.baseURL+ 'lancar/' +data[0].entries_id+'/edit');
             var dt = dataAtualFormatada(data[0].createEntry);
-            $(".day").html('Dia: '+data[0].entries_day);
+            $(".day").html('Dia: '+dt);
             $(".his").html('Histórico: '+data[0].entries_description);
             $(".value").html('Valor: '+data[0].entries_value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
             $(".account").html('Conta: '+data[0].accountlaunch_name);
             $(".type").html('Dia: '+data[0].account_types_name);
-            $(".created").html('Criado em: '+dt);
             $(".per").html('Por: '+data[0].nameUser);
                 $.each(data, function (indexInArray, valueOfElement) { 
-                    console.log(valueOfElement);
-                    var dt = dataAtualFormatada(valueOfElement.createEntry);
-                    $("#filesEntri").append('<div class="col-md-6 col-xs-12">'+
-                    '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
+                    if(typeof valueOfElement.file_launches_name !== 'undefined'){
+                        console.log(typeof valueOfElement.file_launches_name);
+                        $("#filesEntri").append('<div class="col-md-6 col-xs-12">'+
+                        '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
+                    }
                 });
             }
         );
@@ -272,3 +272,31 @@ function searchPeriod() {
         console.log('primeiro else');
     }
 }
+
+var dtInit = '';
+var dtEnd = '';
+
+// $("#dateInitial").blur(function (e) { 
+//     e.preventDefault(); 
+    
+//     console.log({dtInit})
+//     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
+// });
+
+// $("#dateEnd").blur(function (e) { 
+//     e.preventDefault(); 
+    
+//     console.log({dtEnd})
+//     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
+// });
+ function showReport() {
+    dtInit = btoa($("#dateInitial").val()); 
+    dtEnd = btoa($("#dateEnd").val()); 
+    $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
+ }
+
+
+
+
+
+
