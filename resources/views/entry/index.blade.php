@@ -59,8 +59,16 @@
             </div>
           </div>
           <div class="col-md-6">
-            <a class="btn btn-app pull-right" title="Imprimir consulta">
-              <i class="fa fa-print"></i> Imprimir
+            <form action="{{url('lancar/relatorio')}}" method="post">
+              {{ csrf_field() }}
+              <button type="submit" class="btn btn-app pull-right" title="Imprimir consulta">
+                <i class="fa fa-print"></i> Imprimir
+              </button>
+              <input type="text" name="dtinit" id="inputDtInit">
+              <input type="text" name="dtend" id="inputDtEnd">
+            </form>
+            <a href="{{url('lancar')}}" class="btn btn-app pull-right" title="Limpa a consulta  atual">
+              <i class="fa fa-hourglass" aria-hidden="true"></i> Limpar
             </a>
           </div>
           <div class="clearfix"></div>
@@ -154,13 +162,14 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/pt-br.min.js" integrity="sha512-1IpxmBdyZx3okPiZ14mzw6+pOGa690uDmcdjqvT310Kwv3NRcjvL/aOtoSprEyvkDdAb7ZtM2um6KrLqLOY97w==" crossorigin="anonymous"></script>
-<script src="https://cdn.datatables.net/plug-ins/1.10.24/api/sum().js"></script>
 <script>
   console.log(moment().format());
-  var dtInit = moment().add(-30, 'days').format('DD/MM/YYYY');
-  var today = moment().format('DD/MM/YYYY');
+  var dtInit = moment().startOf('month').format("DD/MM/YYYY");
+  var today = moment().endOf("month").format("DD/MM/YYYY");;
   $("#dateInitial").val(dtInit);
   $("#dateEnd").val(today);
+  $("#inputDtInit").val(dtInit);
+  $("#inputDtEnd").val(today);
 </script>
 <script type="text/javascript" language="javascript" src="{{asset('js/launch/entry.min.js')}}"></script>
 

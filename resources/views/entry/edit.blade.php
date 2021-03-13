@@ -40,9 +40,9 @@
                             </h4>
                         </div>
                         <div class="col-md-4 col-sm-6 form-group">
-                            <label for="">Dia:</label>
-                            <div class="form-group has-feedback" id="divActualLaunch">
-                                {{Form::selectRange('entries_day', 01, 31, $launch[0]->entries_day, ['class' =>'form-control' , 'id' => 'entries_day'])}}
+                            <label for="">Data</label>
+                            <div class='input-group date'>
+                                <input type='text' name="entries_date_launch" class="form-control date-mask"  id='dateRetroactive' value="{{date('d/m/Y')}}"/>
                             </div>
                         </div>
                         <hr>

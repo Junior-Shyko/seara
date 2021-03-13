@@ -5,7 +5,7 @@ $(document).ready(function () {
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    
+   
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
         return this.flatten().reduce( function ( a, b ) {
@@ -272,3 +272,8 @@ function searchPeriod() {
         console.log('primeiro else');
     }
 }
+
+$("#dateEnd").blur(function (e) { 
+    e.preventDefault(); 
+    $("#inputDtEnd").val($("#dateEnd").val());
+});

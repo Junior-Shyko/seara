@@ -8,7 +8,7 @@ use App\FileLaunch;
 use App\FunctionGeneral;
 use App\Seara\Monetary;
 use App\AccountLaunch;
-use Auth, DB;
+use Auth, DB, PDF;
 use Validator, Datatables;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
@@ -331,5 +331,27 @@ class EntryController extends Controller
         $saldoGer = Monetary::getValueBox();
         $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
         return response()->json($saldo);
+    }
+
+    public function reportBox(Request $request) {
+
+        $dtinit = FunctionGeneral::DataBRtoMySQL($request->dtinit);
+        $dtend = FunctionGeneral::DataBRtoMySQL($request->dtend);
+        $per = Monetary::getValueBoxPerPeriodo($dtinit, $dtend);
+        $total = ($per['receitas'] - $per['despesas']);
+
+        $perInitial = $request->dtinit;
+        $perEnd = $request->dtend;
+        $entries = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
+        ->where('entries_date_launch', '>=', $dtinit)
+        ->where('entries_date_launch', '<=', $dtend)->get();
+        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total'));
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultPaperSize' =>  'a4']); 
+
+        return $pdf->stream();
+        // return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd'));
     }
 }
