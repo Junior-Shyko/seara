@@ -1,18 +1,18 @@
 @extends('layouts.blank')
 @push('stylesheets')
 <!-- Example -->
-<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
+<link href="{{ url("css/entry.min.css") }}" rel="stylesheet">
 @endpush
 @section('main_container')
 <!-- page content -->
 <div class="right_col" role="main">
-   
     <div class="row">
         @include('msg.message')
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Conta <small>Criar conta de lançamento para o caixa</small></h2>
+                    <a href="{{url('lancar')}}" class="btn btn-primary pull-right">Ir para lançamento</a>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -20,16 +20,51 @@
                         <div class="form-group row">
                             <div class="col-md-3">
                                 <label class="col-form-label">Tipo da conta</label>
-                                <select name="accountlaunch_type" id="" class="form-control">
-                                    <option value="">--Selecione--</option>
-                                    <option value="1">Receitas</option>
-                                    <option value="2">Despesa</option>
-                                </select>
+                                <div class="input-group">
+                                    <select name="accountlaunch_type" id="" class="form-control select2">
+                                        @foreach($typeAccount as $typeAccounts)
+                                        <option value="{{ $typeAccounts->id }}">
+                                            {{ $typeAccounts->account_types_name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                    <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#modalSaveType" title="Cadastar tipo de conta">
+                                    <i class="fa fa-plus"></i>
+                                    </button>
+                                    </span>
+                                </div>
+                                <!-- Modal -->
+                                <div class="modal fade" id="modalSaveType" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel">Criar Tipo de conta</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="">Tipo de conta</label>
+                                                            <input type="text" name="account_types_name" id="account_types_name" class="form-control" placeholder="Digite o tipo da conta">
+                                                            <input type="hidden" name="account_types_id_user" id="account_types_id_user" value="{{Auth::user()->id}}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" id="btn-save-type-account">Salvar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-6">
                                 <label class="col-form-label">Nome da conta</label>
                                 <input type="text" name="accountlaunch_name" class="form-control">
                             </div>
+                            
                             <div class="col-sm-12">
                                 <label for="">Histórico da conta</label>
                                 <div class="input-group">
@@ -57,6 +92,7 @@
                 <table id="account-launch-table" class="table table-hover">
                     <thead>
                         <tr>
+                            <th>Código da Conta</th>
                             <th>Tipo da Conta</th>
                             <th>Nome da Conta</th>
                             <th>Histórico</th>
@@ -71,20 +107,18 @@
     </div>
 </div>
 <!-- /page content -->
-
-@include('modals.launch.modal_account_launch')
+@include('modals.launch.modal_account_launch', [$typeAccount])
 @component('components.modal_delete_comp')
 <form action="{{url('launch/account/delete')}}" method="POST">
     {!! csrf_field() !!}
     <p>
-        <h4 class="text-danger">
-            Deseja realmente excluir essa conta do movimento de Caixa?
-        </h4>
+    <h4 class="text-danger">
+        Deseja realmente excluir essa conta do movimento de Caixa?
+    </h4>
     </p>
     <p>
-        <h4 id="nameAccountDeleteModal">Conta: </h4>
-        <h4 id="typeAccountDeleteModal">Tipo da Conta: </h4>
-        
+    <h4 id="nameAccountDeleteModal">Conta: </h4>
+    <h4 id="typeAccountDeleteModal">Tipo da Conta: </h4>
     </p>
     <input type="text" name="id" id="idAccountLaunch">
     <input type="text" name="table" value="account_launches">

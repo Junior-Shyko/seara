@@ -25,6 +25,16 @@ function usaDatetoBr(datestring)
   return dateSplitted[2] + '/' + dateSplitted[1] + '/' + dateSplitted[0];
 }
 
+function dataAtualFormatada(dt){
+  var data = new Date(dt),
+      dia  = data.getDate().toString(),
+      diaF = (dia.length == 1) ? '0'+dia : dia,
+      mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+      mesF = (mes.length == 1) ? '0'+mes : mes,
+      anoF = data.getFullYear();
+  return diaF+"/"+mesF+"/"+anoF;
+}
+
 function formattedCurrentDate() {
   const now = new Date();
   return now.getDate().toString().padStart(2, '0')

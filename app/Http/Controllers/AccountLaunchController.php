@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AccountLaunch;
+use App\AccountType;
 use Illuminate\Http\Request;
 use Datatables, DB;
 use Carbon\Carbon;
@@ -16,7 +17,8 @@ class AccountLaunchController extends Controller
      */
     public function index()
     {
-        return view('launch.index');
+        $typeAccount = AccountType::all();
+        return view('launch.index', compact('typeAccount'));
     }
 
     /**
@@ -44,8 +46,7 @@ class AccountLaunchController extends Controller
             AccountLaunch::create($request->all());
             return response( ['status' => 'success', 'message' => 'Conta cadastrada com sucesso'], 200 );
         } catch (\Throwable $th) {
-            //throw ;
-            dump($th);
+            return response( ['status' => 'error', 'message' => 'Um erro inesperado'], 502 );
         }
     }
 
@@ -122,17 +123,13 @@ class AccountLaunchController extends Controller
         //$accountLaunch = AccountLaunch::get();
         $accountLaunch = DB::table('account_launches')
         ->join('users', 'account_launches.accountlaunch_id_user', '=', 'users.id')
-        ->select('account_launches.*', 'users.id as id_user', 'users.name')
+        ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+        ->select('account_launches.*','account_launches.id as idAccountLaunch', 'users.id as id_user', 'users.name', 'account_types.id as idTypeAccount', 'account_types.*')
         ->get();
-
+        
         return Datatables::of($accountLaunch)
         ->editColumn('accountlaunch_type', function ($accountLaunch) {
-            $type = "";
-            if($accountLaunch->accountlaunch_type == 1){
-                return "Receita";
-            }else{
-                return "Despesa";
-            }
+            return $accountLaunch->account_types_name;
         })
         ->editColumn('accountlaunch_id_user', function ($accountLaunch) {
             return $accountLaunch->name;
@@ -146,19 +143,33 @@ class AccountLaunchController extends Controller
         })
         ->addColumn('action', function ($accountLaunch) {
             return '<button class="btn btn-primary" type="button" title="Editar esse registro" data-toggle="modal"
-            data-id="'.$accountLaunch->id.'"
+            data-id="'.$accountLaunch->idAccountLaunch.'"
             data-name="'.$accountLaunch->accountlaunch_name.'"
             data-type="'.$accountLaunch->accountlaunch_type.'"
             data-history="'.$accountLaunch->accountlaunch_history.'"
             data-target="#modalEditAccountLaunch"><i class="fa fa-edit"></i> Editar</button>
                     <button class="btn btn-danger" type="button" title="Excluir esse registro" 
             data-toggle="modal"
-            data-id="'.$accountLaunch->id.'"
+            data-id="'.$accountLaunch->idAccountLaunch.'"
             data-name="'.$accountLaunch->accountlaunch_name.'"
             data-type="'.$accountLaunch->accountlaunch_type.'"
             data-target="#modalDeleteComponent">
                     <i class="fa fa-trash"> Excluir</i>
                     </button>';
         })->make(true);
+    }
+
+    public function search($id) {
+        try {
+            $account = DB::table('account_launches')
+            ->join('users', 'account_launches.accountlaunch_id_user', '=', 'users.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->where('account_launches.id','=',$id)
+            ->select('account_launches.*','account_launches.id as idAccountLaunch', 'users.id as id_user', 'users.name', 'account_types.id as idTypeAccount', 'account_types.*')
+            ->get();        
+            return response()->json($account);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage());
+        }
     }
 }

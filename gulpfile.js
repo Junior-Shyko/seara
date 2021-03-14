@@ -191,8 +191,26 @@ elixir(function(mix) {
     mix.scripts([
         'launch/account_launch.js'
     ], 'public/js/launch/account_launch.min.js');
-    mix.version('public/js/launch/account_launch.min.js');
+    mix.version('public/js/launch/account_launch.min.js');    
 
+    // Launch
+    mix.scripts([
+        'dropzone.min.js',
+        'jquery.maskMoney.js',
+        'mask.js',
+        'helpers.js',
+        './node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.js',
+        './node_modules/lightbox2/dist/js/lightbox.min.js',
+        'launch/entry.js'
+    ], 'public/js/launch/entry.min.js');
+    mix.version('public/js/launch/entry.min.js');
+
+    mix.styles([
+        'basic.min.css',
+        'dropzone.min.css',
+        './node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css',
+        './node_modules/lightbox2/dist/css/lightbox.min.css',
+    ], 'public/css/entry.min.css');
     /**************/
     /* Copy Fonts */
     /**************/

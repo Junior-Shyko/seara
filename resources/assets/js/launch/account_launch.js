@@ -11,6 +11,10 @@ $(document).ready(function () {
                 type: response.status,
                 styling: 'bootstrap3'
             });
+            $("#account-launch-table").DataTable().ajax.reload();
+            $("#form-account-launch").each (function(){
+              this.reset();
+            });
 		})
 		.fail(function(jqXHR){
 			notify.response(jqXHR.responseJSON);
@@ -25,7 +29,8 @@ $(document).ready(function () {
 
 $(function () {
     let colunas = [
-        {data: 'accountlaunch_type', name: 'accountlaunch_type'},
+        {data: 'idAccountLaunch', name: 'idAccountLaunch'},
+        {data: 'account_types_name', name: 'account_types_name'},
         {data: 'accountlaunch_name', name: 'accountlaunch_name'},
         {data: 'accountlaunch_history', name: 'accountlaunch_history'},
         {data: 'created_at', name: 'created_at'},
@@ -47,6 +52,8 @@ $(function () {
         var typeAccountHistory = button.data('history') 
         var modal = $(this)
         modal.find('#modalAccountlaunch_type option[value='+typeAccountLaunch+']').attr('selected','selected');
+        var textSelect = modal.find('#modalAccountlaunch_type option:selected').text();
+        $('#modalAccountlaunch_type').append(textSelect).trigger('change');
         modal.find('#modalAccountlaunch_name').val(nameAccountLaunch);
         modal.find('#modalAccountlaunch_history').val(typeAccountHistory);
         modal.find('#modalAccountLaunchId').val(idAccountLaunch);
@@ -84,5 +91,30 @@ $(function () {
         .always(function () {
             SearaLoader.hideModal();
         })
+    });
+
+    $("#btn-save-type-account").click(function (e) { 
+        e.preventDefault();
+        var dataForm = {
+            account_types_name: $('#account_types_name').val(),
+            account_types_id_user: $('#account_types_id_user').val()
+        };
+        SearaAjax.post('tipo-conta', dataForm, function( response ){
+            notify.response(response);
+            $("#account_types_name").val('');
+            setTimeout(function() {window.location.reload()}, 1500);
+        })
+        .fail(function(jqXHR){
+            notify.response(jqXHR.responseJSON);
+            console.log(jqXHR);
+        })
+        .always(function(){
+            $("#modalSaveType").modal('hide');
+            console.log('hideModal');
+
+        });
+        // SearaAjax.post('tipo-conta', dataForm, function( response ){
+        //     notify.response(response);
+        // });
     });
 });

@@ -40,8 +40,6 @@ Route::group(['prefix' => 'companies'], function () {
 
 Route::resource('companies', 'CompanyController');
 
-
-
 // USUÁRIOS
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
 Route::resource('users', 'UserController');
@@ -79,7 +77,19 @@ Route::post('fechar-caixa' , 'BoxController@close_box');
 Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
+Route::resource('tipo-conta', 'AccountTypeController');
 Route::resource('lancar' , 'EntryController');
+Route::post('caixa/upload' , 'EntryController@upload');
+Route::get('all-launch', 'EntryController@getAll');
+Route::post('lancar/delete' , 'EntryController@destroy');
+Route::get('info-launch/{id}' , 'EntryController@info');
+Route::post('lancar/file/delete', 'EntryController@deleteFile');
+Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}' , 'EntryController@reportBox');
+Route::group(['prefix' => 'api'], function () {
+    Route::get('saldo-banco' , 'EntryController@bank');
+    Route::get('saldo-interno' , 'EntryController@internal');
+    Route::get('saldo-geral' , 'EntryController@general');
+});
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
     Route::get('account'	, 'AccountLaunchController@index');
@@ -87,6 +97,8 @@ Route::group(['prefix' => 'launch'], function () {
     Route::get('account/all' , 'AccountLaunchController@getDataTable');
     Route::put('account/{id}' , 'AccountLaunchController@update');
     Route::post('account/delete' , 'AccountLaunchController@destroy');
+    Route::get('account/search/{id}' , 'AccountLaunchController@search');
+
 });
 
 

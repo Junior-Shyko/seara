@@ -18,13 +18,13 @@
   <link rel="icon" href="{{ asset('img/favicon.png')}}">
 
   <script type="text/javascript">
-    var url_project = "{{url('/')}}";
+    var url_project_teste = "{{url('seara/public/')}}";
     var id_user         = '{{Auth::user()->id}}';
     var id_company      = '{{Auth::user()->user_id_company}}';
   </script>
 
   @stack('stylesheets')
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  
 
 </head>
 
