@@ -120,8 +120,8 @@
     <h4 id="nameAccountDeleteModal">Conta: </h4>
     <h4 id="typeAccountDeleteModal">Tipo da Conta: </h4>
     </p>
-    <input type="text" name="id" id="idAccountLaunch">
-    <input type="text" name="table" value="account_launches">
+    <input type="hidden" name="id" id="idAccountLaunch">
+    <input type="hidden" name="table" value="account_launches">
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
         <button type="submit" class="btn btn-danger"> EXCLUIR </button>
