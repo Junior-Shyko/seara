@@ -40,9 +40,9 @@
                             </h4>
                         </div>
                         <div class="col-md-4 col-sm-6 form-group">
-                            <label for="">Dia:</label>
-                            <div class="form-group has-feedback" id="divActualLaunch">
-                                {{Form::selectRange('entries_day', 01, 31, $launch[0]->entries_day, ['class' =>'form-control' , 'id' => 'entries_day'])}}
+                            <label for="">Data</label>
+                            <div class='input-group date'>
+                                <input type='text' name="entries_date_launch" class="form-control date-mask"  id='dateRetroactive' value="{{ \Carbon\Carbon::parse($launch[0]->entries_date_launch)->format('d/m/Y')}} "/>
                             </div>
                         </div>
                         <hr>
@@ -61,12 +61,22 @@
                         <div class="col-md-8 col-sm-6 form-group">
                             <label for="">Tipo de caixa:</label>
                             <div class="">
+                                @if ($launch[0]->entries_bank == 0)
                                 <label class="btn btn-primary">
-                                <input type="radio" checked name="entries_bank" value="true"> Banco
-                                </label>
+                                    <input type="radio"  name="entries_bank" value="true"> Banco
+                                    </label>
+                                    <label class="btn btn-primary">
+                                    <input type="radio" checked name="entries_bank" value="false"> Interno
+                                    </label>
+                                @else
                                 <label class="btn btn-primary">
-                                <input type="radio" name="entries_bank" value="false"> Local
-                                </label>
+                                    <input type="radio"  checked name="entries_bank" value="true"> Banco
+                                    </label>
+                                    <label class="btn btn-primary">
+                                    <input type="radio"  name="entries_bank" value="false"> Interno
+                                    </label>
+                                @endif
+                                
                             </div>
                         </div>
                     </div>
