@@ -26,41 +26,81 @@
                     <th>
                         <label for="">Período: {{$perInitial}} até {{$perEnd}}</label>
                     </th>
-                    <th>
-                        <label for="">Saldo: {{number_format($total, 2, ',', '.')}}</label>
-                    </th>
+                    
                 </tr>
             </table>
         </div>
     </div>
     <div class="row">
         <table class="table table-striped table-bordered">
-            
             <thead>
                 <tr>
                     <th>Data</th>
-                    <th>Conta</th>
                     <th>Histórico</th>
-                    <th>Tipo</th>
-                    <th>Valor</th>
-                    <th>Caixa</th>
+                    <th>Receita</th>
+                    <th>Despesa</th>
+                    <th>Saldo</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($entries as $entry)
+                <tr>
+                    <td colspan="4">
+                        <label for="">
+                            Saldo Anterior
+                        </label>
+                    </td>
+                    <td colspan="2">
+                        {{number_format($previousBalance,2,',','.')}}
+                    </td>
+                </tr>
+                @php 
+                $balance = 0;
+                @endphp
+                @foreach ($entries as $key => $entry)
+                
                 <tr>
                     <th style="width: 10%">
                         {{ \Carbon\Carbon::parse($entry->entries_date_launch)->format('d/m/Y')}} 
                     </th>
-                    <td>{{$entry->accountlaunch_name}}</td>
                     <td>{{$entry->accountlaunch_history}}</td>
-                    <td style="width: 10%">{{$entry->account_types_name}}</td>
-                    <td>{{ number_format($entry->entries_value,2,',','.') }}</td>
-                    @if ($entry->entries_bank == 0)
-                        <td style="width: 10%">Interno</td>
+                    <td>
+                        @if ($entry->account_types_name == "Receita")
+                        {{ number_format($entry->entries_value,2,',','.') }}
+                        @endif
+                    </td>
+                    <td>
+                        @if ($entry->account_types_name == "Despesa")
+                        {{ number_format($entry->entries_value,2,',','.') }}
+                        @endif
+                    </td>
+                    <td>
+                    @if ($key == 0)
+                        @if ($entry->account_types_name == "Receita")
+                            @php
+                                $balance = ($balance + $previousBalance + $entry->entries_value);
+                                echo number_format($balance,2,',','.');
+                            @endphp
+                        @else
+                            @php
+                                $balance = ( $balance + $previousBalance - $entry->entries_value);
+                                echo number_format($balance,2,',','.');
+                            @endphp
+                        @endif
                     @else
-                        <td style="width: 10%">Banco</td>
+                        @if ($entry->account_types_name == "Receita")
+                            @php
+                            $balance = ($balance + $entry->entries_value);
+                                //echo $key.'- '.$balance.' - '. $entry->entries_value;
+                                echo number_format($balance,2,',','.');
+                            @endphp
+                        @else
+                            @php
+                                $balance = ( $balance - $entry->entries_value);
+                                echo number_format($balance,2,',','.');
+                            @endphp
+                        @endif
                     @endif
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

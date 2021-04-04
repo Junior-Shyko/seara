@@ -13,6 +13,7 @@ use Validator, Datatables;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Carbon\Carbon;
+use App\AccountType;
 
 class EntryController extends Controller
 {
@@ -73,7 +74,7 @@ class EntryController extends Controller
         $rules = [
             'entries_description' => 'required',
             'entries_id_account' => 'required',
-            'entries_value' => 'required'            
+            'entries_value' => 'required'
         ];
 
         $validator = Validator::make( $request->all(), $rules );
@@ -83,6 +84,7 @@ class EntryController extends Controller
             $messages = $validator->errors()->all();
             return response( ['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422 );
         }
+        
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         $request['entries_date_launch'] = $date_launch;
 
@@ -90,11 +92,12 @@ class EntryController extends Controller
             $reques = Monetary::money_real($request['entries_value']);
             $request['entries_value'] = $reques;
             $entry = Entry::create($request->all());
-
+            $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([
                 'message' => 'Conta lançada',
                 'status' => 'success',
-                'id'=>$entry->entries_id],200);
+                'id'=>$entry->entries_id,
+                'typeAccount' => $name],200);
         } catch (BadResponseException $e) {
             dump($e->getMessage());
         }
@@ -368,19 +371,25 @@ class EntryController extends Controller
 
         $perInitial = base64_decode($dateInit);
         $perEnd = base64_decode($dateEnd);
+        //VALOR DO SALDO ANTERIOR
+        $prevBalan = Monetary::previousBalance($dtinit);
+        $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
+
         $entries = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
         ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
         ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
         ->where('entries_date_launch', '>=', $dtinit)
         ->where('entries_date_launch', '<=', $dtend)
+        ->where('companies.company_id', '=', Auth::user()->user_id_company)
         ->orderBy('entries_date_launch', 'asc')->get();
         
-        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total'));
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultPaperSize' =>  'a4']); 
-        return $pdf->stream();
-        // return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total'));
+        // $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total'));
+        // $pdf->setOptions([
+        //     'isHtml5ParserEnabled' => true,
+        //     'isRemoteEnabled' => true,
+        //     'defaultPaperSize' =>  'a4']); 
+        // return $pdf->stream();
+        //dd($entries);
+        return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
     }
 }

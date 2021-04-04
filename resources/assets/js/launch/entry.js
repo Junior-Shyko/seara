@@ -37,9 +37,8 @@ $(document).ready(function () {
             var api = this.api();
             var sum = 0;
             $( api.table().footer() ).html(
-                sum = api.column( 2, {page:'current'} ).data().sum()                
+                sum = api.column( 2, {page:'current'} ).data().sum()
             );
-            console.log({sum})
           }
     });
     
@@ -53,13 +52,13 @@ $(document).ready(function () {
         dictDefaultMessage: "Arraste seus arquivos para essa área ou click para localizar",
         maxFiles: 4,
         dictMaxFilesExceeded: 'Você nao pode enviar mais arquivo',
-        maxFilesize: 1,
+        maxFilesize: 4,
         dictFileTooBig: 'O Arquivo excedeu o limite máximo permitido',
         clickable: true,
         uploadMultiple: true,
         addRemoveLinks: true,
         dictRemoveFile: 'Remover',
-        acceptedFiles: 'image/png, image/jpeg, application/pdf',
+        acceptedFiles: 'image/*',
         headers: {
             'x-csrf-token': CSRF_TOKEN,
         },
@@ -81,10 +80,11 @@ $(document).ready(function () {
     general();
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
-
         SearaAjax.post('lancar', form, function( response ){
             $("#lancar_conta").modal('hide');
-            $("#modalUploadLaunch").modal('show');
+            if(response.typeAccount == 'Despesa') {
+                $("#modalUploadLaunch").modal('show');
+            }
             $(".idEntry").val(response.id);
             $("#entry-table").DataTable().ajax.reload();
             bankBalance();
@@ -104,7 +104,6 @@ $(document).ready(function () {
         .always(function(){
             console.log('hideModal');
         });
-
     });
 
     $('#modalDeleteComponent').on('show.bs.modal', function (event) {
