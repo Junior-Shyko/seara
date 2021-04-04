@@ -26,7 +26,6 @@
                     <br>
                     <label class="control-label text-primary" id="label_desc_type">. . .</label>
                 </div>
-               
             </div>
             <div class="col-md-12">
                 <div class="form-group">
@@ -50,14 +49,13 @@
                     <div class="form-group" id="diventries_value">
                         <div class="input-group date">
                             <input type="text" class="form-control has-feedback-left"  name="entries_value" id="entries_value" >
-                            
                             <span class="fa fa-money form-control-feedback left"></span>
                         </span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-md-4 col-sm-6 col-xs-12 form-group has-feedback" >
+                {{-- <div class="col-md-4 col-sm-6 col-xs-12 form-group has-feedback" >
                     <label>Caixa</label>
                     <p>
                         <label class="btn btn-primary flat">
@@ -67,9 +65,7 @@
                             <input type="radio" checked name="entries_bank" value="0"> Interno
                         </label>
                     </p>
-                    
-                    
-                </div>
+                </div> --}}
             </div>
            </div>
             <div class="col-md-8 col-sm-8 col-xs-12 form-group has-feedback">

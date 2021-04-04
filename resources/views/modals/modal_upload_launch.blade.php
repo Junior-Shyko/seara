@@ -35,7 +35,7 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">  
                 <span aria-hidden="true">&times;</span>
               </button>
-              <p>Aqui você poderá anexar seus arquivos de recibo, nota fiscal e etc.</p>
+              <p>Aqui você poderá anexar seus arquivos de recibo, nota fiscal e etc. Além de poder enviar até 04 arquivos de um só vez.</p>
           </div>
           <div class="row">
             <form class="dropzone" id="form-upload-entry"  enctype="multipart/form-data">
