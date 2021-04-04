@@ -52,15 +52,16 @@
                             </ul>
                         </li>
                     @endif
-                    {{-- <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
+                    @if(Auth::user()->profile == 'owner')
+                    <li><a><i class="fa fa-list-ul" aria-hidden="true"></i> Recibo <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{{ url('recibo-comum') }}">Comum</a></li>
                             <li><a href="{{url('recibo-empresa')}}">Empresa</a></li>
                             <li><a href="#">R.P.A</a></li>
                         </ul>
-                    </li> --}}
-
-                    {{-- <li>
+                    </li>
+                    
+                    <li>
                         <a data-cy="financing-module">
                             <i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span>
                         </a>
@@ -76,8 +77,8 @@
                                 <a href="{{ url('pagamentos') }}">Pagamentos</a>
                             </li>
                         </ul>
-                    </li> --}}
-
+                    </li>
+                    @endif
                     <li>
                         <a data-cy="report-module">
                             <i class="fa fa-money" aria-hidden="true"></i> Lançamento Caixa <span class="fa fa-chevron-down"></span>
@@ -90,7 +91,7 @@
                             </li>
                         </ul>
                     </li>
-{{--   
+                    @if(Auth::user()->profile == 'owner')
                     <li>
                         <a data-cy="report-module">
                             <i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span>
@@ -99,7 +100,7 @@
                             <li>
                                 <a data-cy="report-debt-and-payment" href="{{ url('relatorio/dividas-e-pagamentos') }}">Dívidas e Pagamentos</a>
                             </li>
-                                           <li><a href="#">Usuário</a></li>--}}
+                            {{--                  <li><a href="#">Usuário</a></li>--}}
                             {{--                  <li><a href="#">Igreja</a></li>--}}
                             {{--                  <li><a>Contrato<span class="fa fa-chevron-down"></span></a>--}}
                             {{--                    <ul class="nav child_menu">--}}
@@ -110,11 +111,10 @@
                             {{--                      <li><a href="#level2_2">Level Two</a>--}}
                             {{--                      </li>--}}
                             {{--                    </ul>--}}
-                            {{--                  </li>
+                            {{--                  </li>--}}
                         </ul>
-                    </li>--}}
-
-
+                    </li>
+                    @endif
                 </ul>
             </div>
 
