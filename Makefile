@@ -59,7 +59,7 @@ build:
 	@bin/build.sh
 
 .PHONY: deploy
-deploy: dbtest tests e2e deployer
+deploy: dbtest tests deployer
 	bin/build.sh
 	bin/dep.sh deploy
 
