@@ -27,12 +27,9 @@ class EntryController extends Controller
         $accounts = AccountLaunch::get();
         $month = Carbon::now()->month;
         $monthPlus = ($month - 1);
-
+        
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-
-        if(count($typeEnd) < 1) {
-            return redirect('launch/account')->with('error' , 'Você foi redirecionado por que para iniciar você deve criar um Tipo de conta');
-        }
+        
         $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
         $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
         $totBanco = ($bankReceita - $bankDespesa);
@@ -268,6 +265,7 @@ class EntryController extends Controller
                 ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
                 ->orderBy('entries.entries_date_launch', 'asc')
                 ->get();
+              
         //dd(DB::getQueryLog());
         return Datatables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {

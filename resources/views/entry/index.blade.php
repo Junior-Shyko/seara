@@ -37,15 +37,15 @@
                 <button class="btn btn-primary pull-right"  data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</button>
             </div>
             <div class="col-md-12">
-                <div class="col-md-4 col-xs-6">
+                <div class="col-md-2 col-xs-6">
                     <label for="">Data Inicial</label>
                     <input type="text" name="dateInitial" class="form-control date-mask" id="dateInitial">
                 </div>
-                <div class="col-md-4 col-xs-6">
+                <div class="col-md-2 col-xs-6">
                     <label for="">Data Final</label>
                     <input type="text" name="dateEnd" class="form-control date-mask" id="dateEnd">
                 </div>
-                <div class="col-md-4 col-sm-12 col-xs-12 form-group">
+                <div class="col-md-8 col-sm-12 col-xs-12 form-group">
                     <div class="row">
                         <div class="col-sm-6 col-xs-6">
                             <label class="col-md-12 col-sm-12 col-xs-12">Pesquisar</label>

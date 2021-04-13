@@ -103,6 +103,14 @@
                     </td>
                 </tr>
                 @endforeach
+                <tr>
+                    <td colspan="2">
+                        <label for="">
+                            Totais do período
+                        </label>
+                        <span>(s.ant + ent + sai)</span>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
