@@ -7,8 +7,8 @@
 <!-- page content -->
 <div class="right_col" role="main">
     <div class="row">
-        @include('msg.message')
         <div class="col-md-12">
+            @include('msg.message')
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Conta <small>Criar conta de lançamento para o caixa</small></h2>
