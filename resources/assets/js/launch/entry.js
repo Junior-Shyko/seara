@@ -26,7 +26,7 @@ $(document).ready(function () {
         {data: 'entries_value', name: 'entries_value'},
         {data: 'entries_id_account', name: 'entries_id_account'},
         {data: 'entries_id_user', name: 'entries_id_user'},
-        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
+        {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
     ];
     $('#entry-table').DataTable({
         processing: true,
@@ -41,6 +41,10 @@ $(document).ready(function () {
             );
           }
     });
+    var table = $('#entry-table').DataTable();
+    table
+        .order(  [ 0, 'asc' ] )
+        .draw();
     
     Dropzone.autoDiscover = false;
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -168,7 +172,7 @@ $(document).ready(function () {
       placeholder: 'Escolha a conta',
       allowClear: true
     });
-    $.datetimepicker.setLocale('pt-BR');
+    //$.datetimepicker.setLocale('pt-BR');
     $('#dateRetroactive').datetimepicker({
         timepicker:false,
         format:'d/m/Y'
@@ -242,7 +246,7 @@ function searchPeriod() {
             {data: 'entries_value', name: 'entries_value'},
             {data: 'entries_id_account', name: 'entries_id_account'},
             {data: 'entries_id_user', name: 'entries_id_user'},
-            {data: 'action', name: 'action', orderable: false}
+            {data: 'action', name: 'action'}
         ];
 
         var table = $('#entry-table').DataTable( {
@@ -258,9 +262,8 @@ function searchPeriod() {
                 var api = this.api();
                 var sum = 0;
                 $( api.table().footer() ).html(
-                    sum = api.column( 2, {page:'current'} ).data().sum()                
+                    sum = api.column( 2, {page:'current'} ).data().sum()
                 );
-                console.log({sum})
               }
         } );
     }
