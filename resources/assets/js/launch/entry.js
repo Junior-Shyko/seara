@@ -172,7 +172,7 @@ $(document).ready(function () {
       placeholder: 'Escolha a conta',
       allowClear: true
     });
-    $.datetimepicker.setLocale('pt-BR');
+    //$.datetimepicker.setLocale('pt-BR');
     $('#dateRetroactive').datetimepicker({
         timepicker:false,
         format:'d/m/Y'

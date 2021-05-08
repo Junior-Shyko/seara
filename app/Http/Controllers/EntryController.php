@@ -384,13 +384,13 @@ class EntryController extends Controller
         ->where('companies.company_id', '=', Auth::user()->user_id_company)
         ->orderBy('entries_date_launch', 'asc')->get();
         
-        // $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total'));
-        // $pdf->setOptions([
-        //     'isHtml5ParserEnabled' => true,
-        //     'isRemoteEnabled' => true,
-        //     'defaultPaperSize' =>  'a4']); 
-        // return $pdf->stream();
+        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total' , 'previousBalance'));
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultPaperSize' =>  'a4']); 
+        return $pdf->stream();
         //dd($entries);
-        return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
+        // return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
     }
 }

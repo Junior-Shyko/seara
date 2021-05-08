@@ -10,7 +10,11 @@
 </style>
 <!-- Example -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
-
+<style>
+    .smallPeriod {
+        font-size: 10px;
+    }
+</style>
 
 @endpush
 @section('main_container')
@@ -24,9 +28,8 @@
             <table class="table">
                 <tr>
                     <th>
-                        <label for="">Período: {{$perInitial}} até {{$perEnd}}</label>
+                        <small class="smallPeriod">Período: {{$perInitial}} até {{$perEnd}}</small>
                     </th>
-                    
                 </tr>
             </table>
         </div>
@@ -37,43 +40,47 @@
                 <tr>
                     <th>Data</th>
                     <th>Histórico</th>
-                    <th>Receita</th>
-                    <th>Despesa</th>
-                    <th>Saldo</th>
+                    <th class="text-center">Receita</th>
+                    <th class="text-center">Despesa</th>
+                    <th class="text-center">Saldo</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="4">
+                    <td colspan="3">
                         <label for="">
                             Saldo Anterior
                         </label>
                     </td>
-                    <td colspan="2">
+                    <td colspan="2"  class="text-right">
                         {{number_format($previousBalance,2,',','.')}}
                     </td>
                 </tr>
                 @php 
                 $balance = 0;
+                $recipes = 0;//receitas
+                $expenses= 0;//despesas
+                $total   = 0;
                 @endphp
                 @foreach ($entries as $key => $entry)
-                
                 <tr>
                     <th style="width: 10%">
                         {{ \Carbon\Carbon::parse($entry->entries_date_launch)->format('d/m/Y')}} 
                     </th>
                     <td>{{$entry->accountlaunch_history}}</td>
-                    <td>
+                    <td class="text-center">
                         @if ($entry->account_types_name == "Receita")
                         {{ number_format($entry->entries_value,2,',','.') }}
+                        @php $recipes = ($recipes + $entry->entries_value); @endphp
                         @endif
                     </td>
-                    <td>
+                    <td class="text-center">
                         @if ($entry->account_types_name == "Despesa")
                         {{ number_format($entry->entries_value,2,',','.') }}
+                        @php $expenses = ($expenses + $entry->entries_value); @endphp
                         @endif
                     </td>
-                    <td>
+                    <td class="text-center">
                     @if ($key == 0)
                         @if ($entry->account_types_name == "Receita")
                             @php
@@ -103,12 +110,27 @@
                     </td>
                 </tr>
                 @endforeach
+                
                 <tr>
                     <td colspan="2">
                         <label for="">
                             Totais do período
+                            <span class="smallPeriod">(s.ant + ent + sai)</span>
                         </label>
-                        <span>(s.ant + ent + sai)</span>
+                        
+                    </td>
+                    <td class="text-center">
+                        @php echo number_format($recipes,2,',','.'); @endphp
+                    </td>
+                    <td class="text-center">
+                        
+                        @php echo number_format($expenses,2,',','.'); @endphp
+                    </td>
+                    <td class="text-center">
+                        @php 
+                            $total = ($previousBalance + $recipes - $expenses);
+                            echo '<strong>'.number_format($total,2,',','.').'</strong>';
+                        @endphp
                     </td>
                 </tr>
             </tbody>
