@@ -391,6 +391,6 @@ class EntryController extends Controller
             'defaultPaperSize' =>  'a4']); 
         return $pdf->stream();
         //dd($entries);
-        // return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
+        //return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
     }
 }
