@@ -13,7 +13,7 @@
     <div class="x_panel">
         @include('msg.message')
         <div class="x_title">
-            <h2>ALTERAR LANÇAMENTO {{$id}}<small>Altere o registro ou os arquivos.</small></h2>
+            <h2>ALTERAR LANÇAMENTO<small>Altere o registro ou os arquivos.</small></h2>
             <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -58,7 +58,7 @@
                             id="entries_value"
                             name="entries_value" value="{{number_format($launch[0]->entries_value,2,',','.')}}">
                         </div>
-                        <div class="col-md-8 col-sm-6 form-group">
+                        {{-- <div class="col-md-8 col-sm-6 form-group">
                             <label for="">Tipo de caixa:</label>
                             <div class="">
                                 @if ($launch[0]->entries_bank == 0)
@@ -78,7 +78,7 @@
                                 @endif
                                 
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
