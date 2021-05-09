@@ -1,7 +1,7 @@
 @extends('layouts.blank')
 @push('stylesheets')
 <!-- Example -->
-<!--<link href=" <link href="{{ asset("css/myFile.min.css") }}" rel="stylesheet">" rel="stylesheet">-->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.11/jquery.datetimepicker.min.css" rel="stylesheet">
 @endpush
 @section('main_container')
 <!-- page content -->
@@ -171,4 +171,5 @@
 </script>
 <script type="text/javascript" language="javascript" src="{{asset('js/launch/entry.min.js')}}"></script>
 {{-- <script type="text/javascript" language="javascript" src="{{asset('js/receipt-common.min.js')}}"></script> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.11/jquery.datetimepicker.full.min.js" integrity="sha512-hDFt+089A+EmzZS6n/urree+gmentY36d9flHQ5ChfiRjEJJKFSsl1HqyEOS5qz7jjbMZ0JU4u/x1qe211534g==" crossorigin="anonymous"></script>
 @endpush
