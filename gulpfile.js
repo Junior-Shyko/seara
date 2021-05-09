@@ -199,7 +199,6 @@ elixir(function(mix) {
         'jquery.maskMoney.js',
         'mask.js',
         'helpers.js',
-        './node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.js',
         './node_modules/lightbox2/dist/js/lightbox.min.js',
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
@@ -208,7 +207,6 @@ elixir(function(mix) {
     mix.styles([
         'basic.min.css',
         'dropzone.min.css',
-        './node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css',
         './node_modules/lightbox2/dist/css/lightbox.min.css',
     ], 'public/css/entry.min.css');
     /**************/
