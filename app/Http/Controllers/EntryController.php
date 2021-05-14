@@ -213,6 +213,10 @@ class EntryController extends Controller
                 $datetime = Carbon::now();
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
                 $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
+
+                if (!file_exists($tmpFilePath)) {
+                    mkdir($tmpFilePath, 777, true);
+                }
                 if(move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext)) {
                     
                     FileLaunch::insert([
