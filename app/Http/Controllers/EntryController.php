@@ -193,50 +193,32 @@ class EntryController extends Controller
 
     public function upload(Request $request) {
         $user = Auth::user();
-        
-        $total = count($_FILES['file']['name']);
-        $totalFile = 0;
         $uploadSuccess = false;
-        // // Loop through each file
-        for( $i=0 ; $i < ($total) ; $i++ ) {
-            $totalFile++;
-          //Get the temp file path
-          $tmpFilePath = $_FILES['file']['tmp_name'][$i];
-            
-          //Make sure we have a file path
-            if ($tmpFilePath != ""){
-            //Setup our new file path
-                $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
-                $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
-               
-                // //Upload the file into the temp dir
-                $datetime = Carbon::now();
-                $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
-                $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
-
-                if (!file_exists($tmpFilePath)) {
-                    mkdir($tmpFilePath, 777, true);
-                }
-                if(move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext)) {
-                    
-                    FileLaunch::insert([
-                        'file_launches_name' => $newNameFile.'.'.$ext, 
-                        'file_launches_id_entry' => $request->idEntry,
-                        'created_at' => $datetime,
-                        'updated_at' => $datetime
-                    ]);
-                    if($totalFile == $total){
-                        $uploadSuccess = true;
-                    }
-                    //return response()->json(['message' => 'success', 'status' => 'success'], 200);
-
-                }
-            }
+        if($request->hasFile('file'))
+        {
+            $newFilePath = $_FILES['file']['name'];
+            $ext = pathinfo($newFilePath, PATHINFO_EXTENSION);
+            $datetime = Carbon::now();
+            $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name']);
+            $newNameFile.'.'.$ext;
+            $upload = $request->file->storeAs('box', $newNameFile.'.'.$ext);
+            FileLaunch::insert([
+                'file_launches_name' => $newNameFile.'.'.$ext, 
+                'file_launches_id_entry' => $request->idEntry,
+                'created_at' => $datetime,
+                'updated_at' => $datetime
+            ]);
+            $uploadSuccess = true;
         }
+        
+        // // Loop through each file
+        
         if($uploadSuccess) {
-            return response()->json(['message' => 'Arquivo enviado com sucesso', 'status' => 'success'], 200);
+            // return response()->json(['message' => 'Arquivo enviado com sucesso', 'status' => 'success'], 200);
+            return redirect()->back()->with('success' , 'Upload alterado com sucesso');
         }else{
-            return response()->json(['message' => 'Ocorreu um erro inesperado, tente novamente mais tarde', 'status' => 'error'], 500);
+            // return response()->json(['message' => 'Ocorreu um erro inesperado, tente novamente mais tarde', 'status' => 'error'], 500);
+            return redirect()->back()->with('Error' , 'Ocorreu um erro inesperado, tente novamente mais tarde');
         }
        
     }
