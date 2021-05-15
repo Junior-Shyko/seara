@@ -55,6 +55,7 @@ task('deploy:storage:folders', function () {
     run('mkdir -p {{release_path}}/storage/framework/sessions');
     run('mkdir -p {{release_path}}/storage/framework/views');
     run('mkdir -p {{release_path}}/storage/logs');
+    run('mkdir -p {{release_path}}/public/storage');
 });
 
 before('deploy:writable', 'deploy:storage:folders');
