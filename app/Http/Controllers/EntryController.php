@@ -17,6 +17,10 @@ use App\AccountType;
 
 class EntryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -204,6 +208,10 @@ class EntryController extends Controller
             
           //Make sure we have a file path
             if ($tmpFilePath != ""){
+                
+                if(!file_exists($tmpFilePath)) {
+                    mkdir($tmpFilePath, 777);
+                }
             //Setup our new file path
                 $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
@@ -212,24 +220,16 @@ class EntryController extends Controller
                 $datetime = Carbon::now();
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
                 $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
-                try {
-                    if(move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext)) {
-                    
-                        FileLaunch::insert([
-                            'file_launches_name' => $newNameFile.'.'.$ext, 
-                            'file_launches_id_entry' => $request->idEntry,
-                            'created_at' => $datetime,
-                            'updated_at' => $datetime
-                        ]);
-                        if($totalFile == $total){
-                            $uploadSuccess = true;
-                        }
-                        // return response()->json(['message' => 'success', 'status' => 'success'], 200);
-    
+                    $file = FileLaunch::insert([
+                        'file_launches_name' => $newNameFile.'.'.$ext, 
+                        'file_launches_id_entry' => $request->idEntry,
+                        'created_at' => $datetime,
+                        'updated_at' => $datetime
+                    ]);
+                    move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext);
+                    if($file){
+                        $uploadSuccess = true;
                     }
-                } catch (\Throwable $th) {
-                    dump($th->getMessage());
-                }
             }
         }
         // die;

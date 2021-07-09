@@ -60,8 +60,20 @@ class HomeController extends Controller
             
             //TOTAL DE USUÁRIOS
             $tot_users      = User::where('user_id_company' , Auth::user()->user_id_company);
-            
-            return view('home_basic' , compact('company' , 'tot_users' ));
+
+            $now = Carbon::now();
+            $company_id = Auth::user()->company->company_id;
+            $tot_recibos = ReceiptCompany::whereMonth('receipt_date', $now->month)
+                          ->whereYear('receipt_date', $now->year)
+                          ->where('receipt_id_company', $company_id)
+                          ->count();
+
+            $valor_recibos = ReceiptCompany::whereMonth('receipt_date', $now->month)
+                          ->whereYear('receipt_date', $now->year)
+                          ->where('receipt_id_company', $company_id)
+                          ->sum('receipt_value');
+
+            return view('home_basic' , compact('tot_recibos' , 'company' , 'tot_users', 'valor_recibos' ));
         }
     }
 
