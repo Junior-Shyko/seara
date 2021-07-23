@@ -48,7 +48,7 @@
                     <label for="">Valor</label>
                     <div class="form-group" id="diventries_value">
                         <div class="input-group date">
-                            <input type="text" class="form-control has-feedback-left"  name="entries_value" id="entries_value" >
+                            <input type="text" class="form-control has-feedback-left money-mask"  name="entries_value" id="entries_value_money-mask" >
                             <span class="fa fa-money form-control-feedback left"></span>
                         </span>
                         </div>
