@@ -193,7 +193,6 @@ class EntryController extends Controller
 
     public function upload(Request $request) {
         $user = Auth::user();
-        
         $total = count($_FILES['file']['name']);
         $totalFile = 0;
         $uploadSuccess = false;
@@ -213,26 +212,33 @@ class EntryController extends Controller
                 $datetime = Carbon::now();
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
                 $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
-                if(move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext)) {
+                try {
+                    if(move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext)) {
                     
-                    FileLaunch::insert([
-                        'file_launches_name' => $newNameFile.'.'.$ext, 
-                        'file_launches_id_entry' => $request->idEntry,
-                        'created_at' => $datetime,
-                        'updated_at' => $datetime
-                    ]);
-                    if($totalFile == $total){
-                        $uploadSuccess = true;
+                        FileLaunch::insert([
+                            'file_launches_name' => $newNameFile.'.'.$ext, 
+                            'file_launches_id_entry' => $request->idEntry,
+                            'created_at' => $datetime,
+                            'updated_at' => $datetime
+                        ]);
+                        if($totalFile == $total){
+                            $uploadSuccess = true;
+                        }
+                        // return response()->json(['message' => 'success', 'status' => 'success'], 200);
+    
                     }
-                    //return response()->json(['message' => 'success', 'status' => 'success'], 200);
-
+                } catch (\Throwable $th) {
+                    dump($th->getMessage());
                 }
             }
         }
+        // die;
         if($uploadSuccess) {
             return response()->json(['message' => 'Arquivo enviado com sucesso', 'status' => 'success'], 200);
+            // return redirect()->back()->with('success' , 'Upload alterado com sucesso');
         }else{
             return response()->json(['message' => 'Ocorreu um erro inesperado, tente novamente mais tarde', 'status' => 'error'], 500);
+            // return redirect()->back()->with('Error' , 'Ocorreu um erro inesperado, tente novamente mais tarde');
         }
        
     }

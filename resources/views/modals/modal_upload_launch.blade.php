@@ -38,7 +38,13 @@
               <p>Aqui você poderá anexar seus arquivos de recibo, nota fiscal e etc. Além de poder enviar até 04 arquivos de um só vez.</p>
           </div>
           <div class="row">
-            <form class="dropzone" id="form-upload-entry"  enctype="multipart/form-data">
+            {{-- <form action="{{ url('caixa/upload')}}" method="POST"  enctype="multipart/form-data">
+              {{ csrf_field() }}
+              <input type="file" name="file[]">
+              <input type="text" value="{{isset($id) ? $id : '' }}" name="idEntry">
+              <button type="submit">Enviar</button>
+            </form> --}}
+            <form method="POST" class="dropzone" id="form-upload-entry"  enctype="multipart/form-data">
               {{ csrf_field() }}
               <input type="hidden" name="idEntry" class="idEntry">
             </form>

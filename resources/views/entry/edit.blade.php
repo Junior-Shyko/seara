@@ -141,12 +141,13 @@
                             @foreach ($files as $file)
                             <tr>
                                 <td>
-                                    <a href="{{url('/img/images/'.$file->file_launches_name)}}" target="_blanck">
-                                        <img src="{{url('/img/images/'.$file->file_launches_name)}}" class="img_edit">
+                                    <a href="{{url('img/images/'.$file->file_launches_name)}}" target="_blanck">
+                                        <img src="{{url('img/images/'.$file->file_launches_name)}}" class="img_edit">
                                     </a>
                                 </td>
                                 <td>
                                     {{$file->created_at}}
+                                    
                                 </td>
                                 <td>
                                     <a href="#modalDeleteComponent" data-toggle="modal" data-id="{{$file->id}}" class="btn btn-danger">
