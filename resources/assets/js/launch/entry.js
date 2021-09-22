@@ -31,6 +31,7 @@ $(document).ready(function () {
     $('#entry-table').DataTable({
         processing: true,
         serverSide: true,
+        pageLength: 100,
         ajax: SearaApp.baseURL+'all-launch',
         columns: colunas,
         drawCallback: function () {
@@ -251,10 +252,12 @@ function searchPeriod() {
 
         var table = $('#entry-table').DataTable( {
             paging: false,
-            retrieve: true
+            retrieve: true,
+            pageLength: 100
         } );
         table.destroy();
-        table = $('#entry-table').DataTable( {            
+        table = $('#entry-table').DataTable( {
+            pageLength: 100,
             ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
             columns: colunas,
             order: [[ 0, "asc" ]],
