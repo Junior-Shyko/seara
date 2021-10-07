@@ -290,7 +290,7 @@ class EntryController extends Controller
             ->addColumn('action', function ($mov) {
                 return '<a href="'.url('lancar/'.$mov->entries_id.'/edit').'" class="btn btn-primary btn-xs" type="button" title="Editar Registro">
                 <i class="fa fa-edit"></i></a>
-                <button class="btn btn-dark btn-xs" type="button" title="Informação do Registro"
+                <button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
                 data-toggle="modal"
                 data-id="'.$mov->entries_id.'"
                 data-day="'.$mov->entries_day.'"
@@ -389,7 +389,7 @@ class EntryController extends Controller
         ->where('entries_date_launch', '<=', $dtend)
         ->where('companies.company_id', '=', Auth::user()->user_id_company)
         ->orderBy('entries_date_launch', 'asc')->get();
-        
+      
         $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total' , 'previousBalance'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
