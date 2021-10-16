@@ -19,7 +19,7 @@ class EntryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -288,8 +288,16 @@ class EntryController extends Controller
                 return $mov->account_types_name;
             })
             ->addColumn('action', function ($mov) {
-                return '<a href="'.url('lancar/'.$mov->entries_id.'/edit').'" class="btn btn-primary btn-xs" type="button" title="Editar Registro">
-                <i class="fa fa-edit"></i></a>
+                $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
+                return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
+                data-toggle="modal"
+                data-id="'.$mov->entries_id.'"
+                data-date="'.$dtLauch.'"
+                data-his="'.$mov->accountlaunch_history.'"
+                data-val="'.$mov->entries_value.'"
+                data-typ="'.$mov->account_types_name.'"
+                data-target="#modalEditLauch">
+                <i class="fa fa-edit" aria-hidden="true"></i></button>
                 <button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
                 data-toggle="modal"
                 data-id="'.$mov->entries_id.'"
@@ -398,5 +406,20 @@ class EntryController extends Controller
         return $pdf->stream();
         //dd($entries);
         //return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
+    }
+
+    /**
+     * Retorno para modal de edição de lançamento
+     *
+     * @return void
+     */
+    public function showApi($id) {
+        $launch =  Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
+        ->join('users', 'entries.entries_id_user', '=', 'users.id')
+        ->where('entries.entries_id','=',$id)
+        ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+        ->get();
+        return $launch;
     }
 }
