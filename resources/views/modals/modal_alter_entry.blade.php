@@ -14,7 +14,7 @@
               <label class="control-label col-md-3 col-sm-3 col-xs-12">Alterar Dízimo 
               </label>
               <div class="col-md-6 col-sm-6 col-xs-12">
-                <input type="text" required="required" name="entries_decimate" id=alter_entries_decimate" class="form-control col-md-7 col-xs-12">
+                <input type="text" required="required" name="entries_decimate" id="alter_entries_decimate" class="form-control col-md-7 col-xs-12">
               </div>
             </div>
           @endif

@@ -281,25 +281,27 @@ function searchPeriod() {
 var dtInit = '';
 var dtEnd = '';
 
-// $("#dateInitial").blur(function (e) { 
-//     e.preventDefault(); 
-    
-//     console.log({dtInit})
-//     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
-// });
-
-// $("#dateEnd").blur(function (e) { 
-//     e.preventDefault(); 
-    
-//     console.log({dtEnd})
-//     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
-// });
- function showReport() {
+function showReport() {
     dtInit = btoa($("#dateInitial").val()); 
     dtEnd = btoa($("#dateEnd").val()); 
     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
- }
+}
 
+/** Modal de alterar lançamento 01/10/2020*/
+$('#modalEditLauch').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    console.log(button);
+    $("#dateLaunchEdit").val(button.data('date'));
+    $("#entriesDescriptionEdit").val(button.data('his'));
+    $("#entriesValueEdit").val(button.data('val'));
+    $("#labelDescType").html(button.data('typ'));
+
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    // var modal = $(this)
+    // modal.find('.modal-title').text('New message to ' + recipient)
+    // modal.find('.modal-body input').val(recipient)
+})
 
 
 

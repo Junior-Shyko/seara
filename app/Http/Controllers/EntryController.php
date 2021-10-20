@@ -293,7 +293,7 @@ class EntryController extends Controller
                 data-toggle="modal"
                 data-id="'.$mov->entries_id.'"
                 data-date="'.$dtLauch.'"
-                data-his="'.$mov->accountlaunch_history.'"
+                data-his="'.$mov->entries_description.'"
                 data-val="'.$mov->entries_value.'"
                 data-typ="'.$mov->account_types_name.'"
                 data-target="#modalEditLauch">
