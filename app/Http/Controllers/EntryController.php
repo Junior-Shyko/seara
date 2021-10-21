@@ -132,6 +132,7 @@ class EntryController extends Controller
         ->where('entries.entries_id','=',$id)
         ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
         ->get();
+
         $files = FileLaunch::where('file_launches_id_entry','=',$id)->get();
         $accounts = AccountLaunch::get();
         return view('entry.edit', compact('id','launch', 'files', 'accounts'));
@@ -268,7 +269,7 @@ class EntryController extends Controller
                 ->where('entries.entries_date_launch','>=', $dtIni)
                 ->where('entries.entries_date_launch','<=', $dtEnd)
                 ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
-                ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
+                ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name', 'account_launches.id as idAccontLaunch', 'account_launches.accountlaunch_name')
                 ->orderBy('entries.entries_date_launch', 'asc')
                 ->get();
               
@@ -296,6 +297,8 @@ class EntryController extends Controller
                 data-his="'.$mov->entries_description.'"
                 data-val="'.$mov->entries_value.'"
                 data-typ="'.$mov->account_types_name.'"
+                data-idlau="'.$mov->idAccontLaunch.'"
+                data-namel="'.$mov->accountlaunch_name.'"
                 data-target="#modalEditLauch">
                 <i class="fa fa-edit" aria-hidden="true"></i></button>
                 <button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
@@ -351,7 +354,7 @@ class EntryController extends Controller
             return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
            }
         }
-    }
+}
 
     public function bank() {
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
