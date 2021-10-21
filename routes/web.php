@@ -98,9 +98,10 @@ Route::group(['prefix' => 'launch'], function () {
     Route::get('account/all' , 'AccountLaunchController@getDataTable');
     Route::put('account/{id}' , 'AccountLaunchController@update');
     Route::post('account/delete' , 'AccountLaunchController@destroy');
-    Route::get('account/search/{id}' , 'AccountLaunchController@search');
-
+    Route::get('account/search/{id}' , 'AccountLaunchController@search');    
 });
+// CONTA DE LANCAMENTO
+Route::get('account/launch/all', 'AccountLaunchController@getAccountLaunch');
 
 
 // Categoria de receitas

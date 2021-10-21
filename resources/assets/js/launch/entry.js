@@ -5,7 +5,7 @@ $(document).ready(function () {
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-   
+    
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
         return this.flatten().reduce( function ( a, b ) {
@@ -107,7 +107,7 @@ $(document).ready(function () {
             console.log(jqXHR);
         })
         .always(function(){
-            console.log('hideModal');
+            //console.log('hideModal');
         });
     });
 
@@ -287,20 +287,36 @@ function showReport() {
     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
 }
 
-/** Modal de alterar lançamento 01/10/2020*/
+/** Modal de alterar lançamento*/
 $('#modalEditLauch').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
-    console.log(button);
     $("#dateLaunchEdit").val(button.data('date'));
     $("#entriesDescriptionEdit").val(button.data('his'));
     $("#entriesValueEdit").val(button.data('val'));
     $("#labelDescType").html(button.data('typ'));
 
-    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-    // var modal = $(this)
-    // modal.find('.modal-title').text('New message to ' + recipient)
-    // modal.find('.modal-body input').val(recipient)
+    $.get(SearaApp.baseURL+'account/launch/all', function (data, textStatus, jqXHR) {
+        var dataOptions = {
+            id: button.data('idlau'),
+            text: button.data('namel')
+        };
+
+        var newOption = new Option(dataOptions.text, dataOptions.id, false, false);
+        $('#cod_accountEdit').append(newOption).trigger('change');
+        var accontLauntAll = [];
+        $.each(data, function (indexInArray, el) { 
+            accontLauntAll.push({'id': el.id, 'text': el.text});
+        });
+
+        $('#cod_accountEdit').select2({
+            data: accontLauntAll
+        }) 
+    });
+})
+
+$('#modalEditLauch').on('hidden.bs.modal', function (e) {
+    //LIMPANDO O SELECT PARA PROXIMO MODAL
+    $('#cod_accountEdit').empty();
 })
 
 
