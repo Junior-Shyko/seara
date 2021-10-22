@@ -147,6 +147,7 @@ class EntryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $val = Monetary::money_real($request['entries_value']);
         $request['entries_value'] = $val;
         $rules = [
@@ -168,10 +169,12 @@ class EntryController extends Controller
         $input = $request->all();
         $input = $request->except('_method' , '_token');
         try {
+            
             Entry::where('entries_id' , $id)->update($input);
-            return redirect()->back()->with('success' , 'Lançamento alterado com sucesso');
+            return response()->json(['message' => 'success'], 200);
         } catch (Exception $e) {
-            return redirect()->back()->with('error' ,  'Ocorreu um erro');
+            return response()->json(['message' => 'error'], 400);
+            //return redirect()->back()->with('error' ,  'Ocorreu um erro');
         }
     }
 

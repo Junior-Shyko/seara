@@ -46,7 +46,7 @@
             </form> --}}
             <form method="POST" class="dropzone" id="form-upload-entry"  enctype="multipart/form-data">
               {{ csrf_field() }}
-              <input type="hidden" name="idEntry" class="idEntry">
+              <input type="text" name="idEntry" class="idEntry">
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">

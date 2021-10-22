@@ -20,33 +20,6 @@ $(document).ready(function () {
         }, 0 );
     } );
 
-    let colunas = [
-        {data: 'entries_date_launch', name: 'entries_date_launch'},
-        {data: 'entries_description', name: 'entries_description'},
-        {data: 'entries_value', name: 'entries_value'},
-        {data: 'entries_id_account', name: 'entries_id_account'},
-        {data: 'entries_id_user', name: 'entries_id_user'},
-        {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
-    ];
-    $('#entry-table').DataTable({
-        processing: true,
-        serverSide: true,
-        pageLength: 100,
-        ajax: SearaApp.baseURL+'all-launch',
-        columns: colunas,
-        drawCallback: function () {
-            var api = this.api();
-            var sum = 0;
-            $( api.table().footer() ).html(
-                sum = api.column( 2, {page:'current'} ).data().sum()
-            );
-          }
-    });
-    var table = $('#entry-table').DataTable();
-    table
-        .order(  [ 0, 'asc' ] )
-        .draw();
-    
     Dropzone.autoDiscover = false;
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
     var idEntry = $("#idEntry").val();
@@ -79,6 +52,9 @@ $(document).ready(function () {
             });
         }
     }); 
+    //RETORNO DOS LANÇAMENTOS
+    getLaunch();
+
     //valores do caixa banco
     bankBalance();
     internalBalance();
@@ -128,10 +104,9 @@ $(document).ready(function () {
       var modal = $(this)
       modal.find('.idEntry').val(id);
     })
-    
-    $('#modalInfoLaunch').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) 
-        var id = button.data('id')
+    //ID DO LANÇAMENTO
+        
+    function getInfolaunch(id, nameDivFile) {
         $.get('info-launch/'+id,
         function (data, textStatus, jqXHR) { 
             $("#linkEdit").attr('href', SearaApp.baseURL+ 'lancar/' +data[0].entries_id+'/edit');
@@ -145,12 +120,21 @@ $(document).ready(function () {
                 $.each(data, function (indexInArray, valueOfElement) { 
                     if(typeof valueOfElement.file_launches_name !== 'undefined'){
                         console.log(typeof valueOfElement.file_launches_name);
-                        $("#filesEntri").append('<div class="col-md-6 col-xs-12">'+
+                        $("#"+nameDivFile).append('<div class="col-md-6 col-xs-12">'+
+                        '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
+
+                        $("#filesEntriEdit").append('<div class="col-md-6 col-xs-12">'+
                         '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
                     }
                 });
             }
         );
+    }
+
+    $('#modalInfoLaunch').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var id = button.data('id');
+        getInfolaunch(id, 'filesEntri');
     })
     $('#modalInfoLaunch').on('hidden.bs.modal', function (e) {
         $("#filesEntri div").remove();
@@ -188,6 +172,41 @@ $(document).ready(function () {
         format:'d/m/Y'
     });
 });
+
+function getLaunch() {
+    let colunas = [
+        {data: 'entries_date_launch', name: 'entries_date_launch'},
+        {data: 'entries_description', name: 'entries_description'},
+        {data: 'entries_value', name: 'entries_value'},
+        {data: 'entries_id_account', name: 'entries_id_account'},
+        {data: 'entries_id_user', name: 'entries_id_user'},
+        {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
+    ];
+    var table = $('#entry-table').DataTable( {
+        paging: false,
+        retrieve: true,
+        pageLength: 100
+    } );
+    table.destroy();
+    table = $('#entry-table').DataTable({
+        processing: true,
+        serverSide: true,
+        pageLength: 100,
+        ajax: SearaApp.baseURL+'all-launch',
+        columns: colunas,
+        drawCallback: function () {
+            var api = this.api();
+            var sum = 0;
+            $( api.table().footer() ).html(
+                sum = api.column( 2, {page:'current'} ).data().sum()
+            );
+          }
+    });
+    var table = $('#entry-table').DataTable();
+    table
+        .order(  [ 0, 'asc' ] )
+        .draw();
+}
 
 function bankBalance() {
     $.ajax({
@@ -289,11 +308,15 @@ function showReport() {
 
 /** Modal de alterar lançamento*/
 $('#modalEditLauch').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget) // Button that triggered the modal
+    var button = $(event.relatedTarget);
     $("#dateLaunchEdit").val(button.data('date'));
     $("#entriesDescriptionEdit").val(button.data('his'));
     $("#entriesValueEdit").val(button.data('val'));
     $("#labelDescType").html(button.data('typ'));
+    $("#idLaunchEdit").val(button.data('id'));
+
+    $("#btnShowModalUpload").attr('data-id', button.data('id'));
+
 
     $.get(SearaApp.baseURL+'account/launch/all', function (data, textStatus, jqXHR) {
         var dataOptions = {
@@ -318,6 +341,28 @@ $('#modalEditLauch').on('hidden.bs.modal', function (e) {
     //LIMPANDO O SELECT PARA PROXIMO MODAL
     $('#cod_accountEdit').empty();
 })
+
+$("#btnEditLaunch").click(function (e) { 
+    e.preventDefault();
+    var form = $("#formEditLaunch").serialize();
+    console.log(form);
+    var idLaunch = $("#idLaunchEdit").val();
+    $.ajax({
+        type: "POST",
+        url: SearaApp.baseURL+'lancar/'+idLaunch,
+        data: form,
+        dataType: "json",
+        success: function (response) {
+            getLaunch();
+            new PNotify({
+                title: 'Sucesso',
+                text: 'Lançamento alterado',
+                type: 'success',
+                styling: 'bootstrap3'
+            });
+        }
+    });
+});
 
 
 
