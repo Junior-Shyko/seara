@@ -98,12 +98,18 @@ $(document).ready(function () {
         modal.find('#idDelete').val(id)
     })
 
-    $('#modalUploadLaunch').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget)
-      var id = button.data('id') 
-      var modal = $(this)
-      modal.find('.idEntry').val(id);
-    })
+    // $('#modalUploadLaunch').on('show.bs.modal', function (event) {
+    //   var button = $(event.relatedTarget)
+    //   var id = button.data('id') 
+    //   var modal = $(this)
+    //   modal.find('.idEntry').val(id);
+    // })
+
+    // $('#modalUploadLaunch').on('hidden.bs.modal', function (event) {
+    //     var modal = $(this)
+    //     modal.find('.idEntry').val(null);
+    //   })
+
     //ID DO LANÇAMENTO
         
     function getInfolaunch(id, nameDivFile) {
@@ -314,9 +320,10 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
     $("#entriesValueEdit").val(button.data('val'));
     $("#labelDescType").html(button.data('typ'));
     $("#idLaunchEdit").val(button.data('id'));
-
+    console.log('id', button.data('id'));
     $("#btnShowModalUpload").attr('data-id', button.data('id'));
-
+    //ADICIONANDO O ID DO LANÇAMENTO AO MODAL DE UPLOAD DE ARQUIVOS
+    $('.idEntry').val(button.data('id'));
 
     $.get(SearaApp.baseURL+'account/launch/all', function (data, textStatus, jqXHR) {
         var dataOptions = {
@@ -340,6 +347,7 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
 $('#modalEditLauch').on('hidden.bs.modal', function (e) {
     //LIMPANDO O SELECT PARA PROXIMO MODAL
     $('#cod_accountEdit').empty();
+    $(this).removeData();
 })
 
 $("#btnEditLaunch").click(function (e) { 
@@ -363,6 +371,15 @@ $("#btnEditLaunch").click(function (e) {
         }
     });
 });
+
+//AO CLICAR NO ADD UPLOAD O MODAL DE EDIÇÃO É OCUTADO
+$("#btnShowModalUpload").click(function (e) { 
+    e.preventDefault();
+    $("#modalEditLauch").modal('hide');
+    // $("#modalUploadLaunch").modal('show');
+});
+
+
 
 
 

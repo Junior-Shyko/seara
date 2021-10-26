@@ -1,5 +1,5 @@
 <!-- Modal de Edoção de Lançamento-->
-<div class="modal fade" id="modalEditLauch" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modalEditLauch" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
         <div class="modal-header">
