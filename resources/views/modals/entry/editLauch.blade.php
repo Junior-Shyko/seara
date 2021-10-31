@@ -77,10 +77,24 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-12">
+                    <hr>
+                </div>
+            </div>
+            <div class="row">
                 <div class="table-responsive">
                     <div class="col-md-12 col-xs-12">
-                        <label class="badge">Arquivos</label>
-                        <div id="filesEntriEdit"></div>
+                        {{-- <label class="badge">Arquivos</label>
+                        <div id="filesEntriEdit"></div> --}}
+                        <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th>Arquivo</th>
+                                <th>Data</th>
+                              </tr>
+                            </thead>
+                            <tbody id="tbodyFilesEntriEdit"></tbody>
+                          </table>
                     </div>
                 </div>
             </div>

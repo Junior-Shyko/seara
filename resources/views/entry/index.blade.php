@@ -124,7 +124,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <ul class="list-group">
                             <li class="list-group-item day">Dia:</li>
                             <li class="list-group-item his">Histórico:</li>
@@ -133,9 +133,15 @@
                             <li class="list-group-item per">Criado:</li>
                         </ul>
                     </div>
-                    <div class="col-md-8">
-                        <div class="col-md-12">
-                            <label class="badge">Arquivos</label>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <label class="badge">Todos arquivos</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="" class="btn btn-danger pull-right">Excluir arquivos</a>
                         </div>
                         <div id="filesEntri">
                         </div>

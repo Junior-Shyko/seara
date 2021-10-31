@@ -41,11 +41,11 @@ $(document).ready(function () {
             'x-csrf-token': CSRF_TOKEN,
         },
         init: function () {
-            this.on("success", function (file, response) {
+            this.on("success", function (_file, response) {
                 console.log(response);
                 notify.response(response);
             });
-            this.on("error", function (file, error, xhr) {
+            this.on("error", function (file, error, _xhr) {
                 console.log({file})
                 console.log({error})
                 console.log({hr})
@@ -114,7 +114,7 @@ $(document).ready(function () {
         
     function getInfolaunch(id, nameDivFile) {
         $.get('info-launch/'+id,
-        function (data, textStatus, jqXHR) { 
+        function (data, _textStatus, _jqXHR) { 
             $("#linkEdit").attr('href', SearaApp.baseURL+ 'lancar/' +data[0].entries_id+'/edit');
             var dt = dataAtualFormatada(data[0].createEntry);
             $(".day").html('Dia: '+dt);
@@ -123,14 +123,15 @@ $(document).ready(function () {
             $(".account").html('Conta: '+data[0].accountlaunch_name);
             $(".type").html('Dia: '+data[0].account_types_name);
             $(".per").html('Por: '+data[0].nameUser);
-                $.each(data, function (indexInArray, valueOfElement) { 
+                $.each(data, function (_indexInArray, valueOfElement) { 
                     if(typeof valueOfElement.file_launches_name !== 'undefined'){
                         console.log(typeof valueOfElement.file_launches_name);
                         $("#"+nameDivFile).append('<div class="col-md-6 col-xs-12">'+
                         '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
 
-                        $("#filesEntriEdit").append('<div class="col-md-6 col-xs-12">'+
-                        '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
+                        
+                        // $("#filesEntriEdit").append('<div class="col-md-6 col-xs-12">'+
+                        // '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
                     }
                 });
             }
@@ -142,11 +143,11 @@ $(document).ready(function () {
         var id = button.data('id');
         getInfolaunch(id, 'filesEntri');
     })
-    $('#modalInfoLaunch').on('hidden.bs.modal', function (e) {
+    $('#modalInfoLaunch').on('hidden.bs.modal', function (_e) {
         $("#filesEntri div").remove();
     })
 
-    $("#cod_account").change(function(event) {
+    $("#cod_account").change(function(_event) {
     hideDivs();
     	/* Act on the event */
         var codAccount = $("#cod_account").val();
@@ -312,6 +313,27 @@ function showReport() {
     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
 }
 
+function getFiles(id) {
+    $.get(SearaApp.baseURL+'/info-launch/'+id, function (data, textStatus, jqXHR) {
+        $.each(data, function (index, val) { 
+            console.log(val.file_launches_name)
+            //url da imagem
+            var imgPublic = SearaApp.assetURL+'img/images/';
+            //formato de data brasileiro
+            var dtBr = dataAtualFormatada(val.createadFiles);
+            if(val.hasOwnProperty('file_launches_name')) {
+                $("#tbodyFilesEntriEdit").append('<tr>'+
+                '<td style="width: 20%">'+
+                        '<a href="'+SearaApp.baseURL+'/img/images/'+val.file_launches_name+'" data-lightbox="roadtrip" data-title="Conta: '+val.entries_description+'"> <img src="'+imgPublic+val.file_launches_name+'" style="width: 80%"> </a>'+
+                    '</td>'+
+                    '<td>'+dtBr+'</td>'+
+                '</tr>');
+            }
+           
+        });
+    });
+}
+
 /** Modal de alterar lançamento*/
 $('#modalEditLauch').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
@@ -325,7 +347,7 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
     //ADICIONANDO O ID DO LANÇAMENTO AO MODAL DE UPLOAD DE ARQUIVOS
     $('.idEntry').val(button.data('id'));
 
-    $.get(SearaApp.baseURL+'account/launch/all', function (data, textStatus, jqXHR) {
+    $.get(SearaApp.baseURL+'account/launch/all', function (data, _textStatus, _jqXHR) {
         var dataOptions = {
             id: button.data('idlau'),
             text: button.data('namel')
@@ -334,20 +356,22 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
         var newOption = new Option(dataOptions.text, dataOptions.id, false, false);
         $('#cod_accountEdit').append(newOption).trigger('change');
         var accontLauntAll = [];
-        $.each(data, function (indexInArray, el) { 
+        $.each(data, function (_indexInArray, el) { 
             accontLauntAll.push({'id': el.id, 'text': el.text});
         });
 
         $('#cod_accountEdit').select2({
             data: accontLauntAll
         }) 
+        getFiles(button.data('id'))
     });
 })
 
-$('#modalEditLauch').on('hidden.bs.modal', function (e) {
+$('#modalEditLauch').on('hidden.bs.modal', function (_e) {
     //LIMPANDO O SELECT PARA PROXIMO MODAL
     $('#cod_accountEdit').empty();
     $(this).removeData();
+    $("#tbodyFilesEntriEdit").empty();
 })
 
 $("#btnEditLaunch").click(function (e) { 
@@ -360,7 +384,7 @@ $("#btnEditLaunch").click(function (e) {
         url: SearaApp.baseURL+'lancar/'+idLaunch,
         data: form,
         dataType: "json",
-        success: function (response) {
+        success: function (_response) {
             getLaunch();
             new PNotify({
                 title: 'Sucesso',
