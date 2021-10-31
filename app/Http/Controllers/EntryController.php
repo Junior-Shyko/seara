@@ -335,7 +335,7 @@ class EntryController extends Controller
             ->join('users', 'entries.entries_id_user', '=', 'users.id')
             ->join('file_launches', 'file_launches.file_launches_id_entry','=','entries.entries_id')
             ->where('entries.entries_id','=',$id)
-            ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+            ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser', 'file_launches.created_at as createadFiles')
             ->get();
         }else{
             $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
