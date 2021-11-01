@@ -323,6 +323,7 @@ function getFiles(id) {
             var dtBr = dataAtualFormatada(val.createadFiles);
             if(val.hasOwnProperty('file_launches_name')) {
                 $("#tbodyFilesEntriEdit").append('<tr>'+
+                '<td><input type="checkbox" name="checkFilesLaunch[]" value="'+val.idFileLaunch+'"></td>'+
                 '<td style="width: 20%">'+
                         '<a href="'+SearaApp.baseURL+'/img/images/'+val.file_launches_name+'" data-lightbox="roadtrip" data-title="Conta: '+val.entries_description+'"> <img src="'+imgPublic+val.file_launches_name+'" style="width: 80%"> </a>'+
                     '</td>'+
@@ -401,6 +402,21 @@ $("#btnShowModalUpload").click(function (e) {
     e.preventDefault();
     $("#modalEditLauch").modal('hide');
     // $("#modalUploadLaunch").modal('show');
+});
+
+$("#btnTrashLaunch").click(function (e) { 
+    e.preventDefault();
+    var form = $("#formFilesLaunch").serialize();
+    console.log({form})
+    $.ajax({
+        type: "POST",
+        url: SearaApp.baseURL+'api/deleteFiles',
+        data: form,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+        }
+    });
 });
 
 

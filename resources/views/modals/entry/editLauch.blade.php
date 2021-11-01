@@ -86,16 +86,33 @@
                     <div class="col-md-12 col-xs-12">
                         {{-- <label class="badge">Arquivos</label>
                         <div id="filesEntriEdit"></div> --}}
+                        <form id="formFilesLaunch">
                         <table class="table table-striped">
                             <thead>
                               <tr>
+                                <th>#</th>
                                 <th>Arquivo</th>
                                 <th>Data</th>
                               </tr>
                             </thead>
                             <tbody id="tbodyFilesEntriEdit"></tbody>
-                          </table>
+                        </table>
+                        </form>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="modal-footer">
+                    <input type="hidden" name="idLaunchEdit" id="idLaunchEdit">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-close"></i>
+                        Sair
+                    </button>
+                    <button type="button" class="btn btn-danger pull-left" id="btnTrashLaunch">
+                        <i class="fa fa-trash"></i>
+                        Excluir marcado
+                    </button>
+                    <hr>
                 </div>
             </div>
         </div>

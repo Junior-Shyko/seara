@@ -90,6 +90,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-interno' , 'EntryController@internal');
     Route::get('saldo-geral' , 'EntryController@general');
     Route::get('lancar/{id}/show', 'EntryController@showApi');
+    Route::post('deleteFiles', 'EntryController@deleteFilesLaunch');
 });
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
