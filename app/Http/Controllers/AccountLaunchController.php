@@ -172,4 +172,9 @@ class AccountLaunchController extends Controller
             return response()->json($e->getMessage());
         }
     }
+
+    public function getAccountLaunch() {
+        $accountLaunch = AccountLaunch::select('id','accountlaunch_name as text')->get();
+        return $accountLaunch;
+    }
 }

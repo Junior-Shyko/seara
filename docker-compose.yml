@@ -28,7 +28,7 @@ services:
     depends_on:
       - php
     ports:
-      - 91:80
+      - 8000:80
     environment:
       - NGINX_HOST=seara.localhost
       - NGINX_ROOT=/code/public
