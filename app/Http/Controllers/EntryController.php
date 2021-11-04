@@ -433,6 +433,13 @@ class EntryController extends Controller
      * Excluir arquivos
      */
     public function deleteFilesLaunch(Request $request) {
-        dd($request->all());
+        foreach ($request->checkFilesLaunch as $key => $value) {
+            $fil = FileLaunch::where('id',$value)->delete();
+        }
+        if($fil) {
+            return response()->json(['message' => 'success', 'status' => 200], 200);
+        }else{
+            return response()->json(['message' => 'Ocorreu um erro inexperado'], 500);
+        }
     }
 }
