@@ -89,6 +89,8 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-banco' , 'EntryController@bank');
     Route::get('saldo-interno' , 'EntryController@internal');
     Route::get('saldo-geral' , 'EntryController@general');
+    Route::get('lancar/{id}/show', 'EntryController@showApi');
+    Route::post('deleteFiles', 'EntryController@deleteFilesLaunch');
 });
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
@@ -97,9 +99,10 @@ Route::group(['prefix' => 'launch'], function () {
     Route::get('account/all' , 'AccountLaunchController@getDataTable');
     Route::put('account/{id}' , 'AccountLaunchController@update');
     Route::post('account/delete' , 'AccountLaunchController@destroy');
-    Route::get('account/search/{id}' , 'AccountLaunchController@search');
-
+    Route::get('account/search/{id}' , 'AccountLaunchController@search');    
 });
+// CONTA DE LANCAMENTO
+Route::get('account/launch/all', 'AccountLaunchController@getAccountLaunch');
 
 
 // Categoria de receitas

@@ -17,6 +17,10 @@ use App\AccountType;
 
 class EntryController extends Controller
 {
+    public function __construct()
+    {
+        //$this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -128,6 +132,7 @@ class EntryController extends Controller
         ->where('entries.entries_id','=',$id)
         ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
         ->get();
+
         $files = FileLaunch::where('file_launches_id_entry','=',$id)->get();
         $accounts = AccountLaunch::get();
         return view('entry.edit', compact('id','launch', 'files', 'accounts'));
@@ -142,6 +147,7 @@ class EntryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         $val = Monetary::money_real($request['entries_value']);
         $request['entries_value'] = $val;
         $rules = [
@@ -163,10 +169,12 @@ class EntryController extends Controller
         $input = $request->all();
         $input = $request->except('_method' , '_token');
         try {
+            
             Entry::where('entries_id' , $id)->update($input);
-            return redirect()->back()->with('success' , 'Lançamento alterado com sucesso');
+            return response()->json(['message' => 'success'], 200);
         } catch (Exception $e) {
-            return redirect()->back()->with('error' ,  'Ocorreu um erro');
+            return response()->json(['message' => 'error'], 400);
+            //return redirect()->back()->with('error' ,  'Ocorreu um erro');
         }
     }
 
@@ -204,6 +212,10 @@ class EntryController extends Controller
             
           //Make sure we have a file path
             if ($tmpFilePath != ""){
+                
+                if(!file_exists($tmpFilePath)) {
+                    mkdir($tmpFilePath, 777);
+                }
             //Setup our new file path
                 $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
@@ -212,24 +224,16 @@ class EntryController extends Controller
                 $datetime = Carbon::now();
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
                 $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
-                try {
-                    if(move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext)) {
-                    
-                        FileLaunch::insert([
-                            'file_launches_name' => $newNameFile.'.'.$ext, 
-                            'file_launches_id_entry' => $request->idEntry,
-                            'created_at' => $datetime,
-                            'updated_at' => $datetime
-                        ]);
-                        if($totalFile == $total){
-                            $uploadSuccess = true;
-                        }
-                        // return response()->json(['message' => 'success', 'status' => 'success'], 200);
-    
+                    $file = FileLaunch::insert([
+                        'file_launches_name' => $newNameFile.'.'.$ext, 
+                        'file_launches_id_entry' => $request->idEntry,
+                        'created_at' => $datetime,
+                        'updated_at' => $datetime
+                    ]);
+                    move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext);
+                    if($file){
+                        $uploadSuccess = true;
                     }
-                } catch (\Throwable $th) {
-                    dump($th->getMessage());
-                }
             }
         }
         // die;
@@ -268,7 +272,7 @@ class EntryController extends Controller
                 ->where('entries.entries_date_launch','>=', $dtIni)
                 ->where('entries.entries_date_launch','<=', $dtEnd)
                 ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
-                ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name')
+                ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name', 'account_launches.id as idAccontLaunch', 'account_launches.accountlaunch_name')
                 ->orderBy('entries.entries_date_launch', 'asc')
                 ->get();
               
@@ -288,9 +292,19 @@ class EntryController extends Controller
                 return $mov->account_types_name;
             })
             ->addColumn('action', function ($mov) {
-                return '<a href="'.url('lancar/'.$mov->entries_id.'/edit').'" class="btn btn-primary btn-xs" type="button" title="Editar Registro">
-                <i class="fa fa-edit"></i></a>
-                <button class="btn btn-dark btn-xs" type="button" title="Informação do Registro"
+                $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
+                return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
+                data-toggle="modal"
+                data-id="'.$mov->entries_id.'"
+                data-date="'.$dtLauch.'"
+                data-his="'.$mov->entries_description.'"
+                data-val="'.$mov->entries_value.'"
+                data-typ="'.$mov->account_types_name.'"
+                data-idlau="'.$mov->idAccontLaunch.'"
+                data-namel="'.$mov->accountlaunch_name.'"
+                data-target="#modalEditLauch">
+                <i class="fa fa-edit" aria-hidden="true"></i></button>
+                <button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
                 data-toggle="modal"
                 data-id="'.$mov->entries_id.'"
                 data-day="'.$mov->entries_day.'"
@@ -321,7 +335,7 @@ class EntryController extends Controller
             ->join('users', 'entries.entries_id_user', '=', 'users.id')
             ->join('file_launches', 'file_launches.file_launches_id_entry','=','entries.entries_id')
             ->where('entries.entries_id','=',$id)
-            ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+            ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser', 'file_launches.created_at as createadFiles', 'file_launches.id as idFileLaunch')
             ->get();
         }else{
             $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
@@ -343,7 +357,7 @@ class EntryController extends Controller
             return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
            }
         }
-    }
+}
 
     public function bank() {
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
@@ -389,7 +403,7 @@ class EntryController extends Controller
         ->where('entries_date_launch', '<=', $dtend)
         ->where('companies.company_id', '=', Auth::user()->user_id_company)
         ->orderBy('entries_date_launch', 'asc')->get();
-        
+      
         $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total' , 'previousBalance'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
@@ -398,5 +412,34 @@ class EntryController extends Controller
         return $pdf->stream();
         //dd($entries);
         //return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
+    }
+
+    /**
+     * Retorno para modal de edição de lançamento
+     *
+     * @return void
+     */
+    public function showApi($id) {
+        $launch =  Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
+        ->join('users', 'entries.entries_id_user', '=', 'users.id')
+        ->where('entries.entries_id','=',$id)
+        ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+        ->get();
+        return $launch;
+    }
+
+    /**
+     * Excluir arquivos
+     */
+    public function deleteFilesLaunch(Request $request) {
+        foreach ($request->checkFilesLaunch as $key => $value) {
+            $fil = FileLaunch::where('id',$value)->delete();
+        }
+        if($fil) {
+            return response()->json(['message' => 'success', 'status' => 200], 200);
+        }else{
+            return response()->json(['message' => 'Ocorreu um erro inexperado'], 500);
+        }
     }
 }

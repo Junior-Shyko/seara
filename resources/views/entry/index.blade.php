@@ -90,6 +90,8 @@
 {{-- @include('modals.entry.modal_lauch') --}}
 @include('modals.modal_box_entry',['saldo' => $saldo])
 @include('modals.modal_upload_launch')
+@include('modals.entry.editLauch')
+
 @component('components.modal_delete_comp')
 <form action="{{url('lancar/delete')}}" method="post">
     {!! csrf_field() !!}
@@ -122,7 +124,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <ul class="list-group">
                             <li class="list-group-item day">Dia:</li>
                             <li class="list-group-item his">Histórico:</li>
@@ -131,9 +133,15 @@
                             <li class="list-group-item per">Criado:</li>
                         </ul>
                     </div>
-                    <div class="col-md-8">
-                        <div class="col-md-12">
-                            <label class="badge">Arquivos</label>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <label class="badge">Todos arquivos</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="" class="btn btn-danger pull-right">Excluir arquivos</a>
                         </div>
                         <div id="filesEntri">
                         </div>
@@ -142,9 +150,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fechar</button>
-                <a id="linkEdit" class="btn btn-primary">
-                <i class="fa fa-edit"></i> Alterar Lançamento
-                </a>
             </div>
         </div>
     </div>

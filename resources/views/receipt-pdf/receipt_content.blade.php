@@ -1,8 +1,10 @@
 <table border="0">
   <tr style="height: 99;">
+    @if(Auth::user()->profile == 'owner')
     <td colspan="3">
       <img src="{{asset("img/logo_seara.png")}}" style="width: 100%; display: block;">
     </td>
+    @endif
     {{-- <td colspan="1"></td> --}}
     {{-- <td colspan="4" class="text-center"> --}}
       {{-- {!! nl2br(e($setting['setting_receipt_header'])) !!} --}}

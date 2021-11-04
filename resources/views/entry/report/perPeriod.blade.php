@@ -82,7 +82,7 @@
                     <th style="width: 10%;" class="border-table">
                         {{ \Carbon\Carbon::parse($entry->entries_date_launch)->format('d/m/Y')}} 
                     </th>
-                    <td  class="border-table">{{$entry->accountlaunch_history}}</td>
+                    <td  class="border-table">{{$entry->entries_description}}</td>
                     <td class="center-text border-table">
                         @if ($entry->account_types_name == "Receita")
                         {{ number_format($entry->entries_value,2,',','.') }}
