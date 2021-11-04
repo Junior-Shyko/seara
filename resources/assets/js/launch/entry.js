@@ -42,7 +42,6 @@ $(document).ready(function () {
         },
         init: function () {
             this.on("success", function (_file, response) {
-                console.log(response);
                 notify.response(response);
             });
             this.on("error", function (file, error, _xhr) {
@@ -80,7 +79,7 @@ $(document).ready(function () {
         })
         .fail(function(jqXHR){
             notify.response(jqXHR.responseJSON);
-            console.log(jqXHR);
+
         })
         .always(function(){
             //console.log('hideModal');
@@ -125,7 +124,6 @@ $(document).ready(function () {
             $(".per").html('Por: '+data[0].nameUser);
                 $.each(data, function (_indexInArray, valueOfElement) { 
                     if(typeof valueOfElement.file_launches_name !== 'undefined'){
-                        console.log(typeof valueOfElement.file_launches_name);
                         $("#"+nameDivFile).append('<div class="col-md-6 col-xs-12">'+
                         '<a href="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" class="thumbnail" data-lightbox="roadtrip" data-title="Conta: '+valueOfElement.entries_description+'"> <img src="'+SearaApp.baseURL+'/img/images/'+valueOfElement.file_launches_name+'" '+'> </a>')
 
@@ -153,7 +151,6 @@ $(document).ready(function () {
         var codAccount = $("#cod_account").val();
 	    $.get(SearaApp.baseURL+'/launch/account/search/'+codAccount, function(data) {
 	    	/*optional stuff to do after success */
-            console.log(data[0]);
             $("#label_desc_type").html(data[0].account_types_name);
             $("#entries_description").val(data[0].accountlaunch_history);
             $("#account_launches_referring").html(data[0].account_launches_referring);
@@ -316,7 +313,6 @@ function showReport() {
 function getFiles(id) {
     $.get(SearaApp.baseURL+'/info-launch/'+id, function (data, textStatus, jqXHR) {
         $.each(data, function (index, val) { 
-            console.log(val.file_launches_name)
             //url da imagem
             var imgPublic = SearaApp.assetURL+'img/images/';
             //formato de data brasileiro
@@ -343,7 +339,6 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
     $("#entriesValueEdit").val(button.data('val'));
     $("#labelDescType").html(button.data('typ'));
     $("#idLaunchEdit").val(button.data('id'));
-    console.log('id', button.data('id'));
     $("#btnShowModalUpload").attr('data-id', button.data('id'));
     //ADICIONANDO O ID DO LANÇAMENTO AO MODAL DE UPLOAD DE ARQUIVOS
     $('.idEntry').val(button.data('id'));
@@ -378,7 +373,7 @@ $('#modalEditLauch').on('hidden.bs.modal', function (_e) {
 $("#btnEditLaunch").click(function (e) { 
     e.preventDefault();
     var form = $("#formEditLaunch").serialize();
-    console.log(form);
+
     var idLaunch = $("#idLaunchEdit").val();
     $.ajax({
         type: "POST",
@@ -407,15 +402,28 @@ $("#btnShowModalUpload").click(function (e) {
 $("#btnTrashLaunch").click(function (e) { 
     e.preventDefault();
     var form = $("#formFilesLaunch").serialize();
-    console.log({form})
+    var idLaunch = $("#idLaunchEdit").val();
     $.ajax({
         type: "POST",
         url: SearaApp.baseURL+'api/deleteFiles',
         data: form,
         dataType: "json",
         success: function (response) {
-            console.log(response);
+            if(response.status == 200) {
+                $("#tbodyFilesEntriEdit").empty();
+                new PNotify({
+                    title: 'Sucesso',
+                    text: 'Arquivo excluído',
+                    type: 'success',
+                    styling: 'bootstrap3',
+                    icon: 'fa fa-check'
+                });
+                getFiles(idLaunch);
+            }
         }
+    })
+    .fail(function(jqXHR){
+        notify.response(jqXHR.responseJSON);
     });
 });
 
