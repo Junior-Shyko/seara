@@ -36,6 +36,8 @@ Route::group(['prefix' => 'companies'], function () {
     Route::post('alterar-status'	, 'CompanyController@alterStatus');
 	Route::post('alterar-logo' 	, 'CompanyController@alterLogo');
 	Route::get('dataTable', 'CompanyController@dataTable');
+	Route::get('info/{id}', 'CompanyController@getInfoLogin');
+    Route::post('alter-access', 'CompanyController@alterAccess');
 });
 
 Route::resource('companies', 'CompanyController');
@@ -91,6 +93,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-geral' , 'EntryController@general');
     Route::get('lancar/{id}/show', 'EntryController@showApi');
     Route::post('deleteFiles', 'EntryController@deleteFilesLaunch');
+    Route::post('create-user' , 'UserController@create');
 });
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {

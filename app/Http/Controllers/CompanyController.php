@@ -6,12 +6,13 @@ use App\Service\Company\CompanyDataProvider;
 use Exception;
 use App\Models\Company;
 use Illuminate\Http\Request;
-use Auth , DB;
+use Auth , DB, Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Str;
 use Throwable;
 use Yajra\Datatables\Facades\Datatables;
 use Carbon\Carbon;
+use App\Models\User;
 
 class CompanyController extends Controller
 {
@@ -30,8 +31,13 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $company = Company::all();
-        return view('business.index' , compact('company'));
+        if(Auth::user()->user_id_profile == 4){
+            $company = Company::all();
+            return view('business.index' , compact('company'));
+        }else{
+            return redirect()->back();
+        }
+       
     }
 
     /**
@@ -190,37 +196,45 @@ class CompanyController extends Controller
 
     public function dataTable()
     {
-        $company_id = Auth::user()->user_id_company;
-        $companies = Company::select([
-            'company_id',
-            'company_name',
-            'company_fantasy',
-            'company_cnpj',
-            'created_at',
-            'company_manager',
-        ])
-            ->where('company_id', '<>', $company_id)
-            ->where('company_status', 1)
-            ->orderBy('created_at', 'desc');
-
-        $dataTable = Datatables::of($companies);
-
-        $dataTable->addColumn(
-            'action',
-            function($company) {
-                return $this->actions($company->company_id);
-            }
-        );
-
-        $dataTable->editColumn(
-            'created_at',
-            function($company) {
-                $created_at = new Carbon($company->created_at);
-                return $created_at->format('d/m/Y à\s H:i:s');
-            }
-        );
-
-        return $dataTable->make(true);
+    
+        if(Auth::user()->user_id_profile == 4){
+            $company_id = Auth::user()->user_id_company;
+            $companies = Company::select([
+                'company_id',
+                'company_name',
+                'company_fantasy',
+                'company_cnpj',
+                'created_at',
+                'company_manager',
+            ])
+                //->where('company_id', '<>', $company_id)
+                ->where('company_status', 1)
+                ->orderBy('created_at', 'desc');
+    
+            $dataTable = Datatables::of($companies);
+    
+            $dataTable->addColumn(
+                'action',
+                function($company) {
+                    return $this->actions($company->company_id);
+                }
+            );
+    
+            $dataTable->editColumn(
+                'created_at',
+                function($company) {
+                    $created_at = new Carbon($company->created_at);
+                    return $created_at->format('d/m/Y à\s H:i:s');
+                }
+            );
+    
+            return $dataTable->make(true);
+        }else{
+            $companies = [];
+            $dataTable = Datatables::of($companies);
+            return $dataTable->make(true);
+        }
+        
     }
 
     private function actions($companyId)
@@ -238,6 +252,13 @@ class CompanyController extends Controller
                 'deactivateCompany',
                 'fa-ban',
                 'btn-danger'
+            ),
+            $this->actionButton(
+                $companyId,
+                'Alterar Acesso',
+                'modalLogin',
+                'fa-lock',
+                'btn-default'
             )
         ]);
     }
@@ -246,5 +267,57 @@ class CompanyController extends Controller
     {
         $data = $companyDataProvider->getCompanyData($cnpj);
         return response()->json($data->toArray());
+    }
+
+    public function getInfoLogin($id) {
+        $user = DB::table('users')->where('user_id_company','=',$id)->get();
+        if(empty($user)) {
+            return [];
+        }
+        return response()->json($user);
+    }
+
+    public function alterAccess(Request $request) {
+        $rules = [
+            'emailCompany' => 'required',
+            'passwordCompany' => 'required|min:6',
+        ];
+
+        $validator = Validator::make( $request->all(), $rules );
+
+        if ( $validator->fails() )
+        {
+            $messages = $validator->errors()->all();
+            return redirect()
+                        ->back()
+                        ->withErrors($messages)
+                        ->withInput();
+        }
+
+        $update['email'] = $request['emailCompany'];
+
+        // criptografo a senha
+        $update['password'] = bcrypt($request['passwordCompany']);
+        
+        $user = User::where('user_id_company' , '=' , $request['inputIdClient'])->get();
+        //verificando se tem usuario e se tiver verifica de os emails sao igual, se for exclui o array
+        dump($request['inputIdClient']);
+        dd($update);
+        if(count($user) > 0) {
+            if($user[0]->email == $request['emailCompany']){
+                unset($update['email']);
+            }
+        }
+        $userUp = User::where('user_id_company' , '=' , $request['inputIdClient'])->update($update);
+        if($userUp){
+            return redirect()
+            ->back()->with('success' , 'Acesso alterado com sucesso.');
+        }else{
+            $messages = $validator->errors()->all();
+            return redirect()
+                        ->back()
+                        ->withErrors($messages)
+                        ->withInput();
+        }
     }
 }

@@ -32,7 +32,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->user_id_profile == 1)
+        if(Auth::user()->user_id_profile == 4)
         {
           $tot_company = Company::where('company_status' ,'=', 1)->where('company_id', '<>', Auth::user()->company->company_id)->count();
           $tot_users   = User::totalActiveUsers();

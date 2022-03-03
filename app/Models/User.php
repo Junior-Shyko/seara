@@ -68,6 +68,11 @@ class User extends Authenticatable
 			case 3:
 				$profile = 'admin';
 				break;
+
+			case 4:
+				$profile = 'owner';
+				break;
+				
 		}
 
 		return $profile;

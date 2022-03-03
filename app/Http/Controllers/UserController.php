@@ -43,10 +43,12 @@ class UserController extends Controller
           $join->on('companies.company_id', '=', 'users.user_id_company')
           ->where('companies.company_id', '=', $id_company->company_id);
       })->get();
+
+      $companies = Company::get();
         //return DB::getQueryLog();
         //id_company passando ID_COMPANY mais está levando o objeto inteiro
 
-        return view('user.index' , compact('users' , 'profile' ));
+        return view('user.index' , compact('users' , 'profile' , 'companies'));
     }
 
     /**
@@ -54,9 +56,27 @@ class UserController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+       
+        $user = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'user_id_profile' => 1,
+            'user_id_company' => $request->codCompany,
+            'users_avatar' => 'default-user-avatar.png'
+        ];
+        try {
+            User::create($user);
+            return response()->json(['message' => 'Success'], 200);
+        }
+        catch(Exception $e) {
+            $errorCode = 422;
+            return response(['status' => 'error', 'error' => $errorCode, 'message' => $e->getMessage()], $errorCode);
+        }
+
+        
     }
 
     /**
@@ -69,7 +89,7 @@ class UserController extends Controller
     {
 
         $rules = [
-
+            'user_id_company' => 'required',
             'email' => 'required|unique:users',
             'name' => 'required',
             'user_cpf' => 'required|unique:users',
@@ -81,7 +101,6 @@ class UserController extends Controller
             'user_addr_district' => 'required',
             'user_addr_city' => 'required',
             'user_addr_state' => 'required'
-
         ];
 
         $validator = Validator::make( $request->all(), $rules );
@@ -96,7 +115,7 @@ class UserController extends Controller
         $request['password'] = bcrypt($request['password']);
         try {
             $request['users_avatar'] = 'default-user-avatar.png';
-
+           
             $user = User::create($request->all());
 
         }
@@ -197,7 +216,7 @@ class UserController extends Controller
     public function dataTable()
     {
         $users = DB::table('users')
-        ->where('user_id_company', Auth::user()->user_id_company)
+        //->where('user_id_company', Auth::user()->user_id_company)
         ->where('id', '<>', Auth::user()->id)
         ->leftjoin('profiles', 'users.user_id_profile', '=', 'profiles.profile_id' )
         ->select([

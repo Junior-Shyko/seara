@@ -64,6 +64,16 @@
 
   {{-- Nome e Sexo --}}
   <div class="form-group">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <label>Igreja/Empresa associada.</label>
+      <select name="user_id_company" id="" class="form-control">
+        <option value="0">--Selecione--</option>
+        @foreach ($companies as $item)
+          <option value="{{$item->company_id}}">{{$item->company_name}}</option>
+        @endforeach
+      </select>
+    </div>
+
     <div class="col-md-8 col-sm-8 col-xs-12">
       <label>Nome Completo</label>
       <input type="text" class="form-control" name="name">

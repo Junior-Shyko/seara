@@ -1,4 +1,6 @@
 let CustomerModule = (function () {
+//import { get } from '../../../../vendor/bower_components/gentelella/vendors/moment/src/lib/duration/get';
+
     let companyResource = new ResourceModel('companies');
     let colunas = [
         { data: 'company_name', name: 'company_name' },
@@ -70,15 +72,42 @@ let CustomerModule = (function () {
             });
     }
 
+    function modalLogin(id) {
+       //client = SearaAjax.get( 'companies/info/' + id );
+        $("#codCompany").val(id);
+        // $.get(SearaApp.baseURL + 'companies/info/' + id ,
+        //     function (data, textStatus, jqXHR) {
+        //         console.log(data);
+        //         //$("#codCompany").val(data.id);
+        //     }
+        // );
+        $("#modalAcessClient").modal('show');
+    }
+
     return {
         index: index,
         editCompany: editCompany,
-        deactivateCompany: deactivateCompany
+        deactivateCompany: deactivateCompany,
+        modalLogin: modalLogin
     };
 })();
 
 $(document).ready(function(){
     CustomerModule.index();
+    $("#btnSaveUser").click(function (e) { 
+        e.preventDefault();
+        var form = $("#formAccessUser").serialize();
+        console.log({form});
+        $.ajax({
+            type: "post",
+            url: SearaApp.baseURL + 'api/create-user',
+            data: form,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    });
 });
 
 function deactivateCompany(id) {
@@ -87,4 +116,7 @@ function deactivateCompany(id) {
 
 function editCompany(id) {
     CustomerModule.editCompany(id);
+}
+function modalLogin(id) {
+    CustomerModule.modalLogin(id);
 }
