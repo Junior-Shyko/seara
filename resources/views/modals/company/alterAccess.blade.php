@@ -9,6 +9,11 @@
              </div>
              <div class="modal-body">
                  <div class="row">
+                    <div class="x_content">
+                        <div class="col-md-12" id="divAlterUserAccess">
+                            <a class="btn btn-default" title="Altere os dados do usuário" id="btnAlterUserAccess"> Alterar Usuário</a>
+                        </div>
+                    </div>
                      <div class="x_content">
                          <br>
                          <form id="formAccessUser" data-parsley-validate="" class="form-horizontal form-label-left"

@@ -15,7 +15,7 @@
       <div class="panel-heading">
         <h3 class="panel-title">
           <div class="x_title">
-            <h2>Editar<small>edite seus dados do perfil</small></h2>
+            <h2>Editar<small> {{$subTitle}}</small></h2>
 
           </div>
         </h3>
@@ -29,16 +29,16 @@
          @include('msg.message')
           <br />
 
-          {{Form::open(['url' => 'users/'.$user->id, 'method' => 'PUT'], ['class' => 'form-horizontal form-label-left input_mask'])}}
+          {{Form::open(['url' => 'users/'.$user[0]->id, 'method' => 'PUT'], ['class' => 'form-horizontal form-label-left input_mask'])}}
           <div class="col-md-12">
             <div class="col-md-2"></div>
             <div class="col-md-8">
               <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="name" value="{{$user->name}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Nome completo">
+                <input type="text" name="name" value="{{$user[0]->name}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Nome completo">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-12 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="email" value="{{$user->email}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="E-mail">
+                <input type="text" name="email" value="{{$user[0]->email}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="E-mail">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
 
@@ -48,50 +48,50 @@
               </div>
 
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_cpf" value="{{$user->user_cpf}}" class="form-control has-feedback-left" id="inputSuccess3" placeholder="CPF">
+                <input type="text" name="user_cpf" value="{{$user[0]->user_cpf}}" class="form-control has-feedback-left" id="inputSuccess3" placeholder="CPF">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
 
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" class="form-control has-feedback-left" id="user_birth" name="user_birth" value="{{date('d/m/Y' , strtotime($user->user_birth))}}" data-parsley-full="#user_birth" data-parsley-seara="data" placeholder="Data nascimento">
+                <input type="text" class="form-control has-feedback-left" id="user_birth" name="user_birth" value="{{date('d/m/Y' , strtotime($user[0]->user_birth))}}" data-parsley-full="#user_birth" data-parsley-seara="data" placeholder="Data nascimento">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
 
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_phone" value="{{$user->user_phone}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Telefone">
+                <input type="text" name="user_phone" value="{{$user[0]->user_phone}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Telefone">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-3 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_addr_cep" value="{{$user->user_addr_cep}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="CEP">
+                <input type="text" name="user_addr_cep" value="{{$user[0]->user_addr_cep}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="CEP">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
 
               <div class="col-md-9 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_addr_street" value="{{$user->user_addr_street}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Endereço">
+                <input type="text" name="user_addr_street" value="{{$user[0]->user_addr_street}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Endereço">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-3 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_addr_number" value="{{$user->user_addr_number}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Número">
+                <input type="text" name="user_addr_number" value="{{$user[0]->user_addr_number}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Número">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-9 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_addr_complement" value="{{$user->user_addr_complement}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Complemento">
+                <input type="text" name="user_addr_complement" value="{{$user[0]->user_addr_complement}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Complemento">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_addr_district" value="{{$user->user_addr_district}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Bairro">
+                <input type="text" name="user_addr_district" value="{{$user[0]->user_addr_district}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Bairro">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_addr_city" value="{{$user->user_addr_city}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Cidade">
+                <input type="text" name="user_addr_city" value="{{$user[0]->user_addr_city}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Cidade">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" name="user_addr_state" value="{{$user->user_addr_state}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Estado">
+                <input type="text" name="user_addr_state" value="{{$user[0]->user_addr_state}}" class="form-control has-feedback-left" id="inputSuccess2" placeholder="Estado">
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-               <label class="control-label col-md-2 col-sm-3 col-xs-12">Gênero</label>
+               {{-- <label class="control-label col-md-2 col-sm-3 col-xs-12">Gênero</label> <br> --}}
                <div class="btn-group" data-toggle="buttons">
 
                 <label class="btn btn-primary  active ">
@@ -107,7 +107,7 @@
             <div class="ln_solid"></div>
             <div class="form-group">
               <div class="col-md-12 col-sm-6 col-xs-12">
-                <button type="submit" class="btn btn-success btn-lg pull-right">Alterar Dados</button>
+                <button type="submit" class="btn btn-success pull-right">Alterar Dados</button>
               </div>
             </div>
 
