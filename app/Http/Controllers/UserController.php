@@ -144,9 +144,18 @@ class UserController extends Controller
     * @param  \App\Models\User  $user
     * @return \Illuminate\Http\Response
     */
-    public function edit(User $user)
+    public function edit($id)
     {
-          return view( 'user.edit' , compact('user') );
+        $profile = Auth::user();
+        $idDecript = base64_decode($id);
+        $subTitle = " Edite seus dados do perfil";
+        if($profile->user_id_profile == 4) {
+            $subTitle = "Altere os dados do usuário";
+        }
+        //dump($idDecript);
+        $user = User::where('user_id_company',$idDecript)->get();
+        //dd($user);
+        return view( 'user.edit' , compact('user', 'subTitle') );
     }
 
     /**
