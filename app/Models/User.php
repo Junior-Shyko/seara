@@ -58,7 +58,7 @@ class User extends Authenticatable
 		switch ($id_profile) 
 		{
 			case 1:
-				$profile = 'owner';
+				$profile = 'user';
 				break;
 			
 			case 2:
