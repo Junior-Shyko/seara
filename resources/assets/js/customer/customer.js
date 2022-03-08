@@ -110,7 +110,8 @@ $(document).ready(function(){
             data: form,
             dataType: "json",
             success: function (response) {
-                console.log(response);
+                SearaAlert.success(response.message);
+                $("#modalAcessClient").modal('hide');
             }
         });
     });

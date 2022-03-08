@@ -53,7 +53,7 @@
               </div>
 
               <div class="col-md-6 col-sm-6 col-xs-12 form-group has-feedback">
-                <input type="text" class="form-control has-feedback-left" id="user_birth" name="user_birth" value="{{date('d/m/Y' , strtotime($user[0]->user_birth))}}" data-parsley-full="#user_birth" data-parsley-seara="data" placeholder="Data nascimento">
+                <input type="text" class="form-control has-feedback-left" id="user_birth" name="user_birth" value="{{isset($user[0]->user_birth) ? $user[0]->user_birth : '' }}" 
                 <span class="fa fa-user form-control-feedback left" aria-hidden="true"></span>
               </div>
 

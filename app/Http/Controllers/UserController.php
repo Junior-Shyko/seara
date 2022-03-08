@@ -69,7 +69,7 @@ class UserController extends Controller
         ];
         try {
             User::create($user);
-            return response()->json(['message' => 'Success'], 200);
+            return response()->json(['message' => 'Usuário cadastrado'], 200);
         }
         catch(Exception $e) {
             $errorCode = 422;
@@ -154,7 +154,6 @@ class UserController extends Controller
         }
         //dump($idDecript);
         $user = User::where('user_id_company',$idDecript)->get();
-        //dd($user);
         return view( 'user.edit' , compact('user', 'subTitle') );
     }
 
