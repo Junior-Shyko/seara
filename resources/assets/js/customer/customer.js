@@ -116,6 +116,7 @@ $(document).ready(function(){
             dataType: "json",
             success: function (response) {
                 SearaAlert.success(response.message);
+                //REMOVENDO MODAL
                 $("#modalAcessClient").modal('hide');
             }
         });
