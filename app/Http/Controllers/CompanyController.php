@@ -272,7 +272,7 @@ class CompanyController extends Controller
     public function getInfoLogin($id) {
         $user = DB::table('users')->where('user_id_company','=',$id)->get();
         if(empty($user)) {
-            return [];
+            return false;
         }
         return response()->json($user);
     }

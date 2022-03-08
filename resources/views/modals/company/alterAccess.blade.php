@@ -9,6 +9,11 @@
              </div>
              <div class="modal-body">
                  <div class="row">
+                    <div class="x_content">
+                        <div class="col-md-12" id="divAlterUserAccess">
+                            <a class="btn btn-default" title="Altere os dados do usuário" id="btnAlterUserAccess"> Alterar Usuário</a>
+                        </div>
+                    </div>
                      <div class="x_content">
                          <br>
                          <form id="formAccessUser" data-parsley-validate="" class="form-horizontal form-label-left"
@@ -41,12 +46,12 @@
                              <div class="ln_solid"></div>
                              <div class="item form-group">
                                  <div class="col-md-12 col-sm-12 offset-md-3">
-                                    <button class="btn btn-primary" type="button">Sair</button>
+                                    <button class="btn btn-default" data-dismiss="modal"  type="button">Sair</button>
                                     <button type="button"  id="btnSaveUser" class="btn btn-success pull-right">
                                         <i class="fa fa-save"></i> 
                                         Salvar
                                     </button>
-                                    <input type="text" name="codCompany" id="codCompany">
+                                    <input type="hidden" name="codCompany" id="codCompany">
                                  </div>
                              </div>
                          </form>

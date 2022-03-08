@@ -75,12 +75,18 @@ let CustomerModule = (function () {
     function modalLogin(id) {
        //client = SearaAjax.get( 'companies/info/' + id );
         $("#codCompany").val(id);
-        // $.get(SearaApp.baseURL + 'companies/info/' + id ,
-        //     function (data, textStatus, jqXHR) {
-        //         console.log(data);
-        //         //$("#codCompany").val(data.id);
-        //     }
-        // );
+        console.log(SearaApp.baseURL);
+        $.get(SearaApp.baseURL + 'companies/info/' + id ,
+            function (data, textStatus, jqXHR) {
+                console.log(data);
+                $("#divAlterUserAccess").hide();
+                if(data.length > 0) {
+                    $("#divAlterUserAccess").show();
+                    $("#btnAlterUserAccess").attr('href', SearaApp.baseURL +'users/'+ btoa(id) +'/edit');
+                }
+                //$("#codCompany").val(data.id);
+            }
+        );
         $("#modalAcessClient").modal('show');
     }
 
@@ -104,7 +110,8 @@ $(document).ready(function(){
             data: form,
             dataType: "json",
             success: function (response) {
-                console.log(response);
+                SearaAlert.success(response.message);
+                $("#modalAcessClient").modal('hide');
             }
         });
     });

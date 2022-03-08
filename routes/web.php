@@ -43,9 +43,9 @@ Route::group(['prefix' => 'companies'], function () {
 Route::resource('companies', 'CompanyController');
 
 // USUÁRIOS
-Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
+Route::get('users/{id}/edit', 'UserController@edit');
 Route::resource('users', 'UserController');
-// Route::get('usuarios', 'UserController@anyData');
+Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
 
 //ROTA PARA RECIBOS - Empresa
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');

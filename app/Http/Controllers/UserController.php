@@ -69,7 +69,7 @@ class UserController extends Controller
         ];
         try {
             User::create($user);
-            return response()->json(['message' => 'Success'], 200);
+            return response()->json(['message' => 'Usuário cadastrado'], 200);
         }
         catch(Exception $e) {
             $errorCode = 422;
@@ -144,9 +144,17 @@ class UserController extends Controller
     * @param  \App\Models\User  $user
     * @return \Illuminate\Http\Response
     */
-    public function edit(User $user)
+    public function edit($id)
     {
-          return view( 'user.edit' , compact('user') );
+        $profile = Auth::user();
+        $idDecript = base64_decode($id);
+        $subTitle = " Edite seus dados do perfil";
+        if($profile->user_id_profile == 4) {
+            $subTitle = "Altere os dados do usuário";
+        }
+        //dump($idDecript);
+        $user = User::where('user_id_company',$idDecript)->get();
+        return view( 'user.edit' , compact('user', 'subTitle') );
     }
 
     /**
