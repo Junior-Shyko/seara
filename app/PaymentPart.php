@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace Seara;
 
 use DateTime;
 use Illuminate\Database\Eloquent\Model;

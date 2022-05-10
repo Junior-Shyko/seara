@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Financing;
+namespace Seara\Http\Controllers\Financing;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreIncomeCategoryRequest;
-use App\Http\Requests\UpdateIncomeCategoryRequest;
-use App\Service\Core\Transactor\Transactor;
-use App\Service\Financing\IncomeCategory\CreateIncomeCategory;
-use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
-use App\Traits\ActionTable;
+use Seara\Http\Controllers\Controller;
+use Seara\Http\Requests\StoreIncomeCategoryRequest;
+use Seara\Http\Requests\UpdateIncomeCategoryRequest;
+use Seara\Service\Core\Transactor\Transactor;
+use Seara\Service\Financing\IncomeCategory\CreateIncomeCategory;
+use Seara\Service\Financing\IncomeCategory\IncomeCategoryRepository;
+use Seara\Traits\ActionTable;
 use Carbon\Carbon;
 use DateTime;
 use DB;

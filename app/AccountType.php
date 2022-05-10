@@ -1,9 +1,9 @@
 <?php
 
-namespace App;
+namespace Seara;
 
 use Illuminate\Database\Eloquent\Model;
-use App\AccountLaunch;
+use Seara\AccountLaunch;
 
 class AccountType extends Model
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use App\Service\Receipt\CreateReceipt;
-use App\Service\Receipt\GenerateReceiptPdf;
+use Seara\Service\Receipt\CreateReceipt;
+use Seara\Service\Receipt\GenerateReceiptPdf;
 use Auth;
 use Exception;
 use PDF;
@@ -13,11 +13,11 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Facades\Datatables;
 
-use App\Seara\Monetary;
+use Seara\Seara\Monetary;
 
-use App\Models\ReceiptCompany;
-use App\Models\Company;
-use App\Models\Setting;
+use Seara\Models\ReceiptCompany;
+use Seara\Models\Company;
+use Seara\Models\Setting;
 
 class ReceiptCompanyController extends Controller
 {

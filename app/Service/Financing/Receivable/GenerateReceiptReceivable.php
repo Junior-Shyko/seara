@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Receivable;
+namespace Seara\Service\Financing\Receivable;
 
-use App\Models\Company;
-use App\Models\ReceiptCompany;
-use App\Service\Receipt\CreateReceipt;
-use App\Service\Receipt\GenerateReceiptPdf;
+use Seara\Models\Company;
+use Seara\Models\ReceiptCompany;
+use Seara\Service\Receipt\CreateReceipt;
+use Seara\Service\Receipt\GenerateReceiptPdf;
 use Auth;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;

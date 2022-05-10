@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use App\Http\Requests;
+use Seara\Http\Requests;
 use Illuminate\Http\Request;
-use App\Models\Company;
-use App\Models\User;
-use App\Models\ReceiptCompany;
+use Seara\Models\Company;
+use Seara\Models\User;
+use Seara\Models\ReceiptCompany;
 use Carbon\Carbon;
 use Auth, DB;
 use Yajra\Datatables\Facades\Datatables;
 
 class HomeController extends Controller
 {
-    use \App\Traits\ActionTable;
+    use \Seara\Traits\ActionTable;
 
     /**
      * Create a new controller instance.

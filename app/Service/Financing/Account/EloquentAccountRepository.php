@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Account;
+namespace Seara\Service\Financing\Account;
 
-use App\Account;
+use Seara\Account;
 use Ramsey\Uuid\Uuid;
 
 class EloquentAccountRepository implements AccountRepository

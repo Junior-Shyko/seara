@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace Seara\Console\Commands;
 
-use App\Service\Core\Transactor\Transactor;
+use Seara\Service\Core\Transactor\Transactor;
 use DB;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
 use Illuminate\Http\Request;
 // use Yajra\Datatables\Datatables;
-use App\Models\ReceiptCompany;
+use Seara\Models\ReceiptCompany;
 use Yajra\Datatables\Facades\Datatables;
 
 use Auth;

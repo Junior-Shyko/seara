@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use App\Service\Company\CompanyDataProvider;
+use Seara\Service\Company\CompanyDataProvider;
 use Exception;
-use App\Models\Company;
+use Seara\Models\Company;
 use Illuminate\Http\Request;
 use Auth , DB, Validator;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -12,11 +12,11 @@ use Illuminate\Support\Str;
 use Throwable;
 use Yajra\Datatables\Facades\Datatables;
 use Carbon\Carbon;
-use App\Models\User;
+use Seara\Models\User;
 
 class CompanyController extends Controller
 {
-    use \App\Traits\ActionTable;
+    use \Seara\Traits\ActionTable;
 
     //SÓ PARA USUARIOS LOGADOS
     public function __construct()
@@ -74,7 +74,7 @@ class CompanyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function show(Company $company)
@@ -85,7 +85,7 @@ class CompanyController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function edit(Company $company)
@@ -98,7 +98,7 @@ class CompanyController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Company $company)
@@ -115,7 +115,7 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function destroy(Company $company)
@@ -132,7 +132,7 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function companiesStatus()

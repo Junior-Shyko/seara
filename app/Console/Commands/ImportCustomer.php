@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Seara\Console\Commands;
 
-use App\Service\Company\CompanyImporter;
+use Seara\Service\Company\CompanyImporter;
 use DB;
 use Illuminate\Console\Command;
 
@@ -29,7 +29,7 @@ class ImportCustomer extends Command
     /**
      * Create a new command instance.
      *
-     * @param \App\Service\Company\CompanyImporter $importer
+     * @param \Seara\Service\Company\CompanyImporter $importer
      */
     public function __construct(CompanyImporter $importer)
     {

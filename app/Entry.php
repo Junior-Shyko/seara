@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Seara;
 
 use Illuminate\Database\Eloquent\Model;
 

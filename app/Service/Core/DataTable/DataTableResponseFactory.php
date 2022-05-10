@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\DataTable;
+namespace Seara\Service\Core\DataTable;
 
 use Symfony\Component\HttpFoundation\Response;
 

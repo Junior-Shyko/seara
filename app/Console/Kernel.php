@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Console;
+namespace Seara\Console;
 
-use App\Console\Commands\DropTables;
-use App\Console\Commands\ImportCustomer;
-use App\Console\Commands\MigrateViews;
+use Seara\Console\Commands\DropTables;
+use Seara\Console\Commands\ImportCustomer;
+use Seara\Console\Commands\MigrateViews;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

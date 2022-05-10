@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Report\DebtReport;
+namespace Seara\Service\Report\DebtReport;
 
-use App\Models\Company;
+use Seara\Models\Company;
 use Carbon\Carbon;
 use DB;
 

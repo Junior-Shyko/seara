@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests;
+namespace Seara\Http\Requests;
 
 
-use App\Service\Core\Transformation\FormatBrDate;
-use App\Service\Core\Transformation\FormatMoney;
+use Seara\Service\Core\Transformation\FormatBrDate;
+use Seara\Service\Core\Transformation\FormatMoney;
 
 class UpdateReceivableRequest extends Request
 {

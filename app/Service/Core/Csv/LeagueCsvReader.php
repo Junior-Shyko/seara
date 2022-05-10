@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\Csv;
+namespace Seara\Service\Core\Csv;
 
 use Iterator;
 use League\Csv\Reader;

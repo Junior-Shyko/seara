@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
 use Illuminate\Http\Request;
 
 use Auth;
 use Carbon\Carbon;
-use App\Models\ReceiptCompany;
-use App\Models\Company;
-use App\Seara\Monetary;
+use Seara\Models\ReceiptCompany;
+use Seara\Models\Company;
+use Seara\Seara\Monetary;
 use Yajra\Datatables\Facades\Datatables;
 use Exception;
 

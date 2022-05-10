@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Payment;
+namespace Seara\Service\Financing\Payment;
 
-use App\Payment;
-use App\PaymentPart;
-use App\Service\Core\Util\UuidGenerator;
+use Seara\Payment;
+use Seara\PaymentPart;
+use Seara\Service\Core\Util\UuidGenerator;
 
 class CreatePayment
 {

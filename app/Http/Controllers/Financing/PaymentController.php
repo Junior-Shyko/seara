@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Financing;
+namespace Seara\Http\Controllers\Financing;
 
-use App\Http\Controllers\Controller;
-use App\Models\Company;
-use App\Payment;
-use App\Service\Financing\Payment\PaymentTableFactory;
+use Seara\Http\Controllers\Controller;
+use Seara\Models\Company;
+use Seara\Payment;
+use Seara\Service\Financing\Payment\PaymentTableFactory;
 use Throwable;
 
 class PaymentController extends Controller

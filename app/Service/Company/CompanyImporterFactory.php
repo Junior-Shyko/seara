@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Company;
+namespace Seara\Service\Company;
 
-use App\Service\Core\Csv\LeagueCsvReader;
+use Seara\Service\Core\Csv\LeagueCsvReader;
 
 class CompanyImporterFactory
 {

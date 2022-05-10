@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace Seara\Models;
 
-use App\Notifications\ResetPasswordNotification;
+use Seara\Notifications\ResetPasswordNotification;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -91,7 +91,7 @@ class User extends Authenticatable
 
 	public function company()
 	{
-		return $this->belongsTo('App\Models\Company', 'user_id_company');
+		return $this->belongsTo('Seara\Models\Company', 'user_id_company');
 	}
 
 	public static function totalActiveUsers()

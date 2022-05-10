@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Entry;
-use App\FileLaunch;
-use App\FunctionGeneral;
-use App\Seara\Monetary;
-use App\AccountLaunch;
+use Seara\Entry;
+use Seara\FileLaunch;
+use Seara\FunctionGeneral;
+use Seara\Seara\Monetary;
+use Seara\AccountLaunch;
 use Auth, DB, PDF;
 use Validator, Datatables;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Carbon\Carbon;
-use App\AccountType;
+use Seara\AccountType;
 
 class EntryController extends Controller
 {

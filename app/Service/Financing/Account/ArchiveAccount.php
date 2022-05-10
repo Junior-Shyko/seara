@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Account;
+namespace Seara\Service\Financing\Account;
 
 use Carbon\Carbon;
 

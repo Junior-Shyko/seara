@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\IncomeCategory;
+namespace Seara\Service\Financing\IncomeCategory;
 
 use RuntimeException;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\DataTable;
+namespace Seara\Service\Core\DataTable;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;

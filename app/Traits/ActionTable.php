@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Traits;
+namespace Seara\Traits;
 
 trait ActionTable 
 {

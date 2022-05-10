@@ -152,11 +152,11 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-        App\Providers\BroadcastServiceProvider::class,
+        Seara\Providers\AppServiceProvider::class,
+        Seara\Providers\AuthServiceProvider::class,
+        Seara\Providers\EventServiceProvider::class,
+        Seara\Providers\RouteServiceProvider::class,
+        Seara\Providers\BroadcastServiceProvider::class,
 
 		Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
 		Conner\Tagging\Providers\TaggingServiceProvider::class,

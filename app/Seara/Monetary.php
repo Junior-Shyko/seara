@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Seara;
+namespace Seara\Seara;
 
-use App\Entry;
+use Seara\Entry;
 use DB, Auth;
 use Carbon\Carbon;
 

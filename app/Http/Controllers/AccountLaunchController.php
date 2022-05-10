@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use App\AccountLaunch;
-use App\AccountType;
+use Seara\AccountLaunch;
+use Seara\AccountType;
 use Illuminate\Http\Request;
 use Datatables, DB;
 use Carbon\Carbon;
@@ -53,7 +53,7 @@ class AccountLaunchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\AccountLaunch  $accountLaunch
+     * @param  \Seara\AccountLaunch  $accountLaunch
      * @return \Illuminate\Http\Response
      */
     public function show(AccountLaunch $accountLaunch)
@@ -64,7 +64,7 @@ class AccountLaunchController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\AccountLaunch  $accountLaunch
+     * @param  \Seara\AccountLaunch  $accountLaunch
      * @return \Illuminate\Http\Response
      */
     public function edit(AccountLaunch $accountLaunch)
@@ -76,7 +76,7 @@ class AccountLaunchController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\AccountLaunch  $accountLaunch
+     * @param  \Seara\AccountLaunch  $accountLaunch
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id, AccountLaunch $accountLaunch)

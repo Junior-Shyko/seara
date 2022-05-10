@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\Transactor;
+namespace Seara\Service\Core\Transactor;
 
 use DB;
 

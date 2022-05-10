@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
 use App;
-use App\Service\Core\Util\DatabaseCleaner;
-use App\Service\Core\Util\DatabaseSeed;
+use Seara\Service\Core\Util\DatabaseCleaner;
+use Seara\Service\Core\Util\DatabaseSeed;
 
 class SeedController extends Controller
 {

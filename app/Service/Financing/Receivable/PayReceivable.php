@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Receivable;
+namespace Seara\Service\Financing\Receivable;
 
-use App\Receivable;
-use App\Service\Financing\Payment\CreatePayment;
-use App\Service\Financing\Receivable\PendingReceivable\PendingReceivable;
-use App\Service\Financing\Receivable\PendingReceivable\PendingReceivableQuery;
+use Seara\Receivable;
+use Seara\Service\Financing\Payment\CreatePayment;
+use Seara\Service\Financing\Receivable\PendingReceivable\PendingReceivable;
+use Seara\Service\Financing\Receivable\PendingReceivable\PendingReceivableQuery;
 
 class PayReceivable
 {

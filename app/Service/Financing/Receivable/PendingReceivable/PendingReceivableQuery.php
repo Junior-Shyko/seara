@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Receivable\PendingReceivable;
+namespace Seara\Service\Financing\Receivable\PendingReceivable;
 
-use App\Receivable;
+use Seara\Receivable;
 use DateTime;
 
 interface PendingReceivableQuery

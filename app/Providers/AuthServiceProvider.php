@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Providers;
+namespace Seara\Providers;
 
+use Seara\Entry;
+use Seara\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        'Seara\Model' => 'Seara\Policies\ModelPolicy',
     ];
 
     /**
@@ -25,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('owner-entry', function (User $user, Entry $entry) {
+            return $user->user_id_company == $entry->entries_id_company;
+        });
     }
 }

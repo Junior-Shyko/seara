@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Notifications;
+namespace Seara\Notifications;
 
-use App\Mail\ResetPasswordMail;
+use Seara\Mail\ResetPasswordMail;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Mail;
-use App\Models\User;
+use Seara\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Notifications\Notification;

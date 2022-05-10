@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Seara\Http\Requests;
 
-use App\Service\Core\Transformation\ArrayTransformer;
+use Seara\Service\Core\Transformation\ArrayTransformer;
 use Illuminate\Foundation\Http\FormRequest;
 
 abstract class Request extends FormRequest
