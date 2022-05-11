@@ -2,7 +2,6 @@
 
 namespace Seara\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Seara\Entry;
 use Seara\FileLaunch;
 use Seara\FunctionGeneral;
@@ -10,7 +9,8 @@ use Seara\Seara\Monetary;
 use Seara\AccountLaunch;
 use Auth, DB, PDF;
 use Validator, Datatables;
-use GuzzleHttp\Client;
+use Illuminate\Http\Request;
+use Seara\Http\Controllers\Controller;
 use GuzzleHttp\Exception\BadResponseException;
 use Carbon\Carbon;
 use Seara\AccountType;
@@ -37,22 +37,21 @@ class EntryController extends Controller
         $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
         $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
         $totBanco = ($bankReceita - $bankDespesa);
-        // dump($bankReceita);
-        // dump($bankDespesa);
-        // dump($totBanco);
-        // dump("--");
+
         $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, Auth::user()->user_id_company);
         $igrejaDespesa = Monetary::getValueBoxFeed(null, false, Auth::user()->user_id_company);
-        
-        // dump($igrejaReceita);
-        // dump($igrejaDespesa);
         $totIgreja = ($igrejaReceita - $igrejaDespesa);
-        // dump($totIgreja);
-        // dump("--");
         $saldoGer = Monetary::getValueBox();
         $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
-        // dump($saldo);
+
+        //VERIFICANDO AUTORIZAÇÃO
+
+        $entry = Entry::where('entries_id_company', Auth::user()->user_id_company)->get();
+        $user = Auth::user();
+        // dump(get_class($entry));
+        // dump(get_class($user));
         
+        $this->authorize('ownerEntry', $entry);
         return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco'));
     }
 

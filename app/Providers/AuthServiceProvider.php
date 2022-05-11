@@ -2,9 +2,9 @@
 
 namespace Seara\Providers;
 
-use Seara\Entry;
-use Seara\Models\User;
+use Seara\Policies\EntryPolicy;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -15,7 +15,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'Seara\Model' => 'Seara\Policies\ModelPolicy',
+        'App\Model' => 'App\Policies\ModelPolicy',
+        Collection::class => EntryPolicy::class,// add Collection por que é o parametro que passo no metodo
     ];
 
     /**
@@ -26,9 +27,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        Gate::define('owner-entry', function (User $user, Entry $entry) {
-            return $user->user_id_company == $entry->entries_id_company;
-        });
     }
 }
