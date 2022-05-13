@@ -2,7 +2,10 @@
 
 namespace Seara\Providers;
 
-use Seara\Policies\EntryPolicy;
+use Auth;
+use Seara\Entry;
+use App\Models\User;
+use Seara\Permission;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -26,6 +29,18 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
+        $permissions = Permission::with('profiles_permission')->get();
+        foreach ($permissions as $permission) {
+            dump($permission->name);
+           Gate::define($permission->name, function(User $user) use ($permission){
+               dump($user);
+               dump($permission);
+               //return $user->hasPermission($permission);
+            //return $user->user_id_company == $entry->entries_id_company;
+           });
+        }
+        die;
     }
+
+
 }
