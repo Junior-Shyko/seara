@@ -20,6 +20,7 @@ services:
     volumes:
       - ./:/code
       - composercache:/.composer
+      - './docker/php/docker-php-composer.ini:/usr/local/etc/php/conf.d/docker-php-composer.ini'
     working_dir: /code
   web:
     image: fcoedno/nginx:1.13.8-dev
