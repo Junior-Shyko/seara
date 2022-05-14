@@ -51,7 +51,7 @@ class EntryController extends Controller
         // dump(get_class($entry));
         // dump(get_class($user));
         
-        $this->authorize('ownerEntry', $entry);
+        //$this->authorize('ownerEntry', $entry);
         return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco'));
     }
 
