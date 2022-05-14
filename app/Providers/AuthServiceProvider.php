@@ -19,7 +19,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
-        Collection::class => EntryPolicy::class,// add Collection por que é o parametro que passo no metodo
     ];
 
     /**
@@ -29,17 +28,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $permissions = Permission::with('profiles_permission')->get();
-        foreach ($permissions as $permission) {
-            dump($permission->name);
-           Gate::define($permission->name, function(User $user) use ($permission){
-               dump($user);
-               dump($permission);
-               //return $user->hasPermission($permission);
-            //return $user->user_id_company == $entry->entries_id_company;
-           });
-        }
-        die;
+        $this->registerPolicies();
+
     }
 
 
