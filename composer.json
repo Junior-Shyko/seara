@@ -22,12 +22,13 @@
     "version": "4.2.0",
     "type": "project",
     "require": {
-        "php": "7.2.*|7.1.*",
-        "laravel/framework": "5.4.*",
+        "php": ">=7.0.0",
+        "fideloper/proxy": "~3.3",
+        "laravel/framework": "5.5.*",
         "thomaswelton/laravel-gravatar": "~1.0",
         "rtconner/laravel-tagging": "~2.2",
-        "laravelcollective/html": "^5.3.0",
-        "yajra/laravel-datatables-oracle": "^7.3",
+        "laravelcollective/html": "^5.4.0",
+        "yajra/laravel-datatables-oracle": "~5.0",
         "laravel/tinker": "^1.0",
         "fzaninotto/faker": "^1.6",
         "barryvdh/laravel-dompdf": "^0.9.0",
@@ -35,18 +36,20 @@
         "intervention/image": "^2.3",
         "spatie/data-transfer-object": "^1.13",
         "guzzlehttp/guzzle": "~6.0",
-      "ext-json": "*",
+        "ext-json": "*",
         "league/csv": "^9.0",
         "ramsey/uuid": "^3.8",
         "phpoffice/phpspreadsheet": "^1.10"
     },
     "require-dev": {
+        "filp/whoops": "~2.0",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~5.7",
+        "phpunit/phpunit": "~6.0",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*",
-        "barryvdh/laravel-ide-helper": "2.2.3",
-        "deployer/deployer": "^6.5"
+        "barryvdh/laravel-ide-helper": "^2.2",
+        "deployer/deployer": "^6.5",
+        "symfony/thanks": "^1.0"
     },
     "autoload": {
         "classmap": [
@@ -82,6 +85,8 @@
         ]
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
     }
 }
