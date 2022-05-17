@@ -7,11 +7,11 @@ use Seara\Notifications\ResetPasswordNotification;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-	use Notifiable;
-
+	use Notifiable, HasRoles;
 	/**
 	* The attributes that are mass assignable.
 	*

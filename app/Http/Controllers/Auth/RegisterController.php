@@ -69,6 +69,6 @@ class RegisterController extends Controller
 			'password' => bcrypt($data['password']),
 			'user_id_company' => 1,
 			'user_id_profile' => 1
-		]);
+		])->givePermissionTo('user_common');;
 	}
 }

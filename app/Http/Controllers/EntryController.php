@@ -20,8 +20,11 @@ class EntryController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
+        $this->middleware(['can:allLauch'])->only('allLauch');
+
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -441,5 +444,11 @@ class EntryController extends Controller
         }else{
             return response()->json(['message' => 'Ocorreu um erro inexperado'], 500);
         }
+    }
+
+    public function allLauch()
+    {
+        dump(Auth::user()->id);
+        dd('allLauch');
     }
 }
