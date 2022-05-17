@@ -26,7 +26,7 @@ use Seara\Service\Financing\Receivable\ReceivableRepository;
 use Seara\Service\Financing\Receivable\ReceivableTableFactory;
 use Seara\Traits\ActionTable;
 use Carbon\Carbon;
-use Datatables;
+use DataTables;
 use DB;
 use Illuminate\Http\Request;
 use Throwable;
