@@ -90,11 +90,16 @@ let CustomerModule = (function () {
         $("#modalAcessClient").modal('show');
     }
 
+    function redirectBoxCompany(id) {
+        window.location.href=SearaApp.baseURL+'lancar?company='+id;
+    }
+
     return {
         index: index,
         editCompany: editCompany,
         deactivateCompany: deactivateCompany,
-        modalLogin: modalLogin
+        modalLogin: modalLogin,
+        redirectBoxCompany: redirectBoxCompany
     };
 })();
 
@@ -124,6 +129,11 @@ function deactivateCompany(id) {
 function editCompany(id) {
     CustomerModule.editCompany(id);
 }
+
 function modalLogin(id) {
     CustomerModule.modalLogin(id);
+}
+
+function redirectBoxCompany(id) {
+    CustomerModule.redirectBoxCompany(id);
 }

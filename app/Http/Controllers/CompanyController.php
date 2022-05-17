@@ -259,6 +259,13 @@ class CompanyController extends Controller
                 'modalLogin',
                 'fa-lock',
                 'btn-default'
+            ),
+            $this->actionButton(
+                $companyId,
+                'Consultar Caixa',
+                'redirectBoxCompany',
+                'fa-money',
+                'btn-default'
             )
         ]);
     }

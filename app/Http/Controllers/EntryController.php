@@ -2,6 +2,7 @@
 
 namespace Seara\Http\Controllers;
 
+use Seara\Models\Company;
 use Seara\Entry;
 use Seara\FileLaunch;
 use Seara\FunctionGeneral;
@@ -32,31 +33,33 @@ class EntryController extends Controller
      */
     public function index()
     {
+        ini_set('display_errors', true);
+        $idCompany = 0;
+        isset($_GET['company']) ? $idCompany = intval($_GET['company']) : $idCompany = Auth::user()->user_id_company;
         $accounts = AccountLaunch::get();
         $month = Carbon::now()->month;
         $monthPlus = ($month - 1);
+        //DADOS DA IGREJA COMPLETO
+        $company = Company::getCompany($idCompany);
         
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        
-        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
-        $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
+
+        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, $idCompany);
+       
+        $bankDespesa = Monetary::getValueBoxFeed(null, true, $idCompany);
         $totBanco = ($bankReceita - $bankDespesa);
 
-        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, Auth::user()->user_id_company);
-        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, Auth::user()->user_id_company);
+        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, $idCompany);
+        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, $idCompany);
         $totIgreja = ($igrejaReceita - $igrejaDespesa);
         $saldoGer = Monetary::getValueBox();
         $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
 
         //VERIFICANDO AUTORIZAÇÃO
 
-        $entry = Entry::where('entries_id_company', Auth::user()->user_id_company)->get();
+        $entry = Entry::where('entries_id_company', $idCompany)->get();
         $user = Auth::user();
-        // dump(get_class($entry));
-        // dump(get_class($user));
-        
-        //$this->authorize('ownerEntry', $entry);
-        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco'));
+        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco', 'company'));
     }
 
     /**
@@ -448,7 +451,6 @@ class EntryController extends Controller
 
     public function allLauch()
     {
-        dump(Auth::user()->id);
-        dd('allLauch');
+        return view('entry.all');
     }
 }

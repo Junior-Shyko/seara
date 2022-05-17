@@ -3,6 +3,7 @@
 namespace Seara\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Self_;
 
 class Company extends Model
 {
@@ -34,5 +35,10 @@ class Company extends Model
     public function users()
     {
       return $this->hasMany('Seara\Models\User', 'user_id_company');
+    }
+
+    static public function getCompany($id)
+    {
+      return Company::findOrFail($id);
     }
 }
