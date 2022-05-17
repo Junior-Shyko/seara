@@ -5,7 +5,7 @@ namespace Seara\Http\Controllers;
 use Seara\AccountLaunch;
 use Seara\AccountType;
 use Illuminate\Http\Request;
-use Datatables, DB;
+use DataTables, DB;
 use Carbon\Carbon;
 
 class AccountLaunchController extends Controller
@@ -127,7 +127,7 @@ class AccountLaunchController extends Controller
         ->select('account_launches.*','account_launches.id as idAccountLaunch', 'users.id as id_user', 'users.name', 'account_types.id as idTypeAccount', 'account_types.*')
         ->get();
         
-        return Datatables::of($accountLaunch)
+        return DataTables::of($accountLaunch)
         ->editColumn('accountlaunch_type', function ($accountLaunch) {
             return $accountLaunch->account_types_name;
         })

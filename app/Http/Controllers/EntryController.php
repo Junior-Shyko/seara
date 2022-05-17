@@ -8,7 +8,8 @@ use Seara\FunctionGeneral;
 use Seara\Seara\Monetary;
 use Seara\AccountLaunch;
 use Auth, DB, PDF;
-use Validator, Datatables;
+use Validator;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Seara\Http\Controllers\Controller;
 use GuzzleHttp\Exception\BadResponseException;
@@ -274,9 +275,9 @@ class EntryController extends Controller
                 ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name', 'account_launches.id as idAccontLaunch', 'account_launches.accountlaunch_name')
                 ->orderBy('entries.entries_date_launch', 'asc')
                 ->get();
-              
+
         //dd(DB::getQueryLog());
-        return Datatables::of($mov)->addIndexColumn()
+        return DataTables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {
                 $date = new Carbon($mov->entries_date_launch);
                 return $date->format('d/m/Y');

@@ -9,7 +9,7 @@ use Seara\Service\Financing\Account\ArchiveAccount;
 use Seara\Service\Financing\Account\CreateAccount;
 use Seara\Traits\ActionTable;
 use Carbon\Carbon;
-use Datatables;
+use DataTables;
 use Illuminate\Http\JsonResponse;
 use DB;
 use Illuminate\Http\Response;
@@ -123,7 +123,7 @@ class AccountController extends Controller
             ->select()
             ->whereNull('archived_at');
 
-        $datatable = Datatables::of($query);
+        $datatable = DataTables::of($query);
 
         $datatable->addColumn('balance', function () {
             return 0.00;

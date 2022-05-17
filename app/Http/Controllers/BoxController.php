@@ -8,7 +8,7 @@ use Seara\Entry;
 use Seara\FunctionGeneral;
 use Auth , DB;
 use Carbon\Carbon;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\Datatables;
 
 class BoxController extends Controller
 {

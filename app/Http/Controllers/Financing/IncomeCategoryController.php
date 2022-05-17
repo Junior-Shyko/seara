@@ -15,7 +15,7 @@ use Carbon\Carbon;
 use DateTime;
 use DB;
 use Throwable;
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 
 class IncomeCategoryController extends Controller
 {
@@ -100,7 +100,7 @@ class IncomeCategoryController extends Controller
             ->select()
             ->whereNull('archived_at');
 
-        $datatable = Datatables::of($query);
+        $datatable = DataTables::of($query);
 
         $datatable->addColumn('action', function ($incomeCategory) {
             return $this->actionButtons($incomeCategory->id, [

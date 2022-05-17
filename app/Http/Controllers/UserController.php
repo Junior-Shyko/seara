@@ -2,7 +2,7 @@
 
 namespace Seara\Http\Controllers;
 
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Seara\Mail\UserRegistered;
 use Illuminate\Support\Facades\Mail;
 use Auth, DB;
@@ -235,7 +235,7 @@ class UserController extends Controller
             'users.created_at'
         ])->orderBy('users.id', 'DESC');
 
-        $dataTable =  Datatables::of($users);
+        $dataTable =  DataTables::of($users);
 
         $dataTable->addColumn(
            

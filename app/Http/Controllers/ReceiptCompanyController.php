@@ -11,7 +11,7 @@ use DB;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 
 use Seara\Seara\Monetary;
 
@@ -164,7 +164,7 @@ class ReceiptCompanyController extends Controller
   	->where('receipt_id_company',  Auth::user()->user_id_company)
   	->orderBy('receipt_id', 'desc');
 
-  	return Datatables::of($receipts)
+  	return DataTables::of($receipts)
   	->addColumn(
   		'action',
   		function ($receipt) {

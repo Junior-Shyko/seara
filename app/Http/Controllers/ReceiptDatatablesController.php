@@ -3,9 +3,9 @@
 namespace Seara\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use Yajra\Datatables\Datatables;
+// use Yajra\DataTables\Datatables;
 use Seara\Models\ReceiptCompany;
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 
 use Auth;
 
@@ -33,7 +33,7 @@ class ReceiptDatatablesController extends Controller
         ]
       );
 
-      return Datatables::of($receipts)
+      return DataTables::of($receipts)
       ->addColumn(
         'action',
         function ($receipt) {

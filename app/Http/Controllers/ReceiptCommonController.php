@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Seara\Models\ReceiptCompany;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Exception;
 
 use PDF;

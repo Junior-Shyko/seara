@@ -10,7 +10,7 @@ use Auth , DB, Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Str;
 use Throwable;
-use Yajra\Datatables\Facades\Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 use Seara\Models\User;
 
@@ -211,7 +211,7 @@ class CompanyController extends Controller
                 ->where('company_status', 1)
                 ->orderBy('created_at', 'desc');
     
-            $dataTable = Datatables::of($companies);
+            $dataTable = DataTables::of($companies);
     
             $dataTable->addColumn(
                 'action',
@@ -231,7 +231,7 @@ class CompanyController extends Controller
             return $dataTable->make(true);
         }else{
             $companies = [];
-            $dataTable = Datatables::of($companies);
+            $dataTable = DataTables::of($companies);
             return $dataTable->make(true);
         }
         
