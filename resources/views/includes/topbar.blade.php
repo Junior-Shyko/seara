@@ -12,7 +12,7 @@
                     @if(empty(Auth::user()->users_avatar))
                         <img src="{{ url('img/default-user-avatar.png') }}" alt="Avatar of {{ Auth::user()->name }}">
                     @else
-                        <img src="{{ url('img/'.Auth::user()->users_avatar) }}" alt="Avatar of {{ Auth::user()->name }}">
+                        <img src="{{ Auth::user()->users_avatar }}" alt="Avatar of {{ Auth::user()->name }}">
                     @endif
                        
                         {{ Auth::user()->name }}
