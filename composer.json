@@ -38,6 +38,7 @@
         "ramsey/uuid": "^3.8",
         "rtconner/laravel-tagging": "~2.2",
         "spatie/data-transfer-object": "^1.13",
+        "spatie/laravel-permission": "2.38.0",
         "thomaswelton/laravel-gravatar": "~1.0",
         "yajra/laravel-datatables-oracle": "^8.0"
     },
