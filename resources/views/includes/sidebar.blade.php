@@ -85,6 +85,9 @@
                             <i class="fa fa-money" aria-hidden="true"></i> Lançamento Caixa <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
+                            <li>
+                                <a href="{{ url('launch/bank') }}">Banco</a>
+                            </li>
                             @if(Auth::user()->profile == 'owner')
                             <li>
                                 <a data-cy="report-debt-and-payment" href="{{ url('launch/account') }}">Contas</a>

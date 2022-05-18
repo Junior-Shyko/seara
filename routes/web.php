@@ -87,7 +87,7 @@ Route::post('lancar/delete' , 'EntryController@destroy');
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
 Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}' , 'EntryController@reportBox');
-Route::get('todos-caixas', 'EntryController@allLauch');
+
 
 
 Route::group(['prefix' => 'api'], function () {
@@ -105,11 +105,14 @@ Route::group(['prefix' => 'launch'], function () {
     Route::get('account/all' , 'AccountLaunchController@getDataTable');
     Route::put('account/{id}' , 'AccountLaunchController@update');
     Route::post('account/delete' , 'AccountLaunchController@destroy');
-    Route::get('account/search/{id}' , 'AccountLaunchController@search');    
+    Route::get('account/search/{id}' , 'AccountLaunchController@search');
 });
 // CONTA DE LANCAMENTO
 Route::get('account/launch/all', 'AccountLaunchController@getAccountLaunch');
 
+//ROTA PARA OS BANCOS
+Route::get('banco/getBank', 'BankController@getBank');
+Route::resource('banco' , 'BankController');
 
 // Categoria de receitas
 Route::get('categoria-receita', 'Financing\IncomeCategoryController@index');
