@@ -39,3 +39,17 @@ $("#btnPlusBank").click(function (e) {
         console.log("complete");
     });
 });
+
+function editBank(id) {
+    console.log({id})
+    $.getJSON(SearaApp.baseURL+'getBank/'+id,
+        function (data, textStatus, jqXHR) {
+            $("#inputBank").val(data.name);
+            $("#id_bank").val(data.id);
+            $("#nameButtonBank").text('Alterar');
+            $("#typeActionBank").val('update');
+            $("#inputBank").addClass('border-update');
+        }
+    );
+    
+}

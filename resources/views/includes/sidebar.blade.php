@@ -86,7 +86,7 @@
                         </a>
                         <ul class="nav child_menu">
                             <li>
-                                <a href="{{ url('launch/bank') }}">Banco</a>
+                                <a href="{{ url('banco') }}">Banco</a>
                             </li>
                             @if(Auth::user()->profile == 'owner')
                             <li>

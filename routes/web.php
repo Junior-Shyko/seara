@@ -113,6 +113,7 @@ Route::get('account/launch/all', 'AccountLaunchController@getAccountLaunch');
 //ROTA PARA OS BANCOS
 Route::get('banco/getBank', 'BankController@getBank');
 Route::resource('banco' , 'BankController');
+Route::get('getBank/{id}' , 'BankController@show');
 
 // Categoria de receitas
 Route::get('categoria-receita', 'Financing\IncomeCategoryController@index');

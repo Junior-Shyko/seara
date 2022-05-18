@@ -2,6 +2,12 @@
 @push('stylesheets')
 <!-- Example -->
 <link href="{{ url("css/entry.min.css") }}" rel="stylesheet">
+<style>
+    .border-update {
+        border: 1px solid #4569cf;
+        box-shadow: inset 0 0 0.5em #bcc9e5, 0 0 0.2em #0c46e9;
+    }
+</style>
 @endpush
 @section('main_container')
 <!-- page content -->
@@ -18,16 +24,18 @@
                  <div class="row">
                      <div class="col-md-12">
                         <label for="">Nome do banco</label>
+                        <form id="formInputBank">
                         <div class="input-group">
-                            <form id="formInputBank">
-                                <input type="text" name="company_name" class="form-control" id="inputBank">
-                            </form>
+                            <input type="text" name="company_name" class="form-control" id="inputBank">
                             <span class="input-group-btn">
                             <button type="button" title="Cadastrar um banco" class="btn btn-primary" id="btnPlusBank">
-                                <i class="fa fa-save"></i> Cadastrar
+                                <i class="fa fa-save"></i> <span id="nameButtonBank">Cadastrar</span>
                             </button>
                             </span>
                         </div>
+                        <input type="text" name="id_bank" id="id_bank">
+                        <input type="text" name="type_action" id="typeActionBank" value="create">
+                    </form>
                      </div>
                  </div>
                 </div>

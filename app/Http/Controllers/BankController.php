@@ -12,7 +12,7 @@ class BankController extends Controller
     {
         $this->middleware('auth');
         //PERFIL DE SUPERADMIN
-        $this->middleware(['role:superAdmin'])->only('index');
+        $this->middleware(['role:superAdmin'])->only(['index', 'show']);
 
     }
     /**
@@ -57,9 +57,14 @@ class BankController extends Controller
      * @param  \Seara\Bank  $bank
      * @return \Illuminate\Http\Response
      */
-    public function show(Bank $bank)
+    public function show($id)
     {
-        //
+        try {
+            $bank = Bank::findOrFail($id);
+            return response()->json($bank);
+        } catch (\Exception $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -101,7 +106,7 @@ class BankController extends Controller
         $bank = Bank::all();
         return DataTables::of($bank)
         ->addColumn('action', function ($bank) {
-            return '<a href="#edit-'.$bank->id.'" class="btn btn-xs btn-default" title="Editar Banco"><i class="fa fa-edit"></i> Edit</a>';
+            return '<a href="#edit-'.$bank->id.'" class="btn btn-xs btn-default" title="Editar Banco" onclick="editBank('.$bank->id.')"><i class="fa fa-edit"></i></a>';
         })->make(true);
     }
 }
