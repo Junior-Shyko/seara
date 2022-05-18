@@ -203,6 +203,9 @@ elixir(function(mix) {
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
     mix.version('public/js/launch/entry.min.js');
+   
+    //BANK
+    mix.scripts(['bank/bank.js'], 'public/js/bank/bank.js');
 
     mix.styles([
         'basic.min.css',
