@@ -26,7 +26,7 @@
                         <label for="">Nome do banco</label>
                         <form id="formInputBank">
                         <div class="input-group">
-                            <input type="text" name="company_name" class="form-control" id="inputBank">
+                            <input type="text" name="name" class="form-control" id="inputBank">
                             <span class="input-group-btn">
                             <button type="button" title="Cadastrar um banco" class="btn btn-primary" id="btnPlusBank">
                                 <i class="fa fa-save"></i> <span id="nameButtonBank">Cadastrar</span>
@@ -63,26 +63,27 @@
     </div>
 </div>
 <!-- /page content -->
-{{-- @include('modals.launch.modal_account_launch', [$typeAccount]) --}}
-@component('components.modal_delete_comp')
-<form action="{{url('launch/account/delete')}}" method="POST">
-    {!! csrf_field() !!}
-    <p>
-    <h4 class="text-danger">
-        Deseja realmente excluir essa conta do movimento de Caixa?
-    </h4>
-    </p>
-    <p>
-    <h4 id="nameAccountDeleteModal">Conta: </h4>
-    <h4 id="typeAccountDeleteModal">Tipo da Conta: </h4>
-    </p>
-    <input type="hidden" name="id" id="idAccountLaunch">
-    <input type="hidden" name="table" value="account_launches">
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
-        <button type="submit" class="btn btn-danger"> EXCLUIR </button>
-    </div>
-</form>
+{{-- @include('components.modal-delete') --}}
+@component('components.modal-delete', [
+    'id'    => 'modalDeleteBank',
+    'class' => '',
+])
+    @slot('title', 'Excluir Banco')
+
+    @slot('slot')
+       Deseja realmente excluir esse banco?
+       <p>
+           Ao excluir um banco poderá afetar algumas contas banárias. Ao excluir você entende o risco.
+       </p>
+    @endslot
+
+    @slot('inputs')
+       <input type="text" name="delete_bank" id="delete_bank">
+    @endslot
+
+    @slot('idBtnModal')
+        btnDeleteBank
+    @endslot
 @endcomponent
 @endsection
 @push('stylesheets')

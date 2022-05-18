@@ -43,11 +43,16 @@ class BankController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            Bank::updateOrCreate($request->all());
+       
+        if(isset($request->id_bank) )
+        {
+            $input = ['name' => $request->name];
+            Bank::create($input);
+            return response()->json(['message' => 'Banco atualizado com sucesso', 'type' => 'success','status' => 200], 200);
+            
+        }else{
+            Bank::where('id', '=', $request->id_bank)->update(['name' => $request->name]);
             return response()->json(['message' => 'Banco cadastrado', 'type' => 'success','status' => 200], 200);
-        } catch (\Exception $th) {
-            throw $th;
         }
     }
 
@@ -106,7 +111,8 @@ class BankController extends Controller
         $bank = Bank::all();
         return DataTables::of($bank)
         ->addColumn('action', function ($bank) {
-            return '<a href="#edit-'.$bank->id.'" class="btn btn-xs btn-default" title="Editar Banco" onclick="editBank('.$bank->id.')"><i class="fa fa-edit"></i></a>';
+            return '<a href="#edit-'.$bank->id.'" class="btn btn-xs btn-default" title="Editar Banco" onclick="editBank('.$bank->id.')"><i class="fa fa-edit"></i></a>
+            <a data-id="'.$bank->id.'" data-toggle="modal" data-target="#modalDeleteBank" class="btn btn-xs btn-danger" title="Excluir Banco"><i class="fa fa-edit"></i></a>';
         })->make(true);
     }
 }

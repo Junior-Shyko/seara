@@ -12,6 +12,7 @@ $(document).ready(function () {
 $("#btnPlusBank").click(function (e) { 
     e.preventDefault();
     var inputBank = $("#inputBank").val();
+    console.log({inputBank});
     $.ajax({
         url: SearaApp.baseURL+'banco',
         type: 'POST',
@@ -27,6 +28,7 @@ $("#btnPlusBank").click(function (e) {
                 icon: 'fa fa-check'
             });
             $("#inputBank").val('');
+            $("#table-bank").DataTable().ajax.reload();
         }
     })
     .done(function() {
@@ -53,3 +55,25 @@ function editBank(id) {
     );
     
 }
+//PASSANDO DADOS PARA O COMPONENTE DE MODAL
+$('#modalDeleteBank').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var idBank = button.data('id')
+    var modal = $(this)
+    modal.find('#delete_bank').val(idBank);
+    // modal.find('.modal-body input').val(recipient)
+})
+
+$("#btnDeleteBank").click(function (e) { 
+    e.preventDefault();
+    var idBank = $('#delete_bank').val();
+    $.ajax({
+        type: "DELTE",
+        url: SearaApp.baseURL+'banco',
+        data: {id : idBank},
+        dataType: "json",
+        success: function (response) {
+            console.log(response)
+        }
+    });
+});
