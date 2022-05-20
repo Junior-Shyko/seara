@@ -33,8 +33,8 @@
                             </button>
                             </span>
                         </div>
-                        <input type="text" name="id_bank" id="id_bank">
-                        <input type="text" name="type_action" id="typeActionBank" value="create">
+                        <input type="hidden" name="id_bank" id="id_bank">
+                        <input type="hidden" name="type_action" id="typeActionBank" value="create">
                     </form>
                      </div>
                  </div>
@@ -78,7 +78,7 @@
     @endslot
 
     @slot('inputs')
-       <input type="text" name="delete_bank" id="delete_bank">
+       <input type="hidden" name="delete_bank" id="delete_bank">
     @endslot
 
     @slot('idBtnModal')

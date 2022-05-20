@@ -3,6 +3,7 @@
 namespace Seara\Http\Controllers;
 
 use Seara\Bank;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -101,15 +102,24 @@ class BankController extends Controller
      * @param  \Seara\Bank  $bank
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Bank $bank)
+    public function destroy($id)
     {
-        //
+        try {
+            Bank::find($id)->delete();
+            return response()->json(['message' => 'Banco excluido com sucesso', 'type' => 'success','status' => 200], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Ocorreu um erro : '.$th->getMessage(), 'type' => 'error','status' => 400], 400);
+        }
     }
 
     public function getBank()
     {
         $bank = Bank::all();
         return DataTables::of($bank)
+        ->editColumn('created_at', function ($bank) {
+            $created_at = new Carbon($bank->created_at);
+            return $created_at->format('d/m/Y à\s H:i:s');
+        })
         ->addColumn('action', function ($bank) {
             return '<a href="#edit-'.$bank->id.'" class="btn btn-xs btn-default" title="Editar Banco" onclick="editBank('.$bank->id.')"><i class="fa fa-edit"></i></a>
             <a data-id="'.$bank->id.'" data-toggle="modal" data-target="#modalDeleteBank" class="btn btn-xs btn-danger" title="Excluir Banco"><i class="fa fa-edit"></i></a>';

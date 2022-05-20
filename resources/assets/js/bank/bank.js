@@ -43,7 +43,6 @@ $("#btnPlusBank").click(function (e) {
 });
 
 function editBank(id) {
-    console.log({id})
     $.getJSON(SearaApp.baseURL+'getBank/'+id,
         function (data, textStatus, jqXHR) {
             $("#inputBank").val(data.name);
@@ -68,12 +67,32 @@ $("#btnDeleteBank").click(function (e) {
     e.preventDefault();
     var idBank = $('#delete_bank').val();
     $.ajax({
-        type: "DELTE",
-        url: SearaApp.baseURL+'banco',
-        data: {id : idBank},
-        dataType: "json",
-        success: function (response) {
-            console.log(response)
-        }
+        type: "DELETE",
+        url: SearaApp.baseURL+'banco/'+idBank,
+        dataType: "json"
+    })
+    .done(function(response) {
+        console.log("success");
+        new PNotify({
+            title: 'Sucesso',
+            text: response.message,
+            type: response.type,
+            styling: 'bootstrap3',
+            icon: 'fa fa-check'
+        });
+        $("#table-bank").DataTable().ajax.reload();
+        $("#modalDeleteBank").modal('hide');
+    })
+    .fail(function(response) {
+        new PNotify({
+            title: 'Ops!',
+            text: response.message,
+            type: response.type,
+            styling: 'bootstrap3',
+            icon: 'fa fa-exclamation-triangle'
+        });
+    })
+    .always(function() {
+        console.log("complete");
     });
 });
