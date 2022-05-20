@@ -207,6 +207,9 @@ elixir(function(mix) {
     //BANK
     mix.scripts(['bank/bank.js'], 'public/js/bank/bank.js');
 
+    //TYPE ACCOUNT BANK
+    mix.scripts(['typeBank/typeBank.js'], 'public/js/typeBank/typeBank.min.js');
+
     mix.styles([
         'basic.min.css',
         'dropzone.min.css',
