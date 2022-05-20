@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Service\Company\CompanyData;
-use App\Service\Company\CompanyDataProvider;
-use App\Service\Company\CompanyDataUnavailable;
-use App\Service\Company\InMemoryCompanyDataProvider;
+use Seara\Service\Company\CompanyData;
+use Seara\Service\Company\CompanyDataProvider;
+use Seara\Service\Company\CompanyDataUnavailable;
+use Seara\Service\Company\InMemoryCompanyDataProvider;
 use DB;
 use Tests\TestCase;
 

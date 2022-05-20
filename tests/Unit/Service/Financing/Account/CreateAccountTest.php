@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Financing\Account;
 
-use App\Service\Financing\Account\AccountRepository;
-use App\Service\Financing\Account\CreateAccount;
+use Seara\Service\Financing\Account\AccountRepository;
+use Seara\Service\Financing\Account\CreateAccount;
 use PHPUnit\Framework\TestCase;
 
 class CreateAccountTest extends TestCase

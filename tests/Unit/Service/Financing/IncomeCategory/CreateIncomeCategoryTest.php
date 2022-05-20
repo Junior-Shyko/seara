@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Financing\IncomeCategory;
 
-use App\Service\Financing\IncomeCategory\CreateIncomeCategory;
-use App\Service\Financing\IncomeCategory\IncomeCategoryRepository;
+use Seara\Service\Financing\IncomeCategory\CreateIncomeCategory;
+use Seara\Service\Financing\IncomeCategory\IncomeCategoryRepository;
 use PHPUnit\Framework\TestCase;
 
 class CreateIncomeCategoryTest extends TestCase
