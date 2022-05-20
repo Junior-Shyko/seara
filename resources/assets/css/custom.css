@@ -4253,3 +4253,12 @@ td.action {
     width: 100% !important;
     padding: 0;
 }
+.border-update {
+    border: 1px solid #4569cf;
+    box-shadow: inset 0 0 0.5em #bcc9e5, 0 0 0.2em #0c46e9;
+}
+
+.title-page-seara {
+    width: 100%;
+    padding: 10px 0;
+}

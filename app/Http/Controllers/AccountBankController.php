@@ -14,7 +14,7 @@ class AccountBankController extends Controller
      */
     public function index()
     {
-        //
+        return view('accountBank.index');
     }
 
     /**

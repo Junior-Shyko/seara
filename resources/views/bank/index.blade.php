@@ -2,12 +2,7 @@
 @push('stylesheets')
 <!-- Example -->
 <link href="{{ url("css/entry.min.css") }}" rel="stylesheet">
-<style>
-    .border-update {
-        border: 1px solid #4569cf;
-        box-shadow: inset 0 0 0.5em #bcc9e5, 0 0 0.2em #0c46e9;
-    }
-</style>
+
 @endpush
 @section('main_container')
 <!-- page content -->
