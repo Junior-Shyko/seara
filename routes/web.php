@@ -115,6 +115,10 @@ Route::get('banco/getBank', 'BankController@getBank');
 Route::resource('banco' , 'BankController');
 Route::get('getBank/{id}' , 'BankController@show');
 
+//TIPO DE BANCOS
+Route::get('tipo-banco/getType', 'TypeBankController@getType');
+Route::resource('tipo-banco' , 'TypeBankController');
+
 // Categoria de receitas
 Route::get('categoria-receita', 'Financing\IncomeCategoryController@index');
 Route::get('income-category/dataTable', 'Financing\IncomeCategoryController@dataTable');
