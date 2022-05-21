@@ -3,7 +3,9 @@
 namespace Seara\Http\Controllers;
 
 use Seara\AccountBank;
+use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 use Illuminate\Http\Request;
+use Seara\Bank;
 
 class AccountBankController extends Controller
 {
@@ -14,7 +16,9 @@ class AccountBankController extends Controller
      */
     public function index()
     {
-        return view('accountBank.index');
+        $banks = Bank::all();
+        $types = GetTypeAccountBank::getTyppeAccountBank();
+        return view('accountBank.index', compact('types', 'banks'));
     }
 
     /**
@@ -35,7 +39,17 @@ class AccountBankController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            unset($request['idAccontBank']);
+            $request['owner'] = $request['company_id'];
+            AccountBank::create($request->all());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Conta bancaria salva com sucesso'
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -69,7 +83,7 @@ class AccountBankController extends Controller
      */
     public function update(Request $request, AccountBank $accountBank)
     {
-        //
+        dd('update');
     }
 
     /**
