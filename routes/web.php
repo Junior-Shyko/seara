@@ -115,14 +115,15 @@ Route::get('banco/getBank', 'BankController@getBank');
 Route::resource('banco' , 'BankController');
 Route::get('getBank/{id}' , 'BankController@show');
 
-//ROTA PARA OS BANCOS
+//ROTA PARA CONTAS BANCARIAS
 Route::get('conta-bancaria/getBank', 'AccountBankController@getBank');
 Route::resource('conta-bancaria' , 'AccountBankController');
 Route::get('getBank/{id}' , 'AccountBankController@show');
 
-//TIPO DE BANCOS
+//TIPO DE CONTAS BANCARIASS
 Route::get('tipo-banco/getType', 'TypeBankController@getType');
 Route::resource('tipo-banco' , 'TypeBankController');
+
 
 // Categoria de receitas
 Route::get('categoria-receita', 'Financing\IncomeCategoryController@index');
