@@ -2,9 +2,10 @@
 
 namespace Seara\Http\Controllers;
 
-use Seara\TypeBank;
-use Illuminate\Http\Request;
+use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 use Yajra\DataTables\DataTables;
+use Illuminate\Http\Request;
+use Seara\TypeBank;
 use Carbon\Carbon;
 
 class TypeBankController extends Controller
@@ -115,5 +116,10 @@ class TypeBankController extends Controller
             return '<a class="btn btn-xs btn-default" title="Editar tipo de conta bancaria" onclick="editTypeBank('.$bank->id.')"><i class="fa fa-edit"></i></a>
             <a data-id="'.$bank->id.'" data-toggle="modal" data-target="#modalDeleteTypeAccontBank" class="btn btn-xs btn-danger" title="Excluir tipo de conta bancaria"><i class="fa fa-edit"></i></a>';
         })->make(true);
+    }
+
+    public function getTypeAccountBank()
+    {
+        return GetTypeAccountBank::getTyppeAccountBank();
     }
 }
