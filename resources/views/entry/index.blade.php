@@ -92,7 +92,7 @@
                                         Adicionar <span class="caret"></span>
                                       </button>
                                     <ul class="dropdown-menu">
-                                      <li><a href="#">Cadastrar Banco</a></li>
+                                      <li><a href="{{url('conta-bancaria')}}" target="_blank">Cadastrar Banco</a></li>
                                       <li><a href="#" data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</a></li>
                                       <li><a href="#">Something else here</a></li>
                                       <li role="separator" class="divider"></li>

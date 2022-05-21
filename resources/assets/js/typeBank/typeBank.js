@@ -7,6 +7,9 @@ $(document).ready(function () {
             {data: 'action', name: 'action', searchable: false, className: 'nowrap'}
         ]
     } );
+    $('#valueAccontBank').maskMoney(
+        {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
 });
 
 $("#nameButtonTypeBank").click(function (e) { 
@@ -100,3 +103,41 @@ $("#btn_delete_type_account_bank").click(function (e) {
         console.log("complete");
     });
 });
+
+$("#btnSaveAccontBank").click(function (e){
+    var form = $("#formAccountBank").serialize();
+    var balance = $("#valueAccontBank").val();
+    if(
+        $("#valueAccontBank").val() == '' ||
+        $("#accountBankNumber").val() == '' ||
+        $("#agency_number").val() == '' ||
+        $("#selectTypeAccountBank").val() == '' ||
+        $("#bank_id").val() == ''
+     ) {
+        SearaAlert.error('Todos os campos são obrigatórios');
+    }
+
+    var urlRequest = '';
+    var typeRequest
+    var idAccontBank = $("#idAccontBank").val();
+    if(idAccontBank == '' ){
+        typeRequest = "POST";
+        urlRequest = SearaApp.baseURL + 'conta-bancaria';
+    }else{
+        typeRequest = "PATCH";
+        urlRequest = SearaApp.baseURL + 'conta-bancaria'+idAccontBank;
+    }
+    $.ajax({
+        type: typeRequest,
+        url: urlRequest,
+        data: form,
+        dataType: "json",
+        success: function (response) {
+            SearaAlert.success(response.message);
+        },
+        error: function (response, xjhr, status) {
+            SearaAlert.error(response.message);
+        }
+    });
+});
+
