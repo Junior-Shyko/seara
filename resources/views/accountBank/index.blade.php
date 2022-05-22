@@ -84,7 +84,32 @@
     @endslot
 @endcomponent
 
+{{-- MODAL DE EDIÇÃO --}}
+@component('components.modal-edit', [
+    'id'    => 'modalEditAccountBank',
+    'class' => ''
+])
+    @slot('size')
+        modal-lg
+    @endslot
+    @slot('title', 'Editar conta bancaria')
+
+    @slot('slot')
+       @include('accountBank.form')
+    @endslot
+
+    @slot('inputs')
+       <input type="hidden" name="delete_bank" id="delete_bank">
+    @endslot
+
+    @slot('idBtnModal')
+        btnDeleteBank
+    @endslot
+@endcomponent
+{{-- FIM MODAL DE EDIÇÃO --}}
+
 @endsection
+
 @push('stylesheets')
     {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}"> --}}
 @endpush

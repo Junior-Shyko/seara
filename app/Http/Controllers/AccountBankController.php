@@ -123,23 +123,13 @@ class AccountBankController extends Controller
         //Relacionamento com as tabelas
         $accountBank = AccountBankRepository::getRelationAccountBank();
         $datatable = DataTables::of($accountBank);
-        $datatable->editColumn(
-            'created_at',
-            function($account) {
-                $created_at = new Carbon($account->created_at);
-                return $created_at->format('d/m/Y à\s H:i:s');
-            }
-        );
-
         $datatable->addColumn('action', function ($account) {
             return $this->actionButtons($account->idAccountBank, [
-                ['Editar conta', 'editAccount', 'fa fa-edit'],
+                ['Editar conta', 'editAccountBank', 'fa fa-edit'],
                 ['Excluir conta', 'archiveAccount', 'fa fa-trash', 'btn-danger']
             ]);
         });
-
         return $datatable->make(true);
-
     }
 
 

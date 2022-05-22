@@ -73,8 +73,9 @@ function editTypeBank(id) {
         }
     );
 }
-
+//EDIÇÃO DE CONTA BANCARIA
 function editAccountBank(id){
+    $("#modalEditAccountBank").modal('show');
     $.getJSON(SearaApp.baseURL+'conta-bancaria/'+id,
         function (data, textStatus, jqXHR) {
             console.log(data);
@@ -86,6 +87,7 @@ function editAccountBank(id){
         }
     );
 }
+
 
 function archiveAccount(id) {
     $("#modalDeleteAccountBank").modal('show');
