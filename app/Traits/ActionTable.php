@@ -14,7 +14,7 @@ trait ActionTable
 	function actionButton( $id, $title, $click, $icon, $class = 'btn-primary' )
     {
         $click = sprintf("%s(\"%s\")", $click, $id);
-        return "<button class='btn {$class} btn-xs' data-toggle='tooltip' data-placement='top' data-original-title='{$title}' onclick='{$click}' role='tooltip'>
+        return "<button class='btn {$class} btn-xs' data-id='{$id}' data-toggle='tooltip' data-placement='top' data-original-title='{$title}' onclick='{$click}' role='tooltip'>
                     <i class='fa {$icon}'></i>
                 </button>";
     }
