@@ -15,4 +15,9 @@ class AccountBank extends Model
         'balance',
         'owner'
     ];
+
+    public function account()
+    {
+        return $this->belongsTo('Seara\Models\Company', 'company_id');
+    }
 }

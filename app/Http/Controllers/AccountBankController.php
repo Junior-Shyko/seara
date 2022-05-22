@@ -2,13 +2,19 @@
 
 namespace Seara\Http\Controllers;
 
-use Seara\AccountBank;
-use Seara\Service\TypeAccountBank\GetTypeAccountBank;
-use Illuminate\Http\Request;
 use Seara\Bank;
+use Carbon\Carbon;
+use Seara\AccountBank;
+use Illuminate\Http\Request;
+use Seara\Traits\ActionTable;
+use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Auth;
+use Seara\Repository\AccountBankRepository;
+use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 
 class AccountBankController extends Controller
 {
+    use ActionTable;
     /**
      * Display a listing of the resource.
      *
@@ -41,14 +47,19 @@ class AccountBankController extends Controller
     {
         try {
             unset($request['idAccontBank']);
-            $request['owner'] = $request['company_id'];
+            if(is_null($request['balance'])){
+                $request['balance'] = 0 ;
+            };
             AccountBank::create($request->all());
             return response()->json([
-                'status' => 'success',
+                'type' => 'success',
                 'message' => 'Conta bancaria salva com sucesso'
             ]);
         } catch (\Throwable $th) {
-            throw $th;
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Ocorreu um erro inesperado'
+            ]);
         }
     }
 
@@ -58,9 +69,14 @@ class AccountBankController extends Controller
      * @param  \Seara\AccountBank  $accountBank
      * @return \Illuminate\Http\Response
      */
-    public function show(AccountBank $accountBank)
+    public function show($id)
     {
-        //
+        try {
+            $accountBank = AccountBank::findOrFail($id);
+            return response()->json($accountBank);
+        } catch (\Exception $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -92,8 +108,39 @@ class AccountBankController extends Controller
      * @param  \Seara\AccountBank  $accountBank
      * @return \Illuminate\Http\Response
      */
-    public function destroy(AccountBank $accountBank)
+    public function destroy($id)
     {
-        //
+        try {
+            AccountBank::find($id)->delete();
+            return response()->json(['message' => 'Conta bancaria excluida com sucesso', 'type' => 'success','status' => 200], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Ocorreu um erro : '.$th->getMessage(), 'type' => 'error','status' => 400], 400);
+        }
     }
+
+    public function getAccountBank()
+    {
+        //Relacionamento com as tabelas
+        $accountBank = AccountBankRepository::getRelationAccountBank();
+        $datatable = DataTables::of($accountBank);
+        $datatable->editColumn(
+            'created_at',
+            function($account) {
+                $created_at = new Carbon($account->created_at);
+                return $created_at->format('d/m/Y à\s H:i:s');
+            }
+        );
+
+        $datatable->addColumn('action', function ($account) {
+            return $this->actionButtons($account->idAccountBank, [
+                ['Editar conta', 'editAccount', 'fa fa-edit'],
+                ['Excluir conta', 'archiveAccount', 'fa fa-trash', 'btn-danger']
+            ]);
+        });
+
+        return $datatable->make(true);
+
+    }
+
+
 }

@@ -7,6 +7,20 @@ $(document).ready(function () {
             {data: 'action', name: 'action', searchable: false, className: 'nowrap'}
         ]
     } );
+
+    //Contas bancarias
+    $('#table-account-bank').DataTable( {
+        ajax: SearaApp.baseURL+'todasContas',
+        columns: [
+            {data: 'nameBank', name: 'nameBank'},
+            {data: 'nameTypeBank', name: 'nameTypeBank'},
+            {data: 'balance', name: 'balance'},
+            {data: 'number', name: 'number'},
+            {data: 'agency_number', name: 'agency_number'},
+            {data: 'action', name: 'action', searchable: false, className: 'nowrap'}
+        ]
+    } );
+
     $('#valueAccontBank').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
@@ -22,7 +36,6 @@ $("#nameButtonTypeBank").click(function (e) {
         dataType: 'json',
         data: {name: inputTypeBank},
         success:function(response){
-            console.log(response);
             new PNotify({
                 title: 'Sucesso',
                 text: response.message,
@@ -60,6 +73,25 @@ function editTypeBank(id) {
         }
     );
 }
+
+function editAccountBank(id){
+    $.getJSON(SearaApp.baseURL+'conta-bancaria/'+id,
+        function (data, textStatus, jqXHR) {
+            console.log(data);
+            // $("#inputTypeBank").val(data.name);
+            // $("#idTypeBank").val(data.id);
+            // $("#nameButtonTypeBank").text('Alterar');
+            // $("#typeActionBank").val('update');
+            // $("#inputTypeBank").addClass('border-update');
+        }
+    );
+}
+
+function archiveAccount(id) {
+    $("#modalDeleteAccountBank").modal('show');
+    $('#delete_account_bank').val(id);
+}
+
 
 //PASSANDO DADOS PARA O COMPONENTE DE MODAL
 $('#modalDeleteTypeAccontBank').on('show.bs.modal', function (event) {
@@ -106,9 +138,7 @@ $("#btn_delete_type_account_bank").click(function (e) {
 
 $("#btnSaveAccontBank").click(function (e){
     var form = $("#formAccountBank").serialize();
-    var balance = $("#valueAccontBank").val();
     if(
-        $("#valueAccontBank").val() == '' ||
         $("#accountBankNumber").val() == '' ||
         $("#agency_number").val() == '' ||
         $("#selectTypeAccountBank").val() == '' ||
@@ -116,7 +146,6 @@ $("#btnSaveAccontBank").click(function (e){
      ) {
         SearaAlert.error('Todos os campos são obrigatórios');
     }
-
     var urlRequest = '';
     var typeRequest
     var idAccontBank = $("#idAccontBank").val();
@@ -134,10 +163,34 @@ $("#btnSaveAccontBank").click(function (e){
         dataType: "json",
         success: function (response) {
             SearaAlert.success(response.message);
+            $("#table-account-bank").DataTable().ajax.reload();
+            $("#formAccountBank")[0].reset();
         },
         error: function (response, xjhr, status) {
             SearaAlert.error(response.message);
         }
+    });
+});
+
+//EXCLUINDO CONTA BANCARIA
+$("#btnDeleteAccountBank").click(function (e) {
+    e.preventDefault();
+    var idAccountBank = $('#delete_account_bank').val();
+    $.ajax({
+        type: "DELETE",
+        url: SearaApp.baseURL+'conta-bancaria/'+idAccountBank,
+        dataType: "json"
+    })
+    .done(function(response) {
+        SearaAlert.success(response.message);
+        $("#table-account-bank").DataTable().ajax.reload();
+        $("#modalDeleteAccountBank").modal('hide');
+    })
+    .fail(function(response) {
+        SearaAlert.success(response.message);
+    })
+    .always(function() {
+        console.log("complete");
     });
 });
 

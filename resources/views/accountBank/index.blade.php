@@ -62,6 +62,28 @@
         </div>
     </div>
 </div>
+@component('components.modal-delete', [
+    'id'    => 'modalDeleteAccountBank',
+    'class' => '',
+])
+    @slot('title', 'Excluir conta bancaria')
+
+    @slot('slot')
+       Deseja realmente excluir essa conta bancaria?
+       <p>
+           Ao excluir você entende o risco.
+       </p>
+    @endslot
+
+    @slot('inputs')
+       <input type="text" name="delete_bank" id="delete_account_bank">
+    @endslot
+
+    @slot('idBtnModal')
+        btnDeleteAccountBank
+    @endslot
+@endcomponent
+
 @endsection
 @push('stylesheets')
     {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}"> --}}
