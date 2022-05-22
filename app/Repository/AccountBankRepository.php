@@ -1,0 +1,28 @@
+<?php
+
+namespace Seara\Repository;
+
+use Seara\AccountBank;
+use Illuminate\Support\Facades\Auth;
+
+class AccountBankRepository {
+
+    /**
+     * Retorna o relacionamento de todas as tabelas relacionadas
+     *
+     * @return void
+     */
+    static public function getRelationAccountBank()
+    {
+        $user = Auth::user();
+        return AccountBank::with('account')
+            ->join('companies', 'account_banks.company_id', '=', 'companies.company_id')
+            ->join('type_banks', 'account_banks.typeBank_id', '=', 'type_banks.id')
+            ->join('banks', 'account_banks.bank_id', '=', 'banks.id')
+            ->join('users', 'account_banks.owner', '=', 'users.id')
+            ->select('type_banks.id','type_banks.name','type_banks.name as nameTypeBank','banks.id', 'banks.name as nameBank', 'account_banks.*',
+            'users.id', 'users.name as nameUser', 'account_banks.id as idAccountBank')
+            ->where('companies.company_id', $user->user_id_company)
+            ->get();
+    }
+}
