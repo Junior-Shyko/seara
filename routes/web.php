@@ -119,6 +119,7 @@ Route::get('getBank/{id}' , 'BankController@show');
 Route::get('conta-bancaria/getBank', 'AccountBankController@getBank');
 Route::resource('conta-bancaria' , 'AccountBankController');
 Route::get('getBank/{id}' , 'AccountBankController@show');
+Route::get('todasContas' , 'AccountBankController@getAccountBank');
 
 //TIPO DE CONTAS BANCARIASS
 Route::get('tipo-banco/getType', 'TypeBankController@getType');
@@ -151,7 +152,3 @@ Route::get('payment/dataTable', 'Financing\PaymentController@dataTable');
 Route::resource('payment', 'Financing\PaymentController', [
     'only' => ['show', 'update', 'destroy']
 ]);
-
-Route::get('clear', function(){
-    return view('page-clear');
-});
