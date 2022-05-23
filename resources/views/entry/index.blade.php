@@ -47,7 +47,7 @@
                         <span class="count_top">
                             <i class="fa fa-university" aria-hidden="true"></i> Todos Banco
                         </span>
-                        <div class="count">2500</div>
+                        <div class="count">{{number_format($balanceBank, 2 , ',', '.')}}</div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral de todos caixa banco
@@ -58,7 +58,7 @@
                         <span class="count_top">
                             <i class="fa fa-money" aria-hidden="true"></i> Caixa Interno
                         </span>
-                        <div class="count">123.50</div>
+                        <div class="count">{{number_format($saldo, 2 , ',', '.')}}</div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral do caixa interno
@@ -69,7 +69,7 @@
                         <span class="count_top">
                             <i class="fa fa-calculator" aria-hidden="true"></i> Caixa Geral
                         </span>
-                        <div class="count green">2,500</div>
+                        <div class="count green">{{number_format($balanceGeneral, 2 , ',', '.')}}</div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral de todos os caixas
