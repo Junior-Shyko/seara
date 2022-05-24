@@ -40,11 +40,11 @@
 </div>
 <div class="row">
     <div class="modal-footer">
-        <input type="text" name="company_id" id="company_id" 
+        <input type="hidden" name="company_id" id="company_id" 
         value="{{Auth::user()->user_id_company}}">
-        <input type="text" name="owner" id="owner_id" 
+        <input type="hidden" name="owner" id="owner_id" 
         value="{{Auth::user()->id}}">
-        <input type="text" name="idAccontBank" id="idAccontBank" value="">
+        <input type="hidden" name="idAccontBank" id="idAccontBank" value="">
         <a class="btn btn-primary" id="btnSaveAccontBank" title="Cadastrar conta bancaria">
             <i class="fa fa-save"></i> Salvar
         </a>

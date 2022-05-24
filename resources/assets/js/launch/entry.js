@@ -1,11 +1,9 @@
 
 $(document).ready(function () {
-    //$("#modalUploadLaunch").modal('show');
-    //$("#lancar_conta").modal('show');
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    
+    $("#lancar_conta").modal('show');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
         return this.flatten().reduce( function ( a, b ) {
@@ -96,18 +94,6 @@ $(document).ready(function () {
         modal.find('#typeLaunchDeleteModal').text(type)
         modal.find('#idDelete').val(id)
     })
-
-    // $('#modalUploadLaunch').on('show.bs.modal', function (event) {
-    //   var button = $(event.relatedTarget)
-    //   var id = button.data('id') 
-    //   var modal = $(this)
-    //   modal.find('.idEntry').val(id);
-    // })
-
-    // $('#modalUploadLaunch').on('hidden.bs.modal', function (event) {
-    //     var modal = $(this)
-    //     modal.find('.idEntry').val(null);
-    //   })
 
     //ID DO LANÇAMENTO
         

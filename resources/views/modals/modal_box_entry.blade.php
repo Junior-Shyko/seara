@@ -36,7 +36,28 @@
                         </h4>
                     </div>
                 </div>
-                @include('entry.form')
+                {{-- @include('entry.form') --}}
+                <div>
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Lançamento</a></li>
+                      <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Transferência</a></li>
+                      {{-- <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
+                      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li> --}}
+                    </ul>
+                  
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                      <div role="tabpanel" class="tab-pane active" id="home">
+                        @include('entry.form')
+                      </div>
+                      <div role="tabpanel" class="tab-pane" id="profile">.profile.</div>
+                      {{-- <div role="tabpanel" class="tab-pane" id="messages">...</div>
+                      <div role="tabpanel" class="tab-pane" id="settings">...</div> --}}
+                    </div>
+                  
+                  </div>
             </div>
         </div>
     </div>

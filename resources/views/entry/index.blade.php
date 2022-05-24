@@ -161,7 +161,7 @@
       
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
-    @include('modals.modal_box_entry', ['saldo' => $saldo])
+    @include('modals.modal_box_entry', ['saldo' => $saldo, ''])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
 
