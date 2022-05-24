@@ -87,7 +87,7 @@
                         <ul class="nav child_menu">
                             @role('superAdmin')
                             <li>
-                                <a href="{{ url('banco') }}">Tipo bancario</a>
+                                <a href="{{ url('tipo-banco') }}">Tipo bancario</a>
                             </li>
                             <li>
                                 <a href="{{ url('banco') }}">Banco</a>

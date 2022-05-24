@@ -49,7 +49,7 @@ function editBank(id) {
             $("#id_bank").val(data.id);
             $("#nameButtonBank").text('Alterar');
             $("#typeActionBank").val('update');
-            $("#inputBank").addClass('border-update');
+            
         }
     );
     

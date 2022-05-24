@@ -97,9 +97,17 @@ class AccountBankController extends Controller
      * @param  \Seara\AccountBank  $accountBank
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AccountBank $accountBank)
+    public function update(Request $request)
     {
-        dd('update');
+        try {
+            $account = AccountBankRepository::update($request->all());
+            if($account)
+                return response()->json(['message' => 'Conta bancaria alterada com sucesso', 'type' => 'success','status' => 200], 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+       // dd('update');
     }
 
     /**
@@ -123,6 +131,10 @@ class AccountBankController extends Controller
         //Relacionamento com as tabelas
         $accountBank = AccountBankRepository::getRelationAccountBank();
         $datatable = DataTables::of($accountBank);
+        $datatable->editColumn('balance', function($accountBank) {
+                return number_format($accountBank->balance, 2, ',', '.');
+            }
+        );
         $datatable->addColumn('action', function ($account) {
             return $this->actionButtons($account->idAccountBank, [
                 ['Editar conta', 'editAccountBank', 'fa fa-edit'],

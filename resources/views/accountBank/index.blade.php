@@ -19,7 +19,7 @@
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>Criar conta bancaria</h2>
-                        <a href="#" title="Lançar movimento no caixa" class="btn btn-primary navbar-right">
+                        <a href="{{url('lancar')}}" title="Lançar movimento no caixa" class="btn btn-primary navbar-right">
                             Lançar Movimento
                         </a>
                         
@@ -83,30 +83,6 @@
         btnDeleteAccountBank
     @endslot
 @endcomponent
-
-{{-- MODAL DE EDIÇÃO --}}
-@component('components.modal-edit', [
-    'id'    => 'modalEditAccountBank',
-    'class' => ''
-])
-    @slot('size')
-        modal-lg
-    @endslot
-    @slot('title', 'Editar conta bancaria')
-
-    @slot('slot')
-       @include('accountBank.form')
-    @endslot
-
-    @slot('inputs')
-       <input type="hidden" name="delete_bank" id="delete_bank">
-    @endslot
-
-    @slot('idBtnModal')
-        btnDeleteBank
-    @endslot
-@endcomponent
-{{-- FIM MODAL DE EDIÇÃO --}}
 
 @endsection
 

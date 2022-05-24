@@ -3,6 +3,7 @@
 namespace Seara\Repository;
 
 use Seara\AccountBank;
+use Seara\Seara\Monetary;
 use Illuminate\Support\Facades\Auth;
 
 class AccountBankRepository {
@@ -35,6 +36,15 @@ class AccountBankRepository {
             $balanceActual = ($balanceActual + $value->balance);
         }
         return $balanceActual;
+    }
+
+    static public function update($request)
+    {
+        $money = Monetary::money_real($request['balance']);
+        $request['balance'] = $money;
+        $accountBank = AccountBank::findOrFail($request['idAccontBank']);
+        unset($request['idAccontBank']);
+        return $accountBank->update($request);
     }
 
 }
