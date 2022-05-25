@@ -2,22 +2,23 @@
 
 namespace Seara\Http\Controllers;
 
-use App\Service\Financing\Account\AccountRepository;
-use Seara\Models\Company;
-use Seara\Entry;
-use Seara\FileLaunch;
-use Seara\FunctionGeneral;
-use Seara\Seara\Monetary;
-use Seara\Repository\AccountBankRepository;
-use Seara\AccountLaunch;
-use Auth, DB, PDF;
 use Validator;
-use Yajra\DataTables\Facades\DataTables;
+use Seara\Entry;
+use Auth, DB, PDF;
+use Carbon\Carbon;
+use Seara\FileLaunch;
+use Seara\AccountBank;
+use Seara\AccountType;
+use Seara\AccountLaunch;
+use Seara\Models\Company;
+use Seara\Seara\Monetary;
+use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
+use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
-use Carbon\Carbon;
-use Seara\AccountType;
+use App\Service\Financing\Account\AccountRepository;
 
 class EntryController extends Controller
 {
@@ -40,6 +41,7 @@ class EntryController extends Controller
         isset($_GET['company']) ? $idCompany = intval($_GET['company']) : $idCompany = Auth::user()->user_id_company;
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
+        
         //MES ATUAL
         $month = Carbon::now()->month;
         $monthPlus = ($month - 1);
@@ -67,7 +69,11 @@ class EntryController extends Controller
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance();
         $balanceGeneral = ($saldo + $balanceBank);
-        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco', 'company' , 'balanceBank', 'balanceGeneral'));
+
+        //todas as contas bancarias
+        $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
+
+        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco', 'company' , 'balanceBank', 'balanceGeneral','accountBank'));
     }
 
     /**

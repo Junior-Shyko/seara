@@ -116,7 +116,6 @@ Route::resource('banco' , 'BankController');
 Route::get('getBank/{id}' , 'BankController@show');
 
 //ROTA PARA CONTAS BANCARIAS
-Route::get('conta-bancaria/getBank', 'AccountBankController@getBank');
 Route::resource('conta-bancaria' , 'AccountBankController');
 Route::get('getBank/{id}' , 'AccountBankController@show');
 Route::get('todasContas' , 'AccountBankController@getAccountBank');

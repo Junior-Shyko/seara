@@ -4,6 +4,7 @@ namespace Seara\Repository;
 
 use Seara\AccountBank;
 use Seara\Seara\Monetary;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class AccountBankRepository {
@@ -45,6 +46,16 @@ class AccountBankRepository {
         $accountBank = AccountBank::findOrFail($request['idAccontBank']);
         unset($request['idAccontBank']);
         return $accountBank->update($request);
+    }
+
+    static public function getAccountBankAndTypeToCompany($idCompany)
+    {
+        return DB::table('account_banks')
+                    ->join('type_banks', 'account_banks.typeBank_id', '=', 'type_banks.id')
+                    ->join('banks', 'account_banks.bank_id', '=', 'banks.id')
+                    ->select('type_banks.*' ,'account_banks.*', 'type_banks.name as nameTypeBank', 'banks.name as nameBank',
+                    'account_banks.id as idAccountBank')
+                    ->where('account_banks.company_id', $idCompany)->get();
     }
 
 }
