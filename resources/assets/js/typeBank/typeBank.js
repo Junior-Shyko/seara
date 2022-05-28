@@ -29,12 +29,16 @@ $(document).ready(function () {
 $("#nameButtonTypeBank").click(function (e) { 
     e.preventDefault();
     var inputTypeBank = $("#inputTypeBank").val();
-    console.log({inputTypeBank});
+    var idTypebaNk = $("#idTypeBank").val();
+    var formData = {
+        name: inputTypeBank,
+        idTypeBank: idTypebaNk
+    };
     $.ajax({
         url: SearaApp.baseURL+'tipo-banco',
         type: 'POST',
         dataType: 'json',
-        data: {name: inputTypeBank},
+        data: formData,
         success:function(response){
             new PNotify({
                 title: 'Sucesso',
@@ -44,6 +48,7 @@ $("#nameButtonTypeBank").click(function (e) {
                 icon: 'fa fa-check'
             });
             $("#inputTypeBank").val('');
+            $("#idTypeBank").val('');
             $("#table-type-bank").DataTable().ajax.reload();
         }
     })
@@ -67,7 +72,7 @@ function editTypeBank(id) {
         function (data, textStatus, jqXHR) {
             $("#inputTypeBank").val(data.name);
             $("#idTypeBank").val(data.id);
-            $("#nameButtonTypeBank").text('Alterar');
+            $("#titleButtonTypeBank").text('Alterar');
             $("#typeActionBank").val('update');
             $("#inputTypeBank").addClass('border-update');
         }

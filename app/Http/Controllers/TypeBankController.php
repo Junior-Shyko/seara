@@ -38,9 +38,10 @@ class TypeBankController extends Controller
      */
     public function store(Request $request)
     {
-        if(isset($request->id_bank) )
+        //dd($request->all());
+        if(isset($request->idTypeBank) )
         {
-            TypeBank::where('id', '=', $request->id_bank)->update(['name' => $request->name]);return response()->json(['message' => 'Tipo bancário atualizado com sucesso', 'type' => 'success','status' => 200], 200);
+            TypeBank::where('id', '=', $request->idTypeBank)->update(['name' => $request->name]);return response()->json(['message' => 'Tipo bancário atualizado com sucesso', 'type' => 'success','status' => 200], 200);
         }else{
             $input = ['name' => $request->name];
             TypeBank::create($input);

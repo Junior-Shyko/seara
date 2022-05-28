@@ -17,14 +17,13 @@ $("#btnPlusBank").click(function (e) {
         name: inputBank,
         id_bank: idBank
     };
-    console.log({inputBank});
+
     $.ajax({
         url: SearaApp.baseURL+'banco',
         type: 'POST',
         dataType: 'json',
         data: formData,
         success:function(response){
-            console.log(response);
             new PNotify({
                 title: 'Sucesso',
                 text: response.message,

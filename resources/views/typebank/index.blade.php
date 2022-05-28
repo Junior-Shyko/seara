@@ -28,8 +28,8 @@
                         <div class="input-group">
                             <input type="text" name="name" class="form-control" id="inputTypeBank">
                             <span class="input-group-btn">
-                            <button type="button" title="Cadastrar tipo bancário" class="btn btn-primary" id="btnPlusBank">
-                                <i class="fa fa-save"></i> <span id="nameButtonTypeBank">Cadastrar</span>
+                            <button type="button" title="Cadastrar tipo bancário" class="btn btn-primary" id="nameButtonTypeBank">
+                                <i class="fa fa-save"></i> <span id="titleButtonTypeBank">Cadastrar</span>
                             </button>
                             </span>
                         </div>
