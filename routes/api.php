@@ -17,10 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('api/teste', function() {
-    dump('sadfgdf');
-});
-
 Route::group([], function() {
     Route::get('getType', 'TypeBankController@getTypeAccountBank');
+    Route::prefix('account-bank')->group(function () {
+        Route::get('get-info-account/{id}','AccountBankController@getInfoAccountBank');
+    });
 });
+
+

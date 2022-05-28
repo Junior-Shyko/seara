@@ -3,6 +3,9 @@ $(document).ready(function () {
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
+    $('#realValueTranfer').maskMoney(
+        {allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
     $("#lancar_conta").modal('show');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
@@ -413,6 +416,96 @@ $("#btnTrashLaunch").click(function (e) {
     });
 });
 
+function formatValueToFront(action, idAccountBank, balanceInternal, smalTextInfo) {
+    var id = idAccountBank;//VALOR ESCOLHIDO NO SELECT
+    console.log({id})
+    var valueIntenal = balanceInternal;//VALOR DO CAIXA INTERNO
+    //SE A ESCOLHA FOR CAIXA INTERNO
+    if(id == 0 ){
+        $("#valueGetInfo").val(valueIntenal);//RECEBE O VALOR DO CAIXA INTERNO
+        $("#"+smalTextInfo).html(valueIntenal);//FORMATANDO NO FRONTEND
+    }else{
+        //CONSULTANDO INFORMACAO DA CONTA BANCARIA
+        $.get(SearaApp.baseURL + 'api/account-bank/get-info-account/' + id,
+            function (data, textStatus, jqXHR) {
+                var valueReal = formatFloatToBrCoin(data.balance);
+                if(action == 'saida'){
+                    $("#valueGetInfo").val(data.balance);//RECEBE O VALOR DA CONTA ESCOLHIDA
+                }
+                $("#"+smalTextInfo).html(valueReal);//FORMATANDO NO FRONTEND
+            }
+        );
+    }
+}
+
+//SELECT DA PRIMEIRA CONTA
+$("#selectAccountBankEnd").change(function (e) { 
+    e.preventDefault();
+    formatValueToFront(
+        'saida',
+        $("#selectAccountBankEnd").val(), 
+        $("#balanceInternal").val(), 
+        'balanceEndAccount'
+    );
+});
+
+$("#selectAccountBankEntry").change(function (e) { 
+    e.preventDefault();
+    formatValueToFront(
+        'entrada',
+        $("#selectAccountBankEntry").val(), 
+        $("#balanceInternal").val(), 
+        'balanceEntryAccount'
+    );
+}); 
+//AO SAIR DO CAMPO SE FAZ A VELIDAÇÃO DE VALORES
+$('#realValueTranfer').on('blur', function () {
+    var valueAccountBank = $("#valueGetInfo").val();
+    var valueRealTransfer = $('#realValueTranfer').val();
+    //CONVERTENDO O VALOR REAL PARA FLOAT
+    var valor = convertBrCoinToFloat(valueRealTransfer);
+    //SE O VALOR FOR MAIOR QUE O VALOR DA CONTA BANCARIA
+    if(valor > parseFloat(valueAccountBank)) {
+        $("#realValueTranfer").focus();
+        new PNotify({
+            title: 'Erro',
+            text: 'Valor maior que o saldo da conta',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
+        return false;
+    }    
+});
+
+function transferValue() {
+    if($("#realValueTranfer").val() == '' ||
+    $("#selectAccountBankEnd").val() == '' ||
+    $("#selectAccountBankEntry").val() == '') {
+        new PNotify({
+            title: 'Erro',
+            text: 'O valor e as contas bancárias devem ser preenchidos',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
+        return false;
+    }
+    var data = {
+        idAccountEnd : $("#selectAccountBankEnd").val(),
+        idAccountEntry : $("#selectAccountBankEntry").val(),
+        value : $("#realValueTranfer").val()
+    }
+    SearaAjax.post('transferir', data, function( response ){
+        console.log(response)
+        // notify.response(response);
+        // companyTable.reloadTable();
+    })
+    .fail(function(jqXHR){
+        notify.response(jqXHR.responseJSON);
+    })
+    .always(function(){
+        SearaLoader.hideModal();
+    });
+}
 
 
 

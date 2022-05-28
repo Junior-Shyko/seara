@@ -67,8 +67,9 @@
                                 <div class="col-md-12">
                                     <div class="col-md-4">
                                         <small class="text-danger">Conta de saída</small>
-                                        <select name="" id="" class="form-control">
-                                            <option value="0">--Selecione--</option>
+                                        <select name="" id="selectAccountBankEnd" class="form-control">
+                                            <option value="">--Selecione--</option>
+                                            <option value="0">CAIXA INTERNO</option>
                                             @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}
@@ -78,18 +79,22 @@
                                     </div>
                                     <div class="col-md-3">
                                         <small>Valor para transferência</small>
-                                        <input type="text" name="" id="" class="form-control">
+                                        <input type="text" name="realValueTranfer" id="realValueTranfer" class="form-control">
                                     </div>
                                     <div class="col-md-5">
                                         <label>informações</label>
-                                        <p>Saldo: R$ 987,00 - Tipo: Poupança - N. Conta: 76543-09</p>
+                                        <p>Saldo: <small id="balanceEndAccount">0.00</small> - Tipo: <small id="infoTypeAccountBank"></small> - N. Conta: 76543-09</p>
                                     </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <hr>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="col-md-4">
                                         <small class="text-danger">Conta de entrada</small>
-                                        <select name="" id="" class="form-control">
+                                        <select name="" id="selectAccountBankEntry" class="form-control">
                                             <option value="0">--Selecione--</option>
+                                            <option value="">Caixa Interno</option>
                                             @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}
@@ -98,20 +103,23 @@
                                         </select>
                                     </div>
                                     <div class="col-md-3">
+                                        {{-- 
                                         <small>Valor para transferência</small>
-                                        <input type="text" name="" id="" class="form-control">
+                                        <input type="text" name="" id="" class="form-control"> --}}
                                     </div>
                                     <div class="col-md-5">
                                         <label>informações</label>
-                                        <p>Saldo: R$ 0,70 - Tipo: Poupança - N. Conta: 6Y7U-XX</p>
+                                        <p>Saldo: <small id="balanceEntryAccount">0.00</small>  - Tipo: Poupança - N. Conta: 6Y7U-XX</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="clearfix" style="margin-bottom: 5px;"></div>
                             <div class="modal-footer">
+                                <input type="text" name="valueGetInfo" id="valueGetInfo">
+                                <input type="text" name="balanceInternal" id="balanceInternal" value="{{ number_format($saldo, 2, ',', '.') }}">
                                 <button type="button" class="btn btn-default  pull-left"
                                     data-dismiss="modal">Sair</button>
-                                <a id="btnTransferValue" class="btn btn-primary">
+                                <a id="btnTransferValue" onclick="transferValue()" class="btn btn-primary">
                                     <i class="fa fa-exchange" aria-hidden="true"></i> Transferir
                                 </a>
                             </div>

@@ -2,13 +2,16 @@
 
 namespace Seara\Http\Controllers;
 
-use Seara\Bank;
 use Carbon\Carbon;
+use Seara\Bank;
+use Seara\Entry;
 use Seara\AccountBank;
+use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
 use Seara\Traits\ActionTable;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Seara\Service\Launch\CreateLaunch;
 use Seara\Repository\AccountBankRepository;
 use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 
@@ -50,6 +53,8 @@ class AccountBankController extends Controller
             if(is_null($request['balance'])){
                 $request['balance'] = 0 ;
             };
+            $balance = Monetary::money_real($request->balance);
+            $request['balance'] = $balance;
             AccountBank::create($request->all());
             return response()->json([
                 'type' => 'success',
@@ -58,7 +63,7 @@ class AccountBankController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'type' => 'error',
-                'message' => 'Ocorreu um erro inesperado'
+                'message' => 'Ocorreu um erro inesperado : '.$th->getMessage()
             ]);
         }
     }
@@ -99,6 +104,9 @@ class AccountBankController extends Controller
      */
     public function update(Request $request)
     {
+        //formatando o valor para ser salvo no banco
+        $balance = Monetary::DataBRtoMySQL($request->balance);
+        $request['balance'] = $balance;
         try {
             $account = AccountBankRepository::update($request->all());
             if($account)
@@ -106,8 +114,6 @@ class AccountBankController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-
-       // dd('update');
     }
 
     /**
@@ -144,5 +150,23 @@ class AccountBankController extends Controller
         return $datatable->make(true);
     }
 
+    public function getInfoAccountBank($id)
+    {
+        $accountBank = AccountBankRepository::getInfoAccountBank($id);
+        return response()->json($accountBank);
+    }
 
+    public function actionTransfer(Request $request)
+    {
+        $transfer   = AccountBankRepository::transfer($request->all());
+        //preenchendo array com os campos e valores para um lancamento
+        $launch     = AccountBankRepository::fieldsEntry(1, 'Tranferido para outra conta',$request['value']);
+        $launch2     = AccountBankRepository::fieldsEntry(1, 'Recebido de para outra conta',$request['value']);
+        CreateLaunch::create($launch);
+        CreateLaunch::create($launch2);
+        if($transfer)
+            return response()->json(['message' => 'Transferência realizada com sucesso', 'type' => 'success','status' => 200], 200);
+        else
+            return response()->json(['message' => 'Ocorreu um erro : ', 'type' => 'error','status' => 400], 400);
+    }
 }

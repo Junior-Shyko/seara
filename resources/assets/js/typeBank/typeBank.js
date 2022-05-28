@@ -94,6 +94,7 @@ function editAccountBank(id){
             $(".selectTypeAccountBank").addClass('border-update');
             $(".selectTypeAccountBank").val(data.typeBank_id).trigger('change');
             $("#idAccontBank").val(data.id);
+            
         }
     );
 }

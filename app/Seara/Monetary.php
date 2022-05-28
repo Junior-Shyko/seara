@@ -91,6 +91,15 @@ class Monetary {
         return $valor; //retorna o valor formatado para gravar no banco
     }
 
+    //FORMATANDO A DATA PARA PADÃO AMERICANO
+	static public function DataBRtoMySQL( $DataBR ) {
+
+		$DataBR = str_replace(array(" – ","-"," "," "), " ", $DataBR);
+		list($data) = explode(" ", $DataBR);
+		return implode("-",array_reverse(explode("/",$data))) ;
+		
+	}
+    
     /**
      * params $type = Id da conta que não deseja incluir no calculo
      */

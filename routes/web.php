@@ -112,13 +112,14 @@ Route::get('account/launch/all', 'AccountLaunchController@getAccountLaunch');
 
 //ROTA PARA OS BANCOS
 Route::get('banco/getBank', 'BankController@getBank');
-Route::resource('banco' , 'BankController');
-Route::get('getBank/{id}' , 'BankController@show');
+Route::resource('banco' , 'BankController')->middleware('auth.basic');
+Route::get('getBank/{id}' , 'BankController@show')->middleware('auth.basic');
 
 //ROTA PARA CONTAS BANCARIAS
 Route::resource('conta-bancaria' , 'AccountBankController');
-Route::get('getBank/{id}' , 'AccountBankController@show');
+Route::get('getAccountBank/{id}' , 'AccountBankController@show');
 Route::get('todasContas' , 'AccountBankController@getAccountBank');
+Route::post('transferir' , 'AccountBankController@actionTransfer');
 
 //TIPO DE CONTAS BANCARIASS
 Route::get('tipo-banco/getType', 'TypeBankController@getType');

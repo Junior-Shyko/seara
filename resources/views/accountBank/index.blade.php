@@ -76,7 +76,7 @@
     @endslot
 
     @slot('inputs')
-       <input type="text" name="delete_bank" id="delete_account_bank">
+       <input type="hidden" name="delete_bank" id="delete_account_bank">
     @endslot
 
     @slot('idBtnModal')

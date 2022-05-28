@@ -266,3 +266,4 @@ SearaTable.prototype.loadTable = function () {
   let selector = $('#company-table_wrapper > div:nth-child(1) > div:nth-child(1)');
   table.buttons().container().appendTo(selector);
 };
+
