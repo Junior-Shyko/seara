@@ -199,7 +199,7 @@ elixir(function(mix) {
         'jquery.maskMoney.js',
         'mask.js',
         'helpers.js',
-        './node_modules/lightbox2/dist/js/lightbox.min.js',
+        //'./node_modules/lightbox2/dist/js/lightbox.min.js',
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
     mix.version('public/js/launch/entry.min.js');
