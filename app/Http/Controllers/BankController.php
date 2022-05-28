@@ -44,16 +44,15 @@ class BankController extends Controller
      */
     public function store(Request $request)
     {
-       
-        if(isset($request->id_bank) )
+     //dd($request->all());  
+        if(!isset($request->id_bank) )
         {
             $input = ['name' => $request->name];
             Bank::create($input);
-            return response()->json(['message' => 'Banco atualizado com sucesso', 'type' => 'success','status' => 200], 200);
-            
+            return response()->json(['message' => 'Banco cadastrado com sucesso', 'type' => 'success','status' => 200], 200);
         }else{
             Bank::where('id', '=', $request->id_bank)->update(['name' => $request->name]);
-            return response()->json(['message' => 'Banco cadastrado', 'type' => 'success','status' => 200], 200);
+            return response()->json(['message' => 'Banco atualizado com sucesso', 'type' => 'success','status' => 200], 200);
         }
     }
 

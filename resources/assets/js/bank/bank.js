@@ -12,12 +12,17 @@ $(document).ready(function () {
 $("#btnPlusBank").click(function (e) { 
     e.preventDefault();
     var inputBank = $("#inputBank").val();
+    var idBank = $("#id_bank").val();
+    var formData = {
+        name: inputBank,
+        id_bank: idBank
+    };
     console.log({inputBank});
     $.ajax({
         url: SearaApp.baseURL+'banco',
         type: 'POST',
         dataType: 'json',
-        data: {name: inputBank},
+        data: formData,
         success:function(response){
             console.log(response);
             new PNotify({
@@ -49,7 +54,6 @@ function editBank(id) {
             $("#id_bank").val(data.id);
             $("#nameButtonBank").text('Alterar');
             $("#typeActionBank").val('update');
-            
         }
     );
     
