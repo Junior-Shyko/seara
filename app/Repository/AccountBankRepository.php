@@ -4,6 +4,7 @@ namespace Seara\Repository;
 
 use Seara\Bank;
 use Carbon\Carbon;
+use Doctrine\DBAL\Tools\Dumper;
 use Seara\AccountBank;
 use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
@@ -78,6 +79,17 @@ class AccountBankRepository {
      */
     static public function transfer($request)
     {
+        $verify = AccountBank::findOrFail($request['idAccountEnd']);
+        $balanceAccount = Monetary::money_real($request['value']);
+        $comparation = $balanceAccount <=> $verify->balance;
+        //Comparation = 0 = igual, -1 = menor, 1 = maior
+        if($comparation == 1)
+        {
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Saldo insuficiente'
+            ], 400);
+        }
         //preenchendo array com os campos e valores para um lancamento
         try {
             $valueBalance = Monetary::money_real($request['value']);
@@ -87,9 +99,14 @@ class AccountBankRepository {
             $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
             $accountBank2->balance = $accountBank2->balance + $valueBalance;
             $accountBank2->save();
-            return true;
+            return response()->json([
+                'type' => 'success',
+            ], 200);
         } catch (\Throwable $th) {
-            return false;
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Erro ao transferir valores'
+            ], 400);
         }
         
         

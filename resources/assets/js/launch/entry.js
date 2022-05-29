@@ -7,6 +7,7 @@ $(document).ready(function () {
         {allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
     $("#lancar_conta").modal('show');
+    $("#realValueTranfer").attr('disabled','disabled');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
         return this.flatten().reduce( function ( a, b ) {
@@ -441,6 +442,7 @@ function formatValueToFront(action, idAccountBank, balanceInternal, smalTextInfo
 //SELECT DA PRIMEIRA CONTA
 $("#selectAccountBankEnd").change(function (e) { 
     e.preventDefault();
+    $("#realValueTranfer").removeAttr('disabled');
     formatValueToFront(
         'saida',
         $("#selectAccountBankEnd").val(), 
@@ -451,6 +453,7 @@ $("#selectAccountBankEnd").change(function (e) {
 
 $("#selectAccountBankEntry").change(function (e) { 
     e.preventDefault();
+    
     if($("#selectAccountBankEntry").val() == $("#selectAccountBankEnd").val()){
         new PNotify({
             title: 'Ops!',
@@ -470,21 +473,21 @@ $("#selectAccountBankEntry").change(function (e) {
 }); 
 //AO SAIR DO CAMPO SE FAZ A VELIDAÇÃO DE VALORES
 $('#realValueTranfer').on('blur', function () {
-    var valueAccountBank = $("#valueGetInfo").val();
-    var valueRealTransfer = $('#realValueTranfer').val();
-    //CONVERTENDO O VALOR REAL PARA FLOAT
-    var valor = convertBrCoinToFloat(valueRealTransfer);
-    //SE O VALOR FOR MAIOR QUE O VALOR DA CONTA BANCARIA
-    if(valor > parseFloat(valueAccountBank)) {
-        $("#realValueTranfer").focus();
-        new PNotify({
-            title: 'Erro',
-            text: 'Valor maior que o saldo da conta',
-            type: 'error',
-            styling: 'bootstrap3'
-        });
-        return false;
-    }    
+    // var valueAccountBank = $("#valueGetInfo").val();
+    // var valueRealTransfer = $('#realValueTranfer').val();
+    // //CONVERTENDO O VALOR REAL PARA FLOAT
+    // var valor = convertBrCoinToFloat(valueRealTransfer);
+    // //SE O VALOR FOR MAIOR QUE O VALOR DA CONTA BANCARIA
+    // if(valor > parseFloat(valueAccountBank)) {
+    //     $("#realValueTranfer").focus();
+    //     new PNotify({
+    //         title: 'Erro',
+    //         text: 'Valor maior que o saldo da conta',
+    //         type: 'error',
+    //         styling: 'bootstrap3'
+    //     });
+    //     return false;
+    // }    
 });
 
 function transferValue() {
@@ -506,21 +509,35 @@ function transferValue() {
     }
     SearaAjax.post('transferir', data, function( response ){
         console.log(response)
-        new PNotify({
-            title: 'Sucesso',
-            text: response.message,
-            type: response.type,
-            styling: 'bootstrap3'
-        });
-       setTimeout(() => {
-        window.location.reload(); 
-       }, 2000);
+        if(response.type == 'success')
+        {
+            new PNotify({
+                title: 'Sucesso',
+                text: response.message,
+                type: 'success',
+                styling: 'bootstrap3'
+            });
+        }
     })
-    .fail(function(jqXHR){
-        notify.response(jqXHR.responseJSON);
-    })
-    .always(function(){
+    .always(function(response){
+        console.log({response})
+        if(response.type == 'error')
+        {
+            new PNotify({
+                title: 'Ops!',
+                text: response.message,
+                type: 'error',
+                styling: 'bootstrap3'
+            });
+        }
+        if(response.status == 200)
+        {
+            setTimeout(() => {
+            window.location.reload(); 
+           }, 2000);
+        }
         SearaLoader.hideModal();
+       
     });
 }
 
