@@ -86,7 +86,7 @@
                                         <p>Saldo: <small id="balanceEndAccount">0.00</small> - Tipo: <small id="infoTypeAccountBank"></small> - N. Conta: 76543-09</p>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 col-xs-12">
                                     <hr>
                                 </div>
                                 <div class="col-md-12">
@@ -113,7 +113,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="clearfix" style="margin-bottom: 5px;"></div>
+                            <div class="clearfix" style="padding-bottom: 10px"></div>
                             <div class="modal-footer">
                                 <input type="text" name="valueGetInfo" id="valueGetInfo">
                                 <input type="text" name="balanceInternal" id="balanceInternal" value="{{ number_format($saldo, 2, ',', '.') }}">

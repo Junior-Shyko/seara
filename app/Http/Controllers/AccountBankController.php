@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Seara\Traits\ActionTable;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Seara\Repository\BankRepository;
 use Seara\Service\Launch\CreateLaunch;
 use Seara\Repository\AccountBankRepository;
 use Seara\Service\TypeAccountBank\GetTypeAccountBank;
@@ -158,11 +159,12 @@ class AccountBankController extends Controller
 
     public function actionTransfer(Request $request)
     {
-        $transfer   = AccountBankRepository::transfer($request->all());
-        //preenchendo array com os campos e valores para um lancamento
-        $launch     = AccountBankRepository::fieldsEntry(1, 'Tranferido para outra conta',$request['value']);
-        $launch2     = AccountBankRepository::fieldsEntry(1, 'Recebido de para outra conta',$request['value']);
+        $transfer = AccountBankRepository::transfer($request->all());
+        //LANCAMENTO DE DESPESA
+        $launch = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
         CreateLaunch::create($launch);
+        //LANÇAMENTO DE RECEITA
+        $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'receita');
         CreateLaunch::create($launch2);
         if($transfer)
             return response()->json(['message' => 'Transferência realizada com sucesso', 'type' => 'success','status' => 200], 200);

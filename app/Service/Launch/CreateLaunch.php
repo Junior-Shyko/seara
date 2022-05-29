@@ -13,10 +13,7 @@ class CreateLaunch {
     {
         try {
             Entry::create($request);
-            return response()->json([
-                'type' => 'success',
-                'message' => 'Lançamento realizado com sucesso!'
-            ]);
+            return true;
         } catch (\Throwable $th) {
             throw $th;
         }

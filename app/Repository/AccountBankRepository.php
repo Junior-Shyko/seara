@@ -2,11 +2,14 @@
 
 namespace Seara\Repository;
 
+use Seara\Bank;
 use Carbon\Carbon;
 use Seara\AccountBank;
 use Seara\Seara\Monetary;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Seara\Repository\BankRepository;
 
 class AccountBankRepository {
 
@@ -75,6 +78,7 @@ class AccountBankRepository {
      */
     static public function transfer($request)
     {
+        //preenchendo array com os campos e valores para um lancamento
         try {
             $valueBalance = Monetary::money_real($request['value']);
             $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
@@ -91,13 +95,31 @@ class AccountBankRepository {
         
     }
 
-    static public function fieldsEntry($idAccount, $desc, $value)
+    static public function fieldsEntry($request, $type)
     {
-        $launch['entries_id_account'] = $idAccount;
+        $account = self::getInfoAccountBank($request['idAccountEnd']);
+        $bank = BankRepository::getAccountToBank($request['idAccountEnd']);
+
+        $account2 = self::getInfoAccountBank($request['idAccountEntry']);
+        $bank2 = BankRepository::getAccountToBank($request['idAccountEntry']);
+
+        $desc = '';
+        $idAccountLaunch = 0;
+        switch ($type) {
+            case 'despesa':
+                $desc = 'Transferência da conta nº '.$account['number'].' '.$bank.' para conta nº '.$account2['number']. ' '.$bank2;
+                $idAccountLaunch = 7;
+                break;
+            case 'receita':
+                $desc = 'Trasnferência recebida de conta nº '.$account['number'].' '.$bank;
+                $idAccountLaunch = 8;
+                break;
+        }
+        $launch['entries_id_account'] = $idAccountLaunch;
         $launch['entries_description'] = $desc;
         $launch['entries_id_company'] = Auth::user()->user_id_company;
         $launch['entries_id_user'] = Auth::user()->id;
-        $launch['entries_value'] = Monetary::money_real($value);
+        $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();
         return $launch;
     }

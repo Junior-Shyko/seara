@@ -418,7 +418,7 @@ $("#btnTrashLaunch").click(function (e) {
 
 function formatValueToFront(action, idAccountBank, balanceInternal, smalTextInfo) {
     var id = idAccountBank;//VALOR ESCOLHIDO NO SELECT
-    console.log({id})
+
     var valueIntenal = balanceInternal;//VALOR DO CAIXA INTERNO
     //SE A ESCOLHA FOR CAIXA INTERNO
     if(id == 0 ){
@@ -451,6 +451,16 @@ $("#selectAccountBankEnd").change(function (e) {
 
 $("#selectAccountBankEntry").change(function (e) { 
     e.preventDefault();
+    if($("#selectAccountBankEntry").val() == $("#selectAccountBankEnd").val()){
+        new PNotify({
+            title: 'Ops!',
+            text: 'Não poderá fazer transferencia para mesma',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
+        return false;
+    }
+    
     formatValueToFront(
         'entrada',
         $("#selectAccountBankEntry").val(), 
@@ -496,8 +506,15 @@ function transferValue() {
     }
     SearaAjax.post('transferir', data, function( response ){
         console.log(response)
-        // notify.response(response);
-        // companyTable.reloadTable();
+        new PNotify({
+            title: 'Sucesso',
+            text: response.message,
+            type: response.type,
+            styling: 'bootstrap3'
+        });
+       setTimeout(() => {
+        window.location.reload(); 
+       }, 2000);
     })
     .fail(function(jqXHR){
         notify.response(jqXHR.responseJSON);
