@@ -72,7 +72,6 @@ class EntryController extends Controller
 
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
-
         return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco', 'company' , 'balanceBank', 'balanceGeneral','accountBank'));
     }
 
@@ -285,6 +284,8 @@ class EntryController extends Controller
             $endDate = Carbon::now();
             $dtEnd = $endDate->lastOfMonth(); 
         }
+        // dump($dtIni);
+        // dd($dtEnd);
         //DB::enableQueryLog();
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
                 ->join('account_launches','entries.entries_id_account','=','account_launches.id')
@@ -292,7 +293,9 @@ class EntryController extends Controller
                 ->where('entries.entries_date_launch','>=', $dtIni)
                 ->where('entries.entries_date_launch','<=', $dtEnd)
                 ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
-                ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name', 'account_launches.id as idAccontLaunch', 'account_launches.accountlaunch_name')
+                ->select('users.id as idUser', 'users.name', 'entries.*', 
+                'account_launches.accountlaunch_type', 'account_types.account_types_name',
+                 'account_launches.id as idAccontLaunch', 'account_launches.accountlaunch_name')
                 ->orderBy('entries.entries_date_launch', 'asc')
                 ->get();
 

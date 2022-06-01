@@ -160,14 +160,13 @@ class AccountBankController extends Controller
     public function actionTransfer(Request $request)
     {
         $transfer = AccountBankRepository::transfer($request->all());
-       
+
         if($transfer->getStatusCode() == 400)
-        {
             return response()->json([
                 'type' => 'error',
                 'message' => $transfer->getData()->message
             ]);
-        }
+
         //LANCAMENTO DE DESPESA
         $launch = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
         CreateLaunch::create($launch);

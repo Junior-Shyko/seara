@@ -119,7 +119,7 @@ Route::get('getBank/{id}' , 'BankController@show')->middleware('auth.basic');
 Route::resource('conta-bancaria' , 'AccountBankController');
 Route::get('getAccountBank/{id}' , 'AccountBankController@show');
 Route::get('todasContas' , 'AccountBankController@getAccountBank');
-Route::post('transferir' , 'AccountBankController@actionTransfer');
+Route::post('transferir' , 'AccountBankController@actionTransfer')->middleware('auth.basic');
 
 //TIPO DE CONTAS BANCARIASS
 Route::get('tipo-banco/getType', 'TypeBankController@getType');
