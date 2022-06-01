@@ -33,12 +33,12 @@ class AccountBankRepository {
             ->get();
     }
 
-    static public function getBalance()
+    static public function getBalance($idCompany)
     {
-        $balance = AccountBank::where('company_id' , Auth::user()->user_id_company)->get();
+        $balance = AccountBank::where('company_id' , $idCompany)->get();
         $balanceActual = 0;
         //SOMANDO TODOS OS VALORES
-        foreach ($balance as $key => $value) {
+        foreach ($balance as $value) {
             $balanceActual = ($balanceActual + $value->balance);
         }
         return $balanceActual;

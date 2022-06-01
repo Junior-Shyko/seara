@@ -26,7 +26,6 @@ class EntryController extends Controller
     {
         $this->middleware('auth');
         $this->middleware(['can:allLauch'])->only('allLauch');
-
     }
 
     /**
@@ -36,9 +35,11 @@ class EntryController extends Controller
      */
     public function index()
     {
-
-        $idCompany = 0;
-        isset($_GET['company']) ? $idCompany = intval($_GET['company']) : $idCompany = Auth::user()->user_id_company;
+        $idCompany = Auth::user()->user_id_company;
+        if(app('request')->input('company') !== null) {
+            $idCompany = intval(app('request')->input('company'));
+        }
+  
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
         
@@ -51,23 +52,20 @@ class EntryController extends Controller
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
 
         $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, $idCompany);
-       
         $bankDespesa = Monetary::getValueBoxFeed(null, true, $idCompany);
         $totBanco = ($bankReceita - $bankDespesa);
-
         $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, $idCompany);
         $igrejaDespesa = Monetary::getValueBoxFeed(null, false, $idCompany);
         $totIgreja = ($igrejaReceita - $igrejaDespesa);
-        $saldoGer = Monetary::getValueBox();
+        $saldoGer = Monetary::getValueBox($idCompany);
         $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
 
         //VERIFICANDO AUTORIZAÇÃO
-
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         $user = Auth::user();
 
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
-        $balanceBank = AccountBankRepository::getBalance();
+        $balanceBank = AccountBankRepository::getBalance($idCompany);
         $balanceGeneral = ($saldo + $balanceBank);
 
         //todas as contas bancarias

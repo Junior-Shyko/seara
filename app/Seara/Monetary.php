@@ -168,11 +168,10 @@ class Monetary {
      * @param [type] $type
      * @return void
      */
-    static public function getValueBox() {
+    static public function getValueBox($idCompany) {
         $totalRec = 0;
         $totalDes = 0;
         $total = 0;
-        $id_company = Auth::user()->user_id_company;
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
         //dump($typeEnd[0]->id);
         //SOMENTE AS ENTRADAS(receitas)
@@ -180,7 +179,7 @@ class Monetary {
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             //->whereMonth('entries.entries_date_launch', $month)
             ->whereNotIn('account_launches.accountlaunch_type',[$typeEnd[0]->id])
-            ->where('entries.entries_id_company', '=', $id_company)
+            ->where('entries.entries_id_company', '=', $idCompany)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
             $totalRec = $valueRec->sum('entries_value');
         
@@ -189,23 +188,22 @@ class Monetary {
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             //->whereMonth('entries.entries_date_launch', $month)
             ->where('account_types.account_types_name','=','Despesa')
-            ->where('entries.entries_id_company', '=', $id_company)
+            ->where('entries.entries_id_company', '=', $idCompany)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
             $totalDes = $valueDes->sum('entries_value');
 
         return ['receitas' => $totalRec, 'despesas' => $totalDes];
     }
 
-    static public function getValueBoxPerPeriodo($dtIniti, $dtEnd) {
+    static public function getValueBoxPerPeriodo($dtIniti, $dtEnd, $idCompany) {
         $totalRec = 0;
         $totalDes = 0;
         $total = 0;
-        $id_company = Auth::user()->user_id_company;
         //SOMENTE AS ENTRADAS(receitas)
         $valueRec = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             ->where('account_types.account_types_name','=','Receita')
-            ->where('entries.entries_id_company', '=', $id_company)
+            ->where('entries.entries_id_company', '=', $idCompany)
             ->where('entries.entries_date_launch', '>=', $dtIniti)
             ->where('entries.entries_date_launch', '<=', $dtEnd)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
@@ -215,7 +213,7 @@ class Monetary {
         $valueDes = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             ->where('account_types.account_types_name','=','Despesa')
-            ->where('entries.entries_id_company', '=', $id_company)
+            ->where('entries.entries_id_company', '=', $idCompany)
             ->where('entries.entries_date_launch', '>=', $dtIniti)
             ->where('entries.entries_date_launch', '<=', $dtEnd)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
@@ -224,19 +222,18 @@ class Monetary {
         return ['receitas' => $totalRec, 'despesas' => $totalDes];
     }
 
-    static public function previousBalance($dtIniti) {
+    static public function previousBalance($dtIniti, $idCompany) {
         $dateSubDay = Carbon::parse($dtIniti)->subDays(1);
 
         $totalRec = 0;
         $totalDes = 0;
         $total = 0;
-        $id_company = Auth::user()->user_id_company;
         //$id_company = 1;
         //SOMENTE AS ENTRADAS(receitas)
         $valueRec = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             ->where('account_types.account_types_name','=','Receita')
-            ->where('entries.entries_id_company', '=', $id_company)
+            ->where('entries.entries_id_company', '=', $idCompany)
             ->where('entries.entries_date_launch', '<=', $dateSubDay)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
             $totalRec = $valueRec->sum('entries_value');
@@ -245,7 +242,7 @@ class Monetary {
         $valueDes = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             ->where('account_types.account_types_name','=','Despesa')
-            ->where('entries.entries_id_company', '=', $id_company)
+            ->where('entries.entries_id_company', '=', $idCompany)
             ->where('entries.entries_date_launch', '<=', $dateSubDay)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
             $totalDes = $valueDes->sum('entries_value');
