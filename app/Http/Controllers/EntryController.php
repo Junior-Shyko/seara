@@ -70,7 +70,8 @@ class EntryController extends Controller
 
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
-        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco', 'company' , 'balanceBank', 'balanceGeneral','accountBank'));
+        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 
+        'totBanco', 'company' , 'balanceBank', 'balanceGeneral','accountBank', 'idCompany', 'entry', 'user'));
     }
 
     /**
@@ -264,7 +265,7 @@ class EntryController extends Controller
        
     }
 
-    public function getAll(Request $request) {
+    public function getAll(Request $request, $idCompany) {
 
         $dtIni = $request->dtIni;
         $dtEnd = $request->dtEnd;
@@ -282,15 +283,13 @@ class EntryController extends Controller
             $endDate = Carbon::now();
             $dtEnd = $endDate->lastOfMonth(); 
         }
-        // dump($dtIni);
-        // dd($dtEnd);
         //DB::enableQueryLog();
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
                 ->join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
                 ->where('entries.entries_date_launch','>=', $dtIni)
                 ->where('entries.entries_date_launch','<=', $dtEnd)
-                ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
+                ->where('entries.entries_id_company','=', $idCompany)
                 ->select('users.id as idUser', 'users.name', 'entries.*', 
                 'account_launches.accountlaunch_type', 'account_types.account_types_name',
                  'account_launches.id as idAccontLaunch', 'account_launches.accountlaunch_name')
@@ -404,17 +403,17 @@ class EntryController extends Controller
         return response()->json($saldo);
     }
 
-    public function reportBox($dateInit, $dateEnd) {
+    public function reportBox($dateInit, $dateEnd, $idCompany) {
         
         $dtinit = FunctionGeneral::DataBRtoMySQL(base64_decode($dateInit));
         $dtend  = FunctionGeneral::DataBRtoMySQL(base64_decode($dateEnd));
-        $per    = Monetary::getValueBoxPerPeriodo($dtinit, $dtend);
+        $per    = Monetary::getValueBoxPerPeriodo($dtinit, $dtend, $idCompany);
         $total  = ($per['receitas'] - $per['despesas']);
 
         $perInitial = base64_decode($dateInit);
         $perEnd = base64_decode($dateEnd);
         //VALOR DO SALDO ANTERIOR
-        $prevBalan = Monetary::previousBalance($dtinit);
+        $prevBalan = Monetary::previousBalance($dtinit, $idCompany);
         $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
 
         $entries = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
@@ -422,7 +421,7 @@ class EntryController extends Controller
         ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
         ->where('entries_date_launch', '>=', $dtinit)
         ->where('entries_date_launch', '<=', $dtend)
-        ->where('companies.company_id', '=', Auth::user()->user_id_company)
+        ->where('companies.company_id', '=', $idCompany)
         ->orderBy('entries_date_launch', 'asc')->get();
       
         $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total' , 'previousBalance'));
