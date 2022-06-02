@@ -1,20 +1,4 @@
 <link href="{{ url('css/entry.min.css') }}" rel="stylesheet">
-<style>
-    .dropzone .dz-message {
-        text-align: center;
-        margin: 2em 0;
-        font-size: 20px !important;
-        color: #4e65dc !important;
-        background: #e5e5ea !important;
-        padding: 10px !important;
-        border-radius: 8px !important;
-    }
-
-    .container {
-        margin-top: 20px;
-    }
-
-</style>
 <div class="modal fade bs-example-modal-lg" id="lancar_conta" role="dialog" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

@@ -11,9 +11,10 @@
             <div class="col-md-12">
                 <div class="title-page-seara">
                     <div class="">
-                        <h3>{{ $company->company_name }}
-                            <small> Igreja</small>
+                        <h3>{{ $company->company_name }}                      
                         </h3>
+                        <small class="badge badge-dark"> Código Igreja: {{$idCompany}}</small>
+                        <input type="hidden" id="idCodeCompany" value="{{$idCompany}}">
                     </div>
                     
                 </div>
@@ -76,158 +77,160 @@
                             </i>
                         </span>
                     </div>
-
+    
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel tile">
-                    <div class="x_title">
-                        <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li class="dropdown">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Adicionar <span class="caret"></span>
-                                      </button>
-                                    <ul class="dropdown-menu">
-                                      <li><a href="{{url('conta-bancaria')}}" target="_blank">Cadastrar conta bancária</a></li>
-                                      <li><a href="#" data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</a></li>
-                                      <li><a href="#">Something else here</a></li>
-                                      <li role="separator" class="divider"></li>
-                                      <li><a href="#">Separated link</a></li>
-                                    </ul>
-                                  </div>
-                            </li>
-                            </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                       <div class="row">
-                        @include('msg.message')
-                        <div class="col-md-12">
-                            <div class="col-md-2 col-xs-6">
-                                <label for="">Data Inicial</label>
-                                <input type="text" name="dateInitial" class="form-control date-mask" id="dateInitial">
-                            </div>
-                            <div class="col-md-2 col-xs-6">
-                                <label for="">Data Final</label>
-                                <input type="text" name="dateEnd" class="form-control date-mask" id="dateEnd">
-                            </div>
-                            <div class="col-md-8 col-sm-12 col-xs-12 form-group">
-                                <div class="row">
-                                    <div class="col-sm-6 col-xs-6">
-                                        <label class="col-md-12 col-sm-12 col-xs-12">Pesquisar</label>
-                                        <button class="btn btn-primary" onclick="searchPeriod()">
-                                            <i class="fa fa-search"></i>
-                                        </button>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel tile">
+                        <div class="x_title">
+                            <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li class="dropdown">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Adicionar <span class="caret"></span>
+                                          </button>
+                                        <ul class="dropdown-menu">
+                                          <li><a href="{{url('conta-bancaria')}}" target="_blank">Cadastrar conta bancária</a></li>
+                                          <li><a href="#" data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</a></li>
+                                          <li><a href="#">Something else here</a></li>
+                                          <li role="separator" class="divider"></li>
+                                          <li><a href="#">Separated link</a></li>
+                                        </ul>
+                                      </div>
+                                </li>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                           <div class="row">
+                            @include('msg.message')
+                            <div class="col-md-12">
+                                <div class="col-md-2 col-xs-6">
+                                    <label for="">Data Inicial</label>
+                                    <input type="text" name="dateInitial" class="form-control date-mask" id="dateInitial">
+                                </div>
+                                <div class="col-md-2 col-xs-6">
+                                    <label for="">Data Final</label>
+                                    <input type="text" name="dateEnd" class="form-control date-mask" id="dateEnd">
+                                </div>
+                                <div class="col-md-8 col-sm-12 col-xs-12 form-group">
+                                    <div class="row">
+                                        <div class="col-sm-6 col-xs-6">
+                                            <label class="col-md-12 col-sm-12 col-xs-12">Pesquisar</label>
+                                            <button class="btn btn-primary" onclick="searchPeriod()">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-6">
+                                            <label class="col-md-12 col-sm-12 col-xs-12 ">Relatório</label>
+                                            <a class="btn btn-default" id="btn-print-report" title="Imprime a consulta escolhida"
+                                                onclick="showReport()">
+                                                <i class="fa fa-print"></i> Imprimir
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-6 col-xs-6">
-                                        <label class="col-md-12 col-sm-12 col-xs-12 ">Relatório</label>
-                                        <a class="btn btn-default" id="btn-print-report" title="Imprime a consulta escolhida"
-                                            onclick="showReport()">
-                                            <i class="fa fa-print"></i> Imprimir
-                                        </a>
+                                </div>
+                            </div>
+                           </div>
+                           <div class="row">
+                                <div class="table-responsive">
+                                <div class="clearfix"><hr></div>
+                                <div class="col-md-12">
+                                   
+                                        <table id="entry-table" class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Dia</th>
+                                                    <th>Histórico</th>
+                                                    <th>Valor</th>
+                                                    <th>Tipo</th>
+                                                    <th>Lançado por</th>
+                                                    <th>Ações</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                       </div>
-                        <div class="row">
-                            <div class="clearfix"><hr></div>
-                            <div class="col-md-12">
-                                <table id="entry-table" class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Dia</th>
-                                            <th>Histórico</th>
-                                            <th>Valor</th>
-                                            <th>Tipo</th>
-                                            <th>Lançado por</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
                     </div>
                 </div>
+        
             </div>
-
         </div>
-
-      
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
     @include('modals.modal_box_entry', ['saldo' => $saldo, 'accountBank' => $accountBank])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
-
+    {{-- EXCLUINDO UM LANCAMENTO --}}
     @component('components.modal_delete_comp')
-        <form action="{{ url('lancar/delete') }}" method="post">
-            {!! csrf_field() !!}
-            <div class="row">
-                <div class="alert alert-danger">
-                    <h4>
-                        Deseja realmente excluir esse lançamento do caixa?
-                    </h4>
-                    <small>Essa ação é inreversível, não dá para voltar atrás.</small>
+    <form action="{{ url('lancar/delete') }}" method="post">
+        {!! csrf_field() !!}
+        <div class="row">
+            <div class="alert alert-danger">
+                <h4>
+                    Deseja realmente excluir esse lançamento do caixa?
+                </h4>
+                <small>Essa ação é inreversível, não dá para voltar atrás.</small>
+            </div>
+            <div class="text-center">
+                <h4>Histórico: <label id="historyLaunchDeleteModal"></label></h4>
+                <h4>Tipo: <label id="typeLaunchDeleteModal"></label> </h4>
+            </div>
+            <input type="hidden" name="id" id="idDelete">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
+                <button type="submit" class="btn btn-danger"> EXCLUIR </button>
+            </div>
+        </div>
+    </form>
+    @endcomponent
+   <!-- Modal -->
+<div class="modal fade" id="modalInfoLaunch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Informação completo do lançamento</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="list-group">
+                            <li class="list-group-item day">Dia:</li>
+                            <li class="list-group-item his">Histórico:</li>
+                            <li class="list-group-item value">Valor:</li>
+                            <li class="list-group-item account">Conta: </li>
+                            <li class="list-group-item per">Criado:</li>
+                        </ul>
+                    </div>
+
                 </div>
-                <div class="text-center">
-                    <h4>Histórico: <label id="historyLaunchDeleteModal"></label></h4>
-                    <h4>Tipo: <label id="typeLaunchDeleteModal"></label> </h4>
-                </div>
-                <input type="hidden" name="id" id="idDelete">
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
-                    <button type="submit" class="btn btn-danger"> EXCLUIR </button>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <label class="badge">Todos arquivos</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="" class="btn btn-danger pull-right">Excluir arquivos</a>
+                        </div>
+                        <div id="filesEntri">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
-    @endcomponent
-    <!-- Modal -->
-    <div class="modal fade" id="modalInfoLaunch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Informação completo do lançamento</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ul class="list-group">
-                                <li class="list-group-item day">Dia:</li>
-                                <li class="list-group-item his">Histórico:</li>
-                                <li class="list-group-item value">Valor:</li>
-                                <li class="list-group-item account">Conta: </li>
-                                <li class="list-group-item per">Criado:</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                <label class="badge">Todos arquivos</label>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="" class="btn btn-danger pull-right">Excluir arquivos</a>
-                            </div>
-                            <div id="filesEntri">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fechar</button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
+</div>
+    
     <!-- /page content -->
 @endsection
 @push('stylesheets')
