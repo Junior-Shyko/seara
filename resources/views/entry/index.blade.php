@@ -120,14 +120,14 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-xs-6">
                                             <label class="col-md-12 col-sm-12 col-xs-12">Pesquisar</label>
-                                            <button class="btn btn-primary" onclick="searchPeriod()">
+                                            <button class="btn btn-primary" onclick="searchPeriod({{$idCompany}})">
                                                 <i class="fa fa-search"></i>
                                             </button>
                                         </div>
                                         <div class="col-sm-6 col-xs-6">
                                             <label class="col-md-12 col-sm-12 col-xs-12 ">Relatório</label>
                                             <a class="btn btn-default" id="btn-print-report" title="Imprime a consulta escolhida"
-                                                onclick="showReport()">
+                                                onclick="showReport({{$idCompany}})">
                                                 <i class="fa fa-print"></i> Imprimir
                                             </a>
                                         </div>
@@ -138,8 +138,7 @@
                            <div class="row">
                                 <div class="table-responsive">
                                 <div class="clearfix"><hr></div>
-                                <div class="col-md-12">
-                                   
+                                <div class="col-md-12 col-xs-12">                                   
                                         <table id="entry-table" class="table table-hover">
                                             <thead>
                                                 <tr>

@@ -93,7 +93,7 @@ Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}/company/{company}' , 'Entry
 Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-banco' , 'EntryController@bank');
     Route::get('saldo-interno' , 'EntryController@internal');
-    Route::get('saldo-geral' , 'EntryController@general');
+    Route::get('saldo-geral/{idCompany}' , 'EntryController@general');
     Route::get('lancar/{id}/show', 'EntryController@showApi');
     Route::post('deleteFiles', 'EntryController@deleteFilesLaunch');
     Route::post('create-user' , 'UserController@create');

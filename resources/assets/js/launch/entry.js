@@ -61,7 +61,7 @@ $(document).ready(function () {
     //valores do caixa banco
     bankBalance();
     internalBalance();
-    general();
+    general(idCompany);
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
         SearaAjax.post('lancar', form, function( response ){
@@ -73,7 +73,7 @@ $(document).ready(function () {
             $("#entry-table").DataTable().ajax.reload();
             bankBalance();
             internalBalance();
-            general();
+            general(idCompany);
             new PNotify({
                 title: 'Sucesso',
                 text: response.message,
@@ -169,6 +169,8 @@ $(document).ready(function () {
     });
 });
 
+var idCompany = $("#idCodeCompany").val();
+
 function getLaunch(idCompany) {
     let colunas = [
         {data: 'entries_date_launch', name: 'entries_date_launch'},
@@ -229,10 +231,10 @@ function internalBalance() {
     });
 }
 
-function general() {
+function general(idCompany) {
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-geral',
+        url: SearaApp.baseURL + 'api/saldo-geral/'+idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)
@@ -253,7 +255,7 @@ function showDivs() {
     $("#entries_value").show();
 }
 
-function searchPeriod() {
+function searchPeriod(idCompany) {
     var init = brDatetoUsa($("#dateInitial").val())
     var end = brDatetoUsa($("#dateEnd").val())
     if ( $.fn.dataTable.isDataTable( '#entry-table' ) ) {
@@ -274,7 +276,7 @@ function searchPeriod() {
         table.destroy();
         table = $('#entry-table').DataTable( {
             pageLength: 100,
-            ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
+            ajax: SearaApp.baseURL+'all-launch/'+idCompany+'?dtIni='+init+'&dtEnd='+end,
             columns: colunas,
             order: [[ 0, "asc" ]],
             drawCallback: function () {
@@ -297,10 +299,10 @@ function searchPeriod() {
 var dtInit = '';
 var dtEnd = '';
 
-function showReport() {
+function showReport(idCompany) {
     dtInit = btoa($("#dateInitial").val()); 
     dtEnd = btoa($("#dateEnd").val()); 
-    $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
+    $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd + '/company/'+idCompany );
 }
 
 function getFiles(id) {

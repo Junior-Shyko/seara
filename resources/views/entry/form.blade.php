@@ -68,7 +68,7 @@
             </div>
            </div>
             <div class="col-md-8 col-sm-8 col-xs-12 form-group has-feedback">
-                <input type="text" name="entries_id_company" id="entries_id_company" value="{{$idCompany}}">
+                <input type="hidden" name="entries_id_company" id="entries_id_company" value="{{$idCompany}}">
                 <input type="hidden" name="entries_id_user" id="entries_id_user" value="{{Auth::user()->id}}">
                 <input type="hidden" name="type" id="typeLaunch" value="actual">
             </div>
