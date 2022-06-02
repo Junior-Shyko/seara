@@ -82,11 +82,11 @@ Route::resource('conta' , 'AccountController');
 Route::resource('tipo-conta', 'AccountTypeController');
 Route::resource('lancar' , 'EntryController');
 Route::post('caixa/upload' , 'EntryController@upload');
-Route::get('all-launch', 'EntryController@getAll');
+Route::get('all-launch/{company}', 'EntryController@getAll');
 Route::post('lancar/delete' , 'EntryController@destroy');
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
-Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}' , 'EntryController@reportBox');
+Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}/company/{company}' , 'EntryController@reportBox');
 
 
 

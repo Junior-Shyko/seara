@@ -1,12 +1,14 @@
 
 $(document).ready(function () {
+    //id da empresa
+    var idCompany = $("#idCodeCompany").val();
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
     $('#realValueTranfer').maskMoney(
         {allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    $("#lancar_conta").modal('show');
+    //$("#lancar_conta").modal('show');
     $("#realValueTranfer").attr('disabled','disabled');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
@@ -54,7 +56,7 @@ $(document).ready(function () {
         }
     }); 
     //RETORNO DOS LANÇAMENTOS
-    getLaunch();
+    getLaunch(idCompany);
 
     //valores do caixa banco
     bankBalance();
@@ -167,7 +169,7 @@ $(document).ready(function () {
     });
 });
 
-function getLaunch() {
+function getLaunch(idCompany) {
     let colunas = [
         {data: 'entries_date_launch', name: 'entries_date_launch'},
         {data: 'entries_description', name: 'entries_description'},
@@ -176,6 +178,7 @@ function getLaunch() {
         {data: 'entries_id_user', name: 'entries_id_user'},
         {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
     ];
+    
     var table = $('#entry-table').DataTable( {
         paging: false,
         retrieve: true,
@@ -186,7 +189,7 @@ function getLaunch() {
         processing: true,
         serverSide: true,
         pageLength: 100,
-        ajax: SearaApp.baseURL+'all-launch',
+        ajax: SearaApp.baseURL+'all-launch/'+idCompany,
         columns: colunas,
         drawCallback: function () {
             var api = this.api();
@@ -371,7 +374,7 @@ $("#btnEditLaunch").click(function (e) {
         data: form,
         dataType: "json",
         success: function (_response) {
-            getLaunch();
+            getLaunch(idCompany);
             new PNotify({
                 title: 'Sucesso',
                 text: 'Lançamento alterado',
