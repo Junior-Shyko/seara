@@ -67,7 +67,6 @@ class EntryController extends Controller
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance($idCompany);
         $balanceGeneral = ($saldo + $balanceBank);
-
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
         return view('entry.index', compact(
@@ -398,21 +397,21 @@ class EntryController extends Controller
         }
     }
 
-    public function bank()
+    public function bank($idCompany)
     {
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
 
-        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
-        $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
+        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, $idCompany);
+        $bankDespesa = Monetary::getValueBoxFeed(null, true, $idCompany);
         $totBanco = ($bankReceita - $bankDespesa);
         return response()->json($totBanco);
     }
 
-    public function internal()
+    public function internal($idCompany)
     {
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, Auth::user()->user_id_company);
-        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, Auth::user()->user_id_company);
+        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, $idCompany);
+        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, $idCompany);
 
         $totIgreja = ($igrejaReceita - $igrejaDespesa);
         return response()->json($totIgreja);

@@ -170,9 +170,11 @@ class AccountBankController extends Controller
         //LANCAMENTO DE DESPESA
         $launch = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
         CreateLaunch::create($launch);
+        
         //LANÇAMENTO DE RECEITA
         $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'receita');
         CreateLaunch::create($launch2);
+        
         if($transfer)
             return response()->json(['message' => 'Transferência realizada com sucesso', 'type' => 'success','status' => 200], 200);
         else

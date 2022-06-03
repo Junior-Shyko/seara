@@ -22,6 +22,7 @@ Route::group([], function() {
     Route::prefix('account-bank')->group(function () {
         Route::get('get-info-account/{id}','AccountBankController@getInfoAccountBank');
     });
+
 });
 
 

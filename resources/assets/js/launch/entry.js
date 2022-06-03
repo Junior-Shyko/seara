@@ -59,8 +59,8 @@ $(document).ready(function () {
     getLaunch(idCompany);
 
     //valores do caixa banco
-    bankBalance();
-    internalBalance();
+    bankBalance(idCompany);
+    internalBalance(idCompany);
     general(idCompany);
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
@@ -71,8 +71,8 @@ $(document).ready(function () {
             }
             $(".idEntry").val(response.id);
             $("#entry-table").DataTable().ajax.reload();
-            bankBalance();
-            internalBalance();
+            bankBalance(idCompany);
+            internalBalance(idCompany);
             general(idCompany);
             new PNotify({
                 title: 'Sucesso',
@@ -207,10 +207,10 @@ function getLaunch(idCompany) {
         .draw();
 }
 
-function bankBalance() {
+function bankBalance(idCompany) {
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-banco',
+        url: SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)
@@ -219,10 +219,10 @@ function bankBalance() {
     });
 }
 
-function internalBalance() {
+function internalBalance(idCompany) {
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-interno',
+        url: SearaApp.baseURL + 'api/saldo-interno/'+idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)

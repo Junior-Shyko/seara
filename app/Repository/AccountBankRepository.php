@@ -53,16 +53,25 @@ class AccountBankRepository {
         return $accountBank->update($request);
     }
 
+    /**
+     * Retorna a relação entre conta bancaria, tipo de conta bancaria e banco de acordo
+     * com o id da igreja
+     * Condicional
+     * @return void
+     */
     static public function getAccountBankAndTypeToCompany($idCompany, $idAccount = null)
     {
         //se tiver um where então faz a condição buscando a conta de acondo com o id
-        return DB::table('account_banks')
-                    ->join('type_banks', 'account_banks.typeBank_id', '=', 'type_banks.id')                    
+        return  DB::table('account_banks')
+                    ->join('type_banks', 'account_banks.typeBank_id', '=', 'type_banks.id')
+                    //->join('banks', 'account_banks.bank_id', '=', 'banks.id')                   
                     ->join('banks', function ($query) use ($idAccount) {                       
-                        if($idAccount > 0){                           
+                        if($idAccount != null){                           
                             $query->on('account_banks.bank_id', '=', 'banks.id')
-                                    ->where('account_banks.id', $idAccount);
-                        }                       
+                                   ->where('account_banks.id', $idAccount);
+                        }else{
+                            $query->on('account_banks.bank_id', '=', 'banks.id');
+                        }
                     })
                     ->select('type_banks.*' ,'account_banks.*', 'type_banks.name as nameTypeBank', 'banks.name as nameBank',
                     'account_banks.id as idAccountBank')
@@ -86,17 +95,19 @@ class AccountBankRepository {
     static public function transfer($request)
     {
         $verifyBalanceToAccount = self::verifyBalanceToAccount($request);
+       
         //false em caso de nao ter saldo suficiente
         if(!$verifyBalanceToAccount)     
             return response()->json([
                 'type' => 'error',
                 'message' => 'Saldo insuficiente'
             ], 400);
+
         //preenchendo array com os campos e valores para um lancamento
         try {
             //se for caixa interno não registra saida de valor
             $valueBalance = Monetary::money_real($request['value']);
-            if($request['idAccountEnd'] > 0){                
+            if($request['idAccountEnd'] > 0){
                 $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
                 $accountBank->balance = $accountBank->balance - $valueBalance;
                 $accountBank->save();
@@ -119,27 +130,38 @@ class AccountBankRepository {
 
     static public function fieldsEntry($request, $type)
     {
-        $account = [];
-        //SE PEGA AS INFO SE NÃO FOR CAIXA INTERNO
+        $account  = [];
+        $account2 = [];
+        $bank = [];
+        $bank2 = [];
+        //So PEGA AS INFO SE NÃO FOR CAIXA INTERNO
         if($request['idAccountEnd'] > 0)
         {
             $account = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEnd'] );
             //primeiro registro, mas o retorno é somente um registro de uma collection
-            $bank = $account->first();
+            $bank = (object) $account;
         } 
-        $account2 = self::getInfoAccountBank($request['idAccountEntry']);
-        $bank2 = BankRepository::getAccountToBank($request['idAccountEntry']);
-
+        if($request['idAccountEntry'] > 0)
+        {
+            $account2 = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEntry'] );
+            $bank2 = (object) $account2;
+        }
+        
         $desc = '';
         $idAccountLaunch = 0;
-       
-        if(empty($account))
+        //CASO SEJA CAIXA INTERNO TRANSFERINDO OU RECEBENDO TRANSFERENCIA
+        if(empty($account2))
         {
-            $desc = 'Transferencia do CAIXA INTERNO para '.$account2['number']. ' '.$bank2;
+            $desc = 'Transferencia da conta '.$bank->first()->number. ' '.$bank->first()->nameBank.' para o CAIXA INTERNO';
+            $idAccountLaunch = 1;
+        }elseif(empty($account))
+        {
+            $desc = 'Transferencia do CAIXA INTERNO para '.$bank2->first()->number. ' '.$bank2->first()->nameBank;
+            $idAccountLaunch = 2;
         }else{
             switch ($type) {
                 case 'despesa':
-                    $desc = 'Transferência da conta nº '.$bank->number.' '.$bank->nameBank.' para conta nº '.$account2['number']. ' '.$bank2;
+                    $desc = 'Transferência da conta nº '.$bank->first()->number.' '.$bank->first()->nameBank.' para conta nº '.$bank2->first()->number. ' '.$bank2->first()->nameBank;
                     $idAccountLaunch = 7;
                     break;
                 case 'receita':
@@ -165,24 +187,26 @@ class AccountBankRepository {
     static public function verifyBalanceToAccount($request)
     {
         $balanceActual = 0;//saldo atual
+        
         //VERIFICA SE É CAIXA INTERNO
         if($request['idAccountEnd'] == 0) {
+            //dump($request['idAccountEnd']);
             //AJUSTA PARA A VARIAVEL O VALOR DO CAIXA INTERNO
-            $balanceActual = Monetary::money_real($request['valueInternal']);           
+            $balanceActual = Monetary::money_real($request['valueInternal']);     
+            //dump($balanceActual);      
         }else{
             $verify = AccountBank::findOrFail($request['idAccountEnd']);
             //RECEBENDO O VALOR ATUAL DA CONTA
             $balanceActual =  $verify->balance;
         }       
-
+       
         $balanceToTransfer = Monetary::money_real($request['value']);//valor a transferir
-        $comparation = $balanceToTransfer <=> $balanceActual;
+        $comparation = (float) $balanceToTransfer <=> (float) $balanceActual;
         //Comparation = 0 = igual, -1 = menor, 1 = maior
+        //se o valor do saldo da transferencia for maior que o saldo atual retorna false
         if($comparation == 1)
-        {
-            return false;            
-        }
-
+            return false;
+       
         return true;
     }
 }
