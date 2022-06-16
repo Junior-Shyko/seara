@@ -107,10 +107,12 @@ class Monetary {
         $value = 0;
         $total = 0;
         //TIPO RECEITA
+       
+        
         if($type) {
+           
             //SE FOR UMA CONSULTA PARA O CAIXA DO BANCO
-            if($bank) {
-                DB::enableQueryLog();
+            if($bank) {               
                 $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
                 // ->whereMonth('entries.entries_date_launch', $month)
@@ -119,17 +121,23 @@ class Monetary {
                 ->where('account_types.account_types_name','=','Receita')
                 ->where('entries.entries_id_company', '=', $id_company)
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
-                //dump(DB::getQueryLog());
+              
                 $total = $value->sum('entries_value');
             }else{
+               
+               
                 $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
                 // ->whereMonth('entries.entries_date_launch', $month)
                 ->where('entries.entries_bank', '=', 0)
                 ->where('account_types.account_types_name','=','Receita')
                 ->where('entries.entries_id_company', '=', $id_company)
+                
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+               
                 $total = $value->sum('entries_value');
+                // dump($total);
+               
             }
             
         }else{
@@ -145,20 +153,21 @@ class Monetary {
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
                 $total = $value->sum('entries_value');
             }else{
+                // dump($bank);
+                DB::enableQueryLog();
                 $value = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
                 ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
                 //->whereMonth('entries.entries_date_launch', $month)
                 ->where('account_types.account_types_name','=','Despesa')
-                ->where(function ($query) {
-                    $query->where('entries_bank', '=', 0);
-                })
+
                 ->where('entries.entries_id_company', '=', $id_company)
                 ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+                // dd(DB::getQueryLog());
                 $total = $value->sum('entries_value');
             }
             
         }
-        //dump($total);
+       
         return $total;
     }
     /**
@@ -188,6 +197,7 @@ class Monetary {
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             //->whereMonth('entries.entries_date_launch', $month)
             ->where('account_types.account_types_name','=','Despesa')
+            
             ->where('entries.entries_id_company', '=', $idCompany)
             ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
             $totalDes = $valueDes->sum('entries_value');

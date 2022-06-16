@@ -7,7 +7,6 @@ use Seara\Entry;
 use Auth, DB, PDF;
 use Carbon\Carbon;
 use Seara\FileLaunch;
-use Seara\AccountBank;
 use Seara\AccountType;
 use Seara\AccountLaunch;
 use Seara\Models\Company;
@@ -15,6 +14,7 @@ use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Http\Controllers\Controller;
+use Seara\Service\Launch\LaunchService;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
@@ -39,7 +39,6 @@ class EntryController extends Controller
         if (app('request')->input('company') !== null) {
             $idCompany = intval(app('request')->input('company'));
         }
-
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
 
@@ -51,15 +50,16 @@ class EntryController extends Controller
 
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
 
-        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, $idCompany);
-        $bankDespesa = Monetary::getValueBoxFeed(null, true, $idCompany);
-        $totBanco = ($bankReceita - $bankDespesa);
-        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, $idCompany);
-        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, $idCompany);
-        $totIgreja = ($igrejaReceita - $igrejaDespesa);
-        $saldoGer = Monetary::getValueBox($idCompany);
-        $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
-
+        //valor somados das contas bancárias
+        $bank = LaunchService::getBoxBank($idCompany);
+        $totBanco = $bank;
+        //valor somados dos lançamentos
+        $internal = LaunchService::getBoxInternal($idCompany);
+        // dd($internal);
+        $totIgreja  = $internal;   
+        //dump($saldoGer);
+        $saldo = $internal;
+        //dd($saldo);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         $user = Auth::user();
@@ -409,12 +409,8 @@ class EntryController extends Controller
 
     public function internal($idCompany)
     {
-        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, $idCompany);
-        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, $idCompany);
-
-        $totIgreja = ($igrejaReceita - $igrejaDespesa);
-        return response()->json($totIgreja);
+        $internal = LaunchService::getBoxInternal($idCompany);
+        return response()->json($internal);
     }
 
     public function general($idCompany)

@@ -64,6 +64,7 @@ $(document).ready(function () {
     general(idCompany);
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
+        console.log({form});
         SearaAjax.post('lancar', form, function( response ){
             $("#lancar_conta").modal('hide');
             if(response.typeAccount == 'Despesa') {
@@ -451,7 +452,7 @@ $("#selectAccountBankEnd").change(function (e) {
     formatValueToFront(
         'saida',
         $("#selectAccountBankEnd").val(), 
-        $("#balanceInternal").val(), 
+        $("#valueInternal").val(), 
         'balanceEndAccount'
     );
 });
@@ -472,7 +473,7 @@ $("#selectAccountBankEntry").change(function (e) {
     formatValueToFront(
         'entrada',
         $("#selectAccountBankEntry").val(), 
-        $("#balanceInternal").val(), 
+        $("#valueInternal").val(), 
         'balanceEntryAccount'
     );
 }); 
@@ -496,6 +497,10 @@ $('#realValueTranfer').on('blur', function () {
 });
 
 function transferValue() {
+    console.log($("#realValueTranfer").val());
+    console.log($("#selectAccountBankEnd").val());
+    console.log($("#selectAccountBankEntry").val());
+
     if($("#realValueTranfer").val() == '' ||
     $("#selectAccountBankEnd").val() == '' ||
     $("#selectAccountBankEntry").val() == '') {
@@ -510,7 +515,9 @@ function transferValue() {
     var data = {
         idAccountEnd : $("#selectAccountBankEnd").val(),
         idAccountEntry : $("#selectAccountBankEntry").val(),
-        value : $("#realValueTranfer").val()
+        value : $("#realValueTranfer").val(),
+        valueInternal: $("#valueInternal").val(),
+        transaction_id : $("#transaction_id_transfer").val()   
     }
     SearaAjax.post('transferir', data, function( response ){
         console.log(response)
@@ -535,12 +542,12 @@ function transferValue() {
                 styling: 'bootstrap3'
             });
         }
-        if(response.status == 200)
-        {
-            setTimeout(() => {
-            window.location.reload(); 
-           }, 2000);
-        }
+        // if(response.status == 200)
+        // {
+        //     setTimeout(() => {
+        //     window.location.reload(); 
+        //    }, 2000);
+        // }
         SearaLoader.hideModal();
        
     });
