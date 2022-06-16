@@ -77,8 +77,8 @@
                                     <div class="col-md-4">
                                         <small class="text-danger">Conta de entrada</small>
                                         <select name="" id="selectAccountBankEntry" class="form-control">
-                                            <option value="0">--Selecione--</option>
-                                            <option value="">Caixa Interno</option>
+                                            <option value="">--Selecione--</option>
+                                            <option value="0    ">Caixa Interno</option>
                                             @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}
@@ -99,11 +99,12 @@
                             </div>
                             <div class="clearfix" style="padding-bottom: 10px"></div>
                             <div class="modal-footer">
-                                <input type="text" name="valueGetInfo" id="valueGetInfo">
-                                <input type="text" name="balanceInternal" id="balanceInternal" value="{{ number_format($saldo, 2, ',', '.') }}">
+                                <input type="hidden" name="valueGetInfo" id="valueGetInfo">
+                                <input type="hidden" name="valueInternal" id="valueInternal" value="{{ number_format($saldo, 2, ',', '.') }}">
+                                <input type="hidden" name="transaction_id" id="transaction_id_transfer" value="2">
                                 <button type="button" class="btn btn-default  pull-left"
                                     data-dismiss="modal">Sair</button>
-                                <a id="btnTransferValue" onclick="transferValue()" class="btn btn-primary">
+                                    <a id="btnTransferValue" onclick="transferValue()" class="btn btn-primary">
                                     <i class="fa fa-exchange" aria-hidden="true"></i> Transferir
                                 </a>
                             </div>

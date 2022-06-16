@@ -71,6 +71,7 @@
                 <input type="hidden" name="entries_id_company" id="entries_id_company" value="{{$idCompany}}">
                 <input type="hidden" name="entries_id_user" id="entries_id_user" value="{{Auth::user()->id}}">
                 <input type="hidden" name="type" id="typeLaunch" value="actual">
+                <input type="hidden" name="transaction_id" id="transaction_id" value="1">
             </div>
         </div>
     </div>
