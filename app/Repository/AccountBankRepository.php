@@ -2,6 +2,7 @@
 
 namespace Seara\Repository;
 
+use App\Account;
 use Seara\Bank;
 use Carbon\Carbon;
 use Doctrine\DBAL\Tools\Dumper;
@@ -233,5 +234,10 @@ class AccountBankRepository {
             return false;
        
         return true;
+    }
+
+    static public function getAllAccountBankCompany($idCompany)
+    {
+        return AccountBank::where('company_id', $idCompany)->get();
     }
 }

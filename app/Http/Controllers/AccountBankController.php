@@ -2,17 +2,19 @@
 
 namespace Seara\Http\Controllers;
 
-use Carbon\Carbon;
 use Seara\Bank;
 use Seara\Entry;
+use Carbon\Carbon;
 use Seara\AccountBank;
 use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
 use Seara\Traits\ActionTable;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Seara\Permission as SearaPermission;
 use Seara\Repository\BankRepository;
 use Seara\Service\Launch\CreateLaunch;
+use Spatie\Permission\Models\Permission;
 use Seara\Repository\AccountBankRepository;
 use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 
@@ -26,6 +28,17 @@ class AccountBankController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $idCompany = $user->user_id_company;
+        dump($idCompany);
+        dump(AccountBankRepository::getAllAccountBankCompany($idCompany));
+        dd(SearaPermission::verifyAccess($user, SearaPermission::superAdmin, $idCompany));
+        // dd($user->hasPermissionTo('is_admin'));
+        //verificando se tem paramentro do id da igreja na url
+        if (app('request')->input('company') !== null) {
+            $idCompany = intval(app('request')->input('company'));
+        }
+        
         $banks = Bank::all();
         $types = GetTypeAccountBank::getTyppeAccountBank();
         return view('accountBank.index', compact('types', 'banks'));
