@@ -94,27 +94,33 @@ class AccountBankRepository {
      */
     static public function transfer($request)
     {
+        //verifica se tem saldo para transferencia
         $verifyBalanceToAccount = self::verifyBalanceToAccount($request);
-       
+    
         //false em caso de nao ter saldo suficiente
         if(!$verifyBalanceToAccount)     
             return response()->json([
                 'type' => 'error',
-                'message' => 'Saldo insuficiente'
+                'message' => 'Confira o valor para ser transferido por que o saldo está insuficiente.'
             ], 400);
 
         //preenchendo array com os campos e valores para um lancamento
         try {
             //se for caixa interno não registra saida de valor
             $valueBalance = Monetary::money_real($request['value']);
+            //Retirando o valor do saldo da conta            
             if($request['idAccountEnd'] > 0){
                 $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
                 $accountBank->balance = $accountBank->balance - $valueBalance;
                 $accountBank->save();
             }
-            $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
-            $accountBank2->balance = $accountBank2->balance + $valueBalance;
-            $accountBank2->save();
+
+            if($request['idAccountEntry'] > 0){
+                $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
+                $accountBank2->balance = $accountBank2->balance + $valueBalance;
+                $accountBank2->save();
+            }
+            
             return response()->json([
                 'type' => 'success',
             ], 200);
@@ -128,56 +134,76 @@ class AccountBankRepository {
         
     }
 
+    /**
+     * Monta os campos para gerar a string de registro de lançamento
+     */
     static public function fieldsEntry($request, $type)
     {
-        $account  = [];
-        $account2 = [];
         $bank = [];
         $bank2 = [];
+        $transaction_id  = 1;
+        $account  = new AccountBank('Caixa Interno', 0);  
+        $bank['nameBank'] = $account->nameBank;
+        $bank['number'] = $account->number;
+
+        $account2 = new AccountBank('Caixa Interno', 0);  
+        $bank2['nameBank'] = $account2->nameBank;
+        $bank2['number'] = $account2->number;
+
         //So PEGA AS INFO SE NÃO FOR CAIXA INTERNO
         if($request['idAccountEnd'] > 0)
         {
             $account = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEnd'] );
             //primeiro registro, mas o retorno é somente um registro de uma collection
-            $bank = (object) $account;
-        } 
+            $bank['nameBank'] = $account[0]->nameBank;
+            $bank['number'] = $account[0]->number;
+        }
+
         if($request['idAccountEntry'] > 0)
         {
             $account2 = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEntry'] );
-            $bank2 = (object) $account2;
+            $bank2['nameBank'] = $account2[0]->nameBank;
+            $bank2['number'] = $account2[0]->number;
         }
         
         $desc = '';
         $idAccountLaunch = 0;
+        switch ($type) {
+            case 'despesa':
+                $desc = 'Transferência da conta nº '.$bank['number'].' '.$bank['nameBank'].' para conta nº '.$bank2['number']. ' '.$bank2['nameBank'];
+                $idAccountLaunch = 7;
+                //transferencia do banco para caixa interno
+                if($bank['number'] > 0 && $bank2['number'] == 0)
+                {
+                    $transaction_id = 2;
+                }
+                break;
+            case 'receita':
+                $desc = 'Trasnferência recebida de conta nº '.$bank['number'].' '.$bank['nameBank'];
+                $idAccountLaunch = 6;
+                //transferencia do caixa interno para conta bancaria
+                if($bank['number'] == 0 && $bank2['number'] > 0)
+                {
+                    $transaction_id = 2;
+                }
+                break;
+        }
+
         //CASO SEJA CAIXA INTERNO TRANSFERINDO OU RECEBENDO TRANSFERENCIA
         if(empty($account2))
         {
-            $desc = 'Transferencia da conta '.$bank->first()->number. ' '.$bank->first()->nameBank.' para o CAIXA INTERNO';
+            $desc = 'Transferencia da conta '.$bank['number']. ' '.$bank['nameBank'].' para o CAIXA INTERNO';
             $idAccountLaunch = 1;
-        }elseif(empty($account))
-        {
-            $desc = 'Transferencia do CAIXA INTERNO para '.$bank2->first()->number. ' '.$bank2->first()->nameBank;
-            $idAccountLaunch = 2;
-        }else{
-            switch ($type) {
-                case 'despesa':
-                    $desc = 'Transferência da conta nº '.$bank->first()->number.' '.$bank->first()->nameBank.' para conta nº '.$bank2->first()->number. ' '.$bank2->first()->nameBank;
-                    $idAccountLaunch = 7;
-                    break;
-                case 'receita':
-                    $desc = 'Trasnferência recebida de conta nº '.$bank->number.' '.$bank->nameBank;
-                    $idAccountLaunch = 6;
-                    break;
-            }
         }
-        
+     
         $launch['entries_id_account'] = $idAccountLaunch;
         $launch['entries_description'] = $desc;
         $launch['entries_id_company'] = Auth::user()->user_id_company;
         $launch['entries_id_user'] = Auth::user()->id;
         $launch['entries_value'] = Monetary::money_real($request['value']);
-        $launch['entries_date_launch'] = Carbon::now();
-       
+        $launch['entries_date_launch'] = Carbon::now();        
+        $launch['transaction_id']  = $transaction_id;
+
         return $launch;
     }
 
@@ -186,11 +212,11 @@ class AccountBankRepository {
      */
     static public function verifyBalanceToAccount($request)
     {
+       
         $balanceActual = 0;//saldo atual
         
         //VERIFICA SE É CAIXA INTERNO
         if($request['idAccountEnd'] == 0) {
-            //dump($request['idAccountEnd']);
             //AJUSTA PARA A VARIAVEL O VALOR DO CAIXA INTERNO
             $balanceActual = Monetary::money_real($request['valueInternal']);     
             //dump($balanceActual);      
@@ -199,7 +225,6 @@ class AccountBankRepository {
             //RECEBENDO O VALOR ATUAL DA CONTA
             $balanceActual =  $verify->balance;
         }       
-       
         $balanceToTransfer = Monetary::money_real($request['value']);//valor a transferir
         $comparation = (float) $balanceToTransfer <=> (float) $balanceActual;
         //Comparation = 0 = igual, -1 = menor, 1 = maior
