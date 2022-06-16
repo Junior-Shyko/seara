@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccountBank extends Model
 {
+    public $nameBank;
+    public $number;
+
     protected $fillable = [
         'bank_id',
         'typeBank_id',
@@ -15,6 +18,12 @@ class AccountBank extends Model
         'balance',
         'owner'
     ];
+
+    public function __construct($nameBank = null, $number = null)
+    {
+        $this->nameBank = $nameBank;
+        $this->number = $number;    
+    }
 
     public function account()
     {
