@@ -2,10 +2,11 @@
 
 namespace Seara\Http\Controllers;
 
-use Carbon\Carbon;
 use Seara\Bank;
 use Seara\Entry;
+use Carbon\Carbon;
 use Seara\AccountBank;
+use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
 use Seara\Traits\ActionTable;
@@ -13,6 +14,8 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Seara\Repository\BankRepository;
 use Seara\Service\Launch\CreateLaunch;
+use Seara\Permission as SearaPermission;
+use Spatie\Permission\Models\Permission;
 use Seara\Repository\AccountBankRepository;
 use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 
@@ -26,9 +29,27 @@ class AccountBankController extends Controller
      */
     public function index()
     {
-        $banks = Bank::all();
-        $types = GetTypeAccountBank::getTyppeAccountBank();
-        return view('accountBank.index', compact('types', 'banks'));
+        //user atual logado é superAdmin?
+        //se nao for, ele é da igreja do caixa?
+        $user = Auth::user();
+        $idCompany = $user->user_id_company;
+        if (app('request')->input('company') !== null) {
+            $idCompany = intval(app('request')->input('company'));
+        }
+        //Retorna todos os lançamentos dessa igreja
+        AccountBankRepository::getAllAccountBankCompany($idCompany);
+        $verify = AccountBankRepository::verifyPermission($idCompany, new SearaPermission ,$user);
+        //se tiver permissão ou acesso, então renderiza a view
+        if($verify){
+            //DADOS DA IGREJA COMPLETO
+            $company    = Company::getCompany($idCompany);
+            $banks      = Bank::all();
+            $types      = GetTypeAccountBank::getTyppeAccountBank();
+            return view('accountBank.index', compact('types', 'banks', 'company'));
+        }
+        //Retorna aviso 
+        return redirect('/')->with('error', 'Ops! Você não tem permissão para acessar essa página.');
+        
     }
 
     /**
@@ -50,13 +71,15 @@ class AccountBankController extends Controller
     public function store(Request $request)
     {
         try {
-            unset($request['idAccontBank']);
+            // unset($request['idAccontBank']);
+            $request->request->remove('idAccontBank');
             if(is_null($request['balance'])){
                 $request['balance'] = 0 ;
             };
             $balance = Monetary::money_real($request->balance);
             $request['balance'] = $balance;
-            AccountBank::create($request->all());
+            //dd($request->all());
+            AccountBank::insert($request->all());
             return response()->json([
                 'type' => 'success',
                 'message' => 'Conta bancaria salva com sucesso'
@@ -133,10 +156,10 @@ class AccountBankController extends Controller
         }
     }
 
-    public function getAccountBank()
+    public function getAccountBank($idCompany)
     {
-        //Relacionamento com as tabelas
-        $accountBank = AccountBankRepository::getRelationAccountBank();
+        // //Retorna todos os lançamentos dessa igreja
+        $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
         $datatable = DataTables::of($accountBank);
         $datatable->editColumn('balance', function($accountBank) {
                 return number_format($accountBank->balance, 2, ',', '.');

@@ -68,7 +68,7 @@ class UserController extends Controller
             'users_avatar' => 'default-user-avatar.png'
         ];
         try {
-            User::create($user);
+            User::create($user)->givePermissionTo('user_common');
             return response()->json(['message' => 'Usuário cadastrado'], 200);
         }
         catch(Exception $e) {

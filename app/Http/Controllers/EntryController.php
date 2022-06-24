@@ -48,18 +48,14 @@ class EntryController extends Controller
         //DADOS DA IGREJA COMPLETO
         $company = Company::getCompany($idCompany);
 
-        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-
         //valor somados das contas bancárias
         $bank = LaunchService::getBoxBank($idCompany);
         $totBanco = $bank;
         //valor somados dos lançamentos
         $internal = LaunchService::getBoxInternal($idCompany);
-        // dd($internal);
         $totIgreja  = $internal;   
-        //dump($saldoGer);
         $saldo = $internal;
-        //dd($saldo);
+
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         $user = Auth::user();

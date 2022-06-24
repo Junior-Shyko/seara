@@ -2,6 +2,7 @@
 
 namespace Seara\Repository;
 
+use App\Account;
 use Seara\Bank;
 use Carbon\Carbon;
 use Doctrine\DBAL\Tools\Dumper;
@@ -233,5 +234,29 @@ class AccountBankRepository {
             return false;
        
         return true;
+    }
+
+    static public function getAllAccountBankCompany($idCompany)
+    {
+        return AccountBank::where('company_id', $idCompany)->get();
+    }
+
+    //injetar SearaPermission
+    static public function verifyPermission($idCompany, $searaPermission ,$user)
+    {
+        $access = false;
+        $isSuperAdmin = $searaPermission::verifyAccess($user, $searaPermission::superAdmin);
+        //se permission for falso, verifica se user_id_company é igual a $idCompany
+        if(!$isSuperAdmin){
+            if($user->user_id_company == $idCompany)
+            {
+                $access = true;
+            }
+        //se for um superAdmin tem acesso    
+        }else{
+            $access = true;
+        }
+
+        return $access;
     }
 }
