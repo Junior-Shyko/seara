@@ -28,20 +28,25 @@ class AccountBankController extends Controller
      */
     public function index()
     {
+        //user atual logado é superAdmin?
+        //se nao for, ele é da igreja do caixa?
         $user = Auth::user();
         $idCompany = $user->user_id_company;
-        dump($idCompany);
-        dump(AccountBankRepository::getAllAccountBankCompany($idCompany));
-        dd(SearaPermission::verifyAccess($user, SearaPermission::superAdmin, $idCompany));
-        // dd($user->hasPermissionTo('is_admin'));
-        //verificando se tem paramentro do id da igreja na url
         if (app('request')->input('company') !== null) {
             $idCompany = intval(app('request')->input('company'));
         }
+        //Retorna todos os lançamentos dessa igreja
+        AccountBankRepository::getAllAccountBankCompany($idCompany);
+        $verify = AccountBankRepository::verifyPermission($idCompany, new SearaPermission ,$user);
+        //se tiver permissão ou acesso, então renderiza a view
+        if($verify){
+            $banks = Bank::all();
+            $types = GetTypeAccountBank::getTyppeAccountBank();
+            return view('accountBank.index', compact('types', 'banks'));
+        }
+        //Retorna aviso 
+        return redirect('/')->with('error', 'Ops! Você não tem permissão para acessar essa página.');
         
-        $banks = Bank::all();
-        $types = GetTypeAccountBank::getTyppeAccountBank();
-        return view('accountBank.index', compact('types', 'banks'));
     }
 
     /**

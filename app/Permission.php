@@ -18,8 +18,16 @@ class Permission extends Model
         return $this->belongsToMany(\Seara\Models\Profile::class, 'permission_profile' , 'id', 'permission_id');
     }
 
-    static public function verifyAccess($user, $permission, $idCompany)
+    /**
+     * Consulta na tabela permissions a permissao passada via parametro
+     *
+     * @param [type] $user
+     * @param [type] $permission
+     * @return void
+     */
+    static public function verifyAccess($user, $permission)
     {
-        $permission = !$user->hasPermissionTo(Permission::find($permission)->id);
+        return $user->hasPermissionTo(Permission::find($permission)->name);
+
     }
 }
