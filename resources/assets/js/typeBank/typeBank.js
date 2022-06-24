@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    
+    var idCodeCompany = $("#idCodeCompany").val();
+
     var table = $('#table-type-bank').DataTable( {
         ajax: SearaApp.baseURL+'tipo-banco/getType',
         columns: [
@@ -10,7 +13,7 @@ $(document).ready(function () {
 
     //Contas bancarias
     $('#table-account-bank').DataTable( {
-        ajax: SearaApp.baseURL+'todasContas',
+        ajax: SearaApp.baseURL+'todasContas/'+idCodeCompany+'/',
         columns: [
             {data: 'nameBank', name: 'nameBank'},
             {data: 'nameTypeBank', name: 'nameTypeBank'},
@@ -80,7 +83,7 @@ function editTypeBank(id) {
 }
 //EDIÇÃO DE CONTA BANCARIA
 function editAccountBank(id){
-    $.getJSON(SearaApp.baseURL+'conta-bancaria/'+id,
+    $.getJSON(SearaApp.baseURL+'conta-bancaria/'+id+'/',
         function (data, textStatus, jqXHR) {
             //formatando formulario para edição
             $(".valueAccontBank").addClass('border-update');
@@ -159,6 +162,7 @@ $("#btnSaveAccontBank").click(function (e){
         $(".bank_id").val() == ''
      ) {
         SearaAlert.error('Todos os campos são obrigatórios');
+        return false;
     }
     var urlRequest = '';
     var typeRequest
@@ -175,18 +179,19 @@ $("#btnSaveAccontBank").click(function (e){
         type: typeRequest,
         url: urlRequest,
         data: form,
-        dataType: "json",
-        success: function (response) {
-            SearaAlert.success(response.message);
-            $("#table-account-bank").DataTable().ajax.reload();
-            $("#formAccountBank")[0].reset();
-            $(".valueAccontBank").removeClass('border-update')
-            $(".accountBankNumber").removeClass('border-update');
-            $(".agency_number").removeClass('border-update');
-        },
-        error: function (response, xjhr, status) {
-            SearaAlert.error(response.message);
-        }
+        dataType: "json"
+    })
+    .done(function(response) {
+        SearaAlert.success(response.message);
+        $("#table-account-bank").DataTable().ajax.reload();
+        $("#formAccountBank")[0].reset();
+        $(".valueAccontBank").removeClass('border-update')
+        $(".accountBankNumber").removeClass('border-update');
+        $(".agency_number").removeClass('border-update');
+    })
+    .fail(function(response) {
+        console.log(response);
+        SearaAlert.success(response.message);
     });
 });
 

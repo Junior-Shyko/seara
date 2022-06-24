@@ -16,6 +16,12 @@
         <div class="clearfix"></div>
         <div class="row">
             <div class="col-md-12 col-sm-12  ">
+                <div class="col-md-12">
+                    <small class="badge btn-success"> 
+                        Igreja: {{ $company->company_name }} 
+                    </small>   
+                    <input type="hidden" id="idCodeCompany" value="{{$company->company_id}}"> 
+                </div>
                 <div class="x_panel">
                     <div class="x_title">
                         <h2>Criar conta bancaria</h2>
@@ -35,6 +41,7 @@
             </div>
         </div>
         <div class="row">
+            <div class="table-responsive">
             <div class="col-md-12">
                 <div class="x_panel">
                     <div class="x_title">
@@ -43,18 +50,19 @@
                     </div>
                     <div class="x_content">
                         <div class="right-col">
-                            <table id="table-account-bank" class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nome do banco</th>
-                                        <th>Tipo de conta</th>
-                                        <th>Valor Atual</th>
-                                        <th>N. Conta</th>
-                                        <th>N. Agência<th>
-                                        <th>Ação</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                                <table id="table-account-bank" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome do banco</th>
+                                            <th>Tipo de conta</th>
+                                            <th>Valor Atual</th>
+                                            <th>N. Conta</th>
+                                            <th>N. Agência<th>
+                                            <th>Ação</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

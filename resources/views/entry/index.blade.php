@@ -92,11 +92,17 @@
                                             Adicionar <span class="caret"></span>
                                           </button>
                                         <ul class="dropdown-menu">
-                                          <li><a href="{{url('conta-bancaria')}}" target="_blank">Cadastrar conta bancária</a></li>
-                                          <li><a href="#" data-toggle="modal" data-target="#lancar_conta">Lançar Movimento</a></li>
-                                          <li><a href="#">Something else here</a></li>
-                                          <li role="separator" class="divider"></li>
-                                          <li><a href="#">Separated link</a></li>
+                                            <li>
+                                                <a href="{{url('conta-bancaria?company=').$idCompany}}" target="_blank" class="text-primary">
+                                                    <i class="fa fa-plus"></i> Cadastrar conta bancária
+                                                </a>
+                                            </li>
+                                          {{-- <li role="separator" class="divider"></li> --}}
+                                            <li>
+                                                <a href="#" data-toggle="modal" data-target="#lancar_conta">
+                                                    <i class="fa fa-money"></i> Lançar Movimento
+                                                </a>
+                                            </li>
                                         </ul>
                                       </div>
                                 </li>
