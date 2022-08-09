@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Service\Core\Csv;
 
-use App\Service\Core\Csv\LeagueCsvReader;
+use Seara\Service\Core\Csv\LeagueCsvReader;
 use PHPUnit\Framework\TestCase;
 
 class LeagueCsvReaderTest extends TestCase

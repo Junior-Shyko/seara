@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Core\Transformation;
 
-use App\Service\Core\Transformation\FormatBrDate;
-use App\Service\Core\Transformation\FormatMoney;
+use Seara\Service\Core\Transformation\FormatBrDate;
+use Seara\Service\Core\Transformation\FormatMoney;
 use PHPUnit\Framework\TestCase;
 
-use App\Service\Core\Transformation\ArrayTransformer;
+use Seara\Service\Core\Transformation\ArrayTransformer;
 
 class ArrayTransformerTest extends TestCase
 {

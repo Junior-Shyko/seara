@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Core\DataTable;
 
-use App\Service\Core\DataTable\Formatters\Format;
+use Seara\Service\Core\DataTable\Formatters\Format;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 

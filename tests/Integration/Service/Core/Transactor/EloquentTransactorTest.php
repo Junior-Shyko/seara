@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Service\Core\Transactor;
 
-use App\Service\Core\Transactor\EloquentTransactor;
-use App\Service\Core\Util\DatabaseCleaner;
+use Seara\Service\Core\Transactor\EloquentTransactor;
+use Seara\Service\Core\Util\DatabaseCleaner;
 use DB;
 use Exception;
 use Tests\TestCase;
