@@ -162,12 +162,12 @@ return [
 		Conner\Tagging\Providers\TaggingServiceProvider::class,
 		Collective\Html\HtmlServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-        Yajra\DataTables\DataTablesServiceProvider::class,
+        Yajra\Datatables\DatatablesServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
         /* TINKER */
         Laravel\Tinker\TinkerServiceProvider::class,
-        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*
