@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model
 {
-    const superAdmin = 6;//se é um superAdmin dentro da tabela permissions
-    const admin = 7;//se é um admin dentro da tabela permissions
+    const superAdmin = 1;//se é um superAdmin dentro da tabela permissions
+    const admin = 2;//se é um admin dentro da tabela permissions
 
     public function profiles_permission()
     {
