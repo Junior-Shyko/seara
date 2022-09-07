@@ -59,7 +59,7 @@
                         <span class="count_top">
                             <i class="fa fa-money" aria-hidden="true"></i> Caixa Interno
                         </span>
-                        <div class="count">{{number_format($saldo, 2 , ',', '.')}}</div>
+                        <div class="count">{{number_format($internal, 2 , ',', '.')}}</div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral do caixa interno
@@ -168,7 +168,7 @@
         </div>
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
-    @include('modals.modal_box_entry', ['saldo' => $saldo, 'accountBank' => $accountBank])
+    @include('modals.modal_box_entry', ['saldo' => $internal, 'accountBank' => $accountBank])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
     {{-- EXCLUINDO UM LANCAMENTO --}}

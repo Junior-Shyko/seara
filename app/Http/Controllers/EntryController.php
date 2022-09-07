@@ -50,26 +50,21 @@ class EntryController extends Controller
 
         //valor somados das contas bancárias
         $bank = LaunchService::getBoxBank($idCompany);
-        $totBanco = $bank;
         //valor somados dos lançamentos
         $internal = LaunchService::getBoxInternal($idCompany);
-        $totIgreja  = $internal;   
-        $saldo = $internal;
-
+ 
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         $user = Auth::user();
 
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance($idCompany);
-        $balanceGeneral = ($saldo + $balanceBank);
+        $balanceGeneral = ($internal + $internal);
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
         return view('entry.index', compact(
             'accounts',
-            'saldo',
-            'totIgreja',
-            'totBanco',
+            'internal',
             'company',
             'balanceBank',
             'balanceGeneral',
@@ -444,9 +439,9 @@ class EntryController extends Controller
             'isRemoteEnabled' => true,
             'defaultPaperSize' =>  'a4'
         ]);
-        return $pdf->stream();
+        //return $pdf->stream();
         //dd($entries);
-        //return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
+        return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
     }
 
     /**
