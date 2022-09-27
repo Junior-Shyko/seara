@@ -88,22 +88,9 @@
                             <ul class="nav navbar-right panel_toolbox">
                                 <li class="dropdown">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Adicionar <span class="caret"></span>
-                                          </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="{{url('conta-bancaria?company=').$idCompany}}" target="_blank" class="text-primary">
-                                                    <i class="fa fa-plus"></i> Cadastrar conta bancária
-                                                </a>
-                                            </li>
-                                          {{-- <li role="separator" class="divider"></li> --}}
-                                            <li>
-                                                <a href="#" data-toggle="modal" data-target="#lancar_conta">
-                                                    <i class="fa fa-money"></i> Lançar Movimento
-                                                </a>
-                                            </li>
-                                        </ul>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#lancar_conta">
+                                            Lançar Movimento
+                                          </button>                                       
                                       </div>
                                 </li>
                                 </li>
