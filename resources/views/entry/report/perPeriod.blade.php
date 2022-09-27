@@ -64,6 +64,16 @@
                 <tr>
                     <td colspan="4" class="border-table">
                         <label for="">
+                            Saldo bancário
+                        </label>
+                    </td>
+                    <td class="center-text border-table">
+                        {{number_format($balanceBank,2,',','.')}}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="border-table">
+                        <label for="">
                             Saldo Anterior
                         </label>
                     </td>
@@ -130,7 +140,7 @@
                     <td colspan="2"  class="title-table">
                         <label for="">
                             Totais do período
-                            <span class="smallPeriod">(s.ant + ent + sai)</span>
+                            <span class="smallPeriod">(s.ant + ent + sai + banco)</span>
                         </label>
                         
                     </td>
@@ -144,7 +154,8 @@
                     <td class="center-text title-table">
                         @php 
                             $total = ($previousBalance + $recipes - $expenses);
-                            echo '<strong>'.number_format($total,2,',','.').'</strong>';
+                            $balanceAll = ($total + $balanceBank);
+                            echo '<strong>'.number_format($balanceAll,2,',','.').'</strong>';
                         @endphp
                     </td>
                 </tr>
