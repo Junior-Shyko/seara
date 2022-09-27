@@ -97,7 +97,13 @@
                             </li>
                             @endrole
                             <li>
-                                <a data-cy="report-debt-and-payment" href="{{ url('lancar') }}">Lancar Movimento</a>
+                                <a data-cy="report-debt-and-payment" href="{{ url('lancar') }}">Lançar Movimento</a>
+                            </li>
+                            <li>
+                                <a data-cy="report-debt-and-payment" 
+                                href="{{ url('conta-bancaria?company='.Auth()->user()->user_id_company) }}">
+                                    Conta Bancaria
+                                </a>
                             </li>
                         </ul>
                     </li>
