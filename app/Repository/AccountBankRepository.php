@@ -15,6 +15,9 @@ use Seara\Repository\BankRepository;
 
 class AccountBankRepository {
 
+
+    const INTERNAL_TO_BANK = 1; //TRANSAÇÃO CAIXA INTERNO PARA BANCO
+    const BANK_TO_INTERNAL = 2; //TRANSAÇÃO DO BANCO PARA CAIXA INTERNO
     /**
      * Retorna o relacionamento de todas as tabelas relacionadas
      *
@@ -104,17 +107,23 @@ class AccountBankRepository {
                 'type' => 'error',
                 'message' => 'Confira o valor para ser transferido por que o saldo está insuficiente.'
             ], 400);
-
+          //  dd($request);
         //preenchendo array com os campos e valores para um lancamento
         try {
             //se for caixa interno não registra saida de valor
             $valueBalance = Monetary::money_real($request['value']);
-            //Retirando o valor do saldo da conta            
+            //Retirando o valor do saldo da conta bancaria          
             if($request['idAccountEnd'] > 0){
                 $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
                 $accountBank->balance = $accountBank->balance - $valueBalance;
                 $accountBank->save();
             }
+            //Retirando o valor do saldo do caixa interno
+            // if($request['idAccountEnd'] == 0){
+            //     $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
+            //     $accountBank->balance = $accountBank->balance - $valueBalance;
+            //     $accountBank->save();
+            // }
 
             if($request['idAccountEntry'] > 0){
                 $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
@@ -172,23 +181,24 @@ class AccountBankRepository {
         switch ($type) {
             case 'despesa':
                 $desc = 'Transferência da conta nº '.$bank['number'].' '.$bank['nameBank'].' para conta nº '.$bank2['number']. ' '.$bank2['nameBank'];
-                $idAccountLaunch = 7;
+                $idAccountLaunch = 52;
                 //transferencia do banco para caixa interno
                 if($bank['number'] > 0 && $bank2['number'] == 0)
                 {
-                    $transaction_id = 2;
+                    $transaction_id = AccountBankRepository::BANK_TO_INTERNAL;
                 }
                 break;
             case 'receita':
                 $desc = 'Trasnferência recebida de conta nº '.$bank['number'].' '.$bank['nameBank'];
-                $idAccountLaunch = 6;
+                $idAccountLaunch = 51;
                 //transferencia do caixa interno para conta bancaria
                 if($bank['number'] == 0 && $bank2['number'] > 0)
                 {
-                    $transaction_id = 2;
+                    $transaction_id = AccountBankRepository::INTERNAL_TO_BANK;
                 }
                 break;
         }
+      
 
         //CASO SEJA CAIXA INTERNO TRANSFERINDO OU RECEBENDO TRANSFERENCIA
         if(empty($account2))
@@ -204,7 +214,9 @@ class AccountBankRepository {
         $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();        
         $launch['transaction_id']  = $transaction_id;
-
+        // dump($type);
+        // dump($request);
+        // dd($launch);
         return $launch;
     }
 
