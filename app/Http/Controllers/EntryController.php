@@ -52,14 +52,17 @@ class EntryController extends Controller
         $bank = LaunchService::getBoxBank($idCompany);
         //valor somados dos lançamentos
         $internal = LaunchService::getBoxInternal($idCompany);
- 
+        // dump($internal);
+        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceBank = AccountBankRepository::getBalance($idCompany);
+        $balanceGeneral = ($internal + $balanceBank);
+        // dump($balanceBank);
+        // dd($balanceGeneral);
+        
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         $user = Auth::user();
 
-        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
-        $balanceBank = AccountBankRepository::getBalance($idCompany);
-        $balanceGeneral = ($internal + $internal);
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
         return view('entry.index', compact(
@@ -284,7 +287,7 @@ class EntryController extends Controller
             $endDate = Carbon::now();
             $dtEnd = $endDate->lastOfMonth();
         }
-        //DB::enableQueryLog();
+        // DB::enableQueryLog();
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
             ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
@@ -295,6 +298,7 @@ class EntryController extends Controller
                 'users.id as idUser',
                 'users.name',
                 'entries.*',
+                'account_types.*',
                 'account_launches.accountlaunch_type',
                 'account_types.account_types_name',
                 'account_launches.id as idAccontLaunch',
@@ -302,8 +306,8 @@ class EntryController extends Controller
             )
             ->orderBy('entries.entries_date_launch', 'asc')
             ->get();
-
-        //dd(DB::getQueryLog());
+                // dump(DB::connection('mysql'));
+        // dd(DB::getQueryLog());
         return DataTables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {
                 $date = new Carbon($mov->entries_date_launch);
@@ -433,15 +437,24 @@ class EntryController extends Controller
             ->where('companies.company_id', '=', $idCompany)
             ->orderBy('entries_date_launch', 'asc')->get();
 
-        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total', 'previousBalance'));
+        //valor somados dos lançamentos
+        $internal = LaunchService::getBoxInternal($idCompany);
+        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceBank = AccountBankRepository::getBalance($idCompany);
+        $balanceGeneral = ($internal + $balanceBank);
+   
+        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total', 
+        'previousBalance','balanceBank'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
             'defaultPaperSize' =>  'a4'
         ]);
+        
         //return $pdf->stream();
         //dd($entries);
-        return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
+        return view('entry.report.perPeriod', 
+          compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance','balanceBank'));
     }
 
     /**
