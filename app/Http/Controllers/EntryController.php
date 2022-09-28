@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountType;
 use Seara\AccountLaunch;
+use Seara\SettingsEntry;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
@@ -56,8 +57,9 @@ class EntryController extends Controller
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance($idCompany);
         $balanceGeneral = ($internal + $balanceBank);
-        // dump($balanceBank);
-        // dd($balanceGeneral);
+        
+        SettingsEntry::CreateOrUp($company);
+        SettingsEntry::UpSettings($balanceBank, $internal, $balanceGeneral, $company);
         
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
