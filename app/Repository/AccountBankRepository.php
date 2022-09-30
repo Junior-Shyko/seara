@@ -180,8 +180,9 @@ class AccountBankRepository {
         $idAccountLaunch = 0;
         switch ($type) {
             case 'despesa':
-                $desc = 'Transferência da conta nº '.$bank['number'].' '.$bank['nameBank'].' para conta nº '.$bank2['number']. ' '.$bank2['nameBank'];
-                $idAccountLaunch = 52;
+                $desc = 'Transferência da conta nº '.$bank['number'].' '.$bank['nameBank'].' 
+                para conta nº '.$bank2['number']. ' '.$bank2['nameBank'];
+                $idAccountLaunch = 9;
                 //transferencia do banco para caixa interno
                 if($bank['number'] > 0 && $bank2['number'] == 0)
                 {
@@ -190,7 +191,16 @@ class AccountBankRepository {
                 break;
             case 'receita':
                 $desc = 'Trasnferência recebida de conta nº '.$bank['number'].' '.$bank['nameBank'];
-                $idAccountLaunch = 51;
+                $idAccountLaunch = 8;
+                //transferencia do caixa interno para conta bancaria
+                if($bank['number'] == 0 && $bank2['number'] > 0)
+                {
+                    $transaction_id = AccountBankRepository::INTERNAL_TO_BANK;
+                }
+                break;            
+            case 'transferencia':
+                $desc = 'Trasnferência bancária entre caixas';
+                $idAccountLaunch = 55;
                 //transferencia do caixa interno para conta bancaria
                 if($bank['number'] == 0 && $bank2['number'] > 0)
                 {
@@ -253,22 +263,5 @@ class AccountBankRepository {
         return AccountBank::where('company_id', $idCompany)->get();
     }
 
-    //injetar SearaPermission
-    static public function verifyPermission($idCompany, $searaPermission ,$user)
-    {
-        $access = false;
-        $isSuperAdmin = $searaPermission::verifyAccess($user, $searaPermission::superAdmin);
-        //se permission for falso, verifica se user_id_company é igual a $idCompany
-        if(!$isSuperAdmin){
-            if($user->user_id_company == $idCompany)
-            {
-                $access = true;
-            }
-        //se for um superAdmin tem acesso    
-        }else{
-            $access = true;
-        }
 
-        return $access;
-    }
 }
