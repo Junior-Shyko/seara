@@ -16,17 +16,20 @@ use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Http\Controllers\Controller;
 use Seara\Service\Launch\LaunchService;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Permission;
+use Seara\Permission as SearaPermission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
-use App\Service\Financing\Account\AccountRepository;
 
 class EntryController extends Controller
 {
+    use HasRoles;
+
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware(['can:allLauch'])->only('allLauch');
     }
 
     /**
@@ -36,34 +39,33 @@ class EntryController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         $idCompany = Auth::user()->user_id_company;
         if (app('request')->input('company') !== null) {
             $idCompany = intval(app('request')->input('company'));
         }
+        //CASO O USUARIO NÃO SEJA UM SUPER ADMIN, ENTRA NA CONDIÇÃO PARA VERIFICAÇÃO
+        if(!$user->hasRole('superAdmin'))
+        {
+             //verifica qual a permissão o usuario tem
+            if(!SearaPermission::verifyPermission($idCompany, $user))
+            {
+                return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+            }
+        }
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
-
-        //MES ATUAL
-        $month = Carbon::now()->month;
-        $monthPlus = ($month - 1);
         //DADOS DA IGREJA COMPLETO
         $company = Company::getCompany($idCompany);
-
         //valor somados das contas bancárias
         $bank = LaunchService::getBoxBank($idCompany);
         //valor somados dos lançamentos
         $internal = LaunchService::getBoxInternal($idCompany);
-        // dump($internal);
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance($idCompany);
         $balanceGeneral = ($internal + $balanceBank);
-        
-        SettingsEntry::CreateOrUp($company);
-        SettingsEntry::UpSettings($balanceBank, $internal, $balanceGeneral, $company);
-        
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
-        $user = Auth::user();
 
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
