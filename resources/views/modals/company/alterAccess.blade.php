@@ -43,6 +43,23 @@
                                          class="form-control">
                                  </div>
                              </div>
+                             <div class="item form-group">
+                                <label class="col-form-label col-md-12 col-sm-12 label-align" for="password">
+                                    Nível de acesso
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="col-md-12 col-sm-12 ">
+                                    {{-- <select name="name" class="form-control" required="">
+                                        <option value="">--Selecione--</option>
+                                        @foreach ($roles as $item)
+                                            @if($item->id == 3)
+                                                <option value="{{$item->id}}" selected>{{$item->name}}</option>                                                
+                                            @endif                
+                                            <option value="{{$item->id}}">{{$item->name}}</option>
+                                        @endforeach
+                                    </select> --}}
+                                </div>
+                             </div>
                              <div class="ln_solid"></div>
                              <div class="item form-group">
                                  <div class="col-md-12 col-sm-12 offset-md-3">
@@ -54,6 +71,7 @@
                                     <input type="hidden" name="codCompany" id="codCompany">
                                  </div>
                              </div>
+                             
                          </form>
                      </div>
                  </div>

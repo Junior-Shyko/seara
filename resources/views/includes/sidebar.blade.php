@@ -34,7 +34,11 @@
                     </li>
                     @if(Auth::user()->profile == 'owner' || Auth::user()->profile == 'owner')
                         <li>
-                            <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
+                            <a><i class="fa fa-users"></i> Usuários</a>
+                            <ul class="nav child_menu">
+                                <li><a href="{{url('users')}}">Lista</a></li>
+                                <li><a href="{{url('usuarios/permissao')}}">Permissão</a></li>
+                            </ul>
                         </li>
                     @endif
                     @if(Auth::user()->profile == 'owner')

@@ -2,17 +2,18 @@
 
 namespace Seara\Http\Controllers;
 
-use Seara\Service\Company\CompanyDataProvider;
 use Exception;
-use Seara\Models\Company;
-use Illuminate\Http\Request;
-use Auth , DB, Validator;
-use Intervention\Image\ImageManagerStatic as Image;
-use Illuminate\Support\Str;
 use Throwable;
-use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 use Seara\Models\User;
+use Auth , DB, Validator;
+use Seara\Models\Company;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Yajra\DataTables\Facades\DataTables;
+use Seara\Service\Company\CompanyDataProvider;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class CompanyController extends Controller
 {
@@ -32,8 +33,10 @@ class CompanyController extends Controller
     public function index()
     {
         if(Auth::user()->user_id_profile == 4){
+            $user = Auth::user();
+            $roles = DB::table('roles')->select('id', 'name')->get();
             $company = Company::all();
-            return view('business.index' , compact('company'));
+            return view('business.index' , compact('company', 'roles'));
         }else{
             return redirect()->back();
         }

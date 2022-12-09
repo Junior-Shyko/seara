@@ -33,14 +33,14 @@ services:
     environment:
       - NGINX_HOST=seara.localhost
       - NGINX_ROOT=/code/public
-  phptest:
-    image: fcoedno/php:7.1-fpm-dev
-    volumes:
-      - ./:/code
-      - composercache:/.composer
-    working_dir: /code
-    environment:
-      - DB_HOST=dbtest
+  # phptest:
+  #   image: fcoedno/php:7.1-fpm-dev
+  #   volumes:
+  #     - ./:/code
+  #     - composercache:/.composer
+  #   working_dir: /code
+  #   environment:
+  #     - DB_HOST=dbtest
   webtest:
     image: fcoedno/nginx:1.13.8-dev
     volumes:
