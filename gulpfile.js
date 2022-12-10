@@ -210,6 +210,9 @@ elixir(function(mix) {
     //TYPE ACCOUNT BANK
     mix.scripts(['typeBank/typeBank.js'], 'public/js/typeBank/typeBank.min.js');
 
+    //PERMISSION
+    mix.scripts(['permission/list_permission.js'], 'public/js/permission/list_permission.min.js');
+
     mix.styles([
         'basic.min.css',
         'dropzone.min.css',
