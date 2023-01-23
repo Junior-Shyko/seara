@@ -49,7 +49,7 @@
                                     <span class="required">*</span>
                                 </label>
                                 <div class="col-md-12 col-sm-12 ">
-                                    <select name="name" class="form-control" required="">
+                                    <select name="idRole" class="form-control" required="">
                                         <option value="">--Selecione--</option>
                                         @foreach ($roles as $item)
                                             @if($item->id == 3)

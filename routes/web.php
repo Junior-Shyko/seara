@@ -66,9 +66,7 @@ Route::get('recibo-comum/dataTable', 'ReceiptCommonController@dataTable');
 
 Route::resource('receipt-common', 'ReceiptCommonController');
 
-
 //ROTA PARA CAIXA
-
 Route::post('caixa/store' , 'BoxController@store');
 Route::post('caixa/delete' , 'BoxController@destroy');
 Route::get('caixa/saldo-inicial' , 'BoxController@balance_initial');
@@ -90,8 +88,6 @@ Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
 Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}/company/{company}' , 'EntryController@reportBox');
 
-
-
 Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-banco/{idCompany}' , 'EntryController@bank');
     Route::get('saldo-interno/{idCompany}' , 'EntryController@internal');
@@ -99,6 +95,8 @@ Route::group(['prefix' => 'api'], function () {
     Route::get('lancar/{id}/show', 'EntryController@showApi');
     Route::post('deleteFiles', 'EntryController@deleteFilesLaunch');
     Route::post('create-user' , 'UserController@create');
+    //PERMISSÃO PARA USUÁRIOS
+    Route::get('user-permission' , 'UserController@getUserPermission');
 });
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
@@ -127,7 +125,6 @@ Route::post('transferir' , 'AccountBankController@actionTransfer')->middleware('
 Route::get('tipo-banco/getType', 'TypeBankController@getType');
 Route::resource('tipo-banco' , 'TypeBankController');
 
-
 // Categoria de receitas
 Route::get('categoria-receita', 'Financing\IncomeCategoryController@index');
 Route::get('income-category/dataTable', 'Financing\IncomeCategoryController@dataTable');
@@ -154,3 +151,8 @@ Route::get('payment/dataTable', 'Financing\PaymentController@dataTable');
 Route::resource('payment', 'Financing\PaymentController', [
     'only' => ['show', 'update', 'destroy']
 ]);
+
+//RELAÇÃO DE PERMISSÃO DE USUARIO
+Route::group(['prefix' => 'permission'], function () {
+    Route::delete('user/{id}', 'UserController@userDeletePermission');
+});

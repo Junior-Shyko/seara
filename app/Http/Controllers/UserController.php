@@ -2,18 +2,19 @@
 
 namespace Seara\Http\Controllers;
 
-use Yajra\DataTables\Facades\DataTables;
-use Seara\Mail\UserRegistered;
-use Illuminate\Support\Facades\Mail;
 use Auth, DB;
 use Exception;
+use Validator;
+use Carbon\Carbon;
 use Seara\Models\User;
-use Seara\FunctionGeneral;
 use Seara\Models\Company;
 use Seara\Models\Profile;
+use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Validator;
+use Seara\Mail\UserRegistered;
+use Illuminate\Support\Facades\Mail;
+use Seara\Repository\UserRepository;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
@@ -22,7 +23,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('profile:admin');
+        // $this->middleware('profile:admin');
     }
 
     /**
@@ -282,21 +283,63 @@ class UserController extends Controller
 
     }
 
+    private function actionsPermission() {
+        
+    }
+
     public function listUsers()
     {
-        $users = User::join('model_has_roles', 'users.id','=','model_has_roles.model_id')
-                ->leftJoin('companies', 'users.user_id_company','=','companies.company_id')
-                ->leftJoin('roles', 'model_has_roles.role_id','=','roles.id')
-                ->leftJoin('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
-                ->leftJoin('permissions','role_has_permissions.permission_id', '=', 'permissions.id')
-                ->select('users.id as idUser', 'users.name as nameUsers', 'users.email', 'users.user_id_profile',
-                'model_has_roles.*',
-                'companies.company_id as idComp', 'companies.company_name as nameComp',
-                'roles.id as idRoles', 'roles.name as nameRoles',
-                'role_has_permissions.*',
-                'permissions.id as idPerm', 'permissions.name as namePerm')
-                ->get();
-        return view('user.list-permission', compact('users'));
+        
+        return view('user.list-permission');
+    }
+
+    private function actionsPermissions($id)
+    {
+
+        return $this->actionButtons(
+
+            $id,
+
+            [
+                [ 'Editar Permissão', 'editarPermission', 'fa-pencil' ],
+                [ 'Excluir Usuário', 'deletePermission', 'fa-trash-o', 'btn-danger' ]
+            ]
+
+        );
+
+    }
+    public function getUserPermission()
+    {
+        $users = new UserRepository;
+        $dataTable =  DataTables::of($users->getUserPermission());
+
+        $dataTable->addColumn(
+           
+            'action',
+
+            function ($user) 
+            {
+              return $this->actionsPermissions($user->idUser);
+            }
+        );
+        return $dataTable->make(true);
+    }
+
+    public function userDeletePermission($id) {
+        try {
+            $user = User::find($id);
+            $user->roles()->detach();
+            return response()->json([
+                'message' => 'Nível excluído com sucesso',
+                'type' => 'success'
+            ], 200);
+        } catch (\Exception $th) {
+            return response()->json([
+                'message' => 'Ocorreu um erro inesperado',
+                'type' => 'error'
+            ], 400);
+        }
+           
     }
 
 }

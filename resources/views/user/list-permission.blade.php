@@ -41,9 +41,9 @@
                         </ul>
                         <div class="clearfix"></div>
                     </div>
-                    <div class="x_content">
-                     
-                        <table class="table table-bordered">
+                      <div class="x_content">
+                        <div class="table-responsive">
+                          <table class="table table-bordered" id="table_permission_user">
                             <thead>
                               <tr class="bg-primary">
                                 <th>Usuário</th>
@@ -52,39 +52,10 @@
                                 <th>Permissão</th>
                                 <th>Ação</th>
                               </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($users as $user)
-                                <tr>
-                                    <th>{{$user->nameUsers}}</th>
-                                    <th>{{$user->nameComp}}</th>
-                                    <th>{{$user->nameRoles}}</th>
-                                    <th>{{$user->namePerm}}</th>
-                                    <td>
-                                        <button data-toggle="modal" 
-                                            data-target="#modalDeleteComponent" 
-                                            type="button"
-                                            class="btn btn-danger btn-xs"
-                                            title="Excluir Usuário"
-                                            data-id="{{$user->idUser}}"
-                                        >
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                        <button data-toggle="modal" 
-                                            data-target="#modalEditPermissionUser"
-                                            data-id="{{$user->idUser}}"
-                                            type="button"
-                                            class="btn btn-primary btn-xs"
-                                            title="Alterar Permissão"                                            
-                                        >
-                                            <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
+                            </thead>                           
                           </table>
-                     </div>
+                        </div>
+                      </div>
 
                     </div>
                 </div>
@@ -92,25 +63,6 @@
         </div>
     </div>
 </div>
-@component('components.modal_delete_comp')
-<form action="{{url('lancar/file/delete')}}" id="formDelete" method="post">
-    {!! csrf_field() !!}
-    <div class="row">
-      <div class="alert alert-danger">
-        <h4 >
-            Deseja realmente excluir esse usuário?
-        </h4>
-        <small>Essa ação é inreversível, não dá para voltar atrás.</small>
-      </div>
-      <input type="text" name="id" id="idDelete">
-      <div class="modal-footer">
-        <input type="text" name="_method" id="idMethodFormDelete"/>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
-          <button type="submit" class="btn btn-danger"> EXCLUIR </button>
-      </div>
-    </div>
-</form>
-@endcomponent
 <!-- Modal -->
 <div class="modal fade" id="modalEditPermissionUser" tabindex="-1" role="dialog" aria-labelledby="modelEditPermissionUser">
     <div class="modal-dialog" role="document">
@@ -139,6 +91,32 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MODAL DE EXCLUIR PERMISSAO DE USUARIO -->
+  <div class="modal fade" id="modalDeletePermissionUser" tabindex="-1" role="dialog" aria-labelledby="modalDeletePermissionUser">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="title-h4-modal">Excluir Permissão</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="alert alert-danger" role="alert">
+                <label for="" id="body-delete-user-permission">Deseja realmente excluir esse permissao </label>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="text" name="idDeleteUserPermission" id="idDeleteUserPermission">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+          <button type="button" class="btn btn-danger" id="btn-delete-user-permission">Sim, excluir</button>
         </div>
       </div>
     </div>
