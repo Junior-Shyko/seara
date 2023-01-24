@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+  $("#modalEditPermissionUser").modal('show');
   var colunas = [
       { data: 'nameUsers', name: 'nameUsers' },
       { data: 'nameComp', name: 'nameComp' },
@@ -45,7 +45,8 @@ $(document).ready(function () {
 });
 
 function editarPermission(id){
-
+  
+  $("#modalEditPermissionUser").modal('show');
 }
 
 function deletePermission(id) {
@@ -62,7 +63,26 @@ $("#btn-delete-user-permission").click(function (e) {
   .then(function (res) {
     console.log({res})
       SearaAlert.success('Excluído!',res.message , 2000);
+      $("#modalDeletePermissionUser").modal('hide');
+      $("#idDeleteUserPermission").val(null);
       // $('#modal-pay-receivable').modal('hide');
       // reloadTable('table-receivable');
   })
+});
+
+// $().change(function (e) { 
+//   e.preventDefault();
+//   console.log($("#select_role_users").value())
+// });
+$("#select_role_users").on('change', function() {
+  console.log( $(this).find(":selected").val() );
+  // $.ajax({
+  //   type: "post",
+  //   url: SearaApp.baseURL + '',
+  //   data: "data",
+  //   dataType: "dataType",
+  //   success: function (response) {
+      
+  //   }
+  // });
 });

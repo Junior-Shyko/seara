@@ -155,4 +155,5 @@ Route::resource('payment', 'Financing\PaymentController', [
 //RELAÇÃO DE PERMISSÃO DE USUARIO
 Route::group(['prefix' => 'permission'], function () {
     Route::delete('user/{id}', 'UserController@userDeletePermission');
+    Route::post('alter-role' , 'UserController@alterRoleUser');
 });

@@ -289,8 +289,8 @@ class UserController extends Controller
 
     public function listUsers()
     {
-        
-        return view('user.list-permission');
+        $roles = \Spatie\Permission\Models\Role::all()->pluck('name','id');
+        return view('user.list-permission', compact('roles'));
     }
 
     private function actionsPermissions($id)
@@ -340,6 +340,20 @@ class UserController extends Controller
             ], 400);
         }
            
+    }
+
+    public function alterRoleUser(Request $request)
+    {
+        $user = User::find($request->user);
+        $roles = $user->getRoleNames();
+        // dd($roles);
+        
+        foreach ($roles as $key => $value) {
+            dump($value);
+            $user->removeRole($roles[$key]);
+        }
+        $role = $user->assignRole($request->role);
+        dump($role);
     }
 
 }

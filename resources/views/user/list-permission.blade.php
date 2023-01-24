@@ -73,24 +73,46 @@
         </div>
         <div class="modal-body">
           <div class="row">
+            {{$roles}}
             <div class="col-md-12">
                 <div class="list-group">
                     <a href="#" class="list-group-item active">
-                      Nível atual: <span class="badge">user</span>
+                      Nível atual: <span class="badge" id="info-role-user">user</span>
                     </a>
                 </div>
             </div>
             <div class="col-md-12">
-                <select name="" id="" class="form-control">
-                    <option value="">--Selecione--</option>
-                    <option value="">Usuário Comum</option>
-                </select>
+              {{Form::select(
+                'select_role_users',
+                $roles,
+                null,
+                [
+                  'class' => 'form-control',
+                  'id' => 'select_role_users',
+                  'placeholder' => '--Selecione--'
+                ])
+              }}
+               
+                <hr>
             </div>
+            <div class="col-md-12">
+              <div class="list-group">
+                  <a href="#" class="list-group-item active">
+                    Permissão atual: <span class="badge" id="info-permission-user">user</span>
+                  </a>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <select name="" id="" class="form-control">
+                  <option value="">--Selecione--</option>
+                  <option value="">Usuário Comum</option>
+                  <option value="">Usuário Comum</option>
+              </select>
+          </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
         </div>
       </div>
     </div>
