@@ -1,7 +1,7 @@
 $(document).ready(function () {
-  $("#modalEditPermissionUser").modal('show');
+  // $("#modalEditPermissionUser").modal('show');
   var colunas = [
-      { data: 'nameUsers', name: 'nameUsers' },
+      { data: 'nameUsers', name: 'nameUsers', id: 'id' },
       { data: 'nameComp', name: 'nameComp' },
       { data: 'nameRoles', name: 'nameRoles'},
       { data: 'namePerm', name: 'namePerm' },
@@ -37,6 +37,7 @@ $(document).ready(function () {
   $('#modalEditPermissionUser').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal
     var id = button.data('id') // Extract info from data-* attributes
+    console.log({button})
     var modal = $(this)
     console.log(id)
     // modal.find('#idDelete').val(id)
@@ -47,6 +48,18 @@ $(document).ready(function () {
 function editarPermission(id){
   
   $("#modalEditPermissionUser").modal('show');
+  $("#role_user_id").val(id);
+  $.get(SearaApp.baseURL + 'api/permission-user/'+id,
+    function (data, textStatus, jqXHR) {
+      console.log('nameRoles: ',data)
+      data.forEach(element => {
+        console.log({element})
+        $("#info-role-user").html(element.nameRoles)
+        $("#info-permission-user").html(element.namePerm)
+       
+      });
+    }
+  );
 }
 
 function deletePermission(id) {
@@ -75,14 +88,28 @@ $("#btn-delete-user-permission").click(function (e) {
 //   console.log($("#select_role_users").value())
 // });
 $("#select_role_users").on('change', function() {
-  console.log( $(this).find(":selected").val() );
-  // $.ajax({
-  //   type: "post",
-  //   url: SearaApp.baseURL + '',
-  //   data: "data",
-  //   dataType: "dataType",
-  //   success: function (response) {
-      
-  //   }
-  // });
+  console.log( $(this).find(":selected").text() );
+  var dataUser = {
+    user: $("#role_user_id").val(),
+    role: $(this).find(":selected").text()
+  }
+  $.ajax({
+    type: "post",
+    url: SearaApp.baseURL + 'permission/alter-role',
+    data: dataUser,
+    dataType: "json",
+    success: function (res) {
+      new PNotify({
+        title: res.title,
+        text: res.message,
+        type: res.type,
+        styling: 'bootstrap3'
+      });
+      // userPermissionTable.loadTable()
+      reloadTable('table_permission_user')
+      setInterval(() => {
+        $('#select_role_users').val('');
+      }, 1500);
+    }
+  });
 });

@@ -73,7 +73,6 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            {{$roles}}
             <div class="col-md-12">
                 <div class="list-group">
                     <a href="#" class="list-group-item active">
@@ -103,15 +102,21 @@
               </div>
             </div>
             <div class="col-md-12">
-              <select name="" id="" class="form-control">
-                  <option value="">--Selecione--</option>
-                  <option value="">Usuário Comum</option>
-                  <option value="">Usuário Comum</option>
-              </select>
+              {{Form::select(
+                'select_permission_users',
+                $permission,
+                null,
+                [
+                  'class' => 'form-control',
+                  'id' => 'select_permission_users',
+                  'placeholder' => '--Selecione--'
+                ])
+              }}
           </div>
           </div>
         </div>
         <div class="modal-footer">
+          <input type="text" name="user_id" id="role_user_id">
           <button type="button" class="btn btn-default" data-dismiss="modal">Sair</button>
         </div>
       </div>

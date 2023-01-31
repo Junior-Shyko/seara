@@ -97,6 +97,7 @@ Route::group(['prefix' => 'api'], function () {
     Route::post('create-user' , 'UserController@create');
     //PERMISSÃO PARA USUÁRIOS
     Route::get('user-permission' , 'UserController@getUserPermission');
+    Route::get('permission-user/{id}' , 'UserController@getPermissionUser');
 });
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {

@@ -283,14 +283,11 @@ class UserController extends Controller
 
     }
 
-    private function actionsPermission() {
-        
-    }
-
     public function listUsers()
     {
         $roles = \Spatie\Permission\Models\Role::all()->pluck('name','id');
-        return view('user.list-permission', compact('roles'));
+        $permission = \Spatie\Permission\Models\Permission::all()->pluck('name','id');
+        return view('user.list-permission', compact('roles', 'permission'));
     }
 
     private function actionsPermissions($id)
@@ -348,12 +345,27 @@ class UserController extends Controller
         $roles = $user->getRoleNames();
         // dd($roles);
         
+       try {
         foreach ($roles as $key => $value) {
-            dump($value);
+            // dump($value);
             $user->removeRole($roles[$key]);
         }
-        $role = $user->assignRole($request->role);
-        dump($role);
+        $user->assignRole($request->role);
+        return response()->json([
+           'message' => 'Nível alterado com sucesso',
+           'title' => 'Sucesso',
+           'type' => 'success'
+        ], 200);
+       } catch (\Throwable $th) {
+        return response()->json(['message' => 'Ocorreu um erro inesperado.'], 400);
+       }
+        // dump($role);
     }
 
+    public function getPermissionUser($id)
+    {
+        $user = new UserRepository;
+        $permission = $user->getPermissionUser($id);
+        return response()->json($permission);
+    }
 }
