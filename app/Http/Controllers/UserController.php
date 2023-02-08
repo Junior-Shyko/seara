@@ -343,23 +343,20 @@ class UserController extends Controller
     {
         $user = User::find($request->user);
         $roles = $user->getRoleNames();
-        // dd($roles);
         
-       try {
-        foreach ($roles as $key => $value) {
-            // dump($value);
-            $user->removeRole($roles[$key]);
+        try {
+            foreach ($roles as $key => $value) {
+                $user->removeRole($roles[$key]);
+            }
+            $user->assignRole($request->role);
+            return response()->json([
+            'message' => 'Nível alterado com sucesso',
+            'title' => 'Sucesso',
+            'type' => 'success'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Ocorreu um erro inesperado.'], 400);
         }
-        $user->assignRole($request->role);
-        return response()->json([
-           'message' => 'Nível alterado com sucesso',
-           'title' => 'Sucesso',
-           'type' => 'success'
-        ], 200);
-       } catch (\Throwable $th) {
-        return response()->json(['message' => 'Ocorreu um erro inesperado.'], 400);
-       }
-        // dump($role);
     }
 
     public function getPermissionUser($id)
@@ -367,5 +364,12 @@ class UserController extends Controller
         $user = new UserRepository;
         $permission = $user->getPermissionUser($id);
         return response()->json($permission);
+    }
+
+    public function alterPermissionUser(Request $request)
+    {
+        $user = User::findOrFail($request->user);
+
+        dump($user);
     }
 }

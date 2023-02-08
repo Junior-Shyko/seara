@@ -113,3 +113,32 @@ $("#select_role_users").on('change', function() {
     }
   });
 });
+
+//ALTERAR A PERMISSÃO
+
+$("#select_permission_users").on('change', function() {
+  console.log( $(this).find(":selected").text() );
+  var dataUser = {
+    user: $("#role_user_id").val(),
+    role: $(this).find(":selected").text()
+  }
+  $.ajax({
+    type: "post",
+    url: SearaApp.baseURL + 'permission/alter-role',
+    data: dataUser,
+    dataType: "json",
+    success: function (res) {
+      new PNotify({
+        title: res.title,
+        text: res.message,
+        type: res.type,
+        styling: 'bootstrap3'
+      });
+      // userPermissionTable.loadTable()
+      reloadTable('table_permission_user')
+      setInterval(() => {
+        $('#select_role_users').val('');
+      }, 1500);
+    }
+  });
+});
