@@ -38,6 +38,7 @@ Route::group(['prefix' => 'companies'], function () {
 	Route::get('dataTable', 'CompanyController@dataTable');
 	Route::get('info/{id}', 'CompanyController@getInfoLogin');
     Route::post('alter-access', 'CompanyController@alterAccess');
+    Route::get('users/{id}' , 'CompanyController@getUsers');
 });
 
 Route::resource('companies', 'CompanyController');
@@ -157,4 +158,5 @@ Route::resource('payment', 'Financing\PaymentController', [
 Route::group(['prefix' => 'permission'], function () {
     Route::delete('user/{id}', 'UserController@userDeletePermission');
     Route::post('alter-role' , 'UserController@alterRoleUser');
+    Route::post('alter-permission' , 'UserController@alterPermissionUser');
 });
