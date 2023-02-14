@@ -38,7 +38,7 @@ Route::group(['prefix' => 'companies'], function () {
 	Route::get('dataTable', 'CompanyController@dataTable');
 	Route::get('info/{id}', 'CompanyController@getInfoLogin');
     Route::post('alter-access', 'CompanyController@alterAccess');
-    Route::get('users/{id}' , 'CompanyController@getUsers');
+    Route::get('users/permissions' , 'CompanyController@getUsers');
 });
 
 Route::resource('companies', 'CompanyController');

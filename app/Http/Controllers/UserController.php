@@ -5,7 +5,9 @@ namespace Seara\Http\Controllers;
 use Auth, DB;
 use Exception;
 use Validator;
+use Seara\Role;
 use Carbon\Carbon;
+use Seara\Permission;
 use Seara\Models\User;
 use Seara\Models\Company;
 use Seara\Models\Profile;
@@ -15,6 +17,7 @@ use Seara\Mail\UserRegistered;
 use Illuminate\Support\Facades\Mail;
 use Seara\Repository\UserRepository;
 use Yajra\DataTables\Facades\DataTables;
+use Seara\Http\Controllers\PermissionController;
 
 class UserController extends Controller
 {
@@ -285,78 +288,30 @@ class UserController extends Controller
 
     public function listUsers()
     {
-        $roles = \Spatie\Permission\Models\Role::all()->pluck('name','id');
-        $permission = \Spatie\Permission\Models\Permission::all()->pluck('name','id');
+        $allRole = new Role;
+        $roles = $allRole->allRole();
+        $allPermission = new Permission();
+        $permission = $allPermission->allPermission();
         return view('user.list-permission', compact('roles', 'permission'));
     }
 
-    private function actionsPermissions($id)
-    {
-
-        return $this->actionButtons(
-
-            $id,
-
-            [
-                [ 'Editar Permissão', 'editarPermission', 'fa-pencil' ],
-                [ 'Excluir Usuário', 'deletePermission', 'fa-trash-o', 'btn-danger' ]
-            ]
-
-        );
-
-    }
+   
     public function getUserPermission()
     {
-        $users = new UserRepository;
-        $dataTable =  DataTables::of($users->getUserPermission());
-
-        $dataTable->addColumn(
-           
-            'action',
-
-            function ($user) 
-            {
-              return $this->actionsPermissions($user->idUser);
-            }
-        );
-        return $dataTable->make(true);
+        $permission = new PermissionController();
+        $dataTable = $permission->getUserPermission();
+        return $dataTable;
     }
 
     public function userDeletePermission($id) {
-        try {
-            $user = User::find($id);
-            $user->roles()->detach();
-            return response()->json([
-                'message' => 'Nível excluído com sucesso',
-                'type' => 'success'
-            ], 200);
-        } catch (\Exception $th) {
-            return response()->json([
-                'message' => 'Ocorreu um erro inesperado',
-                'type' => 'error'
-            ], 400);
-        }
-           
+       $userDelete = new PermissionController();
+       return $userDelete->userDeletePermission($id);
     }
 
     public function alterRoleUser(Request $request)
     {
-        $user = User::find($request->user);
-        $roles = $user->getRoleNames();
-        
-        try {
-            foreach ($roles as $key => $value) {
-                $user->removeRole($roles[$key]);
-            }
-            $user->assignRole($request->role);
-            return response()->json([
-            'message' => 'Nível alterado com sucesso',
-            'title' => 'Sucesso',
-            'type' => 'success'
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'Ocorreu um erro inesperado.'], 400);
-        }
+        $alterRole = new RoleController;
+        return $alterRole->alterRoleUser($request);
     }
 
     public function getPermissionUser($id)

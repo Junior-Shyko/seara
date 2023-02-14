@@ -30,4 +30,9 @@ class Permission extends Model
         return $user->hasPermissionTo(Permission::find($permission)->name);
 
     }
+
+    public function allPermission()
+    {
+        return \Spatie\Permission\Models\Permission::all()->pluck('name','id');
+    }
 }
