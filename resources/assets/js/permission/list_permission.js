@@ -114,17 +114,16 @@ $("#select_role_users").on('change', function() {
   });
 });
 
-//ALTERAR A PERMISSÃO
-
+//ALTERAR A NIVEL
 $("#select_permission_users").on('change', function() {
-  console.log( $(this).find(":selected").text() );
+
   var dataUser = {
     user: $("#role_user_id").val(),
     role: $(this).find(":selected").text()
   }
   $.ajax({
     type: "post",
-    url: SearaApp.baseURL + 'permission/alter-role',
+    url: SearaApp.baseURL + 'permission/alter-permission',
     data: dataUser,
     dataType: "json",
     success: function (res) {

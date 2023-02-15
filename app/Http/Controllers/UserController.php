@@ -323,8 +323,15 @@ class UserController extends Controller
 
     public function alterPermissionUser(Request $request)
     {
-        $user = User::findOrFail($request->user);
 
-        dump($user);
+        $user = User::findOrFail($request->user);
+        // dump($user);
+        $roles = $user->getRoleNames();
+        dump($roles);
+        $permissionNames = $user->getPermissionsViaRoles();
+        dump($permissionNames[0]->name);
+        $user->revokePermissionTo($permissionNames[0]->name);
+        $user->givePermissionTo($request->role);
+        dump($user->givePermissionTo($request->role));
     }
 }
