@@ -14,7 +14,7 @@ use Seara\Models\Profile;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Mail\UserRegistered;
-use Illuminate\Support\Facades\Mail;
+use Spatie\Permission\Models\Role as RoleSpatie;
 use Seara\Repository\UserRepository;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Http\Controllers\PermissionController;
@@ -279,6 +279,7 @@ class UserController extends Controller
 
             [
                 [ 'Editar Usuário', 'editUser', 'fa-pencil' ],
+                [ 'Excluir Usuário', 'deleteUser', 'fa-trash-o', 'btn-info' ],
                 [ 'Excluir Usuário', 'deleteUser', 'fa-trash-o', 'btn-danger' ]
             ]
 
@@ -292,7 +293,9 @@ class UserController extends Controller
         $roles = $allRole->allRole();
         $allPermission = new Permission();
         $permission = $allPermission->allPermission();
-        return view('user.list-permission', compact('roles', 'permission'));
+
+        $allRoleSpatie = RoleSpatie::all();
+        return view('user.list-permission', compact('roles', 'permission', 'allRoleSpatie'));
     }
 
    
@@ -323,15 +326,10 @@ class UserController extends Controller
 
     public function alterPermissionUser(Request $request)
     {
+        $role = RoleSpatie::findByName($request->role);
+        $role->givePermissionTo($request->permisson);
 
-        $user = User::findOrFail($request->user);
-        // dump($user);
-        $roles = $user->getRoleNames();
-        dump($roles);
-        $permissionNames = $user->getPermissionsViaRoles();
-        dump($permissionNames[0]->name);
-        $user->revokePermissionTo($permissionNames[0]->name);
-        $user->givePermissionTo($request->role);
-        dump($user->givePermissionTo($request->role));
+        dump($role->getAllPermissions());
+       
     }
 }

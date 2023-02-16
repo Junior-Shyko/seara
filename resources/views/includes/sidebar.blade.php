@@ -32,18 +32,13 @@
                     <li>
                         <a href="{{url('/')}}"><i class="fa fa-home"></i> Home</a>
                     </li>
-                   @php
-                   dump(Auth::user()->hasRole('admin'));    
+                   @php  
                    @endphp
                    @if(Auth::user()->hasRole('admin') || 
                     Auth::user()->hasRole('superAdmin'))
                         <li>
                             <a><i class="fa fa-users"></i> Usuários</a>
                             <ul class="nav child_menu">
-                                @if(Auth::user()->hasRole('superAdmin'))
-                                <li><a href="{{url('users')}}">Listar admin</a></li>
-                                @endif
-                                <li><a href="{{url('companies/users/' . Auth::user()->user_id_company)}}">Listar admin</a></li>
                                 <li><a href="{{url('usuarios/permissao')}}">Permissão</a></li>
                             </ul>
                         </li>

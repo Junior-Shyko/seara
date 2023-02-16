@@ -4,7 +4,6 @@ $(document).ready(function () {
       { data: 'nameUsers', name: 'nameUsers', id: 'id' },
       { data: 'nameComp', name: 'nameComp' },
       { data: 'nameRoles', name: 'nameRoles'},
-      { data: 'namePerm', name: 'namePerm' },
       { data: 'action', name: 'action', orderable: false, searchable: false, className: 'no-break' }
   ];
 
