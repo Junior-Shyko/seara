@@ -37,7 +37,11 @@
                    @if(Auth::user()->hasRole('admin') || 
                     Auth::user()->hasRole('superAdmin'))
                         <li>
-                            <a><i class="fa fa-users"></i> Usuários</a>
+                            <a>
+                                <i class="fa fa-users"></i>
+                                    Usuários
+                                <span class="fa fa-chevron-down"></span>
+                            </a>
                             <ul class="nav child_menu">
                                 <li><a href="{{url('usuarios/permissao')}}">Permissão</a></li>
                             </ul>

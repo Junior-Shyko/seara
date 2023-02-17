@@ -83,20 +83,32 @@
            
             <ul>
              @foreach ($allRoleSpatie as $item)
+                
+                 @role('superAdmin')
                  <li>{{$item->name}}</li>
                  @foreach ($item->getAllPermissions() as $getP)
                      <ul>
-                      <li>{{$getP->name}}  </li>
+                     <li>{{$getP->name}}  </li>
                      </ul>
                  @endforeach
+                  @else
+                      @if ($item->name !== 'superAdmin')
+                      <li>{{$item->name}}</li>
+                        @foreach ($item->getAllPermissions() as $getP)
+                            <ul>
+                            <li>{{$getP->name}}  </li>
+                            </ul>
+                        @endforeach
+                      @endif
+                  @endrole
+                
              @endforeach
             </ul>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>
