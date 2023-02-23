@@ -86,6 +86,7 @@
                         <div class="x_title">
                             <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
                             <ul class="nav navbar-right panel_toolbox">
+                                @role('admin|superAdmin')
                                 <li class="dropdown">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#lancar_conta">
@@ -93,6 +94,7 @@
                                           </button>                                       
                                       </div>
                                 </li>
+                                @endrole
                                 </li>
                             </ul>
                             <div class="clearfix"></div>

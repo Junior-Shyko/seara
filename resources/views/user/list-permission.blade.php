@@ -30,15 +30,23 @@
                     <div class="x_panel">
                     @include('msg.message')
                     <div class="x_title">
-                        <h2>List com todos usuário e suas permissões</h2>
+                        <h2>Lista com todos usuário e suas permissões</h2>
                         <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                              <button type="button" class="btn btn-default" 
+                              onclick="modalLogin({{Auth::user()->user_id_company}})"
+                              title="Adiciona um novo usuário">
+                              <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                criar usuário
+                              </button>
+                            </li>
                             <li>
                              <!-- Button trigger modal -->
                              <button class="btn btn-info" type="button" id="dropdownMenu1" 
                              data-toggle="modal" data-target="#modalInfoPermission">
-                               <i class="fa fa-info-circle" aria-hidden="true"></i> Informação
-                              
+                               <i class="fa fa-info-circle" aria-hidden="true"></i> Informação                              
                              </button>
+                            </li>  
                             <li>
                               <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>                            
@@ -69,6 +77,9 @@
         </div>
     </div>
 </div>
+<!-- Modal de criar acesso-->
+@include('modals.company.alterAccess',['roles' => $roles])
+
 <!-- Modal -->
 <div class="modal fade" id="modalInfoPermission" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -178,4 +189,5 @@
 
 @push('scripts')
 <script type="text/javascript" language="javascript" src="{{asset('js/permission/list_permission.min.js')}}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/customer.min.js') }}"></script>
 @endpush

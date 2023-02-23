@@ -43,31 +43,37 @@
                                          class="form-control">
                                  </div>
                              </div>
+                             @role('superAdmin')
                              <div class="item form-group">
                                 <label class="col-form-label col-md-12 col-sm-12 label-align" for="password">
                                     Nível de acesso
                                     <span class="required">*</span>
                                 </label>
                                 <div class="col-md-12 col-sm-12 ">
-                                    <select name="idRole" class="form-control" required="">
-                                        <option value="">--Selecione--</option>
-                                        @foreach ($roles as $item)
-                                            @if($item->id == 3)
-                                                <option value="{{$item->id}}" selected>{{$item->name}}</option>                                                
-                                            @endif                
-                                            <option value="{{$item->id}}">{{$item->name}}</option>
-                                        @endforeach
-                                    </select>
-                                    <p class="help-block">Legenda:</p>
+                                    <input type="text" name="" value="admin" class="form-control" disabled>
+                                    <p class="help-block">Quando o Super Administrador cria um acesso é dado ao novo
+                                        usuário um nível de <strong>administrador</strong>
                                     <p>
-                                        <ul>
-                                            <li><small class="badge">user:</small> Usuário comum</li>
-                                            <li><small class="badge">admin:</small> Usuário administrador</li>
-                                            <li><small class="badge">userAdmin:</small> Usuário Super Administrador</li>
-                                        </ul>
-                                    </p>
                                 </div>
                              </div>
+                             @endrole
+                             @role('admin')
+                             <div class="btn-group " data-toggle="buttons">
+                                <label class="col-form-label col-md-12 col-sm-12 label-align" for="password">
+                                    Nível de acesso
+                                    <span class="required">*</span>
+                                </label>                                
+                                <label class="btn btn-primary">
+                                  <input type="radio" name="role" id="option2" value="admin" autocomplete="off"> Admin
+                                </label>
+                                <label class="btn btn-primary active">
+                                  <input type="radio" name="role" value="user" id="option3" checked autocomplete="off"> Usuário
+                                </label>
+                              </div>
+                                <p class="help-block col-md-12 col-sm-12">
+                                    Obs: Por padrão é marcado <strong>usuário</strong>
+                                <p>
+                            @endrole
                              <div class="ln_solid"></div>
                              <div class="item form-group">
                                  <div class="col-md-12 col-sm-12 offset-md-3">
