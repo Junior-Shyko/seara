@@ -27,6 +27,7 @@ class UserController extends Controller
     public function __construct()
     {
         // $this->middleware('profile:admin');
+       
     }
 
     /**
@@ -154,12 +155,22 @@ class UserController extends Controller
     {
         $profile = Auth::user();
         $idDecript = base64_decode($id);
-        $subTitle = " Edite seus dados do perfil";
-        if($profile->user_id_profile == 4) {
-            $subTitle = "Altere os dados do usuário";
+        //INSTANCIA DE UM DETERMINADO USUARIO
+        $user = DB::table('users')->where('id', $idDecript)->first();
+        //verificando se o usuário logado tem o mesmo id do parametro
+        if(intval($idDecript) !== ($profile->id) ) {
+            //VERIFICANDO SE É ADMIN
+            if($profile->hasRole('admin')){                
+                if($profile->user_id_company !== $user->user_id_company)
+                {
+                    return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+                }
+            }elseif($profile->hasRole('user'))
+            {
+                return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+            }
         }
-        //dump($idDecript);
-        $user = User::where('user_id_company',$idDecript)->get();
+        $subTitle = " Edite seus dados do perfil";
         return view( 'user.edit' , compact('user', 'subTitle') );
     }
 

@@ -35,9 +35,19 @@ class EntryController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         $idCompany = Auth::user()->user_id_company;
         if (app('request')->input('company') !== null) {
             $idCompany = intval(app('request')->input('company'));
+        }
+        //CASO O USUARIO NÃO SEJA UM SUPER ADMIN, ENTRA NA CONDIÇÃO PARA VERIFICAÇÃO
+        if(!$user->hasRole('superAdmin'))
+        {
+             //verifica se o id das empresas são iguais
+            if($idCompany !== $user->user_id_company)
+            {
+                return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+            }
         }
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
@@ -324,6 +334,21 @@ class EntryController extends Controller
             })
             ->addColumn('action', function ($mov) {
                 $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
+
+                //botão da visualização de role User
+                $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
+                data-toggle="modal"
+                data-id="' . $mov->entries_id . '"
+                data-day="' . $mov->entries_day . '"
+                data-his="' . $mov->entries_description . '"
+                data-val="' . $mov->entries_value . '"
+                data-target="#modalInfoLaunch">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>';
+
+                if(Auth::user()->hasRole('user') ) {
+                    return $btnUserRole;
+                }
+                //qualquer outro nivel de acesso
                 return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
@@ -335,14 +360,7 @@ class EntryController extends Controller
                 data-namel="' . $mov->accountlaunch_name . '"
                 data-target="#modalEditLauch">
                 <i class="fa fa-edit" aria-hidden="true"></i></button>
-                <button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
-                data-toggle="modal"
-                data-id="' . $mov->entries_id . '"
-                data-day="' . $mov->entries_day . '"
-                data-his="' . $mov->entries_description . '"
-                data-val="' . $mov->entries_value . '"
-                data-target="#modalInfoLaunch">
-                <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>
+                '.$btnUserRole.'
                 <button class="btn btn-danger btn-xs" type="button" title="Excluir Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
@@ -358,7 +376,6 @@ class EntryController extends Controller
 
     public function info($id)
     {
-        //Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
         $file = FileLaunch::where('file_launches_id_entry', $id)->get();
 
         if (count($file) > 0) {
