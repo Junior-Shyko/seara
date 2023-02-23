@@ -47,8 +47,10 @@ Route::resource('companies', 'CompanyController');
 Route::get('users/{id}/edit', 'UserController@edit');
 Route::resource('users', 'UserController');
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
-Route::get('usuarios/permissao', 'UserController@listUsers');
 
+Route::group(['middleware' => ['role:admin|superAdmin']], function () {
+    Route::get('usuarios/permissao', 'UserController@listUsers');
+});
 
 //ROTA PARA RECIBOS - Empresa
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');
@@ -114,14 +116,14 @@ Route::get('account/launch/all', 'AccountLaunchController@getAccountLaunch');
 
 //ROTA PARA OS BANCOS
 Route::get('banco/getBank', 'BankController@getBank');
-Route::resource('banco' , 'BankController')->middleware('auth.basic');
-Route::get('getBank/{id}' , 'BankController@show')->middleware('auth.basic');
+Route::resource('banco' , 'BankController');
+Route::get('getBank/{id}' , 'BankController@show');
 
 //ROTA PARA CONTAS BANCARIAS
 Route::resource('conta-bancaria' , 'AccountBankController');
 Route::get('getAccountBank/{id}' , 'AccountBankController@show');
 Route::get('todasContas/{id}' , 'AccountBankController@getAccountBank');
-Route::post('transferir' , 'AccountBankController@actionTransfer')->middleware('auth.basic');
+Route::post('transferir' , 'AccountBankController@actionTransfer');
 
 //TIPO DE CONTAS BANCARIASS
 Route::get('tipo-banco/getType', 'TypeBankController@getType');
