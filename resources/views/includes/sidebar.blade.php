@@ -71,7 +71,7 @@
                         </ul>
                     </li>
                     @endif
-                    @if(Auth::user()->getRoleNames() == 'superAdmin')
+                    @if( Auth::user()->hasRole('superAdmin'))
                     <li>
                         <a data-cy="financing-module">
                             <i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span>
