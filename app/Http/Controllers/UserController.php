@@ -72,7 +72,9 @@ class UserController extends Controller
             'users_avatar' => 'default-user-avatar.png'
         ];
         try {
-            User::create($user)->assignRole('user');
+            Auth::user()->hasRole('superAdmin')
+                ? User::create($user)->assignRole('admin') 
+                : User::create($user)->assignRole($request->role);
             return response()->json(['message' => 'Usuário cadastrado'], 200);
         }
         catch(Exception $e) {
