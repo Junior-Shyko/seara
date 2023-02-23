@@ -117,6 +117,7 @@ $(document).ready(function(){
             success: function (response) {
                 SearaAlert.success(response.message);
                 $("#modalAcessClient").modal('hide');
+                reloadTable('table_permission_user')
             }
         });
     });

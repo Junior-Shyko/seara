@@ -62,7 +62,6 @@ function editarPermission(id){
 }
 
 function deletePermission(id) {
-  console.log({id})
   $("#modalDeletePermissionUser").modal('show');
   $("#title-h4-modal").html('Excluir permissão?');
   $("#body-delete-user-permission").html('Deseja realmente excluir essa permissão?');
@@ -73,12 +72,10 @@ $("#btn-delete-user-permission").click(function (e) {
   e.preventDefault();
   SearaAjax.delete( 'permission/user/'+ $("#idDeleteUserPermission").val())
   .then(function (res) {
-    console.log({res})
       SearaAlert.success('Excluído!',res.message , 2000);
       $("#modalDeletePermissionUser").modal('hide');
       $("#idDeleteUserPermission").val(null);
-      // $('#modal-pay-receivable').modal('hide');
-      // reloadTable('table-receivable');
+      reloadTable('table_permission_user')
   })
 });
 
