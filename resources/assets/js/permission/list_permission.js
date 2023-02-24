@@ -65,6 +65,7 @@ function deletePermission(id) {
   $("#modalDeletePermissionUser").modal('show');
   $("#title-h4-modal").html('Excluir permissão?');
   $("#body-delete-user-permission").html('Deseja realmente excluir essa permissão?');
+  $("#danger-delete-user-permission").html('Essa ação levará a exclusão desse usuário também no sistema.');  
   $("#idDeleteUserPermission").val(id);
 }
 

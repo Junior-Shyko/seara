@@ -157,7 +157,7 @@ Route::resource('payment', 'Financing\PaymentController', [
 ]);
 
 //RELAÇÃO DE PERMISSÃO DE USUARIO
-Route::group(['prefix' => 'permission'], function () {
+Route::group(['prefix' => 'permission', 'middleware' => ['role:admin|superAdmin']], function () {
     Route::delete('user/{id}', 'UserController@userDeletePermission');
     Route::post('alter-role' , 'UserController@alterRoleUser');
     Route::post('alter-permission' , 'UserController@alterPermissionUser');

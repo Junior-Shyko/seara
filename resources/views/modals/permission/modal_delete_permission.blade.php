@@ -8,10 +8,17 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 text-center">
               <div class="alert alert-danger" role="alert">
-                <label for="" id="body-delete-user-permission">Deseja realmente excluir esse permissao </label>
+                <p>
+                  <label for="" id="body-delete-user-permission">Deseja realmente excluir esse permissao </label>
+                </p>
+                
               </div>
+              <p style="display: flex; justify-content: center; align-items: end;">
+                <i class="fa fa-info-circle text-danger fa-2x" aria-hidden="true"></i>
+                <label class="text-danger" id="danger-delete-user-permission" style="margin-left: 5px;"></label>
+              </p>
             </div>
             
           </div>
@@ -19,7 +26,7 @@
         <div class="modal-footer">
           <input type="hidden" name="idDeleteUserPermission" id="idDeleteUserPermission">
           <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
-          <button type="button" class="btn btn-danger" id="btn-delete-user-permission">Sim, excluir</button>
+          <button type="button" class="btn btn-danger" id="btn-delete-user-permission">Sim, quero excluir</button>
         </div>
       </div>
     </div>

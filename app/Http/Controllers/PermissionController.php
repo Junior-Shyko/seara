@@ -45,8 +45,9 @@ class PermissionController extends Controller
 
     public function userDeletePermission($id) {
         try {
-            $user = User::find($id);
+            $user = User::find($id);           
             $user->roles()->detach();
+            $user->delete();
             return response()->json([
                 'message' => 'Nível excluído com sucesso',
                 'type' => 'success'
