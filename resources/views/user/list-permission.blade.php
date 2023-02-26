@@ -155,7 +155,7 @@
               <hr>
             </div>            
           </div>
-          <div class="row">
+          {{-- <div class="row">
             <div class="col-md-12">
               <div class="list-group">
                   <a href="#" class="list-group-item active">
@@ -175,7 +175,7 @@
                 ])
               }}
           </div>
-          </div>
+          </div> --}}
         </div>
         <div class="modal-footer">
           <input type="hidden" name="user_id" id="role_user_id">
