@@ -10,7 +10,7 @@
   "devDependencies": {
     "bootstrap-sass": "^3.0.0",
     "cypress": "^3.4.1",
-    "gulp": "^4.0.0",
+    "gulp": "^3.9.1",
     "laravel-elixir": "^6.0.0-18",
     "minimatch": "^3.0.2"
   },

@@ -200,6 +200,7 @@ class AccountBankRepository {
                 break;            
             case 'transferencia':
                 $desc = 'Trasnferência bancária entre caixas';
+                //deve existir essa conta ou setar o id de outra conta
                 $idAccountLaunch = 55;
                 //transferencia do caixa interno para conta bancaria
                 if($bank['number'] == 0 && $bank2['number'] > 0)
