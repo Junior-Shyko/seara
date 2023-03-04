@@ -114,8 +114,8 @@ Route::get('account/launch/all', 'AccountLaunchController@getAccountLaunch');
 
 //ROTA PARA OS BANCOS
 Route::get('banco/getBank', 'BankController@getBank');
-Route::resource('banco' , 'BankController')->middleware('auth.basic');
-Route::get('getBank/{id}' , 'BankController@show')->middleware('auth.basic');
+Route::resource('banco' , 'BankController');
+Route::get('getBank/{id}' , 'BankController@show');
 
 //ROTA PARA CONTAS BANCARIAS
 Route::resource('conta-bancaria' , 'AccountBankController');
