@@ -2,6 +2,7 @@
 $(document).ready(function () {
     //id da empresa
     var idCompany = $("#idCodeCompany").val();
+
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
@@ -64,7 +65,6 @@ $(document).ready(function () {
     general(idCompany);
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
-        console.log({form});
         SearaAjax.post('lancar', form, function( response ){
             $("#lancar_conta").modal('hide');
             if(response.typeAccount == 'Despesa') {
@@ -81,6 +81,12 @@ $(document).ready(function () {
                 type: response.status,
                 styling: 'bootstrap3'
             });
+            if(response.typeAccount == 'Receita') {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+           
         })
         .fail(function(jqXHR){
             notify.response(jqXHR.responseJSON);
@@ -497,10 +503,6 @@ $('#realValueTranfer').on('blur', function () {
 });
 
 function transferValue() {
-    console.log($("#realValueTranfer").val());
-    console.log($("#selectAccountBankEnd").val());
-    console.log($("#selectAccountBankEntry").val());
-
     if($("#realValueTranfer").val() == '' ||
     $("#selectAccountBankEnd").val() == '' ||
     $("#selectAccountBankEntry").val() == '') {
@@ -529,6 +531,9 @@ function transferValue() {
                 type: 'success',
                 styling: 'bootstrap3'
             });
+            setTimeout(() => {
+                window.location.reload(); 
+            }, 2000);
         }
     })
     .always(function(response){
@@ -542,12 +547,7 @@ function transferValue() {
                 styling: 'bootstrap3'
             });
         }
-        // if(response.status == 200)
-        // {
-        //     setTimeout(() => {
-        //     window.location.reload(); 
-        //    }, 2000);
-        // }
+       
         SearaLoader.hideModal();
        
     });

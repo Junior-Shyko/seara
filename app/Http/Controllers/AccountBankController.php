@@ -6,6 +6,7 @@ use Seara\Bank;
 use Seara\Entry;
 use Carbon\Carbon;
 use Seara\AccountBank;
+use Seara\Models\User;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Seara\Repository\BankRepository;
 use Seara\Service\Launch\CreateLaunch;
+use Spatie\Permission\Traits\HasRoles;
 use Seara\Permission as SearaPermission;
 use Spatie\Permission\Models\Permission;
 use Seara\Repository\AccountBankRepository;
@@ -22,8 +24,10 @@ use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 class AccountBankController extends Controller
 {
     use ActionTable;
+    use HasRoles;
     const ENTRY = 1;
     const TRANSFER = 2;
+
     /**
      * Display a listing of the resource.
      *
@@ -33,25 +37,28 @@ class AccountBankController extends Controller
     {
         //user atual logado é superAdmin?
         //se nao for, ele é da igreja do caixa?
-        $user = Auth::user();
-        $idCompany = $user->user_id_company;
+        $userAuth = Auth::user();
+        $idCompany = $userAuth->user_id_company;
+        $user = User::find($userAuth->id);
         if (app('request')->input('company') !== null) {
             $idCompany = intval(app('request')->input('company'));
         }
-        //Retorna todos os lançamentos dessa igreja
-        AccountBankRepository::getAllAccountBankCompany($idCompany);
-        $verify = AccountBankRepository::verifyPermission($idCompany, new SearaPermission ,$user);
-        //se tiver permissão ou acesso, então renderiza a view
-        if($verify){
+        //verifica se tem acesso
+        // verifica se ele tem role de superadmin  $user->hasRole('superAdmin')
+        if($idCompany == $user->user_id_company || $user->hasRole('superAdmin') )
+        {
             //DADOS DA IGREJA COMPLETO
             $company    = Company::getCompany($idCompany);
             $banks      = Bank::all();
             $types      = GetTypeAccountBank::getTyppeAccountBank();
             return view('accountBank.index', compact('types', 'banks', 'company'));
+        }else{
+            //Retorna aviso 
+            dd($user->user_id_company);
+            return redirect('/')->with('error', 'Ops! Você não tem permissão para acessar essa página.'); 
         }
-        //Retorna aviso 
-        return redirect('/')->with('error', 'Ops! Você não tem permissão para acessar essa página.');
-        
+
+       
     }
 
     /**
