@@ -88,11 +88,24 @@
                             <ul class="nav navbar-right panel_toolbox">
                                 <li class="dropdown">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#lancar_conta">
+                                        <button 
+                                            type="button"
+                                            class="btn btn-primary"
+                                            data-toggle="modal"
+                                            data-target="#lancar_conta"
+                                            style="margin-right: 5px;"
+                                        >
                                             Lançar Movimento
-                                          </button>                                       
+                                        </button>
                                       </div>
                                 </li>
+                                <li>
+                                    <button type="button" class="btn btn-dark">
+                                        <a  href="{{url('lancar')}}" style="color: white;">
+                                            <i class="fa fa-refresh"></i>
+                                            Atualizar valores
+                                        </a>
+                                    </button>
                                 </li>
                             </ul>
                             <div class="clearfix"></div>
