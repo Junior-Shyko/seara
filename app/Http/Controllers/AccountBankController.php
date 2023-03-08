@@ -205,29 +205,29 @@ class AccountBankController extends Controller
         /**
          * ESSA CONDIÇÃO É QUANDO É UMA TRANSFERENCIA DO CAIXA PARA BANCO
          */
-        if($typeEntry == 2 && $request['idAccountEnd'] == 0)
-        {
-            $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
-            CreateLaunch::create($launch);    
-            //LANÇAMENTO DE RECEITA
-            $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
-            CreateLaunch::create($launch2);
-        }
-        //SE FOR TRANSFERENCIA DO BANCO PARA O CAIXA INTERNO
-        elseif($typeEntry == 2 && $request['idAccountEnd'] > 0){
-            $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
-            CreateLaunch::create($launch);    
-            //LANÇAMENTO DE RECEITA
-            $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
-            CreateLaunch::create($launch2);
-        }else{
-            //LANCAMENTO DE DESPESA
-            $launch = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
-            CreateLaunch::create($launch);    
-            //LANÇAMENTO DE RECEITA
-            $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'receita');
-            CreateLaunch::create($launch2);
-        }   
+        // if($typeEntry == 2 && $request['idAccountEnd'] == 0)
+        // {
+        //     $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+        //     CreateLaunch::create($launch);    
+        //     //LANÇAMENTO DE RECEITA
+        //     $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
+        //     CreateLaunch::create($launch2);
+        // }
+        // //SE FOR TRANSFERENCIA DO BANCO PARA O CAIXA INTERNO
+        // elseif($typeEntry == 2 && $request['idAccountEnd'] > 0){
+        //     $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
+        //     CreateLaunch::create($launch);    
+        //     //LANÇAMENTO DE RECEITA
+        //     $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+        //     CreateLaunch::create($launch2);
+        // }else{
+        //     //LANCAMENTO DE DESPESA
+        //     $launch = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
+        //     CreateLaunch::create($launch);    
+        //     //LANÇAMENTO DE RECEITA
+        //     $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'receita');
+        //     CreateLaunch::create($launch2);
+        // }   
        
         if($transfer)
             return response()->json(['message' => 'Transferência realizada com sucesso', 'type' => 'success','status' => 200], 200);

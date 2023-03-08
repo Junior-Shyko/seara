@@ -29,4 +29,9 @@ class AccountBank extends Model
     {
         return $this->belongsTo('Seara\Models\Company', 'company_id');
     }
+
+    public function bank()
+    {
+        return $this->belongsTo('Seara\Bank', 'bank_id');
+    }
 }
