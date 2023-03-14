@@ -98,96 +98,50 @@ class AccountBankRepository {
      * Faz transferencia de valores entre contas
      */
     static public function transfer($request)
-    {
-      
-        //verifica se tem saldo para transferencia
-        $verifyBalanceToAccount = self::verifyBalanceToAccount($request);
-       
-        //false em caso de nao ter saldo suficiente
-        if(!$verifyBalanceToAccount)     
-            return response()->json([
-                'type' => 'error',
-                'message' => 'Confira o valor para ser transferido por que o saldo está insuficiente.'
-            ], 400);
-          //  dd($request);
-        //preenchendo array com os campos e valores para um lancamento
-        try {
-            //se for caixa interno não registra saida de valor
-            // dump($request['value']);
-            $valueBalance = Monetary::money_real($request['value']);
-            // dd(gettype($valueBalance));
-            //SE FOR TRANSFERENCIA BANCARIA
-            //Retirando o valor do saldo da conta bancaria          
-            if($request['idAccountEnd'] > 0){
-                $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
-                $accountBank->balance = floatval($accountBank->balance - $valueBalance);
-                $accountBank->save();
-                // novo registro no caixa
-                $valueDebit = floatval($valueBalance);
-                $descDebit = "Transferência da conta ". $accountBank['number'] . ', '.$accountBank->bank->name. ' p/ outra conta bancária.';
-                $launch = AccountBankRepository::create_register_launch(
-                        9,
-                        $descDebit,
-                        $accountBank->company_id,
-                        Auth::user()->id,
-                        $valueDebit,
-                        2);
-                // dump($launch);
-                CreateLaunch::create($launch);
-            }
-            //Retirando o valor do saldo do caixa interno
-            // if($request['idAccountEnd'] == 0){
-            //     $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
-            //     $accountBank->balance = $accountBank->balance - $valueBalance;
-            //     $accountBank->save();
-            // }
+   {
+      //verifica se tem saldo para transferencia
+      $verifyBalanceToAccount = self::verifyBalanceToAccount($request);
+    
+      //false em caso de nao ter saldo suficiente
+      if(!$verifyBalanceToAccount)     
+          return response()->json([
+              'type' => 'error',
+              'message' => 'Confira o valor para ser transferido por que o saldo está insuficiente.'
+          ], 400);
+        //  dd($request);
+      //preenchendo array com os campos e valores para um lancamento
+      try {
+          //se for caixa interno não registra saida de valor
+          $valueBalance = Monetary::money_real($request['value']);
+          //Retirando o valor do saldo da conta bancaria          
+          if($request['idAccountEnd'] > 0){
+              $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
+              $accountBank->balance = $accountBank->balance - $valueBalance;
+              $accountBank->save();
+          }
+          //Retirando o valor do saldo do caixa interno
+          // if($request['idAccountEnd'] == 0){
+          //     $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
+          //     $accountBank->balance = $accountBank->balance - $valueBalance;
+          //     $accountBank->save();
+          // }
 
-            if($request['idAccountEntry'] > 0){
-                $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
-                $accountBank2->balance = $accountBank2->balance + $valueBalance;
-                $accountBank2->save();
-                $valueCredit = floatval($valueBalance);
-                $descCredit = "A conta nº". $accountBank2['number'] . ' ('.$accountBank2->bank->name. ') recebeu um valor da conta nº'
-                .$accountBank['number'].' ('.$accountBank->bank->name.') ' ;
-                $launch2 = AccountBankRepository::create_register_launch(
-                    56,
-                    $descCredit,
-                    $accountBank2->company_id,
-                    Auth::user()->id,
-                    $valueCredit,
-                    2);
-                CreateLaunch::create($launch2);
-                // dump($launch2);
-            }
-            if($request['idAccountEntry'] == 0 && $request['transaction_id'] == 2){
-                // $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
-                // $accountBank2->balance = $accountBank2->balance + $valueBalance;
-                // $accountBank2->save();
-                $valueCredit = floatval($valueBalance);
-                $descCredit = "A conta nº". $accountBank['number'] . ' ('.$accountBank->bank->name. ') transferiu um valor p/ caixa interno.' ;
-                $launch2 = AccountBankRepository::create_register_launch(
-                    34,
-                    $descCredit,
-                    $accountBank->company_id,
-                    Auth::user()->id,
-                    $valueCredit,
-                    2);
-                CreateLaunch::create($launch2);
-                // dump($launch2);
-            }
-
-            return response()->json([
-                'type' => 'success',
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'type' => 'error',
-                'message' => 'Erro ao transferir valores '.$th->getMessage()
-            ], 400);
-        }
-        
-        
-    }
+          if($request['idAccountEntry'] > 0){
+              $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
+              $accountBank2->balance = $accountBank2->balance + $valueBalance;
+              $accountBank2->save();
+          }
+          
+          return response()->json([
+              'type' => 'success',
+          ], 200);
+      } catch (\Throwable $th) {
+          return response()->json([
+              'type' => 'error',
+              'message' => 'Erro ao transferir valores '.$th->getMessage()
+          ], 400);
+      }
+   }
 
     /**
      * Monta os campos para gerar a string de registro de lançamento
@@ -245,7 +199,6 @@ class AccountBankRepository {
                 break;            
             case 'transferencia':
                 $desc = 'Trasnferência bancária entre caixas';
-                //deve existir essa conta ou setar o id de outra conta
                 $idAccountLaunch = 55;
                 //transferencia do caixa interno para conta bancaria
                 if($bank['number'] == 0 && $bank2['number'] > 0)
@@ -263,6 +216,13 @@ class AccountBankRepository {
             $idAccountLaunch = 1;
         }
      
+        $launch['entries_id_account'] = $idAccountLaunch;
+        $launch['entries_description'] = $desc;
+        $launch['entries_id_company'] = Auth::user()->user_id_company;
+        $launch['entries_id_user'] = Auth::user()->id;
+        $launch['entries_value'] = Monetary::money_real($request['value']);
+        $launch['entries_date_launch'] = Carbon::now();        
+        $launch['transaction_id']  = $transaction_id;
         // dump($type);
         // dump($request);
         // dd($launch);

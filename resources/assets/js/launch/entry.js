@@ -514,13 +514,22 @@ function transferValue() {
         });
         return false;
     }
+    var bank_to_bank = false;
+    //PARA MOVIMENTAÇÃO DE BANCO PARA BANCO
+    if($("#selectAccountBankEnd").val() > 0 && $("#selectAccountBankEntry").val() > 0)
+    {
+        bank_to_bank = true;
+    }
     var data = {
         idAccountEnd : $("#selectAccountBankEnd").val(),
         idAccountEntry : $("#selectAccountBankEntry").val(),
         value : $("#realValueTranfer").val(),
         valueInternal: $("#valueInternal").val(),
-        transaction_id : $("#transaction_id_transfer").val()   
+        transaction_id : $("#transaction_id_transfer").val(),
+        bank_to_bank: bank_to_bank
     }
+
+    // return;
     SearaAjax.post('transferir', data, function( response ){
         console.log(response)
         if(response.type == 'success')

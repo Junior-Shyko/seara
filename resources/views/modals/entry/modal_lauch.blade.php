@@ -9,7 +9,7 @@
           <h4>LANÇAMENTO NO CAIXA</h4>
           <div class="form-group">
             <div class="col-md-6">
-                <label for="" class="label label-primary">MẼS/ANO: DEZEMBRO/2020</label>
+                <label for="" class="label label-primary">MÊS/ANO: DEZEMBRO/2020</label>
             </div>
             <div class="col-md-6">
                 <h2 class="label label-primary pull-right" id="balance_actual" style="font-size: 15px;">Saldo Atual</h2>
