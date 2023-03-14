@@ -6,7 +6,6 @@ use Seara\Bank;
 use Seara\Entry;
 use Carbon\Carbon;
 use Seara\AccountBank;
-use Seara\Models\User;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
@@ -15,7 +14,6 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Seara\Repository\BankRepository;
 use Seara\Service\Launch\CreateLaunch;
-use Spatie\Permission\Traits\HasRoles;
 use Seara\Permission as SearaPermission;
 use Spatie\Permission\Models\Permission;
 use Seara\Repository\AccountBankRepository;
@@ -24,10 +22,8 @@ use Seara\Service\TypeAccountBank\GetTypeAccountBank;
 class AccountBankController extends Controller
 {
     use ActionTable;
-    use HasRoles;
     const ENTRY = 1;
     const TRANSFER = 2;
-
     /**
      * Display a listing of the resource.
      *
@@ -37,13 +33,16 @@ class AccountBankController extends Controller
     {
         //user atual logado é superAdmin?
         //se nao for, ele é da igreja do caixa?
-        $userAuth = Auth::user();
-        $idCompany = $userAuth->user_id_company;
-        $user = User::find($userAuth->id);
+        $user = Auth::user();
+        $idCompany = $user->user_id_company;
         if (app('request')->input('company') !== null) {
             $idCompany = intval(app('request')->input('company'));
         }
-        //verifica se tem acesso
+        //Retorna todos os lançamentos dessa igreja
+        AccountBankRepository::getAllAccountBankCompany($idCompany);
+        // $verify = AccountBankRepository::verifyPermission($idCompany, new SearaPermission ,$user);
+        //se tiver permissão ou acesso, então renderiza a view
+         //verifica se tem acesso
         // verifica se ele tem role de superadmin  $user->hasRole('superAdmin')
         if($idCompany == $user->user_id_company || $user->hasRole('superAdmin') )
         {
@@ -57,8 +56,6 @@ class AccountBankController extends Controller
             dd($user->user_id_company);
             return redirect('/')->with('error', 'Ops! Você não tem permissão para acessar essa página.'); 
         }
-
-       
     }
 
     /**
@@ -205,29 +202,38 @@ class AccountBankController extends Controller
         /**
          * ESSA CONDIÇÃO É QUANDO É UMA TRANSFERENCIA DO CAIXA PARA BANCO
          */
-        // if($typeEntry == 2 && $request['idAccountEnd'] == 0)
-        // {
-        //     $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
-        //     CreateLaunch::create($launch);    
-        //     //LANÇAMENTO DE RECEITA
-        //     $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
-        //     CreateLaunch::create($launch2);
-        // }
-        // //SE FOR TRANSFERENCIA DO BANCO PARA O CAIXA INTERNO
-        // elseif($typeEntry == 2 && $request['idAccountEnd'] > 0){
-        //     $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
-        //     CreateLaunch::create($launch);    
-        //     //LANÇAMENTO DE RECEITA
-        //     $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
-        //     CreateLaunch::create($launch2);
-        // }else{
-        //     //LANCAMENTO DE DESPESA
-        //     $launch = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
-        //     CreateLaunch::create($launch);    
-        //     //LANÇAMENTO DE RECEITA
-        //     $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'receita');
-        //     CreateLaunch::create($launch2);
-        // }   
+        if($typeEntry == 2 && $request['idAccountEnd'] == 0)
+        {
+            $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+            CreateLaunch::create($launch);    
+            //LANÇAMENTO DE RECEITA
+            $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
+            CreateLaunch::create($launch2);
+        }
+        //SE FOR TRANSFERENCIA DO BANCO PARA O CAIXA INTERNO
+        elseif($typeEntry == 2 && $request['idAccountEnd'] > 0){
+           if($request['bank_to_bank'] == "true")
+           {
+                $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+                CreateLaunch::create($launch);    
+                //LANÇAMENTO DE RECEITA
+                $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+                CreateLaunch::create($launch2);
+           }elseif($request['bank_to_bank'] == "false"){
+                $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
+                CreateLaunch::create($launch);    
+                //LANÇAMENTO DE RECEITA
+                $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+                CreateLaunch::create($launch2);
+           }
+        }else{
+            //LANCAMENTO DE DESPESA
+            $launch = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
+            CreateLaunch::create($launch);    
+            //LANÇAMENTO DE RECEITA
+            $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'receita');
+            CreateLaunch::create($launch2);
+        }   
        
         if($transfer)
             return response()->json(['message' => 'Transferência realizada com sucesso', 'type' => 'success','status' => 200], 200);
