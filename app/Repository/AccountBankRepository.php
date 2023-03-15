@@ -181,7 +181,7 @@ class AccountBankRepository {
             case 'despesa':
                 $desc = 'Transferência da conta nº '.$bank['number'].' '.$bank['nameBank'].' 
                 para conta nº '.$bank2['number']. ' '.$bank2['nameBank'];
-                $idAccountLaunch = 9;
+                $idAccountLaunch = 57;
                 //transferencia do banco para caixa interno
                 if($bank['number'] > 0 && $bank2['number'] == 0)
                 {
@@ -190,7 +190,7 @@ class AccountBankRepository {
                 break;
             case 'receita':
                 $desc = 'Trasnferência recebida de conta nº '.$bank['number'].' '.$bank['nameBank'];
-                $idAccountLaunch = 8;
+                $idAccountLaunch = 56;
                 //transferencia do caixa interno para conta bancaria
                 if($bank['number'] == 0 && $bank2['number'] > 0)
                 {
@@ -199,7 +199,7 @@ class AccountBankRepository {
                 break;            
             case 'transferencia':
                 $desc = 'Trasnferência bancária entre caixas';
-                $idAccountLaunch = 55;
+                $idAccountLaunch = 58;
                 //transferencia do caixa interno para conta bancaria
                 if($bank['number'] == 0 && $bank2['number'] > 0)
                 {
@@ -223,9 +223,7 @@ class AccountBankRepository {
         $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();        
         $launch['transaction_id']  = $transaction_id;
-        // dump($type);
-        // dump($request);
-        // dd($launch);
+
         return $launch;
     }
 
