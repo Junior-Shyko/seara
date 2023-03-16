@@ -49,7 +49,7 @@
                                     <span class="required">*</span>
                                 </label>
                                 <div class="col-md-12 col-sm-12 ">
-                                    <select name="name" class="form-control" required="">
+                                    {{-- <select name="name" class="form-control" required="">
                                         <option value="">--Selecione--</option>
                                         @foreach ($roles as $item)
                                             @if($item->id == 3)
@@ -57,15 +57,7 @@
                                             @endif                
                                             <option value="{{$item->id}}">{{$item->name}}</option>
                                         @endforeach
-                                    </select>
-                                    <p class="help-block">Legenda:</p>
-                                    <p>
-                                        <ul>
-                                            <li><small class="badge">user:</small> Usuário comum</li>
-                                            <li><small class="badge">admin:</small> Usuário administrador</li>
-                                            <li><small class="badge">userAdmin:</small> Usuário Super Administrador</li>
-                                        </ul>
-                                    </p>
+                                    </select> --}}
                                 </div>
                              </div>
                              <div class="ln_solid"></div>

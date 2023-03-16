@@ -48,7 +48,6 @@ Route::resource('users', 'UserController');
 Route::get('users/datatable', 'UserController@dataTable')->name('users.datatables');
 Route::get('usuarios/permissao', 'UserController@listUsers');
 
-
 //ROTA PARA RECIBOS - Empresa
 Route::get('recibo-empresa', 'ReceiptCompanyController@index');
 Route::get('recibo-empresa/datatable', 'ReceiptCompanyController@anyData');
