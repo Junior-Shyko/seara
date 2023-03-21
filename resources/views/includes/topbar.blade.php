@@ -21,11 +21,11 @@
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                        
                         <li>
-                            <a href="{{'users/'.base64_encode(Auth::user()->id).'/edit'}}">Editar Perfil</a>
+                            <a href="{{url('users/'.base64_encode(Auth::user()->id).'/edit')}}">Editar Perfil</a>
                         </li>
 
                         <li>
-                            <a href="{{'companies/'.Auth::user()->user_id_company.'/edit'}}">Editar Empresa</a>
+                            <a href="{{url('companies/'.Auth::user()->user_id_company.'/edit')}}">Editar Empresa</a>
                         </li>
                        
                         <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out pull-right"></i> Sair</a></li>

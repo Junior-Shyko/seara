@@ -69,6 +69,10 @@ function deletePermission(id) {
   $("#idDeleteUserPermission").val(id);
 }
 
+function editarPerfil(id) {
+  window.location.href=SearaApp.baseURL + 'users/'+btoa(id)+'/edit';
+}
+
 $("#btn-delete-user-permission").click(function (e) { 
   e.preventDefault();
   SearaAjax.delete( 'permission/user/'+ $("#idDeleteUserPermission").val())

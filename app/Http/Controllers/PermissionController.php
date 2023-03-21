@@ -20,7 +20,8 @@ class PermissionController extends Controller
 
             [
                 [ 'Editar Permissão', 'editarPermission', 'fa-pencil' ],
-                [ 'Excluir Usuário', 'deletePermission', 'fa-trash-o', 'btn-danger' ]
+                [ 'Excluir Usuário', 'deletePermission', 'fa-trash-o', 'btn-danger' ],
+                [ 'Editar Perfil', 'editarPerfil', 'fa-user-plus', 'btn-success    ' ],
             ]
 
         );
