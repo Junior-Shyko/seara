@@ -38,7 +38,7 @@
                     Auth::user()->hasRole('superAdmin'))
                         <li>
                             <a>
-                                <i class="fa fa-users"></i>
+                                <i class="fa fa-users" aria-hidden="true"></i>
                                     Usuários
                                 <span class="fa fa-chevron-down"></span>
                             </a>
