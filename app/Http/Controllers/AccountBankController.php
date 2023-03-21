@@ -38,15 +38,15 @@ class AccountBankController extends Controller
         }
         //Retorna todos os lançamentos dessa igreja
         AccountBankRepository::getAllAccountBankCompany($idCompany);
-        $verify = AccountBankRepository::verifyPermission($idCompany, new SearaPermission ,$user);
         //se tiver permissão ou acesso, então renderiza a view
-        if($verify){
-            //DADOS DA IGREJA COMPLETO
-            $company    = Company::getCompany($idCompany);
-            $banks      = Bank::all();
-            $types      = GetTypeAccountBank::getTyppeAccountBank();
-            return view('accountBank.index', compact('types', 'banks', 'company'));
+        if(Auth::user()->hasRole('superAdmin') || $idCompany == Auth::user()->user_id_company ) {
+           //DADOS DA IGREJA COMPLETO
+           $company    = Company::getCompany($idCompany);
+           $banks      = Bank::all();
+           $types      = GetTypeAccountBank::getTyppeAccountBank();
+           return view('accountBank.index', compact('types', 'banks', 'company'));
         }
+ 
         //Retorna aviso 
         return redirect('/')->with('error', 'Ops! Você não tem permissão para acessar essa página.');
         
@@ -166,10 +166,13 @@ class AccountBankController extends Controller
             }
         );
         $datatable->addColumn('action', function ($account) {
-            return $this->actionButtons($account->idAccountBank, [
-                ['Editar conta', 'editAccountBank', 'fa fa-edit'],
-                ['Excluir conta', 'archiveAccount', 'fa fa-trash', 'btn-danger']
-            ]);
+            if(Auth::user()->hasRole('superAdmin|admin') ) {
+                return $this->actionButtons($account->idAccountBank, [
+                    ['Editar conta', 'editAccountBank', 'fa fa-edit'],
+                    ['Excluir conta', 'archiveAccount', 'fa fa-trash', 'btn-danger']
+                ]);
+            }
+           
         });
         return $datatable->make(true);
     }
