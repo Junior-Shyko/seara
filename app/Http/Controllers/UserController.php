@@ -302,12 +302,22 @@ class UserController extends Controller
 
     public function listUsers()
     {
+        $user = Auth::user();
         $allRole = new Role;
         $roles = $allRole->allRole();
         $allPermission = new Permission();
         $permission = $allPermission->allPermission();
-
         $allRoleSpatie = RoleSpatie::all();
+        //EXCLUINDO DO ARRAY A OPÇÃO DE SUPER ADMIN
+        if(!$user->hasRole('superAdmin'))
+        {
+            foreach ($roles as $key => $role) {
+                if($role == 'superAdmin')
+                {
+                    unset($roles[$key]);
+                }
+            }
+        }
         return view('user.list-permission', compact('roles', 'permission', 'allRoleSpatie'));
     }
 
