@@ -211,7 +211,12 @@ elixir(function(mix) {
     mix.scripts(['typeBank/typeBank.js'], 'public/js/typeBank/typeBank.min.js');
 
     //PERMISSION
-    mix.scripts(['permission/list_permission.js'], 'public/js/permission/list_permission.min.js');
+    mix.scripts([
+        'helpers.js',
+        'crud.js',
+        'searaTable.js',
+        'permission/list_permission.js'
+    ], 'public/js/permission/list_permission.min.js');
 
     mix.styles([
         'basic.min.css',

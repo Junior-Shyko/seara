@@ -10,10 +10,12 @@ use Auth , DB, Validator;
 use Seara\Models\Company;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use Seara\Repository\UserRepository;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Service\Company\CompanyDataProvider;
 use Intervention\Image\ImageManagerStatic as Image;
+use Seara\Permission;
+use Seara\Role;
 
 class CompanyController extends Controller
 {
@@ -329,5 +331,20 @@ class CompanyController extends Controller
                         ->withErrors($messages)
                         ->withInput();
         }
+    }
+
+    public function getUsers() {
+        $allRole = new Role;
+        $roles = $allRole->allRole();        
+        $allPermission = new Permission();
+        $permission = $allPermission->allPermission();
+        return view('user.list-permission', compact('roles', 'permission'));
+    }
+
+    public function dataTableUsersPermissions()
+    {
+        $permission = new UserRepository;
+        $dataTable = $permission->getUserPermission();
+        return $dataTable;
     }
 }

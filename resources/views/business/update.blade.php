@@ -122,8 +122,9 @@
 					</div>
 					<div class="form-group">
 						<div class="col-md-12 col-sm-12 col-xs-12">
-														
+							@role('superAdmin|admin')
 							<button type="submit" class="btn btn-primary pull-right">Alterar</button>
+							@endrole
 						</div>
 					</div>
 

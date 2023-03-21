@@ -32,11 +32,17 @@
                     <li>
                         <a href="{{url('/')}}"><i class="fa fa-home"></i> Home</a>
                     </li>
-                    @if(Auth::user()->profile == 'owner' || Auth::user()->profile == 'owner')
+                   @php  
+                   @endphp
+                   @if(Auth::user()->hasRole('admin') || 
+                    Auth::user()->hasRole('superAdmin'))
                         <li>
-                            <a><i class="fa fa-users"></i> Usuários</a>
+                            <a>
+                                <i class="fa fa-users" aria-hidden="true"></i>
+                                    Usuários
+                                <span class="fa fa-chevron-down"></span>
+                            </a>
                             <ul class="nav child_menu">
-                                <li><a href="{{url('users')}}">Lista</a></li>
                                 <li><a href="{{url('usuarios/permissao')}}">Permissão</a></li>
                             </ul>
                         </li>
@@ -65,7 +71,7 @@
                         </ul>
                     </li>
                     @endif
-                    @if(Auth::user()->profile == 'owner')
+                    @if( Auth::user()->hasRole('superAdmin'))
                     <li>
                         <a data-cy="financing-module">
                             <i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span>

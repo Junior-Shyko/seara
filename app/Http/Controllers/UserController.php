@@ -2,18 +2,22 @@
 
 namespace Seara\Http\Controllers;
 
-use Yajra\DataTables\Facades\DataTables;
-use Seara\Mail\UserRegistered;
-use Illuminate\Support\Facades\Mail;
 use Auth, DB;
 use Exception;
+use Validator;
+use Seara\Role;
+use Carbon\Carbon;
+use Seara\Permission;
 use Seara\Models\User;
-use Seara\FunctionGeneral;
 use Seara\Models\Company;
 use Seara\Models\Profile;
+use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use Validator;
+use Seara\Mail\UserRegistered;
+use Spatie\Permission\Models\Role as RoleSpatie;
+use Seara\Repository\UserRepository;
+use Yajra\DataTables\Facades\DataTables;
+use Seara\Http\Controllers\PermissionController;
 
 class UserController extends Controller
 {
@@ -22,7 +26,8 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('profile:admin');
+        // $this->middleware('profile:admin');
+       
     }
 
     /**
@@ -68,7 +73,9 @@ class UserController extends Controller
             'users_avatar' => 'default-user-avatar.png'
         ];
         try {
-            User::create($user)->assignRole('user');
+            Auth::user()->hasRole('superAdmin')
+                ? User::create($user)->assignRole('admin') 
+                : User::create($user)->assignRole($request->role);
             return response()->json(['message' => 'Usuário cadastrado'], 200);
         }
         catch(Exception $e) {
@@ -148,12 +155,22 @@ class UserController extends Controller
     {
         $profile = Auth::user();
         $idDecript = base64_decode($id);
-        $subTitle = " Edite seus dados do perfil";
-        if($profile->user_id_profile == 4) {
-            $subTitle = "Altere os dados do usuário";
+        //INSTANCIA DE UM DETERMINADO USUARIO
+        $user = DB::table('users')->where('id', $idDecript)->first();
+        //verificando se o usuário logado tem o mesmo id do parametro
+        if(intval($idDecript) !== ($profile->id) ) {
+            //VERIFICANDO SE É ADMIN
+            if($profile->hasRole('admin')){                
+                if($profile->user_id_company !== $user->user_id_company)
+                {
+                    return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+                }
+            }elseif($profile->hasRole('user'))
+            {
+                return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+            }
         }
-        //dump($idDecript);
-        $user = User::where('user_id_company',$idDecript)->get();
+        $subTitle = " Edite seus dados do perfil";
         return view( 'user.edit' , compact('user', 'subTitle') );
     }
 
@@ -275,6 +292,7 @@ class UserController extends Controller
 
             [
                 [ 'Editar Usuário', 'editUser', 'fa-pencil' ],
+                [ 'Excluir Usuário', 'deleteUser', 'fa-trash-o', 'btn-info' ],
                 [ 'Excluir Usuário', 'deleteUser', 'fa-trash-o', 'btn-danger' ]
             ]
 
@@ -284,17 +302,57 @@ class UserController extends Controller
 
     public function listUsers()
     {
-        $users = User::join('model_has_roles', 'users.id','=','model_has_roles.model_id')
-                ->leftJoin('roles', 'model_has_roles.role_id','=','roles.id')
-                ->leftJoin('role_has_permissions', 'roles.id', '=', 'role_has_permissions.role_id')
-                ->leftJoin('permissions','role_has_permissions.permission_id', '=', 'permissions.id')
-                ->select('users.id as idUser', 'users.name as nameUsers', 'users.email', 'users.user_id_profile',
-                'model_has_roles.*',
-                'roles.id as idRoles', 'roles.name as nameRoles',
-                'role_has_permissions.*',
-                'permissions.id as idPerm', 'permissions.name as namePerm')
-                ->get();
-        return view('user.list-permission', compact('users'));
+        $user = Auth::user();
+        $allRole = new Role;
+        $roles = $allRole->allRole();
+        $allPermission = new Permission();
+        $permission = $allPermission->allPermission();
+        $allRoleSpatie = RoleSpatie::all();
+        //EXCLUINDO DO ARRAY A OPÇÃO DE SUPER ADMIN
+        if(!$user->hasRole('superAdmin'))
+        {
+            foreach ($roles as $key => $role) {
+                if($role == 'superAdmin')
+                {
+                    unset($roles[$key]);
+                }
+            }
+        }
+        return view('user.list-permission', compact('roles', 'permission', 'allRoleSpatie'));
     }
 
+   
+    public function getUserPermission()
+    {
+        $permission = new PermissionController();
+        $dataTable = $permission->getUserPermission();
+        return $dataTable;
+    }
+
+    public function userDeletePermission($id) {
+       $userDelete = new PermissionController();
+       return $userDelete->userDeletePermission($id);
+    }
+
+    public function alterRoleUser(Request $request)
+    {
+        $alterRole = new RoleController;
+        return $alterRole->alterRoleUser($request);
+    }
+
+    public function getPermissionUser($id)
+    {
+        $user = new UserRepository;
+        $permission = $user->getPermissionUser($id);
+        return response()->json($permission);
+    }
+
+    public function alterPermissionUser(Request $request)
+    {
+        $role = RoleSpatie::findByName($request->role);
+        $role->givePermissionTo($request->permisson);
+
+        dump($role->getAllPermissions());
+       
+    }
 }

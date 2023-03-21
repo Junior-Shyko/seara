@@ -86,6 +86,7 @@
                         <div class="x_title">
                             <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
                             <ul class="nav navbar-right panel_toolbox">
+                                @role('admin|superAdmin')
                                 <li class="dropdown">
                                     <div class="btn-group">
                                         <button 
@@ -222,7 +223,9 @@
                             <label class="badge">Todos arquivos</label>
                         </div>
                         <div class="col-md-6">
+                            @role('admin|superAdmin')
                             <a href="" class="btn btn-danger pull-right">Excluir arquivos</a>
+                            @endrole
                         </div>
                         <div id="filesEntri">
                         </div>

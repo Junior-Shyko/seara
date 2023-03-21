@@ -30,29 +30,8 @@ class Permission extends Model
         return $user->hasRole($permission);
     }
 
-    /**
-     * Verifica a permissão de cada usuário
-     * Se o usuário não foi um superAdmin o mesmo é verificado
-     * se o id_company dele bate com o da url
-     * @param [type] $idCompany
-     * @param [type] $user
-     * @return void
-     */
-    static public function verifyPermission($idCompany, $user)
+    public function allPermission()
     {
-        $access = false;
-        //RECEBENDO OS PAPEIS DO USUÁRIO
-        $role = $user->getRoleNames();
-        //LOOP NA COLLECTION PARA COMPARAR SE O USUARIO PERTENCIA A IGREJA
-        foreach ($role as $roles) {
-            if($roles !== 'superAdmin'){
-                if($user->user_id_company == $idCompany)
-                {
-                    $access = true;
-                }
-            }
-        }
-
-        return $access;
+        return \Spatie\Permission\Models\Permission::all()->pluck('name','id');
     }
 }
