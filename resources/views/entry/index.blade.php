@@ -108,6 +108,7 @@
                                         </a>
                                     </button>
                                 </li>
+                                @endrole
                             </ul>
                             <div class="clearfix"></div>
                         </div>
