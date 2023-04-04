@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace Seara\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Company;
+use Seara\Models\Company;
 
 class Authenticate
 {

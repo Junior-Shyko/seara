@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Report\DebtReport;
 
-use App\Service\Report\DebtReport\DebtReportResult;
-use App\Service\Report\DebtReport\DebtReportResultSet;
-use App\Service\Report\DebtReport\ResultSetToRowsConverter;
+use Seara\Service\Report\DebtReport\DebtReportResult;
+use Seara\Service\Report\DebtReport\DebtReportResultSet;
+use Seara\Service\Report\DebtReport\ResultSetToRowsConverter;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 

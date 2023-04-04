@@ -1,12 +1,12 @@
 <?php
 
-namespace App;
+namespace Seara;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use App\Models\Profile;
-use App\Models\User;
-use App\Box;
+use Seara\Models\Profile;
+use Seara\Models\User;
+use Seara\Box;
 
 class FunctionGeneral extends Model
 {

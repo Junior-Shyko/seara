@@ -1,26 +1,37 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Entry;
-use App\FileLaunch;
-use App\FunctionGeneral;
-use App\Seara\Monetary;
-use App\AccountLaunch;
+use Validator;
+use Seara\Entry;
 use Auth, DB, PDF;
-use Validator, Datatables;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use Carbon\Carbon;
-use App\AccountType;
+use Seara\FileLaunch;
+use Seara\AccountType;
+use Seara\AccountLaunch;
+use Seara\SettingsEntry;
+use Seara\Models\Company;
+use Seara\Seara\Monetary;
+use Seara\FunctionGeneral;
+use Illuminate\Http\Request;
+use Seara\Http\Controllers\Controller;
+use Seara\Service\Launch\LaunchService;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Permission;
+use Seara\Permission as SearaPermission;
+use Yajra\DataTables\Facades\DataTables;
+use Seara\Repository\AccountBankRepository;
+use GuzzleHttp\Exception\BadResponseException;
 
 class EntryController extends Controller
 {
+    use HasRoles;
+
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,32 +39,47 @@ class EntryController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $idCompany = Auth::user()->user_id_company;
+        if (app('request')->input('company') !== null) {
+            $idCompany = intval(app('request')->input('company'));
+        }
+        //CASO O USUARIO NÃO SEJA UM SUPER ADMIN, ENTRA NA CONDIÇÃO PARA VERIFICAÇÃO
+        if(!$user->hasRole('superAdmin'))
+        {
+             //verifica se o id das empresas são iguais
+            if($idCompany !== $user->user_id_company)
+            {
+                return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+            }
+        }
+        //TODAS CONTAS
         $accounts = AccountLaunch::get();
-        $month = Carbon::now()->month;
-        $monthPlus = ($month - 1);
-        
-        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        
-        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
-        $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
-        $totBanco = ($bankReceita - $bankDespesa);
-        // dump($bankReceita);
-        // dump($bankDespesa);
-        // dump($totBanco);
-        // dump("--");
-        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, Auth::user()->user_id_company);
-        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, Auth::user()->user_id_company);
-        
-        // dump($igrejaReceita);
-        // dump($igrejaDespesa);
-        $totIgreja = ($igrejaReceita - $igrejaDespesa);
-        // dump($totIgreja);
-        // dump("--");
-        $saldoGer = Monetary::getValueBox();
-        $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
-        // dump($saldo);
-        
-        return view('entry.index', compact('accounts', 'saldo' , 'totIgreja', 'totBanco'));
+        //DADOS DA IGREJA COMPLETO
+        $company = Company::getCompany($idCompany);
+        //valor somados das contas bancárias
+        $bank = LaunchService::getBoxBank($idCompany);
+        //valor somados dos lançamentos
+        $internal = LaunchService::getBoxInternal($idCompany);
+        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceBank = AccountBankRepository::getBalance($idCompany);
+        $balanceGeneral = ($internal + $balanceBank);
+        //VERIFICANDO AUTORIZAÇÃO
+        $entry = Entry::where('entries_id_company', $idCompany)->get();
+
+        //todas as contas bancarias
+        $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
+        return view('entry.index', compact(
+            'accounts',
+            'internal',
+            'company',
+            'balanceBank',
+            'balanceGeneral',
+            'accountBank',
+            'idCompany',
+            'entry',
+            'user'
+        ));
     }
 
     /**
@@ -74,21 +100,20 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $rules = [
             'entries_description' => 'required',
             'entries_id_account' => 'required',
             'entries_value' => 'required'
         ];
 
-        $validator = Validator::make( $request->all(), $rules );
+        $validator = Validator::make($request->all(), $rules);
 
-        if ( $validator->fails() )
-        {
+        if ($validator->fails()) {
             $messages = $validator->errors()->all();
-            return response( ['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422 );
+            return response(['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422);
         }
-        
+
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         $request['entries_date_launch'] = $date_launch;
 
@@ -100,8 +125,9 @@ class EntryController extends Controller
             return response()->json([
                 'message' => 'Conta lançada',
                 'status' => 'success',
-                'id'=>$entry->entries_id,
-                'typeAccount' => $name],200);
+                'id' => $entry->entries_id,
+                'typeAccount' => $name
+            ], 200);
         } catch (BadResponseException $e) {
             dump($e->getMessage());
         }
@@ -127,15 +153,15 @@ class EntryController extends Controller
     public function edit($id)
     {
         $launch =  Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
-        ->join('users', 'entries.entries_id_user', '=', 'users.id')
-        ->where('entries.entries_id','=',$id)
-        ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
-        ->get();
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->join('users', 'entries.entries_id_user', '=', 'users.id')
+            ->where('entries.entries_id', '=', $id)
+            ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+            ->get();
 
-        $files = FileLaunch::where('file_launches_id_entry','=',$id)->get();
+        $files = FileLaunch::where('file_launches_id_entry', '=', $id)->get();
         $accounts = AccountLaunch::get();
-        return view('entry.edit', compact('id','launch', 'files', 'accounts'));
+        return view('entry.edit', compact('id', 'launch', 'files', 'accounts'));
     }
 
     /**
@@ -147,7 +173,7 @@ class EntryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $val = Monetary::money_real($request['entries_value']);
         $request['entries_value'] = $val;
         $rules = [
@@ -156,21 +182,20 @@ class EntryController extends Controller
             'entries_value' => 'required'
         ];
 
-        $validator = Validator::make( $request->all(), $rules );
+        $validator = Validator::make($request->all(), $rules);
 
-        if ( $validator->fails() )
-        {
+        if ($validator->fails()) {
             $validator->errors()->all();
-            return response( ['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422 );
+            return response(['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422);
         }
         $date_launch = FunctionGeneral::DataBRtoMySQL($request['entries_date_launch']);
         $request['entries_date_launch'] = $date_launch;
 
         $input = $request->all();
-        $input = $request->except('_method' , '_token');
+        $input = $request->except('_method', '_token');
         try {
-            
-            Entry::where('entries_id' , $id)->update($input);
+
+            Entry::where('entries_id', $id)->update($input);
             return response()->json(['message' => 'success'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'error'], 400);
@@ -186,98 +211,108 @@ class EntryController extends Controller
      */
     public function destroy(Request $request)
     {
-        $files = FileLaunch::where('file_launches_id_entry','=',$request->id)->get();
+        $files = FileLaunch::where('file_launches_id_entry', '=', $request->id)->get();
 
         foreach ($files as $key => $value) {
-            FileLaunch::where('id',$value->id)->delete();
+            FileLaunch::where('id', $value->id)->delete();
         }
         try {
-            $entry = Entry::where('entries_id' , $request->id)->delete();
+            $entry = Entry::where('entries_id', $request->id)->delete();
             return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
         }
     }
 
-    public function upload(Request $request) {
+    public function upload(Request $request)
+    {
         $user = Auth::user();
         $total = count($_FILES['file']['name']);
         $totalFile = 0;
         $uploadSuccess = false;
         // // Loop through each file
-        for( $i=0 ; $i < ($total) ; $i++ ) {
+        for ($i = 0; $i < ($total); $i++) {
             $totalFile++;
-          //Get the temp file path
-          $tmpFilePath = $_FILES['file']['tmp_name'][$i];
-            
-          //Make sure we have a file path
-            if ($tmpFilePath != ""){
-                
-                if(!file_exists($tmpFilePath)) {
+            //Get the temp file path
+            $tmpFilePath = $_FILES['file']['tmp_name'][$i];
+
+            //Make sure we have a file path
+            if ($tmpFilePath != "") {
+
+                if (!file_exists($tmpFilePath)) {
                     mkdir($tmpFilePath, 777);
                 }
-            //Setup our new file path
+                //Setup our new file path
                 $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
-               
+
                 // //Upload the file into the temp dir
                 $datetime = Carbon::now();
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
-                $newNameFile = base64_encode($datetime.'-'.$_FILES['file']['name'][$i]);
-                    $file = FileLaunch::insert([
-                        'file_launches_name' => $newNameFile.'.'.$ext, 
-                        'file_launches_id_entry' => $request->idEntry,
-                        'created_at' => $datetime,
-                        'updated_at' => $datetime
-                    ]);
-                    move_uploaded_file($tmpFilePath, "./img/images/" .$newNameFile.'.'.$ext);
-                    if($file){
-                        $uploadSuccess = true;
-                    }
+                $newNameFile = base64_encode($datetime . '-' . $_FILES['file']['name'][$i]);
+                $file = FileLaunch::insert([
+                    'file_launches_name' => $newNameFile . '.' . $ext,
+                    'file_launches_id_entry' => $request->idEntry,
+                    'created_at' => $datetime,
+                    'updated_at' => $datetime
+                ]);
+                move_uploaded_file($tmpFilePath, "./img/images/" . $newNameFile . '.' . $ext);
+                if ($file) {
+                    $uploadSuccess = true;
+                }
             }
         }
         // die;
-        if($uploadSuccess) {
+        if ($uploadSuccess) {
             return response()->json(['message' => 'Arquivo enviado com sucesso', 'status' => 'success'], 200);
             // return redirect()->back()->with('success' , 'Upload alterado com sucesso');
-        }else{
+        } else {
             return response()->json(['message' => 'Ocorreu um erro inesperado, tente novamente mais tarde', 'status' => 'error'], 500);
             // return redirect()->back()->with('Error' , 'Ocorreu um erro inesperado, tente novamente mais tarde');
         }
-       
     }
 
-    public function getAll(Request $request) {
+    public function getAll(Request $request, $idCompany)
+    {
 
         $dtIni = $request->dtIni;
         $dtEnd = $request->dtEnd;
-        if(isset($request->dtIni) && empty($request->dtIni)) {
+        if (isset($request->dtIni) && empty($request->dtIni)) {
             $startDate = Carbon::now();
-            $dtIni = $startDate->startOfMonth();  
-        }elseif(!isset($request->dtIni)) {
+            $dtIni = $startDate->startOfMonth();
+        } elseif (!isset($request->dtIni)) {
             $startDate = Carbon::now();
-            $dtIni = $startDate->startOfMonth(); 
+            $dtIni = $startDate->startOfMonth();
         }
-        if(isset($request->dtEnd) && empty($request->dtEnd)) {
+        if (isset($request->dtEnd) && empty($request->dtEnd)) {
             $endDate = Carbon::now();
-            $dtEnd = $endDate->startOfMonth(); 
-        }elseif(!isset($request->dtEnd)) {
+            $dtEnd = $endDate->startOfMonth();
+        } elseif (!isset($request->dtEnd)) {
             $endDate = Carbon::now();
-            $dtEnd = $endDate->lastOfMonth(); 
+            $dtEnd = $endDate->lastOfMonth();
         }
-        //DB::enableQueryLog();
+        // DB::enableQueryLog();
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
-                ->join('account_launches','entries.entries_id_account','=','account_launches.id')
-                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                ->where('entries.entries_date_launch','>=', $dtIni)
-                ->where('entries.entries_date_launch','<=', $dtEnd)
-                ->where('entries.entries_id_company','=',Auth::user()->user_id_company)
-                ->select('users.id as idUser', 'users.name', 'entries.*', 'account_launches.accountlaunch_type', 'account_types.account_types_name', 'account_launches.id as idAccontLaunch', 'account_launches.accountlaunch_name')
-                ->orderBy('entries.entries_date_launch', 'asc')
-                ->get();
-              
-        //dd(DB::getQueryLog());
-        return Datatables::of($mov)->addIndexColumn()
+            ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->where('entries.entries_date_launch', '>=', $dtIni)
+            ->where('entries.entries_date_launch', '<=', $dtEnd)
+            ->where('entries.entries_id_company', '=', $idCompany)
+            ->select(
+                'users.id as idUser',
+                'users.name',
+                'entries.*',
+                'account_types.*',
+                'account_launches.accountlaunch_type',
+                'account_types.account_types_name',
+                'account_launches.id as idAccontLaunch',
+                'account_launches.accountlaunch_name'
+            )
+            ->orderBy('entries.entries_date_launch', 'asc')
+            ->get();
+                // dump(DB::connection('mysql'));
+        // dd(DB::getQueryLog());
+        return DataTables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {
                 $date = new Carbon($mov->entries_date_launch);
                 return $date->format('d/m/Y');
@@ -286,37 +321,45 @@ class EntryController extends Controller
                 return $mov->name;
             })
             ->editColumn('entries_value', function ($mov) {
-                return number_format($mov->entries_value,2,',','.');
+                return number_format($mov->entries_value, 2, ',', '.');
             })
             ->editColumn('entries_id_account', function ($mov) {
                 return $mov->account_types_name;
             })
             ->addColumn('action', function ($mov) {
                 $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
+
+                //botão da visualização de role User
+                $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
+                data-toggle="modal"
+                data-id="' . $mov->entries_id . '"
+                data-day="' . $mov->entries_day . '"
+                data-his="' . $mov->entries_description . '"
+                data-val="' . $mov->entries_value . '"
+                data-target="#modalInfoLaunch">
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>';
+
+                if(Auth::user()->hasRole('user') ) {
+                    return $btnUserRole;
+                }
+                //qualquer outro nivel de acesso
                 return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
                 data-toggle="modal"
-                data-id="'.$mov->entries_id.'"
-                data-date="'.$dtLauch.'"
-                data-his="'.$mov->entries_description.'"
-                data-val="'.$mov->entries_value.'"
-                data-typ="'.$mov->account_types_name.'"
-                data-idlau="'.$mov->idAccontLaunch.'"
-                data-namel="'.$mov->accountlaunch_name.'"
+                data-id="' . $mov->entries_id . '"
+                data-date="' . $dtLauch . '"
+                data-his="' . $mov->entries_description . '"
+                data-val="' . $mov->entries_value . '"
+                data-typ="' . $mov->account_types_name . '"
+                data-idlau="' . $mov->idAccontLaunch . '"
+                data-namel="' . $mov->accountlaunch_name . '"
                 data-target="#modalEditLauch">
                 <i class="fa fa-edit" aria-hidden="true"></i></button>
-                <button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
-                data-toggle="modal"
-                data-id="'.$mov->entries_id.'"
-                data-day="'.$mov->entries_day.'"
-                data-his="'.$mov->entries_description.'"
-                data-val="'.$mov->entries_value.'"
-                data-target="#modalInfoLaunch">
-                <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>
+                '.$btnUserRole.'
                 <button class="btn btn-danger btn-xs" type="button" title="Excluir Registro"
                 data-toggle="modal"
-                data-id="'.$mov->entries_id.'"
-                data-name="'.$mov->entries_description.'"
-                data-type="'.$mov->account_types_name.'"
+                data-id="' . $mov->entries_id . '"
+                data-name="' . $mov->entries_description . '"
+                data-type="' . $mov->account_types_name . '"
                 data-target="#modalDeleteComponent">
                 <i class="fa fa-trash"></i></button>
                 ';
@@ -325,93 +368,104 @@ class EntryController extends Controller
             ->make(true);
     }
 
-    public function info($id) {
-        //Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
+    public function info($id)
+    {
         $file = FileLaunch::where('file_launches_id_entry', $id)->get();
 
-        if(count($file) > 0){
+        if (count($file) > 0) {
             $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-            ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
-            ->join('users', 'entries.entries_id_user', '=', 'users.id')
-            ->join('file_launches', 'file_launches.file_launches_id_entry','=','entries.entries_id')
-            ->where('entries.entries_id','=',$id)
-            ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser', 'file_launches.created_at as createadFiles', 'file_launches.id as idFileLaunch')
-            ->get();
-        }else{
+                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                ->join('users', 'entries.entries_id_user', '=', 'users.id')
+                ->join('file_launches', 'file_launches.file_launches_id_entry', '=', 'entries.entries_id')
+                ->where('entries.entries_id', '=', $id)
+                ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser', 'file_launches.created_at as createadFiles', 'file_launches.id as idFileLaunch')
+                ->get();
+        } else {
             $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-            ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
-            ->join('users', 'entries.entries_id_user', '=', 'users.id')
-            ->where('entries.entries_id','=',$id)
-            ->select('entries.*',  'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.entries_date_launch as createEntry', 'users.name as nameUser')->get();
+                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                ->join('users', 'entries.entries_id_user', '=', 'users.id')
+                ->where('entries.entries_id', '=', $id)
+                ->select('entries.*',  'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.entries_date_launch as createEntry', 'users.name as nameUser')->get();
         }
-        
+
         return $info;
     }
 
-    public function deleteFile(Request $request) {
+    public function deleteFile(Request $request)
+    {
         $file = FileLaunch::find($request->id);
         $file->delete();
-        $filename = public_path('img/images/'.$file->file_launches_name);
-        if (file_exists($filename) ) {
-           if( unlink($filename) ) {
-            return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
-           }
+        $filename = public_path('img/images/' . $file->file_launches_name);
+        if (file_exists($filename)) {
+            if (unlink($filename)) {
+                return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
+            }
         }
-}
+    }
 
-    public function bank() {
+    public function bank($idCompany)
+    {
         $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        
-        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, Auth::user()->user_id_company);
-        $bankDespesa = Monetary::getValueBoxFeed(null, true, Auth::user()->user_id_company);
+
+        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, $idCompany);
+        $bankDespesa = Monetary::getValueBoxFeed(null, true, $idCompany);
         $totBanco = ($bankReceita - $bankDespesa);
         return response()->json($totBanco);
     }
 
-    public function internal() {
-        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-        $igrejaReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, false, Auth::user()->user_id_company);
-        $igrejaDespesa = Monetary::getValueBoxFeed(null, false, Auth::user()->user_id_company);
-
-        $totIgreja = ($igrejaReceita - $igrejaDespesa);
-        return response()->json($totIgreja);
+    public function internal($idCompany)
+    {
+        $internal = LaunchService::getBoxInternal($idCompany);
+        return response()->json($internal);
     }
 
-    public function general() {
-        $saldoGer = Monetary::getValueBox();
+    public function general($idCompany)
+    {
+        $saldoGer = Monetary::getValueBox($idCompany);
         $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
         return response()->json($saldo);
     }
 
-    public function reportBox($dateInit, $dateEnd) {
-        
+    public function reportBox($dateInit, $dateEnd, $idCompany)
+    {
+
         $dtinit = FunctionGeneral::DataBRtoMySQL(base64_decode($dateInit));
         $dtend  = FunctionGeneral::DataBRtoMySQL(base64_decode($dateEnd));
-        $per    = Monetary::getValueBoxPerPeriodo($dtinit, $dtend);
+        $per    = Monetary::getValueBoxPerPeriodo($dtinit, $dtend, $idCompany);
         $total  = ($per['receitas'] - $per['despesas']);
 
         $perInitial = base64_decode($dateInit);
         $perEnd = base64_decode($dateEnd);
         //VALOR DO SALDO ANTERIOR
-        $prevBalan = Monetary::previousBalance($dtinit);
+        $prevBalan = Monetary::previousBalance($dtinit, $idCompany);
         $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
 
         $entries = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
-        ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
-        ->where('entries_date_launch', '>=', $dtinit)
-        ->where('entries_date_launch', '<=', $dtend)
-        ->where('companies.company_id', '=', Auth::user()->user_id_company)
-        ->orderBy('entries_date_launch', 'asc')->get();
-      
-        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total' , 'previousBalance'));
+            ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->where('entries_date_launch', '>=', $dtinit)
+            ->where('entries_date_launch', '<=', $dtend)
+            ->where('companies.company_id', '=', $idCompany)
+            ->orderBy('entries_date_launch', 'asc')->get();
+
+        //valor somados dos lançamentos
+        $internal = LaunchService::getBoxInternal($idCompany);
+        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceBank = AccountBankRepository::getBalance($idCompany);
+        $balanceGeneral = ($internal + $balanceBank);
+   
+        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total', 
+        'previousBalance','balanceBank'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
-            'defaultPaperSize' =>  'a4']); 
-        return $pdf->stream();
+            'defaultPaperSize' =>  'a4'
+        ]);
+        
+        //return $pdf->stream();
         //dd($entries);
-        //return view('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance'));
+        return view('entry.report.perPeriod', 
+          compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance','balanceBank'));
     }
 
     /**
@@ -419,27 +473,34 @@ class EntryController extends Controller
      *
      * @return void
      */
-    public function showApi($id) {
+    public function showApi($id)
+    {
         $launch =  Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-        ->join('account_types', 'account_launches.accountlaunch_type', '=','account_types.id')
-        ->join('users', 'entries.entries_id_user', '=', 'users.id')
-        ->where('entries.entries_id','=',$id)
-        ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
-        ->get();
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->join('users', 'entries.entries_id_user', '=', 'users.id')
+            ->where('entries.entries_id', '=', $id)
+            ->select('entries.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser')
+            ->get();
         return $launch;
     }
 
     /**
      * Excluir arquivos
      */
-    public function deleteFilesLaunch(Request $request) {
+    public function deleteFilesLaunch(Request $request)
+    {
         foreach ($request->checkFilesLaunch as $key => $value) {
-            $fil = FileLaunch::where('id',$value)->delete();
+            $fil = FileLaunch::where('id', $value)->delete();
         }
-        if($fil) {
+        if ($fil) {
             return response()->json(['message' => 'success', 'status' => 200], 200);
-        }else{
+        } else {
             return response()->json(['message' => 'Ocorreu um erro inexperado'], 500);
         }
+    }
+
+    public function allLauch()
+    {
+        return view('entry.all');
     }
 }

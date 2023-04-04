@@ -152,11 +152,11 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
-        App\Providers\BroadcastServiceProvider::class,
+        Seara\Providers\AppServiceProvider::class,
+        Seara\Providers\AuthServiceProvider::class,
+        Seara\Providers\EventServiceProvider::class,
+        Seara\Providers\RouteServiceProvider::class,
+        Seara\Providers\BroadcastServiceProvider::class,
 
 		Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
 		Conner\Tagging\Providers\TaggingServiceProvider::class,
@@ -164,6 +164,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
         /* TINKER */
         Laravel\Tinker\TinkerServiceProvider::class,
@@ -217,7 +218,7 @@ return [
 		'Form' => Collective\Html\FormFacade::class,
 		'Html' => Collective\Html\HtmlFacade::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        'Datatables' => Yajra\Datatables\Facades\Datatables::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Image' => Intervention\Image\Facades\Image::class,
     ],
 

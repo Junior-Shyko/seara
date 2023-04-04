@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Financing\Receivable;
 
-use App\Receivable;
-use App\Service\Financing\Receivable\CreateReceivable;
-use App\Service\Financing\Receivable\ReceivableNotFound;
-use App\Service\Financing\Receivable\ReceivableRepository;
+use Seara\Receivable;
+use Seara\Service\Financing\Receivable\CreateReceivable;
+use Seara\Service\Financing\Receivable\ReceivableNotFound;
+use Seara\Service\Financing\Receivable\ReceivableRepository;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Report\DebtReport;
+namespace Seara\Service\Report\DebtReport;
 
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Shared\File;

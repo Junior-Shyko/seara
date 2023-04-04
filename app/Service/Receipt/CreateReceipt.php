@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Receipt;
+namespace Seara\Service\Receipt;
 
-use App\Models\ReceiptCompany;
-use App\Seara\Monetary;
+use Seara\Models\ReceiptCompany;
+use Seara\Seara\Monetary;
 
 class CreateReceipt
 {

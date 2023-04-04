@@ -11,11 +11,11 @@
 @endpush
 @section('main_container')
 <div class="col-md-12">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
         @include('msg.message')
     </div>
-    <div class="col-md-4"></div>
+    <div class="col-md-2"></div>
 </div>
 <!-- page content -->
 <div class="right_col" role="main">

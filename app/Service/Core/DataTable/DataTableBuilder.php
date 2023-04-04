@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\DataTable;
+namespace Seara\Service\Core\DataTable;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\Datatables;
 
 final class DataTableBuilder
 {
@@ -133,7 +133,7 @@ final class DataTableBuilder
     public function build(): Response
     {
         $this->filter->apply($this->request->get('query', []), $this->query);
-        $dataTable = Datatables::of($this->query);
+        $dataTable = DataTables::of($this->query);
 
         foreach ($this->adds as $column => $formatter) {
             $dataTable->addColumn($column, $formatter);

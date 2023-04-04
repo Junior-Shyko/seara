@@ -50,7 +50,6 @@
                         <div class="input-group date">
                             <input type="text" class="form-control has-feedback-left money-mask"  name="entries_value" id="entries_value_money-mask" >
                             <span class="fa fa-money form-control-feedback left"></span>
-                        </span>
                         </div>
                     </div>
                 </div>
@@ -69,9 +68,10 @@
             </div>
            </div>
             <div class="col-md-8 col-sm-8 col-xs-12 form-group has-feedback">
-                <input type="hidden" name="entries_id_company" id="entries_id_company" value="{{Auth::user()->user_id_company}}">
+                <input type="hidden" name="entries_id_company" id="entries_id_company" value="{{$idCompany}}">
                 <input type="hidden" name="entries_id_user" id="entries_id_user" value="{{Auth::user()->id}}">
                 <input type="hidden" name="type" id="typeLaunch" value="actual">
+                <input type="hidden" name="transaction_id" id="transaction_id" value="1">
             </div>
         </div>
     </div>

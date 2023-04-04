@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Console\Commands;
+namespace Seara\Console\Commands;
 
-use App\Service\Core\Util\DatabaseCleaner;
+use Seara\Service\Core\Util\DatabaseCleaner;
 use Illuminate\Console\Command;
 
 class DropTables extends Command

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use App\FileLaunch;
+use Seara\FileLaunch;
 use Illuminate\Http\Request;
 
 class FileLaunchController extends Controller
@@ -41,7 +41,7 @@ class FileLaunchController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\FileLaunch  $fileLaunch
+     * @param  \Seara\FileLaunch  $fileLaunch
      * @return \Illuminate\Http\Response
      */
     public function show(FileLaunch $fileLaunch)
@@ -52,7 +52,7 @@ class FileLaunchController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\FileLaunch  $fileLaunch
+     * @param  \Seara\FileLaunch  $fileLaunch
      * @return \Illuminate\Http\Response
      */
     public function edit(FileLaunch $fileLaunch)
@@ -64,7 +64,7 @@ class FileLaunchController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\FileLaunch  $fileLaunch
+     * @param  \Seara\FileLaunch  $fileLaunch
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, FileLaunch $fileLaunch)
@@ -75,7 +75,7 @@ class FileLaunchController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\FileLaunch  $fileLaunch
+     * @param  \Seara\FileLaunch  $fileLaunch
      * @return \Illuminate\Http\Response
      */
     public function destroy(FileLaunch $fileLaunch)

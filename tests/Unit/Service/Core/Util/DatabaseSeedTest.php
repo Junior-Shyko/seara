@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Core\Util;
 
-use App\Service\Core\Util\DatabaseSeed;
-use App\Service\Core\Util\SeederRunner;
+use Seara\Service\Core\Util\DatabaseSeed;
+use Seara\Service\Core\Util\SeederRunner;
 use PHPUnit\Framework\TestCase;
 
 class DatabaseSeedTest extends TestCase

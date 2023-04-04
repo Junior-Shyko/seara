@@ -1,22 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use App\Service\Company\CompanyDataProvider;
 use Exception;
-use App\Models\Company;
-use Illuminate\Http\Request;
-use Auth , DB, Validator;
-use Intervention\Image\ImageManagerStatic as Image;
-use Illuminate\Support\Str;
 use Throwable;
-use Yajra\Datatables\Facades\Datatables;
 use Carbon\Carbon;
-use App\Models\User;
+use Seara\Models\User;
+use Auth , DB, Validator;
+use Seara\Models\Company;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Seara\Repository\UserRepository;
+use Yajra\DataTables\Facades\DataTables;
+use Seara\Service\Company\CompanyDataProvider;
+use Intervention\Image\ImageManagerStatic as Image;
+use Seara\Permission;
+use Seara\Role;
 
 class CompanyController extends Controller
 {
-    use \App\Traits\ActionTable;
+    use \Seara\Traits\ActionTable;
 
     //SÓ PARA USUARIOS LOGADOS
     public function __construct()
@@ -32,8 +35,10 @@ class CompanyController extends Controller
     public function index()
     {
         if(Auth::user()->user_id_profile == 4){
+            $user = Auth::user();
+            $roles = DB::table('roles')->select('id', 'name')->get();
             $company = Company::all();
-            return view('business.index' , compact('company'));
+            return view('business.index' , compact('company', 'roles'));
         }else{
             return redirect()->back();
         }
@@ -74,7 +79,7 @@ class CompanyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function show(Company $company)
@@ -85,7 +90,7 @@ class CompanyController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function edit(Company $company)
@@ -98,7 +103,7 @@ class CompanyController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Company $company)
@@ -115,7 +120,7 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function destroy(Company $company)
@@ -132,7 +137,7 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Company  $company
+     * @param  \Seara\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
     public function companiesStatus()
@@ -211,7 +216,7 @@ class CompanyController extends Controller
                 ->where('company_status', 1)
                 ->orderBy('created_at', 'desc');
     
-            $dataTable = Datatables::of($companies);
+            $dataTable = DataTables::of($companies);
     
             $dataTable->addColumn(
                 'action',
@@ -231,7 +236,7 @@ class CompanyController extends Controller
             return $dataTable->make(true);
         }else{
             $companies = [];
-            $dataTable = Datatables::of($companies);
+            $dataTable = DataTables::of($companies);
             return $dataTable->make(true);
         }
         
@@ -258,6 +263,13 @@ class CompanyController extends Controller
                 'Alterar Acesso',
                 'modalLogin',
                 'fa-lock',
+                'btn-default'
+            ),
+            $this->actionButton(
+                $companyId,
+                'Consultar Caixa',
+                'redirectBoxCompany',
+                'fa-money',
                 'btn-default'
             )
         ]);
@@ -319,5 +331,20 @@ class CompanyController extends Controller
                         ->withErrors($messages)
                         ->withInput();
         }
+    }
+
+    public function getUsers() {
+        $allRole = new Role;
+        $roles = $allRole->allRole();        
+        $allPermission = new Permission();
+        $permission = $allPermission->allPermission();
+        return view('user.list-permission', compact('roles', 'permission'));
+    }
+
+    public function dataTableUsersPermissions()
+    {
+        $permission = new UserRepository;
+        $dataTable = $permission->getUserPermission();
+        return $dataTable;
     }
 }

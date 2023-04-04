@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Receivable;
+namespace Seara\Service\Financing\Receivable;
 
 use RuntimeException;
 

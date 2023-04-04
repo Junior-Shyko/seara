@@ -1,6 +1,6 @@
 <?php
 use Faker\Factory;
-use App\Seara\Monetary;
+use Seara\Seara\Monetary;
 
 /*
 |--------------------------------------------------------------------------

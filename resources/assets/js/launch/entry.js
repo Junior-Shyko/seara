@@ -1,11 +1,16 @@
 
 $(document).ready(function () {
-    //$("#modalUploadLaunch").modal('show');
-    //$("#lancar_conta").modal('show');
+    //id da empresa
+    var idCompany = $("#idCodeCompany").val();
+
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    
+    $('#realValueTranfer').maskMoney(
+        {allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
+    );
+    //$("#lancar_conta").modal('show');
+    $("#realValueTranfer").attr('disabled','disabled');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
         return this.flatten().reduce( function ( a, b ) {
@@ -52,12 +57,12 @@ $(document).ready(function () {
         }
     }); 
     //RETORNO DOS LANÇAMENTOS
-    getLaunch();
+    getLaunch(idCompany);
 
     //valores do caixa banco
-    bankBalance();
-    internalBalance();
-    general();
+    bankBalance(idCompany);
+    internalBalance(idCompany);
+    general(idCompany);
     $("#save_entry").click(function(){
         var form = $('form#form_entry').serialize();
         SearaAjax.post('lancar', form, function( response ){
@@ -67,15 +72,21 @@ $(document).ready(function () {
             }
             $(".idEntry").val(response.id);
             $("#entry-table").DataTable().ajax.reload();
-            bankBalance();
-            internalBalance();
-            general();
+            bankBalance(idCompany);
+            internalBalance(idCompany);
+            general(idCompany);
             new PNotify({
                 title: 'Sucesso',
                 text: response.message,
                 type: response.status,
                 styling: 'bootstrap3'
             });
+            if(response.typeAccount == 'Receita') {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+           
         })
         .fail(function(jqXHR){
             notify.response(jqXHR.responseJSON);
@@ -96,18 +107,6 @@ $(document).ready(function () {
         modal.find('#typeLaunchDeleteModal').text(type)
         modal.find('#idDelete').val(id)
     })
-
-    // $('#modalUploadLaunch').on('show.bs.modal', function (event) {
-    //   var button = $(event.relatedTarget)
-    //   var id = button.data('id') 
-    //   var modal = $(this)
-    //   modal.find('.idEntry').val(id);
-    // })
-
-    // $('#modalUploadLaunch').on('hidden.bs.modal', function (event) {
-    //     var modal = $(this)
-    //     modal.find('.idEntry').val(null);
-    //   })
 
     //ID DO LANÇAMENTO
         
@@ -177,7 +176,9 @@ $(document).ready(function () {
     });
 });
 
-function getLaunch() {
+var idCompany = $("#idCodeCompany").val();
+
+function getLaunch(idCompany) {
     let colunas = [
         {data: 'entries_date_launch', name: 'entries_date_launch'},
         {data: 'entries_description', name: 'entries_description'},
@@ -186,6 +187,7 @@ function getLaunch() {
         {data: 'entries_id_user', name: 'entries_id_user'},
         {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
     ];
+    
     var table = $('#entry-table').DataTable( {
         paging: false,
         retrieve: true,
@@ -196,7 +198,7 @@ function getLaunch() {
         processing: true,
         serverSide: true,
         pageLength: 100,
-        ajax: SearaApp.baseURL+'all-launch',
+        ajax: SearaApp.baseURL+'all-launch/'+idCompany,
         columns: colunas,
         drawCallback: function () {
             var api = this.api();
@@ -212,10 +214,10 @@ function getLaunch() {
         .draw();
 }
 
-function bankBalance() {
+function bankBalance(idCompany) {
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-banco',
+        url: SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)
@@ -224,10 +226,10 @@ function bankBalance() {
     });
 }
 
-function internalBalance() {
+function internalBalance(idCompany) {
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-interno',
+        url: SearaApp.baseURL + 'api/saldo-interno/'+idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)
@@ -236,10 +238,10 @@ function internalBalance() {
     });
 }
 
-function general() {
+function general(idCompany) {
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-geral',
+        url: SearaApp.baseURL + 'api/saldo-geral/'+idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)
@@ -260,7 +262,7 @@ function showDivs() {
     $("#entries_value").show();
 }
 
-function searchPeriod() {
+function searchPeriod(idCompany) {
     var init = brDatetoUsa($("#dateInitial").val())
     var end = brDatetoUsa($("#dateEnd").val())
     if ( $.fn.dataTable.isDataTable( '#entry-table' ) ) {
@@ -281,7 +283,7 @@ function searchPeriod() {
         table.destroy();
         table = $('#entry-table').DataTable( {
             pageLength: 100,
-            ajax: SearaApp.baseURL+'all-launch?dtIni='+init+'&dtEnd='+end,
+            ajax: SearaApp.baseURL+'all-launch/'+idCompany+'?dtIni='+init+'&dtEnd='+end,
             columns: colunas,
             order: [[ 0, "asc" ]],
             drawCallback: function () {
@@ -304,10 +306,10 @@ function searchPeriod() {
 var dtInit = '';
 var dtEnd = '';
 
-function showReport() {
+function showReport(idCompany) {
     dtInit = btoa($("#dateInitial").val()); 
     dtEnd = btoa($("#dateEnd").val()); 
-    $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd );
+    $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd + '/company/'+idCompany );
 }
 
 function getFiles(id) {
@@ -381,7 +383,7 @@ $("#btnEditLaunch").click(function (e) {
         data: form,
         dataType: "json",
         success: function (_response) {
-            getLaunch();
+            getLaunch(idCompany);
             new PNotify({
                 title: 'Sucesso',
                 text: 'Lançamento alterado',
@@ -427,6 +429,138 @@ $("#btnTrashLaunch").click(function (e) {
     });
 });
 
+function formatValueToFront(action, idAccountBank, balanceInternal, smalTextInfo) {
+    var id = idAccountBank;//VALOR ESCOLHIDO NO SELECT
+
+    var valueIntenal = balanceInternal;//VALOR DO CAIXA INTERNO
+    //SE A ESCOLHA FOR CAIXA INTERNO
+    if(id == 0 ){
+        $("#valueGetInfo").val(valueIntenal);//RECEBE O VALOR DO CAIXA INTERNO
+        $("#"+smalTextInfo).html(valueIntenal);//FORMATANDO NO FRONTEND
+    }else{
+        //CONSULTANDO INFORMACAO DA CONTA BANCARIA
+        $.get(SearaApp.baseURL + 'api/account-bank/get-info-account/' + id,
+            function (data, textStatus, jqXHR) {
+                var valueReal = formatFloatToBrCoin(data.balance);
+                if(action == 'saida'){
+                    $("#valueGetInfo").val(data.balance);//RECEBE O VALOR DA CONTA ESCOLHIDA
+                }
+                $("#"+smalTextInfo).html(valueReal);//FORMATANDO NO FRONTEND
+            }
+        );
+    }
+}
+
+//SELECT DA PRIMEIRA CONTA
+$("#selectAccountBankEnd").change(function (e) { 
+    e.preventDefault();
+    $("#realValueTranfer").removeAttr('disabled');
+    formatValueToFront(
+        'saida',
+        $("#selectAccountBankEnd").val(), 
+        $("#valueInternal").val(), 
+        'balanceEndAccount'
+    );
+});
+
+$("#selectAccountBankEntry").change(function (e) { 
+    e.preventDefault();
+    
+    if($("#selectAccountBankEntry").val() == $("#selectAccountBankEnd").val()){
+        new PNotify({
+            title: 'Ops!',
+            text: 'Não poderá fazer transferencia para mesma',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
+        return false;
+    }
+    
+    formatValueToFront(
+        'entrada',
+        $("#selectAccountBankEntry").val(), 
+        $("#valueInternal").val(), 
+        'balanceEntryAccount'
+    );
+}); 
+//AO SAIR DO CAMPO SE FAZ A VELIDAÇÃO DE VALORES
+$('#realValueTranfer').on('blur', function () {
+    // var valueAccountBank = $("#valueGetInfo").val();
+    // var valueRealTransfer = $('#realValueTranfer').val();
+    // //CONVERTENDO O VALOR REAL PARA FLOAT
+    // var valor = convertBrCoinToFloat(valueRealTransfer);
+    // //SE O VALOR FOR MAIOR QUE O VALOR DA CONTA BANCARIA
+    // if(valor > parseFloat(valueAccountBank)) {
+    //     $("#realValueTranfer").focus();
+    //     new PNotify({
+    //         title: 'Erro',
+    //         text: 'Valor maior que o saldo da conta',
+    //         type: 'error',
+    //         styling: 'bootstrap3'
+    //     });
+    //     return false;
+    // }    
+});
+
+function transferValue() {
+    if($("#realValueTranfer").val() == '' ||
+    $("#selectAccountBankEnd").val() == '' ||
+    $("#selectAccountBankEntry").val() == '') {
+        new PNotify({
+            title: 'Erro',
+            text: 'O valor e as contas bancárias devem ser preenchidos',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
+        return false;
+    }
+    var bank_to_bank = false;
+    //PARA MOVIMENTAÇÃO DE BANCO PARA BANCO
+    if($("#selectAccountBankEnd").val() > 0 && $("#selectAccountBankEntry").val() > 0)
+    {
+        bank_to_bank = true;
+    }
+    var data = {
+        idAccountEnd : $("#selectAccountBankEnd").val(),
+        idAccountEntry : $("#selectAccountBankEntry").val(),
+        value : $("#realValueTranfer").val(),
+        valueInternal: $("#valueInternal").val(),
+        transaction_id : $("#transaction_id_transfer").val(),
+        bank_to_bank: bank_to_bank
+    }
+
+    // return;
+    SearaAjax.post('transferir', data, function( response ){
+        console.log(response)
+        if(response.type == 'success')
+        {
+            new PNotify({
+                title: 'Sucesso',
+                text: response.message,
+                type: 'success',
+                styling: 'bootstrap3'
+            });
+            setTimeout(() => {
+                window.location.reload(); 
+            }, 2000);
+        }
+    })
+    .always(function(response){
+        console.log({response})
+        if(response.type == 'error')
+        {
+            new PNotify({
+                title: 'Ops!',
+                text: response.message,
+                type: 'error',
+                styling: 'bootstrap3'
+            });
+        }
+       
+        SearaLoader.hideModal();
+       
+    });
+}
 
 
 

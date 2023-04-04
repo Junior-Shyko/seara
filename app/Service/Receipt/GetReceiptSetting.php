@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Receipt;
+namespace Seara\Service\Receipt;
 
-use App\Models\Setting;
+use Seara\Models\Setting;
 use Auth;
 
 class GetReceiptSetting

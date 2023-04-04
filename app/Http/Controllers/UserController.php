@@ -1,28 +1,33 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use Yajra\Datatables\Facades\Datatables;
-use App\Mail\UserRegistered;
-use Illuminate\Support\Facades\Mail;
 use Auth, DB;
 use Exception;
-use App\Models\User;
-use App\FunctionGeneral;
-use App\Models\Company;
-use App\Models\Profile;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Validator;
+use Seara\Role;
+use Carbon\Carbon;
+use Seara\Permission;
+use Seara\Models\User;
+use Seara\Models\Company;
+use Seara\Models\Profile;
+use Seara\FunctionGeneral;
+use Illuminate\Http\Request;
+use Seara\Mail\UserRegistered;
+use Spatie\Permission\Models\Role as RoleSpatie;
+use Seara\Repository\UserRepository;
+use Yajra\DataTables\Facades\DataTables;
+use Seara\Http\Controllers\PermissionController;
 
 class UserController extends Controller
 {
 
-    use \App\Traits\ActionTable;
+    use \Seara\Traits\ActionTable;
 
     public function __construct()
     {
-        $this->middleware('profile:admin');
+        // $this->middleware('profile:admin');
+       
     }
 
     /**
@@ -68,7 +73,9 @@ class UserController extends Controller
             'users_avatar' => 'default-user-avatar.png'
         ];
         try {
-            User::create($user);
+            Auth::user()->hasRole('superAdmin')
+                ? User::create($user)->assignRole('admin') 
+                : User::create($user)->assignRole($request->role);
             return response()->json(['message' => 'Usuário cadastrado'], 200);
         }
         catch(Exception $e) {
@@ -130,7 +137,7 @@ class UserController extends Controller
     /**
     * Display the specified resource.
     *
-    * @param  \App\Models\User  $user
+    * @param  \Seara\Models\User  $user
     * @return \Illuminate\Http\Response
     */
     public function show(User $user)
@@ -141,19 +148,29 @@ class UserController extends Controller
     /**
     * Show the form for editing the specified resource.
     *
-    * @param  \App\Models\User  $user
+    * @param  \Seara\Models\User  $user
     * @return \Illuminate\Http\Response
     */
     public function edit($id)
     {
         $profile = Auth::user();
         $idDecript = base64_decode($id);
-        $subTitle = " Edite seus dados do perfil";
-        if($profile->user_id_profile == 4) {
-            $subTitle = "Altere os dados do usuário";
+        //INSTANCIA DE UM DETERMINADO USUARIO
+        $user = DB::table('users')->where('id', $idDecript)->first();
+        //verificando se o usuário logado tem o mesmo id do parametro
+        if(intval($idDecript) !== ($profile->id) ) {
+            //VERIFICANDO SE É ADMIN
+            if($profile->hasRole('admin')){                
+                if($profile->user_id_company !== $user->user_id_company)
+                {
+                    return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+                }
+            }elseif($profile->hasRole('user'))
+            {
+                return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
+            }
         }
-        //dump($idDecript);
-        $user = User::where('user_id_company',$idDecript)->get();
+        $subTitle = " Edite seus dados do perfil";
         return view( 'user.edit' , compact('user', 'subTitle') );
     }
 
@@ -161,7 +178,7 @@ class UserController extends Controller
     * Update the specified resource in storage.
     *
     * @param  \Illuminate\Http\Request  $request
-    * @param  \App\Models\User  $user
+    * @param  \Seara\Models\User  $user
     * @return \Illuminate\Http\Response
     */
     public function update(Request $request, User $user)
@@ -198,10 +215,10 @@ class UserController extends Controller
     /**
     * Remove the specified resource from storage.
     *
-    * @param  \App\Models\User  $user
+    * @param  \Seara\Models\User  $user
     * @return \Illuminate\Http\Response
     */
-    public function destroy(User $user)
+    public function destroy(User $user, Request $request)
     {
         // Tentar excluir
         try {
@@ -217,7 +234,12 @@ class UserController extends Controller
 
         }
 
-        return response(['status' => 'success', 'message' => "O usuário foi excluído!"]);
+        if($request->ajax())
+        {
+            return response(['status' => 'success', 'message' => "O usuário foi excluído!"]);
+        }
+
+        return redirect()->back()->with('success' , 'Usuário excluído com sucesso.');
     }
 
     // Tabela com os usuários da empresa
@@ -235,7 +257,7 @@ class UserController extends Controller
             'users.created_at'
         ])->orderBy('users.id', 'DESC');
 
-        $dataTable =  Datatables::of($users);
+        $dataTable =  DataTables::of($users);
 
         $dataTable->addColumn(
            
@@ -270,6 +292,7 @@ class UserController extends Controller
 
             [
                 [ 'Editar Usuário', 'editUser', 'fa-pencil' ],
+                [ 'Excluir Usuário', 'deleteUser', 'fa-trash-o', 'btn-info' ],
                 [ 'Excluir Usuário', 'deleteUser', 'fa-trash-o', 'btn-danger' ]
             ]
 
@@ -277,4 +300,59 @@ class UserController extends Controller
 
     }
 
+    public function listUsers()
+    {
+        $user = Auth::user();
+        $allRole = new Role;
+        $roles = $allRole->allRole();
+        $allPermission = new Permission();
+        $permission = $allPermission->allPermission();
+        $allRoleSpatie = RoleSpatie::all();
+        //EXCLUINDO DO ARRAY A OPÇÃO DE SUPER ADMIN
+        if(!$user->hasRole('superAdmin'))
+        {
+            foreach ($roles as $key => $role) {
+                if($role == 'superAdmin')
+                {
+                    unset($roles[$key]);
+                }
+            }
+        }
+        return view('user.list-permission', compact('roles', 'permission', 'allRoleSpatie'));
+    }
+
+   
+    public function getUserPermission()
+    {
+        $permission = new PermissionController();
+        $dataTable = $permission->getUserPermission();
+        return $dataTable;
+    }
+
+    public function userDeletePermission($id) {
+       $userDelete = new PermissionController();
+       return $userDelete->userDeletePermission($id);
+    }
+
+    public function alterRoleUser(Request $request)
+    {
+        $alterRole = new RoleController;
+        return $alterRole->alterRoleUser($request);
+    }
+
+    public function getPermissionUser($id)
+    {
+        $user = new UserRepository;
+        $permission = $user->getPermissionUser($id);
+        return response()->json($permission);
+    }
+
+    public function alterPermissionUser(Request $request)
+    {
+        $role = RoleSpatie::findByName($request->role);
+        $role->givePermissionTo($request->permisson);
+
+        dump($role->getAllPermissions());
+       
+    }
 }

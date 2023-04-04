@@ -13,8 +13,8 @@ setup:
 	docker-compose exec node bower install --allow-root
 	docker-compose exec php php artisan key:generate
 	docker-compose exec php php artisan migrate
-	docker-compose exec node gulp
 	docker-compose exec php chmod -R 777 storage
+	docker-compose exec node gulp	
 
 .PHONY: dbtest
 dbtest:

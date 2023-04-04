@@ -32,9 +32,19 @@
                     <li>
                         <a href="{{url('/')}}"><i class="fa fa-home"></i> Home</a>
                     </li>
-                    @if(Auth::user()->profile == 'owner' || Auth::user()->profile == 'owner')
+                   @php  
+                   @endphp
+                   @if(Auth::user()->hasRole('admin') || 
+                    Auth::user()->hasRole('superAdmin'))
                         <li>
-                            <a href="{{url('users')}}"><i class="fa fa-users"></i> Usuários</a>
+                            <a>
+                                <i class="fa fa-users" aria-hidden="true"></i>
+                                    Usuários
+                                <span class="fa fa-chevron-down"></span>
+                            </a>
+                            <ul class="nav child_menu">
+                                <li><a href="{{url('usuarios/permissao')}}">Permissão</a></li>
+                            </ul>
                         </li>
                     @endif
                     @if(Auth::user()->profile == 'owner')
@@ -61,7 +71,7 @@
                         </ul>
                     </li>
                     @endif
-                    @if(Auth::user()->profile == 'owner')
+                    @if( Auth::user()->hasRole('superAdmin'))
                     <li>
                         <a data-cy="financing-module">
                             <i class="fa fa-calculator" aria-hidden="true"></i> Financeiro <span class="fa fa-chevron-down"></span>
@@ -85,13 +95,25 @@
                             <i class="fa fa-money" aria-hidden="true"></i> Lançamento Caixa <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
-                            @if(Auth::user()->profile == 'owner')
+                            @role('superAdmin')
+                            <li>
+                                <a href="{{ url('tipo-banco') }}">Tipo bancario</a>
+                            </li>
+                            <li>
+                                <a href="{{ url('banco') }}">Banco</a>
+                            </li>
                             <li>
                                 <a data-cy="report-debt-and-payment" href="{{ url('launch/account') }}">Contas</a>
                             </li>
-                            @endif
+                            @endrole
                             <li>
-                                <a data-cy="report-debt-and-payment" href="{{ url('lancar') }}">Lancar Movimento</a>
+                                <a data-cy="report-debt-and-payment" href="{{ url('lancar') }}">Lançar Movimento</a>
+                            </li>
+                            <li>
+                                <a data-cy="report-debt-and-payment" 
+                                href="{{ url('conta-bancaria?company='.Auth()->user()->user_id_company) }}">
+                                    Conta Bancaria
+                                </a>
                             </li>
                         </ul>
                     </li>

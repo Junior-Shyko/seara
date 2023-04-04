@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Payment;
+namespace Seara\Service\Financing\Payment;
 
-use App\Service\Core\DataTable\DataTableBuilder;
-use App\Service\Core\DataTable\DataTableResponseFactory;
-use App\Service\Core\DataTable\Formatters\Format;
-use App\Service\Core\DataTable\QueryFilter;
-use App\Service\Core\Transformation\ArrayTransformer;
-use App\Service\Core\Transformation\FormatBrDate;
-use App\Traits\ActionTable;
+use Seara\Service\Core\DataTable\DataTableBuilder;
+use Seara\Service\Core\DataTable\DataTableResponseFactory;
+use Seara\Service\Core\DataTable\Formatters\Format;
+use Seara\Service\Core\DataTable\QueryFilter;
+use Seara\Service\Core\Transformation\ArrayTransformer;
+use Seara\Service\Core\Transformation\FormatBrDate;
+use Seara\Traits\ActionTable;
 use Closure;
 use DB;
 use Illuminate\Database\Query\Builder;

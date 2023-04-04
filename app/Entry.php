@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Seara;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +19,7 @@ class Entry extends Model
         'entries_file',
         'entries_date_launch',
         'updated_at',
-        'entries_bank'
+        'entries_bank',
+        'transaction_id'
     ];
 }

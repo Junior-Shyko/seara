@@ -30,3 +30,7 @@ Agora algumas configurações básicas
 Talvez seja necessário configurar algumas permissões:
 
     sudo chmod -R 777 storage
+
+Alterar composer v1 para v2
+    
+    composer self-update --2

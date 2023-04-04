@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Report;
+namespace Seara\Http\Controllers\Report;
 
-use App\Http\Controllers\AuthenticatedController;
-use App\Models\Company;
-use App\Service\Report\DebtReport\GenerateDebtReport;
+use Seara\Http\Controllers\AuthenticatedController;
+use Seara\Models\Company;
+use Seara\Service\Report\DebtReport\GenerateDebtReport;
 use Illuminate\Http\Request;
 
 class DebtAndPaymentController extends AuthenticatedController

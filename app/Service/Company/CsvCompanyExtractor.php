@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Company;
+namespace Seara\Service\Company;
 
-use App\Service\Core\Csv\CsvReader;
+use Seara\Service\Core\Csv\CsvReader;
 use \Iterator;
 
 class CsvCompanyExtractor implements Extractor

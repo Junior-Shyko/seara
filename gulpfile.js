@@ -199,10 +199,24 @@ elixir(function(mix) {
         'jquery.maskMoney.js',
         'mask.js',
         'helpers.js',
-        './node_modules/lightbox2/dist/js/lightbox.min.js',
+        //'./node_modules/lightbox2/dist/js/lightbox.min.js',
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
     mix.version('public/js/launch/entry.min.js');
+   
+    //BANK
+    mix.scripts(['bank/bank.js'], 'public/js/bank/bank.js');
+
+    //TYPE ACCOUNT BANK
+    mix.scripts(['typeBank/typeBank.js'], 'public/js/typeBank/typeBank.min.js');
+
+    //PERMISSION
+    mix.scripts([
+        'helpers.js',
+        'crud.js',
+        'searaTable.js',
+        'permission/list_permission.js'
+    ], 'public/js/permission/list_permission.min.js');
 
     mix.styles([
         'basic.min.css',

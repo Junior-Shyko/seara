@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
-use App\Http\Requests\StoreAccount;
-use App\Http\Requests\UpdateAccountRequest;
-use App\Service\Financing\Account\AccountRepository;
-use App\Service\Financing\Account\ArchiveAccount;
-use App\Service\Financing\Account\CreateAccount;
-use App\Traits\ActionTable;
+use Seara\Http\Requests\StoreAccount;
+use Seara\Http\Requests\UpdateAccountRequest;
+use Seara\Service\Financing\Account\AccountRepository;
+use Seara\Service\Financing\Account\ArchiveAccount;
+use Seara\Service\Financing\Account\CreateAccount;
+use Seara\Traits\ActionTable;
 use Carbon\Carbon;
-use Datatables;
+use DataTables;
 use Illuminate\Http\JsonResponse;
 use DB;
 use Illuminate\Http\Response;
@@ -123,7 +123,7 @@ class AccountController extends Controller
             ->select()
             ->whereNull('archived_at');
 
-        $datatable = Datatables::of($query);
+        $datatable = DataTables::of($query);
 
         $datatable->addColumn('balance', function () {
             return 0.00;

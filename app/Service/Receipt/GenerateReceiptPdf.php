@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Receipt;
+namespace Seara\Service\Receipt;
 
-use App\Models\ReceiptCompany;
+use Seara\Models\ReceiptCompany;
 use Symfony\Component\HttpFoundation\Response;
 use Auth;
 use PDF;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use App\Service\Company\EloquentCompanyRepository;
-use App\Service\Core\Util\DatabaseCleaner;
+use Seara\Service\Company\EloquentCompanyRepository;
+use Seara\Service\Core\Util\DatabaseCleaner;
 use Tests\TestCase;
 
 class EloquentCompanyRepositoryTest extends TestCase

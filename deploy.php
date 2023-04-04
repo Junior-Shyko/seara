@@ -34,6 +34,7 @@ set('bin/composer', function () {
 
 host('production')
     ->hostname('seara')
+    // ->multiplexing(false)
     ->set('deploy_path', '{{webroot}}/{{application}}');
     
 // [Optional] if deploy fails automatically unlock.

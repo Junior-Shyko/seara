@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Company;
+namespace Seara\Service\Company;
 
-use App\DataTransferObject;
+use Seara\DataTransferObject;
 
 class CompanyData extends DataTransferObject
 {

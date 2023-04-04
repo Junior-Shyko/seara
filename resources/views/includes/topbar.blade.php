@@ -12,7 +12,7 @@
                     @if(empty(Auth::user()->users_avatar))
                         <img src="{{ url('img/default-user-avatar.png') }}" alt="Avatar of {{ Auth::user()->name }}">
                     @else
-                        <img src="{{ url('img/'.Auth::user()->users_avatar) }}" alt="Avatar of {{ Auth::user()->name }}">
+                        {{-- <img src="{{ Auth::user()->users_avatar }}" alt="Avatar of {{ Auth::user()->name }}"> --}}
                     @endif
                        
                         {{ Auth::user()->name }}
@@ -21,11 +21,11 @@
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                        
                         <li>
-                            <a href="{{'users/'.base64_encode(Auth::user()->id).'/edit'}}">Editar Perfil</a>
+                            <a href="{{url('users/'.base64_encode(Auth::user()->id).'/edit')}}">Editar Perfil</a>
                         </li>
 
                         <li>
-                            <a href="{{'companies/'.Auth::user()->user_id_company.'/edit'}}">Editar Empresa</a>
+                            <a href="{{url('companies/'.Auth::user()->user_id_company.'/edit')}}">Editar Empresa</a>
                         </li>
                        
                         <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out pull-right"></i> Sair</a></li>

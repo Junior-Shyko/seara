@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\Receivable;
+namespace Seara\Service\Financing\Receivable;
 
-use App\Service\Core\Util\UuidGenerator;
+use Seara\Service\Core\Util\UuidGenerator;
 use Carbon\Carbon;
 
 class CreateReceivable

@@ -57,7 +57,7 @@
     <!-- /page content -->
 
     @include('modals.customer.edit')
-    @include('modals.company.alterAccess')
+    @include('modals.company.alterAccess',['roles' => $roles])
 
 @endsection
 

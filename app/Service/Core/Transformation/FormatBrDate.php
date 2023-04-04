@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\Transformation;
+namespace Seara\Service\Core\Transformation;
 
 use Carbon\Carbon;
 use \InvalidArgumentException;

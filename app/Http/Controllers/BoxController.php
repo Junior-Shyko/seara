@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Box;
-use App\Entry;
-use App\FunctionGeneral;
+use Seara\Box;
+use Seara\Entry;
+use Seara\FunctionGeneral;
 use Auth , DB;
 use Carbon\Carbon;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\Datatables;
 
 class BoxController extends Controller
 {

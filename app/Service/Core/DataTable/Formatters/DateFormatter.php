@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\DataTable\Formatters;
+namespace Seara\Service\Core\DataTable\Formatters;
 
 use Carbon\Carbon;
 use InvalidArgumentException;
 use stdClass;
-use App\Service\Core\DataTable\Formatter;
+use Seara\Service\Core\DataTable\Formatter;
 
 class DateFormatter implements Formatter
 {

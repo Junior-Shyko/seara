@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core;
+namespace Seara\Service\Core;
 
-use App\Service\Core\Util\UuidGenerator;
+use Seara\Service\Core\Util\UuidGenerator;
 
 trait UuidIdentifier
 {

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use App\Service\Core\Util\DatabaseCleaner;
-use App\Service\Financing\Account\AccountNotFound;
-use App\Service\Financing\Account\EloquentAccountRepository;
+use Seara\Service\Core\Util\DatabaseCleaner;
+use Seara\Service\Financing\Account\AccountNotFound;
+use Seara\Service\Financing\Account\EloquentAccountRepository;
 use Tests\TestCase;
 
 class EloquentAccountRepositoryTest extends TestCase

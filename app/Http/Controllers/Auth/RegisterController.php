@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace Seara\Http\Controllers\Auth;
 
-use App\Models\User;
-use App\Http\Controllers\Controller;
+use Seara\Models\User;
+use Seara\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -69,6 +69,6 @@ class RegisterController extends Controller
 			'password' => bcrypt($data['password']),
 			'user_id_company' => 1,
 			'user_id_profile' => 1
-		]);
+		])->givePermissionTo('user_common');;
 	}
 }

@@ -1,8 +1,13 @@
 <?php
 
-namespace App\Providers;
+namespace Seara\Providers;
 
+use Auth;
+use Seara\Entry;
+use App\Models\User;
+use Seara\Permission;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
     }
+
+
 }

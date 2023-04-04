@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
 use DB;
 use Illuminate\Http\Request;
-use App\Models\Company;
-use App\Models\User;
+use Seara\Models\Company;
+use Seara\Models\User;
 use Exception;
 use Validator;
 
-use App\Mail\UserRegistered;
+use Seara\Mail\UserRegistered;
 use Illuminate\Support\Facades\Mail;
 
 use Carbon\Carbon;

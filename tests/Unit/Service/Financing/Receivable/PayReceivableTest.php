@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Service\Financing\Receivable;
 
-use App\Receivable;
-use App\Service\Core\Util\UuidGenerator;
-use App\Service\Financing\Payment\CreatePayment;
-use App\Service\Financing\Receivable\CreateReceivable;
-use App\Service\Financing\Receivable\PayReceivable;
-use App\Service\Financing\Receivable\PendingReceivable\PendingReceivable;
-use App\Service\Financing\Receivable\PendingReceivable\PendingReceivableQuery;
-use App\Service\Financing\Receivable\ReceivableRepository;
+use Seara\Receivable;
+use Seara\Service\Core\Util\UuidGenerator;
+use Seara\Service\Financing\Payment\CreatePayment;
+use Seara\Service\Financing\Receivable\CreateReceivable;
+use Seara\Service\Financing\Receivable\PayReceivable;
+use Seara\Service\Financing\Receivable\PendingReceivable\PendingReceivable;
+use Seara\Service\Financing\Receivable\PendingReceivable\PendingReceivableQuery;
+use Seara\Service\Financing\Receivable\ReceivableRepository;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;

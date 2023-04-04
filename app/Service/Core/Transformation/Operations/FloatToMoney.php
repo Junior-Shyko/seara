@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Core\Transformation\Operations;
+namespace Seara\Service\Core\Transformation\Operations;
 
 class FloatToMoney
 {

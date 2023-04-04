@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace Seara\Http\Controllers;
 
 abstract class AuthenticatedController extends Controller
 {

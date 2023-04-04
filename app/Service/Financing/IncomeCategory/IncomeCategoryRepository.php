@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Financing\IncomeCategory;
+namespace Seara\Service\Financing\IncomeCategory;
 
-use App\Account;
-use App\IncomeCategory;
-use App\Service\Core\UuidRepository;
+use Seara\Account;
+use Seara\IncomeCategory;
+use Seara\Service\Core\UuidRepository;
 use Illuminate\Database\Eloquent\Collection;
 
 interface IncomeCategoryRepository extends UuidRepository
