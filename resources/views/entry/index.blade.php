@@ -3,6 +3,10 @@
     <!-- Example -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.11/jquery.datetimepicker.min.css"
         rel="stylesheet">
+<style>
+   
+
+</style>
 @endpush
 @section('main_container')
     <!-- page content -->

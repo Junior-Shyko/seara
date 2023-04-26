@@ -162,3 +162,7 @@ Route::group(['prefix' => 'permission', 'middleware' => ['role:admin|superAdmin'
     Route::post('alter-role' , 'UserController@alterRoleUser');
     Route::post('alter-permission' , 'UserController@alterPermissionUser');
 });
+
+Route::get('csrf', function() {
+    return csrf_token();
+});

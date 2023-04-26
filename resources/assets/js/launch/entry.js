@@ -9,7 +9,7 @@ $(document).ready(function () {
     $('#realValueTranfer').maskMoney(
         {allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    //$("#lancar_conta").modal('show');
+    $("#lancar_conta").modal('show');
     $("#realValueTranfer").attr('disabled','disabled');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
@@ -61,6 +61,8 @@ $(document).ready(function () {
 
     //valores do caixa banco
     bankBalance(idCompany);
+    
+   
     internalBalance(idCompany);
     general(idCompany);
     $("#save_entry").click(function(){
@@ -215,13 +217,15 @@ function getLaunch(idCompany) {
 }
 
 function bankBalance(idCompany) {
+    var valueBankBalance = '';
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
+        url:SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)
             $("#bankBalance").html(value);
+            $("#balance_bank").html('R$: ' + value);
         }
     });
 }
@@ -234,6 +238,7 @@ function internalBalance(idCompany) {
         success: function (response) {
             var value = formatFloatToBrCoin(response)
             $("#internalBalance").html(value);
+            $("#balance_c_internal").html('R$: ' + value);
         }
     });
 }
@@ -246,6 +251,7 @@ function general(idCompany) {
         success: function (response) {
             var value = formatFloatToBrCoin(response)
             $("#generalBalance").html(value);
+            $("#balance_box_general").html(' R$: ' + value);
         }
     });
 }

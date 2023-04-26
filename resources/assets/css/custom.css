@@ -4285,3 +4285,38 @@ td.action {
 .image-preview-input-title {
     margin-left:2px;
 }
+
+.info-money-box {
+    display: grid;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 16px;
+}
+.badge-dark {
+color: #fff;
+background-color: #343a40;
+}
+.badge-blue {
+color: #fff;
+background-color: #17a2b8;
+}
+.space-money {
+display: flex;
+justify-content: space-around
+}
+.title-entry-modal {
+    display: flex;
+    justify-content: center;
+}
+@media (max-width: 414px) {
+    .info-money-box {
+        font-size: 16px;
+        flex: 1;
+        font-size: 16px;
+        display: grid !important;
+        margin: 3px !important;
+    }
+    .space-money {
+    display: contents !important;
+    }
+ }

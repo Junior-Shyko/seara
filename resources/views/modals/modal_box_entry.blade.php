@@ -8,28 +8,40 @@
                 <h4 class="modal-title" id="myModalLabel">Lançamento no Caixa</h4>
             </div>
             <div class="modal-body">
-                <div class="row alert alert-info" id="infoMonthLaunch">
-                    <div class="col-md-6">
-                        <p id="monthYear">
-                            <strong>MÊS / ANO:
-                            </strong>{{ \Carbon\Carbon::now()->month . ' / ' . \Carbon\Carbon::now()->year }}
-                        </p>
-                    </div>
-                    <div class="col-md-6">
-                        <h4 class="pull-right">
+                <div class="row alert space-money" id="infoMonthLaunch">
+                    
+                    <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
+                        <h5 class="">
                             <strong>
-                                Saldo Atual: {{ number_format($saldo, 2, ',', '.') }}
+                                Saldo banco: <br>
                             </strong>
-                        </h4>
+                        </h5>
+                        <span id="balance_bank"> 0</span>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge badge-dark">
+                        <h5 class="">
+                            <strong>
+                                Caixa Interno:
+                            </strong>
+                        </h5>
+                        <span id="balance_c_internal"> 0</span>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge badge-blue">
+                        <h5 class="">
+                            <strong>
+                                Caixa Geral:
+                            </strong>
+                        </h5>
+                        <span id="balance_box_general"> 0</span>
                     </div>
                 </div>
-                {{-- @include('entry.form') --}}
                 <div>
-
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
-                                data-toggle="tab">Lançamento</a></li>
+                                data-toggle="tab">Caixa interno</a></li>
+                                <li role="presentation" class=""><a href="#bank" aria-controls="home" role="tab"
+                                    data-toggle="tab">Bancos</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
                                 data-toggle="tab">Transferência</a></li>
                         {{-- <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
@@ -39,7 +51,35 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="home">
-                            @include('entry.form')
+                            <form class="form-horizontal form-label-left input_mask" id="form_entry">
+                            
+                            @component('components.form-entry', [
+                                'accounts' => $accounts,
+                                'idCompany' => $idCompany,
+                                'badge_title' => 'badge-dark'
+                                ])
+                                @slot('title', 'Caixa Interno')
+                                @slot('option_bank', '')
+                            @endcomponent
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="bank">
+                            @component('components.form-entry', [
+                                'accounts' => $accounts,
+                                'idCompany' => $idCompany,
+                                'badge_title' => 'bg-green'
+                                ])
+                                @slot('title', 'Caixa Bancário')
+                                @slot('option_bank')
+                                    <div class="col-md-12">
+                                        <select name="" id="" class="form-control">
+                                            <option value="">banco a</option>
+                                            <option value="">BANCO B</option>
+                                            <option value="">BANCO C</option>
+                                        </select>
+                                    </div>
+                                @endslot
+                            @endcomponent
                         </div>
                         <div role="tabpanel" class="tab-pane" id="profile">
                             <div class="row">

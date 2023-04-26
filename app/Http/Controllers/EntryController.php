@@ -405,12 +405,7 @@ class EntryController extends Controller
 
     public function bank($idCompany)
     {
-        $typeEnd = DB::table('account_types')->where('account_types_name', 'Despesa')->get();
-
-        $bankReceita = Monetary::getValueBoxFeed($typeEnd[0]->id, true, $idCompany);
-        $bankDespesa = Monetary::getValueBoxFeed(null, true, $idCompany);
-        $totBanco = ($bankReceita - $bankDespesa);
-        return response()->json($totBanco);
+        return LaunchService::getBoxBank($idCompany);
     }
 
     public function internal($idCompany)
@@ -421,9 +416,12 @@ class EntryController extends Controller
 
     public function general($idCompany)
     {
-        $saldoGer = Monetary::getValueBox($idCompany);
-        $saldo = ($saldoGer['receitas'] - $saldoGer['despesas']);
-        return response()->json($saldo);
+        //SALDO DO CAIXA INTERNO
+        $internal = LaunchService::getBoxInternal($idCompany);
+        //SALDO GERAL
+        $balanceBank = AccountBankRepository::getBalance($idCompany);
+        $balanceGeneral = ($internal + $balanceBank);
+        return $balanceGeneral;
     }
 
     public function reportBox($dateInit, $dateEnd, $idCompany)
