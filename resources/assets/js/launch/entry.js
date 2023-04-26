@@ -1,7 +1,17 @@
 
+$('#tabs-form-launch a[href="#home"]').click(function (e) {
+    e.target // newly activated tab
+    e.relatedTarget // previous active tab
+})
 $(document).ready(function () {
     //id da empresa
     var idCompany = $("#idCodeCompany").val();
+    //OCULTANDO DIVE DE LANÇAMENTO EM BANCO
+    $("#form-launch-register").css('display' , 'none');
+
+   
+       
+
 
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
@@ -66,39 +76,41 @@ $(document).ready(function () {
     internalBalance(idCompany);
     general(idCompany);
     $("#save_entry").click(function(){
-        var form = $('form#form_entry').serialize();
-        SearaAjax.post('lancar', form, function( response ){
-            $("#lancar_conta").modal('hide');
-            if(response.typeAccount == 'Despesa') {
-                $("#modalUploadLaunch").modal('show');
-            }
-            $(".idEntry").val(response.id);
-            $("#entry-table").DataTable().ajax.reload();
-            bankBalance(idCompany);
-            internalBalance(idCompany);
-            general(idCompany);
-            new PNotify({
-                title: 'Sucesso',
-                text: response.message,
-                type: response.status,
-                styling: 'bootstrap3'
-            });
-            if(response.typeAccount == 'Receita') {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            }
+        
+        
+        // SearaAjax.post('lancar', form, function( response ){
+        //     $("#lancar_conta").modal('hide');
+        //     if(response.typeAccount == 'Despesa') {
+        //         $("#modalUploadLaunch").modal('show');
+        //     }
+        //     $(".idEntry").val(response.id);
+        //     $("#entry-table").DataTable().ajax.reload();
+        //     bankBalance(idCompany);
+        //     internalBalance(idCompany);
+        //     general(idCompany);
+        //     new PNotify({
+        //         title: 'Sucesso',
+        //         text: response.message,
+        //         type: response.status,
+        //         styling: 'bootstrap3'
+        //     });
+        //     if(response.typeAccount == 'Receita') {
+        //         setTimeout(() => {
+        //             window.location.reload();
+        //         }, 2000);
+        //     }
            
-        })
-        .fail(function(jqXHR){
-            notify.response(jqXHR.responseJSON);
+        // })
+        // .fail(function(jqXHR){
+        //     notify.response(jqXHR.responseJSON);
 
-        })
-        .always(function(){
-            //console.log('hideModal');
-        });
+        // })
+        // .always(function(){
+        //     //console.log('hideModal');
+        // });
     });
 
+   
     $('#modalDeleteComponent').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
         var launchName = button.data('name') 
@@ -565,10 +577,29 @@ function transferValue() {
        
         SearaLoader.hideModal();
        
-    });
+    });''
 }
 
+function saveDataForm(name_form) {
+    var form = $('#'+name_form).serialize();
+    console.log(form)
+}
 
+$(function () {
+    
+    $("#select-form-option-bank").change(function (e) { 
+        e.preventDefault();
+        console.log(e.target.value)
+        if(e.target.value !== '--') {            
+            $("#form-launch-register").css('display' , 'block');
+            $("#form-launch-register").addClass('animated bounceInUp');
+        }else{
+            $("#form-launch-register").css('display' , 'none');
+        }
+       
+
+    });
+});
 
 
 

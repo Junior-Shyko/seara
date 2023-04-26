@@ -4308,6 +4308,17 @@ justify-content: space-around
     display: flex;
     justify-content: center;
 }
+
+.mb-20 {
+    margin-bottom: 19px
+}
+
+.jumbotron-lauch {
+    background-color: #eee;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #b3b3b3;
+}
 @media (max-width: 414px) {
     .info-money-box {
         font-size: 16px;

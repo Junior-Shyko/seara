@@ -37,11 +37,14 @@
                 </div>
                 <div>
                     <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
+                    <ul class="nav nav-tabs" id="tabs-form-launch" role="tablist">
+                        <li role="presentation" class="active">
+                            <a href="#bank" aria-controls="bank" role="tab"
+                            data-toggle="tab">Bancos</a>
+                        </li>
+                        <li role="presentation"><a href="#home" aria-controls="home" role="tab"
                                 data-toggle="tab">Caixa interno</a></li>
-                                <li role="presentation" class=""><a href="#bank" aria-controls="home" role="tab"
-                                    data-toggle="tab">Bancos</a></li>
+                               
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
                                 data-toggle="tab">Transferência</a></li>
                         {{-- <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
@@ -50,38 +53,50 @@
 
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="home">
-                            <form class="form-horizontal form-label-left input_mask" id="form_entry">
+                        <div role="tabpanel" class="tab-pane active" id="bank">
+                            <form class="form-horizontal form-label-left input_mask" id="form_entry_bank">
+                                @component('components.form-entry', [
+                                    'accounts' => $accounts,
+                                    'idCompany' => $idCompany,
+                                    'badge_title' => 'bg-green',
+                                    'saveBtnForm' => 'form_entry_bank'
+                                    ])
+                                    @slot('title', 'Caixa Bancário')
+                                    @slot('option_bank')
+                                    <div class="form-horizontal">
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <label for="">Selecione um banco</label>                                       
+                                                <select name="entries_bank" id="select-form-option-bank" class="form-control">
+                                                    <option value="--">-- --</option>
+                                                    @foreach ($accountBank as $bank)
+                                                        <option value="{{ $bank->bank_id }}">
+                                                            {{ $bank->nameBank }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>                                           
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endslot
+                                @endcomponent
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane " id="home">
+                            <form class="form-horizontal form-label-left input_mask" id="form_entry_internal">
                             
                             @component('components.form-entry', [
                                 'accounts' => $accounts,
                                 'idCompany' => $idCompany,
-                                'badge_title' => 'badge-dark'
+                                'badge_title' => 'badge-dark',
+                                'saveBtnForm' => 'form_entry_internal'
                                 ])
                                 @slot('title', 'Caixa Interno')
                                 @slot('option_bank', '')
                             @endcomponent
                             </form>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="bank">
-                            @component('components.form-entry', [
-                                'accounts' => $accounts,
-                                'idCompany' => $idCompany,
-                                'badge_title' => 'bg-green'
-                                ])
-                                @slot('title', 'Caixa Bancário')
-                                @slot('option_bank')
-                                {{-- INSTALAR npm install animate.css --save --}}
-                                    <div class="col-md-12">
-                                        <select name="" id="" class="form-control">
-                                            <option value="">banco a</option>
-                                            <option value="">BANCO B</option>
-                                            <option value="">BANCO C</option>
-                                        </select>
-                                    </div>
-                                @endslot
-                            @endcomponent
-                        </div>
+                        
                         <div role="tabpanel" class="tab-pane" id="profile">
                             <div class="row">
                                 <div class="col-md-12 text-center">

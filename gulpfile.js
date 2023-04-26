@@ -243,4 +243,6 @@ elixir(function(mix) {
 
     // Imagens
     mix.copy('resources/assets/img/', 'public/img/');
+
+    mix.styles('./node_modules/animate.css/animate.min.css', 'public/css/plugins')
 });
