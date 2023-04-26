@@ -71,6 +71,7 @@
                                 ])
                                 @slot('title', 'Caixa Bancário')
                                 @slot('option_bank')
+                                {{-- INSTALAR npm install animate.css --save --}}
                                     <div class="col-md-12">
                                         <select name="" id="" class="form-control">
                                             <option value="">banco a</option>
