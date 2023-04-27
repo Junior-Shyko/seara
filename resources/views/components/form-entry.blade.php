@@ -1,5 +1,5 @@
 
-{{ csrf_field() }}
+
 <div class="x_panel">
     <div class="x_title  title-entry-modal">
         <h2 class="badge {{$badge_title}}">
@@ -9,18 +9,28 @@
     </div>
     <div class="x_content bs-example-popovers">
         {{ $option_bank }}
+        
         <div  id="form-launch-register" class="">
-            <div class="col-md-12 col-sm-12 col-xs-12 jumbotron-lauch">
+            <div class="col-md-12 col-sm-12 col-xs-12 jumbotron-lauch" id="jumbotron-lauch">
+                <div class="col-md-12 form-inline center-info-data-bank" id="center-info-data-bank">
+                                                
+                    
+                       
+                </div>
+
                 <div class="col-md-12 form-group">
                     <label class="control-label">Conta </label>
-                    <small style="color:#949494;    margin-left: 40px;"> Pesquise pelo nome</small>
-                    <select name="entries_id_account" id="cod_account" class="form-control select2">
-                        <option value=""></option>
-                        @foreach($accounts as $account)
-                        <option value="{{ $account->id }}">
-                            {{ $account->accountlaunch_name }}
-                        </option>
-                        @endforeach
+                    <small style="color:#949494; margin-left: 40px;"> Pesquise pelo nome</small>
+                    <select name="entries_id_account" 
+                        class="form-control select2 {{$saveBtnForm}}"
+                        data-form="{{$saveBtnForm}}"
+                    >
+                            <option value=""></option>
+                            @foreach($accounts as $account)
+                            <option value="{{ $account->id }}">
+                                {{ $account->accountlaunch_name }}
+                            </option>
+                            @endforeach
                     </select>
                 </div>
 
@@ -28,8 +38,8 @@
                     <label class="control-label">Tipo da conta: </label>
                     <br>
                     <label 
-                    class="control-label text-primary mb-20 "
-                    id="label_desc_type"
+                    class="control-label text-primary mb-20 label_desc_type_internal label_desc_type"
+                    
                     style="font-size: 17px;font-family: cursive;"
                     >. . .</label>
                 </div>
@@ -55,10 +65,22 @@
                     <label for="">Histórico</label>
                     <input type="text" 
                     name="entries_description"
-                    class="form-control has-feedback-left mb-20 "
+                    class="form-control has-feedback-left mb-20 entries_description"
                     id="entries_description"
                     placeholder="Histórico">
                     <span class="fa fa-edit form-control-feedback left" aria-hidden="true"></span>
+                </div>
+                
+                
+                <div class="col-md-12 form-group">
+                    <button 
+                        type="button"
+                        class="btn btn-default btn-xs btn-block badge-dark"
+                        onclick="clearField('{{$saveBtnForm}}')"
+                    >
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                        Limpar campos
+                    </button>
                 </div>
             </div>
         </div>

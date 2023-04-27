@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 
 /*
@@ -23,6 +24,7 @@ Route::group([], function() {
         Route::get('get-info-account/{id}','AccountBankController@getInfoAccountBank');
     });
 
+    Route::post('alterar-valor-banco','EntryController@alterValueLauch')->middleware('auth.basic');
 });
 
 

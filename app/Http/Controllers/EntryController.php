@@ -69,6 +69,7 @@ class EntryController extends Controller
 
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
+
         return view('entry.index', compact(
             'accounts',
             'internal',
@@ -100,7 +101,6 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-
         $rules = [
             'entries_description' => 'required',
             'entries_id_account' => 'required',
@@ -110,7 +110,7 @@ class EntryController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            $messages = $validator->errors()->all();
+            $validator->errors()->all();
             return response(['status' => 'error', 'message' => "Todos os campos são obrigatórios"], 422);
         }
 
@@ -500,5 +500,11 @@ class EntryController extends Controller
     public function allLauch()
     {
         return view('entry.all');
+    }
+
+    public function alterValueLauch(Request $request)
+    {
+        $alterValur = new AccountBankRepository;
+        $alterValur->updateAccountToLauch($request->all());
     }
 }

@@ -279,5 +279,13 @@ class AccountBankRepository {
         return $launch;
     }
 
+    /**
+     * Atualização de valor da conta, através de um lançamento
+     */
+    public function updateAccountToLauch($request)
+    {
+       dump($request);
+    }
+
 
 }

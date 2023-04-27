@@ -4313,12 +4313,26 @@ justify-content: space-around
     margin-bottom: 19px
 }
 
+.ml-3 {
+    margin-left: 3px;
+}
+
+.h-20 {
+    height: 20px;
+}
+
 .jumbotron-lauch {
     background-color: #eee;
     padding: 8px;
     border-radius: 10px;
     border: 1px solid #b3b3b3;
 }
+
+.center-info-data-bank {
+    display: flex;
+    justify-content: space-around;
+}
+
 @media (max-width: 414px) {
     .info-money-box {
         font-size: 16px;

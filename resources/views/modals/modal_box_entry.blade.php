@@ -39,11 +39,11 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" id="tabs-form-launch" role="tablist">
                         <li role="presentation" class="active">
-                            <a href="#bank" aria-controls="bank" role="tab"
+                            <a href="#bank" aria-controls="bank" id="tab-bank" role="tab"
                             data-toggle="tab">Bancos</a>
                         </li>
-                        <li role="presentation"><a href="#home" aria-controls="home" role="tab"
-                                data-toggle="tab">Caixa interno</a></li>
+                        <li role="presentation"><a href="#home" id="tab-home" aria-controls="home" role="tab"
+                                data-toggle="tab" data-form="form_entry_internal">Caixa interno</a></li>
                                
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
                                 data-toggle="tab">Transferência</a></li>
@@ -70,7 +70,12 @@
                                                 <select name="entries_bank" id="select-form-option-bank" class="form-control">
                                                     <option value="--">-- --</option>
                                                     @foreach ($accountBank as $bank)
-                                                        <option value="{{ $bank->bank_id }}">
+                                                        <option 
+                                                            value="{{ $bank->bank_id }}"
+                                                            data-num="{{$bank->number}}"
+                                                            data-age="{{$bank->agency_number}}"
+                                                            data-type="{{$bank->nameTypeBank}}"
+                                                        >
                                                             {{ $bank->nameBank }}
                                                         </option>
                                                     @endforeach
@@ -82,9 +87,9 @@
                                 @endcomponent
                             </form>
                         </div>
+
                         <div role="tabpanel" class="tab-pane " id="home">
                             <form class="form-horizontal form-label-left input_mask" id="form_entry_internal">
-                            
                             @component('components.form-entry', [
                                 'accounts' => $accounts,
                                 'idCompany' => $idCompany,
