@@ -13,7 +13,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
                         <h5 class="">
                             <strong>
-                                Saldo banco: <br>
+                                Banco: <br>
                             </strong>
                         </h5>
                         <span id="balance_bank"> 0</span>
@@ -76,7 +76,7 @@
                                                             data-age="{{$bank->agency_number}}"
                                                             data-type="{{$bank->nameTypeBank}}"
                                                         >
-                                                            {{ $bank->nameBank }}
+                                                        Ag.{{$bank->agency_number}} - {{ $bank->nameBank }}
                                                         </option>
                                                     @endforeach
                                                 </select>                                           

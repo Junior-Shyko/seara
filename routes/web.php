@@ -101,6 +101,8 @@ Route::group(['prefix' => 'api'], function () {
     //PERMISSÃO PARA USUÁRIOS
     Route::get('user-permission' , 'UserController@getUserPermission');
     Route::get('permission-user/{id}' , 'UserController@getPermissionUser');
+    //LANÇAMENTO BANCARIO
+    Route::post('alter-balance-bank','EntryController@alterValueLauch')->middleware('auth.basic');
 });
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {

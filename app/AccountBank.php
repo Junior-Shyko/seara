@@ -34,4 +34,5 @@ class AccountBank extends Model
     {
         return $this->belongsTo('Seara\Bank', 'bank_id');
     }
+
 }

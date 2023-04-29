@@ -505,6 +505,12 @@ class EntryController extends Controller
     public function alterValueLauch(Request $request)
     {
         $alterValur = new AccountBankRepository;
-        $alterValur->updateAccountToLauch($request->all());
+        $save = $alterValur->updateAccountToLauch($request->all());
+
+        if(isset($save->original['status']) && $save->original['status'] == 400) {
+            return response()->json(['message' => 'error'] , 400);
+        }
+
+        return response()->json(['message' => 'success'] , 200);
     }
 }

@@ -23,8 +23,6 @@ Route::group([], function() {
     Route::prefix('account-bank')->group(function () {
         Route::get('get-info-account/{id}','AccountBankController@getInfoAccountBank');
     });
-
-    Route::post('alterar-valor-banco','EntryController@alterValueLauch')->middleware('auth.basic');
 });
 
 

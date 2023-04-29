@@ -3,7 +3,7 @@ $(document).ready(function () {
     //id da empresa
     var idCompany = $("#idCodeCompany").val();
     //OCULTANDO DIVE DE LANÇAMENTO EM BANCO
-    // $("#form-launch-register").css('display' , 'none');
+    $("#form-launch-register").css('display' , 'none');
 
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
@@ -603,9 +603,6 @@ jQuery.each( seriArray, function( i, field ) {
     }
 
   } );
-  console.log({verifyBank})
-  console.log({idBank})
-  console.log({valueLanchBank})
     if(verifyBank) {
        alterValueBank(idBank, valueLanchBank);
     }
@@ -643,11 +640,33 @@ jQuery.each( seriArray, function( i, field ) {
     });
 }
 function alterValueBank(idBank, valueLanchBank){
-    var idAccountBank   = $("#input_form_agency_bank").val();
+    var agencyAccountBa   = $("#input_form_agency_bank").val();
     var idNumberAccount = $("#input_form_number_account").val();
     var typeAccountbank = $("#input_form_type_account").val();
-    console.log(idBank, valueLanchBank, idAccountBank, idNumberAccount, typeAccountbank)
-    
+    // console.log(idBank, valueLanchBank, idAccountBank, idNumberAccount, typeAccountbank)
+    var dataPost = {
+        idBank: idBank,        
+        agencyAccountBa: agencyAccountBa,
+        idNumberAccount: 333333,
+        typeAccountbank: typeAccountbank,
+        valueLanchBank: valueLanchBank
+    }
+    SearaAjax.post('api/alter-balance-bank', dataPost, function( response ){
+        console.log(response)
+        if(response == 'error') {
+            console.log(response)
+            new PNotify({
+                title: 'Error',
+                text: 'Ocorreu um erro inexperado',
+                type: 'error',
+                styling: 'bootstrap3'
+            });
+        }
+    })
+    .fail(function(jqXHR){
+        // notify.response(jqXHR.responseJSON);
+        console.log(jqXHR)
+    })
     
 }
 //REMOVENDO OS VALORES DOS INPUTS DO FORMULÁRIO

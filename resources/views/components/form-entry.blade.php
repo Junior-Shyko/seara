@@ -9,14 +9,11 @@
     </div>
     <div class="x_content bs-example-popovers">
         {{ $option_bank }}
-        
+        {{ csrf_token() }}
         <div  id="form-launch-register" class="">
             <div class="col-md-12 col-sm-12 col-xs-12 jumbotron-lauch" id="jumbotron-lauch">
-                <div class="col-md-12 form-inline center-info-data-bank" id="center-info-data-bank">
-                                                
-                    
-                       
-                </div>
+
+                <div class="col-md-12 form-inline center-info-data-bank" id="center-info-data-bank"></div>
 
                 <div class="col-md-12 form-group">
                     <label class="control-label">Conta </label>
