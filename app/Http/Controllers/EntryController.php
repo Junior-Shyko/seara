@@ -506,11 +506,11 @@ class EntryController extends Controller
     {
         $alterValur = new AccountBankRepository;
         $save = $alterValur->updateAccountToLauch($request->all());
-
+        
         if(isset($save->original['status']) && $save->original['status'] == 400) {
             return response()->json(['message' => 'error'] , 400);
         }
 
-        return response()->json(['message' => 'success'] , 200);
+        return response()->json(['message' => 'success', 'value' => $save->original['value']] , 200);
     }
 }

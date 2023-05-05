@@ -302,9 +302,14 @@ class AccountBankRepository
             //Formatando para o valor em moeda
             $valueBank = Monetary::money_real($request['valueLanchBank']);
             //Alterando o valor da conta
-            $service->balance += (float) $valueBank;
+            if($request['typeTransaction'] == 'Receita') {
+                $service->balance += (float) $valueBank;
+            }else{
+                $service->balance -= (float) $valueBank;
+            }
+            
             $service->save();//salvando os dados
-            return response()->json(['message' => 'success'], 200);
+            return response()->json(['message' => 'success', 'value' => $service->balance ], 200);
         } catch (\Exception $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => 400], 400);
         }

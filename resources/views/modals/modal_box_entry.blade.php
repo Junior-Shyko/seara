@@ -76,7 +76,7 @@
                                                             data-age="{{$bank->agency_number}}"
                                                             data-type="{{$bank->nameTypeBank}}"
                                                         >
-                                                        Ag.{{$bank->agency_number}} - {{ $bank->nameBank }}
+                                                        Conta:  {{$bank->agency_number}} - Banco: {{ $bank->nameBank }}
                                                         </option>
                                                     @endforeach
                                                 </select>                                           
@@ -161,6 +161,7 @@
                             <div class="clearfix" style="padding-bottom: 10px"></div>
                             <div class="modal-footer">
                                 <input type="hidden" name="valueGetInfo" id="valueGetInfo">
+                                
                                 <input type="hidden" name="valueInternal" id="valueInternal" value="{{ number_format($saldo, 2, ',', '.') }}">
                                 <input type="hidden" name="transaction_id" id="transaction_id_transfer" value="2">
                                 <button type="button" class="btn btn-default  pull-left"

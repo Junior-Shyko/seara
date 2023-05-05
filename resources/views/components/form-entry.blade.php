@@ -1,5 +1,3 @@
-
-
 <div class="x_panel">
     <div class="x_title  title-entry-modal">
         <h2 class="badge {{$badge_title}}">
@@ -9,7 +7,7 @@
     </div>
     <div class="x_content bs-example-popovers">
         {{ $option_bank }}
-        {{ csrf_token() }}
+
         <div  id="form-launch-register" class="">
             <div class="col-md-12 col-sm-12 col-xs-12 jumbotron-lauch" id="jumbotron-lauch">
 
@@ -85,6 +83,8 @@
 </div>
 <div class="form-group row">
     <div class="col-md-12 col-sm-12 offset-md-3">
+        <input type="hidden" id="typeTransactionForm" class="typeTransactionForm">
+        <input type="hidden" id="entries_id_user" name="entries_id_user" value="{{ Auth::user()->id}}" class="entries_id_user">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
         <button type="button" class="btn btn-primary pull-right" onclick="saveDataForm('{{$saveBtnForm}}')">Salvar Lançamento 
         <i class="fa fa-floppy-o" aria-hidden="true"></i>
