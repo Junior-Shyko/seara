@@ -1,4 +1,4 @@
-<form class="form-horizontal form-label-left input_mask" id="form_entry">
+
     {{ csrf_field() }}
     <div class="x_panel">
         <div class="x_title">
@@ -83,4 +83,3 @@
             </button>
         </div>
     </div>
-</form>
