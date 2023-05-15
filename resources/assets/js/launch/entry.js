@@ -11,7 +11,7 @@ $(document).ready(function () {
     $('#realValueTranfer').maskMoney(
         {allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    $("#lancar_conta").modal('show');
+    // $("#lancar_conta").modal('show');
     $("#realValueTranfer").attr('disabled','disabled');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
@@ -608,7 +608,7 @@ function saveDataForm(name_form) {
     form = form + '&entries_id_company=' + idCompany
     //enviando requisição
     SearaAjax.post('lancar', form, function( response ){
-        $("#lancar_conta").modal('hide');
+        
         if(response.typeAccount == 'Despesa') {
             $("#modalUploadLaunch").modal('show');
         }
@@ -625,7 +625,7 @@ function saveDataForm(name_form) {
         });
         if(response.typeAccount == 'Receita') {
             setTimeout(() => {
-                window.location.reload();
+                // window.location.reload();
             }, 2000);
         }
         
@@ -680,10 +680,6 @@ function clearField(name_form) {
 }
 //AÇÃO QUANDO CLICAR NAS TABS
 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    // newly activated tab
-    console.log(e)
-    // previous active tab
-    console.log(e.target.dataset.form)
    switch (e.target.dataset.form) {
        case 'form_entry_internal':
             clearSelect2Form();
