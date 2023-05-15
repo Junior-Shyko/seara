@@ -1,7 +1,9 @@
-
 $(document).ready(function () {
+
     //id da empresa
     var idCompany = $("#idCodeCompany").val();
+    //OCULTANDO DIVE DE LANÇAMENTO EM BANCO
+    $("#form-launch-register").css('display' , 'none');
 
     $('#entries_value').maskMoney(
         {prefix:'R$ ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
@@ -9,7 +11,7 @@ $(document).ready(function () {
     $('#realValueTranfer').maskMoney(
         {allowNegative: true, thousands:'.', decimal:',', affixesStay: false}
     );
-    //$("#lancar_conta").modal('show');
+    // $("#lancar_conta").modal('show');
     $("#realValueTranfer").attr('disabled','disabled');
     //$("#dateRetroactive").hide();
     jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
@@ -61,42 +63,46 @@ $(document).ready(function () {
 
     //valores do caixa banco
     bankBalance(idCompany);
+    
+   
     internalBalance(idCompany);
     general(idCompany);
     $("#save_entry").click(function(){
-        var form = $('form#form_entry').serialize();
-        SearaAjax.post('lancar', form, function( response ){
-            $("#lancar_conta").modal('hide');
-            if(response.typeAccount == 'Despesa') {
-                $("#modalUploadLaunch").modal('show');
-            }
-            $(".idEntry").val(response.id);
-            $("#entry-table").DataTable().ajax.reload();
-            bankBalance(idCompany);
-            internalBalance(idCompany);
-            general(idCompany);
-            new PNotify({
-                title: 'Sucesso',
-                text: response.message,
-                type: response.status,
-                styling: 'bootstrap3'
-            });
-            if(response.typeAccount == 'Receita') {
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            }
+        
+        
+        // SearaAjax.post('lancar', form, function( response ){
+        //     $("#lancar_conta").modal('hide');
+        //     if(response.typeAccount == 'Despesa') {
+        //         $("#modalUploadLaunch").modal('show');
+        //     }
+        //     $(".idEntry").val(response.id);
+        //     $("#entry-table").DataTable().ajax.reload();
+        //     bankBalance(idCompany);
+        //     internalBalance(idCompany);
+        //     general(idCompany);
+        //     new PNotify({
+        //         title: 'Sucesso',
+        //         text: response.message,
+        //         type: response.status,
+        //         styling: 'bootstrap3'
+        //     });
+        //     if(response.typeAccount == 'Receita') {
+        //         setTimeout(() => {
+        //             window.location.reload();
+        //         }, 2000);
+        //     }
            
-        })
-        .fail(function(jqXHR){
-            notify.response(jqXHR.responseJSON);
+        // })
+        // .fail(function(jqXHR){
+        //     notify.response(jqXHR.responseJSON);
 
-        })
-        .always(function(){
-            //console.log('hideModal');
-        });
+        // })
+        // .always(function(){
+        //     //console.log('hideModal');
+        // });
     });
 
+   
     $('#modalDeleteComponent').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
         var launchName = button.data('name') 
@@ -143,19 +149,6 @@ $(document).ready(function () {
     $('#modalInfoLaunch').on('hidden.bs.modal', function (_e) {
         $("#filesEntri div").remove();
     })
-
-    $("#cod_account").change(function(_event) {
-    hideDivs();
-    	/* Act on the event */
-        var codAccount = $("#cod_account").val();
-	    $.get(SearaApp.baseURL+'/launch/account/search/'+codAccount, function(data) {
-	    	/*optional stuff to do after success */
-            $("#label_desc_type").html(data[0].account_types_name);
-            $("#entries_description").val(data[0].accountlaunch_history);
-            $("#account_launches_referring").html(data[0].account_launches_referring);
-            showDivs();
-	    });
-    });
     $('#cod_account').select2({
       placeholder: 'Escolha a conta',
       allowClear: true
@@ -174,8 +167,31 @@ $(document).ready(function () {
         timepicker:false,
         format:'d/m/Y'
     });
+
+    var $form_entry_internal = $(".form_entry_internal");
+    $form_entry_internal.select2();
+    $form_entry_internal.on("change", function (e) {
+        console.log(e)
+        getLaunchAccount(e.delegateTarget.value);
+    });
+
+    var $form_entry_bank = $(".form_entry_bank");
+    $form_entry_bank.select2();
+    $form_entry_bank.on("change", function (e) {
+        console.log(e)
+        getLaunchAccount(e.delegateTarget.value);
+    });
 });
 
+function getLaunchAccount(codAccount) {
+    $.get(SearaApp.baseURL+'/launch/account/search/'+codAccount, function(data) {
+        $(".label_desc_type").html(data[0].account_types_name);
+        $(".typeTransactionForm").val(data[0].account_types_name);
+        $(".entries_description").val(data[0].accountlaunch_history);
+        // $(".account_launches_referring").html(data[0].account_launches_referring);
+        showDivs();
+    });
+}    
 var idCompany = $("#idCodeCompany").val();
 
 function getLaunch(idCompany) {
@@ -215,13 +231,15 @@ function getLaunch(idCompany) {
 }
 
 function bankBalance(idCompany) {
+    var valueBankBalance = '';
     $.ajax({
         type: "GET",
-        url: SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
+        url:SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
         dataType: "json",
         success: function (response) {
             var value = formatFloatToBrCoin(response)
             $("#bankBalance").html(value);
+            $("#balance_bank").html('R$: ' + value);
         }
     });
 }
@@ -234,6 +252,7 @@ function internalBalance(idCompany) {
         success: function (response) {
             var value = formatFloatToBrCoin(response)
             $("#internalBalance").html(value);
+            $("#balance_c_internal").html('R$: ' + value);
         }
     });
 }
@@ -246,6 +265,7 @@ function general(idCompany) {
         success: function (response) {
             var value = formatFloatToBrCoin(response)
             $("#generalBalance").html(value);
+            $("#balance_box_general").html(' R$: ' + value);
         }
     });
 }
@@ -559,10 +579,157 @@ function transferValue() {
        
         SearaLoader.hideModal();
        
+    });''
+}
+
+function saveDataForm(name_form) {
+    var form = $('#'+name_form).serialize();
+
+    var seriArray = $('#'+name_form).serializeArray();
+
+    //VAR INICIANDO COMO FALSO PARA LANCAMENTO CAIXA INTERNO
+    var verifyBank = false;
+    var idBank = 0;
+    var valueLanchBank = 0;
+
+    //FAZENDO UMA VARREDURA NOS CAMPOS DO FORMULARIO
+    jQuery.each( seriArray, function( i, field ) {
+        //SE ACHAR O INDICE ENTRIES_BANK ENTAO ALTERA O VALOR DA VARIAVEL
+        if(field.name == 'entries_bank') {
+            verifyBank = true;
+            idBank = seriArray[i].value;
+            valueLanchBank = seriArray[3].value;
+        }
+    });
+    if(verifyBank) {
+       alterValueBank(idBank, valueLanchBank);
+    }
+    //concatenendo com id da compania
+    form = form + '&entries_id_company=' + idCompany
+    //enviando requisição
+    SearaAjax.post('lancar', form, function( response ){
+        
+        if(response.typeAccount == 'Despesa') {
+            $("#modalUploadLaunch").modal('show');
+        }
+        $(".idEntry").val(response.id);
+        $("#entry-table").DataTable().ajax.reload();
+        bankBalance(idCompany);
+        internalBalance(idCompany);
+        general(idCompany);
+        new PNotify({
+            title: 'Sucesso',
+            text: response.message,
+            type: response.status,
+            styling: 'bootstrap3'
+        });
+        if(response.typeAccount == 'Receita') {
+            setTimeout(() => {
+                // window.location.reload();
+            }, 2000);
+        }
+        
+    })
+    .fail(function(jqXHR){
+        notify.response(jqXHR.responseJSON);
+
+    })
+    .always(function(){
+        //console.log('hideModal');
     });
 }
 
+//Altera o valor bancario em momento de execução
+function alterValueBank(idBank, valueLanchBank){
+    var agencyAccountBa   = $("#input_form_agency_bank").val();
+    var idNumberAccount = $("#input_form_number_account").val();
+    var typeAccountbank = $("#input_form_type_account").val();
+    var typeTransaction = $(".typeTransactionForm").val();
+    // console.log(idBank, valueLanchBank, idAccountBank, idNumberAccount, typeAccountbank)
+    var dataPost = {
+        idBank: idBank,//id da conta bancaria 
+        agencyAccountBa: agencyAccountBa,//numero da agencia bancaria
+        idNumberAccount: idNumberAccount,//numero da conta
+        typeAccountbank: typeAccountbank,//tipo conta corrente ou poupança
+        valueLanchBank: valueLanchBank,//valor da transação
+        typeTransaction: typeTransaction//tipo de receita ou despesa
+    }
+    //requisiçaõ com os dados para banckend
+    SearaAjax.post('api/alter-balance-bank', dataPost, function( response ){
+        //em casos de erro
+        if(response.message == 'error') {
+            new PNotify({
+                title: 'Error',
+                text: 'Ocorreu um erro inexperado',
+                type: 'error',
+                styling: 'bootstrap3'
+            });
+        }else{
+            // atualização dos dados
+            bankBalance(idCompany);
+            internalBalance(idCompany);
+            general(idCompany);
+        }
+    })
+    
+}
+//REMOVENDO OS VALORES DOS INPUTS DO FORMULÁRIO
+function clearField(name_form) {
+    $('#' + name_form)[0].reset();
+    clearSelect2Form()
+}
+//AÇÃO QUANDO CLICAR NAS TABS
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+   switch (e.target.dataset.form) {
+       case 'form_entry_internal':
+            clearSelect2Form();
+            clearField('form_entry_internal');
+            $("#center-info-data-bank").remove();
+            break;
+   
+       default:
+           break;
+   }
+ })
 
+function clearSelect2Form()
+{
+    $('.form_entry_internal').val(null).trigger('change');
+    $(".label_desc_type_internal").html('. . .')
+}
+$(function () {
+    
+    $("#select-form-option-bank").change(function (e) { 
+        e.preventDefault();
+        console.log(e)
+        $("#center-info-data-bank").empty();
+        console.log($("#select-form-option-bank").find(':selected').data('num'))
+        var numberAccount = $("#select-form-option-bank").find(':selected').data('num');
+        var typeAccount = $("#select-form-option-bank").find(':selected').data('type');
+        var agencyBank = $("#select-form-option-bank").find(':selected').data('age');
+
+        if(e.target.value !== '--') {            
+            $("#form-launch-register").css('display' , 'block');
+            $("#form-launch-register").addClass('animated bounceInUp');
+            $("#jumbotron-lauch").append('<div class="col-md-12 form-inline center-info-data-bank" id="center-info-data-bank"></div>');
+            $("#center-info-data-bank").append('<div class="form-group">'+
+                    '<label for="">Ag. : </label>'+
+                    '<input type="text" name="ag_bank" value="'+agencyBank+'" class="form-control  h-20 ml-3" id="input_form_agency_bank" disabled placeholder="Jane Doe">'+
+                '</div>'+
+                '<div class="form-group">'+
+                    '<label for="">Conta : </label>'+
+                    '<input type="text" name="num_account" value="'+numberAccount+'" class="form-control h-20 ml-3" id="input_form_number_account" disabled placeholder="jane.doe@example.com">'+
+                '</div>'+
+                '<div class="form-group">'+
+                    '<label for="">Tipo : </label>'+
+                    '<input type="text" name="type_account" value="'+typeAccount+'" class="form-control h-20 ml-3" id="input_form_type_account" disabled placeholder="jane.doe@example.com">'+
+                '</div>')
+        }else{
+            $("#form-launch-register").css('display' , 'none');
+            $("#center-info-data-bank").remove();
+        }
+    });
+});
 
 
 

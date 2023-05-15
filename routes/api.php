@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
 
 /*
@@ -22,7 +23,6 @@ Route::group([], function() {
     Route::prefix('account-bank')->group(function () {
         Route::get('get-info-account/{id}','AccountBankController@getInfoAccountBank');
     });
-
 });
 
 

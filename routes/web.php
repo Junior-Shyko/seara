@@ -101,6 +101,8 @@ Route::group(['prefix' => 'api'], function () {
     //PERMISSÃO PARA USUÁRIOS
     Route::get('user-permission' , 'UserController@getUserPermission');
     Route::get('permission-user/{id}' , 'UserController@getPermissionUser');
+    //LANÇAMENTO BANCARIO
+    Route::post('alter-balance-bank','EntryController@alterValueLauch')->middleware('auth.basic');
 });
 // PARA LANÇAMENTO DE CONTAS DO MOVIMENTO DO CAIXA
 Route::group(['prefix' => 'launch'], function () {
@@ -161,4 +163,8 @@ Route::group(['prefix' => 'permission', 'middleware' => ['role:admin|superAdmin'
     Route::delete('user/{id}', 'UserController@userDeletePermission');
     Route::post('alter-role' , 'UserController@alterRoleUser');
     Route::post('alter-permission' , 'UserController@alterPermissionUser');
+});
+
+Route::get('csrf', function() {
+    return csrf_token();
 });

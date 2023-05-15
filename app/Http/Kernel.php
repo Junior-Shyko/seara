@@ -30,7 +30,7 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \Seara\Http\Middleware\VerifyCsrfToken::class,
+            // \Seara\Http\Middleware\VerifyCsrfToken::class,
 			\Illuminate\Routing\Middleware\SubstituteBindings::class,
             ConvertEmptyStringsToNull::class,
             TrimStrings::class

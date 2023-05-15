@@ -15,7 +15,11 @@
 
   <!-- Gentelella -->
   <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">
-  <link rel="icon" href="{{ asset('img/favicon.png')}}">
+  <link href="{{ asset("css/gentelella.min.css") }}" rel="stylesheet">
+  {{-- <link rel="icon" href="{{ asset('css/plugins/animate.min.css')}}"> --}}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.0/animate.min.css" 
+  integrity="sha512-wyfUxKCJqlTFPc9qJy328AyR3g0cY8m/zQ6SQJdDA1QMV+ZWRHKRtmhv946ijpeZUEyFpzo4dILZXtkoaT+0sg=="
+   crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <script type="text/javascript">
     var url_project_teste = "{{url('seara/public/')}}";
