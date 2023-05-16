@@ -6,7 +6,7 @@ setup:
 	cp .env.example .env
 	docker-compose up -d
 	docker-compose exec php composer install
-	docker-compose exec php composer run-script setup
+#   docker-compose exec php composer run-script setup
 	docker-compose exec php php artisan ide-helper:generate
 	docker-compose exec php php artisan ide-helper:meta
 	docker-compose exec node npm install gulp@3.x laravel-elixir
