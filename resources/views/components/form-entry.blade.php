@@ -84,7 +84,7 @@
 <div class="form-group row">
     <div class="col-md-12 col-sm-12 offset-md-3">
         <input type="hidden" id="typeTransactionForm" class="typeTransactionForm">
-        <input type="text" name="idAccountBank" id="idAccountBank">
+        <input type="hidden" name="idAccountBank" id="idAccountBank">
         <input type="hidden" id="entries_id_user" name="entries_id_user" value="{{ Auth::user()->id}}" class="entries_id_user">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
         <button type="button" class="btn btn-primary pull-right" onclick="saveDataForm('{{$saveBtnForm}}')">
