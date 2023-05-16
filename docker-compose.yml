@@ -11,7 +11,7 @@ services:
     environment:
       - MYSQL_DATABASE=seara
       - MYSQL_ROOT_PASSWORD=root
-  php_dev:
+  php:
     image: fcoedno/php:7.1-fpm-dev
     container_name: php_dev
     volumes:
@@ -25,9 +25,9 @@ services:
     volumes:
       - ./:/code:ro
     depends_on:
-      - php_dev
+      - php
     ports:
-      - 8000:80
+      - 8080:80
     environment:
       - NGINX_HOST=seara.localhost
       - NGINX_ROOT=/code/public
