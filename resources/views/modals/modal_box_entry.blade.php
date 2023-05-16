@@ -66,7 +66,7 @@
                                     <div class="form-horizontal">
                                         <div class="form-group row">
                                             <div class="col-md-12">
-                                                <label for="">Selecione um banco</label>                                       
+                                                <label for="">Selecione um banco</label>                               
                                                 <select name="entries_bank" id="select-form-option-bank" class="form-control">
                                                     <option value="--">-- --</option>
                                                     @foreach ($accountBank as $bank)
@@ -75,6 +75,7 @@
                                                             data-num="{{$bank->number}}"
                                                             data-age="{{$bank->agency_number}}"
                                                             data-type="{{$bank->nameTypeBank}}"
+                                                            data-idaccount="{{$bank->id}}"
                                                         >
                                                         Conta:  {{$bank->agency_number}} - Banco: {{ $bank->nameBank }}
                                                         </option>

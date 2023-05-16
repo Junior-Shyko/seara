@@ -7,6 +7,7 @@ use Seara\Entry;
 use Auth, DB, PDF;
 use Carbon\Carbon;
 use Seara\FileLaunch;
+use Seara\AccountBank;
 use Seara\AccountType;
 use Seara\AccountLaunch;
 use Seara\SettingsEntry;
@@ -15,10 +16,10 @@ use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Http\Controllers\Controller;
-use Seara\Service\Launch\LaunchService;
 use Spatie\Permission\Traits\HasRoles;
-use Spatie\Permission\Models\Permission;
+use Seara\Service\Launch\LaunchService;
 use Seara\Permission as SearaPermission;
+use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
@@ -120,6 +121,8 @@ class EntryController extends Controller
         try {
             $reques = Monetary::money_real($request['entries_value']);
             $request['entries_value'] = $reques;
+            //recebendo o id do registro da conta bancária
+            $request['entries_bank'] = $request['idAccountBank'];       
             $entry = Entry::create($request->all());
             $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([
@@ -211,13 +214,25 @@ class EntryController extends Controller
      */
     public function destroy(Request $request)
     {
+        //exclusao dos arquivos, caso tenha
         $files = FileLaunch::where('file_launches_id_entry', '=', $request->id)->get();
-
+       
         foreach ($files as $key => $value) {
             FileLaunch::where('id', $value->id)->delete();
         }
         try {
-            $entry = Entry::where('entries_id', $request->id)->delete();
+            $entry = Entry::where('entries_id', $request->id)->first();
+            //se o lançamento tiver um id de conta bancaria então realiza a dedução do valor
+            if($entry->entries_bank == 0 || !empty($entry->entries_bank) )
+            {
+                $account_bank = AccountBank::find($entry->entries_bank);//instanciando o conta
+                if(!is_null($account_bank)){
+                    $valueBank = Monetary::money_real($entry->entries_value);//formatando o valor
+                    $account_bank->balance  -= (float) $valueBank;//reduzindo o valor da conta
+                    $account_bank->save();//salvando os dados
+                }               
+            }
+            $entry->delete();//excluindo o lançamento
             return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
