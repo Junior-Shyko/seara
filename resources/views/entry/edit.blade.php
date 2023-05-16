@@ -58,27 +58,7 @@
                             id="entries_value"
                             name="entries_value" value="{{number_format($launch[0]->entries_value,2,',','.')}}">
                         </div>
-                        {{-- <div class="col-md-8 col-sm-6 form-group">
-                            <label for="">Tipo de caixa:</label>
-                            <div class="">
-                                @if ($launch[0]->entries_bank == 0)
-                                <label class="btn btn-primary">
-                                    <input type="radio"  name="entries_bank" value="true"> Banco
-                                    </label>
-                                    <label class="btn btn-primary">
-                                    <input type="radio" checked name="entries_bank" value="false"> Interno
-                                    </label>
-                                @else
-                                <label class="btn btn-primary">
-                                    <input type="radio"  checked name="entries_bank" value="true"> Banco
-                                    </label>
-                                    <label class="btn btn-primary">
-                                    <input type="radio"  name="entries_bank" value="false"> Interno
-                                    </label>
-                                @endif
-                                
-                            </div>
-                        </div> --}}
+                        
                     </div>
                     <div class="row">
                         <div class="col-md-12 col-sm-12">

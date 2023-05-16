@@ -591,7 +591,6 @@ function saveDataForm(name_form) {
     var verifyBank = false;
     var idBank = 0;
     var valueLanchBank = 0;
-
     //FAZENDO UMA VARREDURA NOS CAMPOS DO FORMULARIO
     jQuery.each( seriArray, function( i, field ) {
         //SE ACHAR O INDICE ENTRIES_BANK ENTAO ALTERA O VALOR DA VARIAVEL
@@ -707,7 +706,8 @@ $(function () {
         var numberAccount = $("#select-form-option-bank").find(':selected').data('num');
         var typeAccount = $("#select-form-option-bank").find(':selected').data('type');
         var agencyBank = $("#select-form-option-bank").find(':selected').data('age');
-
+        var idAccountBank = $("#select-form-option-bank").find(':selected').data('idaccount');
+        $("#idAccountBank").val(idAccountBank);
         if(e.target.value !== '--') {            
             $("#form-launch-register").css('display' , 'block');
             $("#form-launch-register").addClass('animated bounceInUp');
