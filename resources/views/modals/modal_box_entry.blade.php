@@ -66,7 +66,7 @@
                                     <div class="form-horizontal">
                                         <div class="form-group row">
                                             <div class="col-md-12">
-                                                <label for="">Selecione um banco</label>                               
+                                                <label for="">Selecione um banco</label>                                       
                                                 <select name="entries_bank" id="select-form-option-bank" class="form-control">
                                                     <option value="--">-- --</option>
                                                     @foreach ($accountBank as $bank)
