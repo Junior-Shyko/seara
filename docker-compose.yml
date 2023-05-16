@@ -1,12 +1,13 @@
 version: '2'
 services:
-  database_prod:
+  database:
     image: mariadb:10
+    container_name: database_prod
     volumes:
       - database:/var/lib/mysql
       - ./files:/opt/files
     ports:
-      - 4242:3306
+      - 4236:3306
     environment:
       - MYSQL_DATABASE=seara
       - MYSQL_ROOT_PASSWORD=root
@@ -15,21 +16,23 @@ services:
   #   environment:
   #     - MYSQL_DATABASE=seara
   #     - MYSQL_ROOT_PASSWORD=root
-  php_prod:
+  php:
     image: fcoedno/php:7.1-fpm-dev
+    container_name: php_prod
     volumes:
       - ./:/code
       - composercache:/.composer
       - './docker/php/docker-php-composer.ini:/usr/local/etc/php/conf.d/docker-php-composer.ini'
     working_dir: /code
-  web_prod:
+  web:
     image: fcoedno/nginx:1.13.8-dev
+    container_name: web_prod
     volumes:
       - ./:/code:ro
     depends_on:
       - php
     ports:
-      - 8000:80
+      - 8080:80
     environment:
       - NGINX_HOST=seara.localhost
       - NGINX_ROOT=/code/public
@@ -53,13 +56,14 @@ services:
   #     - NGINX_HOST=seara.localhost
   #     - NGINX_ROOT=/code/public
   #     - NGINX_FPM_HOST=phptest
-  node_prod:
+  node:
+    container_name: node_prod
     build: docker/node/
     volumes:
       - ./:/code
     working_dir: /code
     command: tail -f /dev/null
 volumes:
-  database_prod:
+  database:
   composercache:
 
