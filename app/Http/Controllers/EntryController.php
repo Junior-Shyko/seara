@@ -119,10 +119,15 @@ class EntryController extends Controller
         $request['entries_date_launch'] = $date_launch;
 
         try {
+            //por padrão 
+            $request['entries_bank'] = 0;
             $reques = Monetary::money_real($request['entries_value']);
             $request['entries_value'] = $reques;
             //recebendo o id do registro da conta bancária
-            $request['entries_bank'] = $request['idAccountBank'];       
+            
+            if(!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])){
+                $request['entries_bank'] = $request['idAccountBank'];
+            }
             $entry = Entry::create($request->all());
             $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([
