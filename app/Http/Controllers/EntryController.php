@@ -362,6 +362,11 @@ class EntryController extends Controller
                 if(Auth::user()->hasRole('user') ) {
                     return $btnUserRole;
                 }
+                //desabilitanco exclusao para lancamentos filhos
+                $disabled = '';
+                if($mov->entries_parent == -1){
+                    $disabled = 'disabled';
+                }
                 //qualquer outro nivel de acesso
                 return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
                 data-toggle="modal"
@@ -375,7 +380,7 @@ class EntryController extends Controller
                 data-target="#modalEditLauch">
                 <i class="fa fa-edit" aria-hidden="true"></i></button>
                 '.$btnUserRole.'
-                <button class="btn btn-danger btn-xs" type="button" title="Excluir Registro"
+                <button class="btn btn-danger btn-xs" '.$disabled.' type="button" title="Excluir Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-name="' . $mov->entries_description . '"
