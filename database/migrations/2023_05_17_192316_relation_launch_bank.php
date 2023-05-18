@@ -15,8 +15,10 @@ class RelationLaunchBank extends Migration
     {
         Schema::create('relation_launch_bank', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('entry');
-            $table->integer('banck');
+            $table->integer('account_parent')->nullable(false);
+            $table->integer('account_child')->nullable(false);
+            $table->float('value', 8, 2)->nullable(false);
+            $table->string('type', 30)->nullable(false);
             $table->timestamps();
         });
     }
