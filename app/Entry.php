@@ -20,6 +20,7 @@ class Entry extends Model
         'entries_date_launch',
         'updated_at',
         'entries_bank',
-        'transaction_id'
+        'transaction_id',
+        'entries_parent'
     ];
 }
