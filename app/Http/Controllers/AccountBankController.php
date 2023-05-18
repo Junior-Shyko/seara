@@ -24,6 +24,8 @@ class AccountBankController extends Controller
     use ActionTable;
     const ENTRY = 1;
     const TRANSFER = 2;
+
+    const CHILD = -1;
     /**
      * Display a listing of the resource.
      *
@@ -191,7 +193,7 @@ class AccountBankController extends Controller
         $request['transaction_id'] == 1 ? $typeEntry = AccountBankController::ENTRY : $typeEntry = AccountBankController::TRANSFER;
         //PASSANDO O VALOR DA TRANSFERENCIA E O VALOR ATUAL DA DETERMINADA CONTA
         $transfer = AccountBankRepository::transfer($request->all());
-       
+
         if($transfer->getStatusCode() == 400)
             return response()->json([
                 'type' => 'error',
@@ -201,12 +203,16 @@ class AccountBankController extends Controller
         /**
          * ESSA CONDIÇÃO É QUANDO É UMA TRANSFERENCIA DO CAIXA PARA BANCO
          */
+       
         if($typeEntry == 2 && $request['idAccountEnd'] == 0)
         {
+            $request['entries_bank'] = 0;
             $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+            $launch['entries_parent'] = AccountBankController::CHILD;//ADD ID DA CONTA FILHA
             CreateLaunch::create($launch);    
             //LANÇAMENTO DE RECEITA
             $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'despesa');
+            $launch2['entries_parent'] = 0;//ADD ID DA CONTA PAI
             CreateLaunch::create($launch2);
         }
         //SE FOR TRANSFERENCIA DO BANCO PARA O CAIXA INTERNO
@@ -214,15 +220,19 @@ class AccountBankController extends Controller
            if($request['bank_to_bank'] == "true")
            {
                 $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+                $launch['entries_parent'] = AccountBankController::CHILD;//ADD ID DA CONTA FILHA
                 CreateLaunch::create($launch);    
                 //LANÇAMENTO DE RECEITA
                 $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+                $launch2['entries_parent'] = $transfer['id_bank_end'];
                 CreateLaunch::create($launch2);
            }elseif($request['bank_to_bank'] == "false"){
                 $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
+                $launch['entries_parent'] = AccountBankController::CHILD;//ADD ID DA CONTA FILHA
                 CreateLaunch::create($launch);    
                 //LANÇAMENTO DE RECEITA
                 $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
+                $launch2['entries_parent'] = $transfer['id_bank_end'];
                 CreateLaunch::create($launch2);
            }
         }else{
@@ -231,6 +241,7 @@ class AccountBankController extends Controller
             CreateLaunch::create($launch);    
             //LANÇAMENTO DE RECEITA
             $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'receita');
+            $launch2['entries_parent'] = $transfer['id_bank_end'];
             CreateLaunch::create($launch2);
         }   
        

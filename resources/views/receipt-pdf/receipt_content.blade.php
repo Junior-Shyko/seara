@@ -1,3 +1,8 @@
+<script type="text/javascript">
+  <!--
+  window.print();
+  //-->
+  </script>
 <table border="0">
   <tr style="height: 99;">
     @if(Auth::user()->profile == 'owner')

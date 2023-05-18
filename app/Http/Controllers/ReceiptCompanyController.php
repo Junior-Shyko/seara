@@ -141,12 +141,34 @@ class ReceiptCompanyController extends Controller
 
   }
 
+  /**
+   * @refatoriar posteriormente
+   *
+   */
   public function generatePDF(Request $request, ReceiptCompany $receipt, GenerateReceiptPdf $generateReceiptPdf)
   {
-      return $generateReceiptPdf->execute(
-          (int) $request->vias,
-          $receipt
-      );
+    //   return $generateReceiptPdf->execute(
+    //       (int) $request->vias,
+    //       $receipt
+    //   );
+
+	$setting = Setting::where('setting_id_company', Auth::user()->company->company_id)->first()->toArray();
+	PDF::setOptions([
+
+		'dpi' => 72,
+		'defaultPaperSize' => 'a4'
+
+	]);
+	$vias = (int) $request->vias;
+	$pdf_name = 'recibo-'.$receipt->receipt_date.'.pdf';
+
+	$company = Auth::user()->company;
+	return view('receipt-pdf.vias', compact('vias', 'company', 'receipt', 'setting'));
+	// $pdf = PDF::loadView('receipt-pdf.vias', compact('vias', 'company', 'receipt', 'setting'));
+
+	// ini_set('memory_limit', '-1');
+
+	// return $pdf->stream($pdf_name);
   }
 
   public function anyData()

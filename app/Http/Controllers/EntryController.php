@@ -119,10 +119,15 @@ class EntryController extends Controller
         $request['entries_date_launch'] = $date_launch;
 
         try {
+            //por padrão 
+            $request['entries_bank'] = 0;
             $reques = Monetary::money_real($request['entries_value']);
             $request['entries_value'] = $reques;
             //recebendo o id do registro da conta bancária
-            $request['entries_bank'] = $request['idAccountBank'];       
+            
+            if(!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])){
+                $request['entries_bank'] = $request['idAccountBank'];
+            }
             $entry = Entry::create($request->all());
             $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([
@@ -357,6 +362,11 @@ class EntryController extends Controller
                 if(Auth::user()->hasRole('user') ) {
                     return $btnUserRole;
                 }
+                //desabilitanco exclusao para lancamentos filhos
+                $disabled = '';
+                if($mov->entries_parent == -1){
+                    $disabled = 'disabled';
+                }
                 //qualquer outro nivel de acesso
                 return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
                 data-toggle="modal"
@@ -370,7 +380,7 @@ class EntryController extends Controller
                 data-target="#modalEditLauch">
                 <i class="fa fa-edit" aria-hidden="true"></i></button>
                 '.$btnUserRole.'
-                <button class="btn btn-danger btn-xs" type="button" title="Excluir Registro"
+                <button class="btn btn-danger btn-xs" '.$disabled.' type="button" title="Excluir Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-name="' . $mov->entries_description . '"
