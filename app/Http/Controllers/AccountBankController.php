@@ -193,7 +193,7 @@ class AccountBankController extends Controller
         $request['transaction_id'] == 1 ? $typeEntry = AccountBankController::ENTRY : $typeEntry = AccountBankController::TRANSFER;
         //PASSANDO O VALOR DA TRANSFERENCIA E O VALOR ATUAL DA DETERMINADA CONTA
         $transfer = AccountBankRepository::transfer($request->all());
-
+      
         if($transfer->getStatusCode() == 400)
             return response()->json([
                 'type' => 'error',
@@ -224,7 +224,7 @@ class AccountBankController extends Controller
                 CreateLaunch::create($launch);    
                 //LANÇAMENTO DE RECEITA
                 $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
-                $launch2['entries_parent'] = $transfer['id_bank_end'];
+                $launch2['entries_parent'] = $transfer->original['id_bank_end'];
                 CreateLaunch::create($launch2);
            }elseif($request['bank_to_bank'] == "false"){
                 $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
@@ -232,7 +232,7 @@ class AccountBankController extends Controller
                 CreateLaunch::create($launch);    
                 //LANÇAMENTO DE RECEITA
                 $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
-                $launch2['entries_parent'] = $transfer['id_bank_end'];
+                $launch2['entries_parent'] = $transfer->original['id_bank_end'];
                 CreateLaunch::create($launch2);
            }
         }else{
