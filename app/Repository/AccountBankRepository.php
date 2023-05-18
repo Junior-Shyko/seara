@@ -243,7 +243,7 @@ class AccountBankRepository
         $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();
         $launch['transaction_id'] = $transaction_id;
-        $launch['entries_bank'] = $request['entries_bank'];
+        $launch['entries_bank'] = isset($request['entries_bank']) ? $request['entries_bank'] : 0;
         return $launch;
     }
 
