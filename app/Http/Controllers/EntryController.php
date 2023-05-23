@@ -2,6 +2,7 @@
 
 namespace Seara\Http\Controllers;
 
+use Seara\Repository\EntryRepository;
 use Validator;
 use Seara\Entry;
 use Auth, DB, PDF;
@@ -128,6 +129,7 @@ class EntryController extends Controller
             if(!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])){
                 $request['entries_bank'] = $request['idAccountBank'];
             }
+            
             $entry = Entry::create($request->all());
             $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([
@@ -219,12 +221,9 @@ class EntryController extends Controller
      */
     public function destroy(Request $request)
     {
-        //exclusao dos arquivos, caso tenha
-        $files = FileLaunch::where('file_launches_id_entry', '=', $request->id)->get();
-       
-        foreach ($files as $key => $value) {
-            FileLaunch::where('id', $value->id)->delete();
-        }
+        //Excluindo os arquivo do lançamento
+        EntryRepository::deleteFile($request->id);
+        dd($request->all());
         try {
             $entry = Entry::where('entries_id', $request->id)->first();
             //se o lançamento tiver um id de conta bancaria então realiza a dedução do valor

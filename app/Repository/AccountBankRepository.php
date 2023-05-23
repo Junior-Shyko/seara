@@ -185,14 +185,14 @@ class AccountBankRepository
 
         //So PEGA AS INFO SE NÃO FOR CAIXA INTERNO
         if ($request['idAccountEnd'] > 0) {
-            $account = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEnd']);
+            $account = self::getAccountBankAndTypeToCompany(1, $request['idAccountEnd']);
             //primeiro registro, mas o retorno é somente um registro de uma collection
             $bank['nameBank'] = $account[0]->nameBank;
             $bank['number'] = $account[0]->number;
         }
 
         if ($request['idAccountEntry'] > 0) {
-            $account2 = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEntry']);
+            $account2 = self::getAccountBankAndTypeToCompany(1, $request['idAccountEntry']);
             $bank2['nameBank'] = $account2[0]->nameBank;
             $bank2['number'] = $account2[0]->number;
         }
@@ -238,8 +238,8 @@ class AccountBankRepository
 
         $launch['entries_id_account'] = $idAccountLaunch;
         $launch['entries_description'] = $desc;
-        $launch['entries_id_company'] = Auth::user()->user_id_company;
-        $launch['entries_id_user'] = Auth::user()->id;
+        $launch['entries_id_company'] = 1;
+        $launch['entries_id_user'] = 1;
         $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();
         $launch['transaction_id'] = $transaction_id;
@@ -325,5 +325,9 @@ class AccountBankRepository
         }
     }
 
+    static function insetGetId($table, $request)
+    {
+        return DB::table($table)->insertGetId($request);
+    }
 
 }
