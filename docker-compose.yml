@@ -1,17 +1,13 @@
 version: '2'
 services:
   database:
-    image: mariadb:10
-<<<<<<< HEAD
-    container_name: database_dev
-=======
+    image: mariadb:10.6.13-focal
     container_name: database_prod
->>>>>>> 6421bc5 (Container de producao)
     volumes:
-      # - database_dev:/var/lib/mysql
+      - database:/var/lib/mysql
       - ./files:/opt/files
     ports:
-      - 4236:3306
+      - 4242:3306
     environment:
       - MYSQL_DATABASE=seara
       - MYSQL_ROOT_PASSWORD=root
@@ -22,11 +18,7 @@ services:
   #     - MYSQL_ROOT_PASSWORD=root
   php:
     image: fcoedno/php:7.1-fpm-dev
-<<<<<<< HEAD
-    container_name: php_dev
-=======
     container_name: php_prod
->>>>>>> 6421bc5 (Container de producao)
     volumes:
       - ./:/code
       - composercache:/.composer
@@ -34,11 +26,7 @@ services:
     working_dir: /code
   web:
     image: fcoedno/nginx:1.13.8-dev
-<<<<<<< HEAD
-    container_name: web_dev
-=======
     container_name: web_prod
->>>>>>> 6421bc5 (Container de producao)
     volumes:
       - ./:/code:ro
     depends_on:
@@ -78,4 +66,3 @@ services:
 volumes:
   database:
   composercache:
-

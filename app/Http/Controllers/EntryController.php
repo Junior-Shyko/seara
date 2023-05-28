@@ -223,19 +223,19 @@ class EntryController extends Controller
     {
         //Excluindo os arquivo do lançamento
         EntryRepository::deleteFile($request->id);
-        dd($request->all());
+        
         try {
-            $entry = Entry::where('entries_id', $request->id)->first();
-            //se o lançamento tiver um id de conta bancaria então realiza a dedução do valor
-            if($entry->entries_bank == 0 || !empty($entry->entries_bank) )
-            {
-                $account_bank = AccountBank::find($entry->entries_bank);//instanciando o conta
-                if(!is_null($account_bank)){
-                    $valueBank = Monetary::money_real($entry->entries_value);//formatando o valor
-                    $account_bank->balance  -= (float) $valueBank;//reduzindo o valor da conta
-                    $account_bank->save();//salvando os dados
-                }               
-            }
+            
+            //se o lançamento tiver um id de conta bancaria 
+            // então realiza a dedução do valor, mas não seja lançamento pai
+            $entry = EntryRepository::deleteLaunchBank($request->id);
+            dump($entry);
+            dump(is_null($entry->entries_parent));
+            dd($request->all());
+
+            //EXCLUSÃO DE CONTA PAI E CONTA FILHO
+
+
             $entry->delete();//excluindo o lançamento
             return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
         } catch (Exception $e) {
@@ -383,6 +383,7 @@ class EntryController extends Controller
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-name="' . $mov->entries_description . '"
+                data-parent="'. $mov->entries_parent .'"
                 data-type="' . $mov->account_types_name . '"
                 data-target="#modalDeleteComponent">
                 <i class="fa fa-trash"></i></button>
