@@ -13,9 +13,10 @@ class CreateRelationLaunchBanksTable extends Migration
      */
     public function up()
     {
-        Schema::create('relation_launch_banks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
+        Schema::table('relation_launch_bank', function (Blueprint $table) {
+            $table->integer('entries_parent')->nullable();
+            
+            $table->integer('entries_child')->nullable();
         });
     }
 

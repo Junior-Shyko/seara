@@ -35,7 +35,8 @@ class LaunchService
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
             // ->where('account_types.account_types_name','=', $type)
             ->where('entries.entries_id_company', '=', $idCompany)
-            ->where('entries.entries_bank', '=', 0)        
+            ->where('entries.entries_bank', '=', 0)
+            ->orWhere('entries.entries_parent', '=', 0)        
             ->select(
                 'account_launches.accountlaunch_type',
                 'account_types.id',

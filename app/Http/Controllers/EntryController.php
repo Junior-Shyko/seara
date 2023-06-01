@@ -24,6 +24,7 @@ use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
+use Seara\Relation_launch_bank;
 
 class EntryController extends Controller
 {
@@ -229,15 +230,36 @@ class EntryController extends Controller
             //se o lançamento tiver um id de conta bancaria 
             // então realiza a dedução do valor, mas não seja lançamento pai
             $entry = EntryRepository::deleteLaunchBank($request->id);
-            dump($entry);
-            dump(is_null($entry->entries_parent));
+
+            $idChild = 0;
+            
+             //SE PARENT FOR 0, ENTÃO É CAIXA INTERNO
+            if($entry->entries_parent == 0)
+            {
+                //SE FOR CAIXA INTERNO
+                
+                //procurando a conta
+                $accountBank = AccountBank::find($entry->entries_bank);
+                //reduzindo o valor da conta
+                $accountBank->balance -= $entry->entries_value;//remove valor da conta bancaria
+                $accountBank->save();
+
+                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
+                $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
+                
+                $entriesParent = Entry::find($entriesChild->entries_parent);
+                //excluindo o lançamentos
+                $entriesParent->delete();
+                $entry->delete();
+                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
+            }
             dd($request->all());
 
             //EXCLUSÃO DE CONTA PAI E CONTA FILHO
 
 
-            $entry->delete();//excluindo o lançamento
-            return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
+            
+           
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
         }
