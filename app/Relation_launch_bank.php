@@ -7,12 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Relation_launch_bank extends Model
 {
-    private $account_parent;
-    private $account_child;
-    private $value;
-    private $type;
-    private $accountBank_parent;
-    private $accountBank_child;
     protected $table = 'relation_launch_bank';
 
     protected $fillable = [
@@ -20,8 +14,8 @@ class Relation_launch_bank extends Model
         'account_child',
         'value',
         'type',
-        'accountBank_parent',
-        'accountBank_child'
+        'entries_parent',
+        'entries_child'
     ];
 
 
@@ -34,14 +28,14 @@ class Relation_launch_bank extends Model
      * @param [string] $type
      * @return void
      */
-    public function create_relation($request, $idParent, $idChild, $type)
+    static public function create_relation($idParent, $idChild, $value, $type, $entriesParent, $entriesChild)
     {
-        $data['account_parent']     = $request['idAccountEnd'];
-        $data['account_child']      = $request['idAccountEntry'];
-        $data['value']              = Monetary::money_real($request['value']);
+        $data['account_parent']     = $idParent;
+        $data['account_child']      = $idChild;
+        $data['value']              = Monetary::money_real($value);
         $data['type']               = $type;
-        $data['accountBank_parent'] = $idParent;
-        $data['accountBank_child']  = $idChild;
+        $data['entries_parent']     = $entriesParent;
+        $data['entries_child']      = $entriesChild;
         Relation_launch_bank::create($data);
     }
 }
