@@ -16,6 +16,7 @@ use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse ;
 use Seara\Http\Controllers\Controller;
 use Spatie\Permission\Traits\HasRoles;
 use Seara\Service\Launch\LaunchService;
@@ -231,13 +232,24 @@ class EntryController extends Controller
             // então realiza a dedução do valor, mas não seja lançamento pai
             $entry = EntryRepository::deleteLaunchBank($request->id);
 
-            $idChild = 0;
-            
              //SE PARENT FOR 0, ENTÃO É CAIXA INTERNO
             if($entry->entries_parent == 0)
             {
-                //SE FOR CAIXA INTERNO
+                //procurando a conta
+                $accountBank = AccountBank::find($entry->entries_bank);
+                //reduzindo o valor da conta
+                $accountBank->balance -= $entry->entries_value;//remove valor da conta bancaria
+                $accountBank->save();
+
+                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
+                $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
                 
+                $entriesParent = Entry::find($entriesChild->entries_parent);
+                //excluindo o lançamentos
+                $entriesParent->delete();
+                $entry->delete();
+                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
+            }else{
                 //procurando a conta
                 $accountBank = AccountBank::find($entry->entries_bank);
                 //reduzindo o valor da conta
@@ -253,7 +265,6 @@ class EntryController extends Controller
                 $entry->delete();
                 return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
             }
-            dd($request->all());
 
             //EXCLUSÃO DE CONTA PAI E CONTA FILHO
 
