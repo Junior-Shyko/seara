@@ -2,6 +2,7 @@
 
 namespace Seara\Http\Controllers;
 
+use Seara\Repository\EntryRepository;
 use Validator;
 use Seara\Entry;
 use Auth, DB, PDF;
@@ -15,6 +16,7 @@ use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse ;
 use Seara\Http\Controllers\Controller;
 use Spatie\Permission\Traits\HasRoles;
 use Seara\Service\Launch\LaunchService;
@@ -23,6 +25,7 @@ use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
+use Seara\Relation_launch_bank;
 
 class EntryController extends Controller
 {
@@ -128,6 +131,7 @@ class EntryController extends Controller
             if(!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])){
                 $request['entries_bank'] = $request['idAccountBank'];
             }
+            
             $entry = Entry::create($request->all());
             $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([
@@ -219,26 +223,54 @@ class EntryController extends Controller
      */
     public function destroy(Request $request)
     {
-        //exclusao dos arquivos, caso tenha
-        $files = FileLaunch::where('file_launches_id_entry', '=', $request->id)->get();
-       
-        foreach ($files as $key => $value) {
-            FileLaunch::where('id', $value->id)->delete();
-        }
+        //Excluindo os arquivo do lançamento
+        EntryRepository::deleteFile($request->id);
+        
         try {
-            $entry = Entry::where('entries_id', $request->id)->first();
-            //se o lançamento tiver um id de conta bancaria então realiza a dedução do valor
-            if($entry->entries_bank == 0 || !empty($entry->entries_bank) )
+            
+            //se o lançamento tiver um id de conta bancaria 
+            // então realiza a dedução do valor, mas não seja lançamento pai
+            $entry = EntryRepository::deleteLaunchBank($request->id);
+
+             //SE PARENT FOR 0, ENTÃO É CAIXA INTERNO
+            if($entry->entries_parent == 0)
             {
-                $account_bank = AccountBank::find($entry->entries_bank);//instanciando o conta
-                if(!is_null($account_bank)){
-                    $valueBank = Monetary::money_real($entry->entries_value);//formatando o valor
-                    $account_bank->balance  -= (float) $valueBank;//reduzindo o valor da conta
-                    $account_bank->save();//salvando os dados
-                }               
+                //procurando a conta
+                $accountBank = AccountBank::find($entry->entries_bank);
+                //reduzindo o valor da conta
+                $accountBank->balance -= $entry->entries_value;//remove valor da conta bancaria
+                $accountBank->save();
+
+                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
+                $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
+                
+                $entriesParent = Entry::find($entriesChild->entries_parent);
+                //excluindo o lançamentos
+                $entriesParent->delete();
+                $entry->delete();
+                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
+            }else{
+                //procurando a conta
+                $accountBank = AccountBank::find($entry->entries_bank);
+                //reduzindo o valor da conta
+                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
+                $accountBank->save();
+
+                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
+                $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
+                
+                $entriesParent = Entry::find($entriesChild->entries_parent);
+                //excluindo o lançamentos
+                $entriesParent->delete();
+                $entry->delete();
+                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
             }
-            $entry->delete();//excluindo o lançamento
-            return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
+
+            //EXCLUSÃO DE CONTA PAI E CONTA FILHO
+
+
+            
+           
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
         }
@@ -384,6 +416,7 @@ class EntryController extends Controller
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-name="' . $mov->entries_description . '"
+                data-parent="'. $mov->entries_parent .'"
                 data-type="' . $mov->account_types_name . '"
                 data-target="#modalDeleteComponent">
                 <i class="fa fa-trash"></i></button>

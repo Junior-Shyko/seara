@@ -5,7 +5,7 @@ DEP_BIN ?= bin/dep.sh
 setup:
 	cp .env.example .env
 	docker-compose up -d
-	docker-compose exec php composer install
+	docker-compose exec php composer update
 #   docker-compose exec php composer run-script setup
 	docker-compose exec php php artisan ide-helper:generate
 	docker-compose exec php php artisan ide-helper:meta

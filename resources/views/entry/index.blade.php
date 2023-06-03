@@ -187,11 +187,16 @@
                 <h4>
                     Deseja realmente excluir esse lançamento do caixa?
                 </h4>
-                <small>Essa ação é inreversível, não dá para voltar atrás.</small>
+                <small>Essa ação é inreversível, não dá para voltar atrasasdás.</small>
             </div>
             <div class="text-center">
                 <h4>Histórico: <label id="historyLaunchDeleteModal"></label></h4>
                 <h4>Tipo: <label id="typeLaunchDeleteModal"></label> </h4>
+                <p>
+                    <label id="idParentLaunch" class="text-danger">
+
+                    </label>
+                </p>
             </div>
             <input type="hidden" name="id" id="idDelete">
             <div class="modal-footer">

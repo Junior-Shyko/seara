@@ -12,8 +12,8 @@ class CreateLaunch {
     static public function create($request)
     {
         try {
-            Entry::create($request);
-            return true;
+            $launch = Entry::create($request);
+            return $launch;
         } catch (\Throwable $th) {
             throw $th;
         }

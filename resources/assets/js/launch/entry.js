@@ -109,6 +109,7 @@ $(document).ready(function () {
         var type = button.data('type')
         var id = button.data('id')
         var modal = $(this)
+      
         modal.find('#historyLaunchDeleteModal').text(launchName)
         modal.find('#typeLaunchDeleteModal').text(type)
         modal.find('#idDelete').val(id)

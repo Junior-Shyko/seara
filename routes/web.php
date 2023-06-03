@@ -86,7 +86,7 @@ Route::resource('tipo-conta', 'AccountTypeController');
 Route::resource('lancar' , 'EntryController');
 Route::post('caixa/upload' , 'EntryController@upload');
 Route::get('all-launch/{company}', 'EntryController@getAll');
-Route::post('lancar/delete' , 'EntryController@destroy');
+Route::post('lancar/delete' , 'EntryController@destroy')->middleware('auth.basic');
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
 Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}/company/{company}' , 'EntryController@reportBox');
