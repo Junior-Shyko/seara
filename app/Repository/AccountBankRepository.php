@@ -126,7 +126,7 @@ class AccountBankRepository
                 'type' => 'error',
                 'message' => 'Confira o valor para ser transferido por que o saldo está insuficiente.'
             ], 400);
-        //  dd($request);
+
         //preenchendo array com os campos e valores para um lancamento
         try {
             //se for caixa interno não registra saida de valor
@@ -165,8 +165,7 @@ class AccountBankRepository
      */
     static public function fieldsEntry($request, $type)
     {
-        $user_id_company = 1;
-        $user_id = 1;
+       
         //PARA REGISTRAR DA CONTA BANCARIA NO LANÇAMENTO
         $bankEntries = isset($request['entries_bank']) ? $request['entries_bank'] : 0;
         $bank = [];
@@ -182,7 +181,7 @@ class AccountBankRepository
     
         //So PEGA AS INFO SE NÃO FOR CAIXA INTERNO
         if ($request['idAccountEnd'] > 0) {
-            $account = self::getAccountBankAndTypeToCompany($user_id_company, $request['idAccountEnd']);
+            $account = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEnd']);
             //primeiro registro, mas o retorno é somente um registro de uma collection
             $bank['nameBank'] = $account[0]->nameBank;
             $bank['number'] = $account[0]->number;
@@ -190,16 +189,12 @@ class AccountBankRepository
         }
 
         if ($request['idAccountEntry'] > 0) {
-            $account2 = self::getAccountBankAndTypeToCompany($user_id_company, $request['idAccountEntry']);
+            $account2 = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEntry']);
             $bank2['nameBank'] = $account2[0]->nameBank;
             $bank2['number'] = $account2[0]->number;
             //FORÇANDO QNDO FOR CAIXA INTERNO, O VALOR FICAR 0;
             $bankEntries = $account2[0]->id;
         }
-
-        // if ($request['idAccountEnd'] == 0) {
-        //     $bankEntries = 0;
-        // }
 
         $desc = '';
         $idAccountLaunch = 0;
@@ -233,7 +228,6 @@ class AccountBankRepository
                 break;
         }
 
-
         //CASO SEJA CAIXA INTERNO TRANSFERINDO OU RECEBENDO TRANSFERENCIA
         if (empty($account2)) {
             $desc = 'Transferencia da conta ' . $bank['number'] . ' ' . $bank['nameBank'] . ' para o CAIXA INTERNO';
@@ -242,8 +236,8 @@ class AccountBankRepository
 
         $launch['entries_id_account'] = $idAccountLaunch;
         $launch['entries_description'] = $desc;
-        $launch['entries_id_company'] = $user_id_company;
-        $launch['entries_id_user'] = $user_id;
+        $launch['entries_id_company'] = Auth::user()->user_id_company;
+        $launch['entries_id_user'] = Auth::user()->id;
         $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();
         $launch['transaction_id'] = $transaction_id;

@@ -253,7 +253,7 @@ class EntryController extends Controller
                 //procurando a conta
                 $accountBank = AccountBank::find($entry->entries_bank);
                 //reduzindo o valor da conta
-                $accountBank->balance -= $entry->entries_value;//remove valor da conta bancaria
+                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
                 $accountBank->save();
 
                 //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO

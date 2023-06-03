@@ -251,14 +251,21 @@ class AccountBankController extends Controller
            }elseif($request['bank_to_bank'] == "false"){
                 $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
                 $launch['entries_parent'] = AccountBankController::CHILD;//ADD ID DA CONTA FILHA
-                CreateLaunch::create($launch);    
+                $entriesParent =  CreateLaunch::create($launch);     
                 //LANÇAMENTO DE RECEITA
                 $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
                 $launch2['entries_parent'] = $transfer->original['id_bank_end'];
-                CreateLaunch::create($launch2);
+                $entriesChild = CreateLaunch::create($launch2);
 
                 //INSERINDO REGISTRO DO RELACIONAMENTO LANCAMENTO COM BANCO
-                Relation_launch_bank::create_relation($transfer->original['id_bank_end'], $transfer->original['id_bank_entry'], $request->value, 'no_transfer_bank');
+                Relation_launch_bank::create_relation(
+                    $transfer->original['id_bank_end'], 
+                    $transfer->original['id_bank_entry'],
+                    $request->value, 
+                    'no_transfer_bank',
+                    $entriesParent->entries_id,
+                    $entriesChild->entries_id
+                );
            }
         }else{
             //LANCAMENTO DE DESPESA

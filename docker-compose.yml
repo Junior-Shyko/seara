@@ -16,6 +16,11 @@ services:
     environment:
       - MYSQL_DATABASE=seara
       - MYSQL_ROOT_PASSWORD=root
+  # dbtest:
+  #   image: mariadb:10
+  #   environment:
+  #     - MYSQL_DATABASE=seara
+  #     - MYSQL_ROOT_PASSWORD=root
   php:
     image: fcoedno/php:7.1-fpm-dev
     container_name: php_prod
