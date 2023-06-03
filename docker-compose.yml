@@ -1,7 +1,7 @@
 version: '2'
 services:
   database:
-    image: mariadb:10.6.13-focal
+    image: mariadb:10
     container_name: database_prod
     volumes:
       - database:/var/lib/mysql
@@ -11,11 +11,11 @@ services:
     environment:
       - MYSQL_DATABASE=seara
       - MYSQL_ROOT_PASSWORD=root
-  # dbtest:
-  #   image: mariadb:10
-  #   environment:
-  #     - MYSQL_DATABASE=seara
-  #     - MYSQL_ROOT_PASSWORD=root
+  dbtest:
+    image: mariadb:10
+    environment:
+      - MYSQL_DATABASE=seara
+      - MYSQL_ROOT_PASSWORD=root
   php:
     image: fcoedno/php:7.1-fpm-dev
     container_name: php_prod
@@ -32,30 +32,30 @@ services:
     depends_on:
       - php
     ports:
+      - 8000:80
+    environment:
+      - NGINX_HOST=seara.localhost
+      - NGINX_ROOT=/code/public
+  phptest:
+    image: fcoedno/php:7.1-fpm-dev
+    volumes:
+      - ./:/code
+      - composercache:/.composer
+    working_dir: /code
+    environment:
+      - DB_HOST=dbtest
+  webtest:
+    image: fcoedno/nginx:1.13.8-dev
+    volumes:
+      - ./:/code:ro
+    depends_on:
+      - php
+    ports:
       - 8080:80
     environment:
       - NGINX_HOST=seara.localhost
       - NGINX_ROOT=/code/public
-  # phptest:
-  #   image: fcoedno/php:7.1-fpm-dev
-  #   volumes:
-  #     - ./:/code
-  #     - composercache:/.composer
-  #   working_dir: /code
-  #   environment:
-  #     - DB_HOST=dbtest
-  # webtest:
-  #   image: fcoedno/nginx:1.13.8-dev
-  #   volumes:
-  #     - ./:/code:ro
-  #   depends_on:
-  #     - php
-  #   ports:
-  #     - 8080:80
-  #   environment:
-  #     - NGINX_HOST=seara.localhost
-  #     - NGINX_ROOT=/code/public
-  #     - NGINX_FPM_HOST=phptest
+      - NGINX_FPM_HOST=phptest
   node:
     container_name: node_prod
     build: docker/node/
