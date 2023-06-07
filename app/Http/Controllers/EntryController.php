@@ -252,10 +252,12 @@ class EntryController extends Controller
             }else{
                 //procurando a conta
                 $accountBank = AccountBank::find($entry->entries_bank);
-                //reduzindo o valor da conta
-                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
-                $accountBank->save();
-
+                if(!is_null($accountBank))
+                {
+                    //reduzindo o valor da conta
+                    $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
+                    $accountBank->save();
+                }
                 //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO CASA EXISTA UM FILHO
                 $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
                 if(isset($entriesChild->entries_parent) && !is_null($entriesChild->entries_parent) )
