@@ -233,7 +233,7 @@ class EntryController extends Controller
             $entry = EntryRepository::deleteLaunchBank($request->id);
 
              //SE PARENT FOR 0, ENTÃO É CAIXA INTERNO
-            if($entry->entries_parent == 0)
+            if($entry->entries_parent == 0 && !is_null($entry->entries_parent))
             {
                 //procurando a conta
                 $accountBank = AccountBank::find($entry->entries_bank);
@@ -256,12 +256,14 @@ class EntryController extends Controller
                 $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
                 $accountBank->save();
 
-                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
+                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO CASA EXISTA UM FILHO
                 $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
-                
-                $entriesParent = Entry::find($entriesChild->entries_parent);
-                //excluindo o lançamentos
-                $entriesParent->delete();
+                if(isset($entriesChild->entries_parent) && !is_null($entriesChild->entries_parent) )
+                {
+                    $entriesParent = Entry::find($entriesChild->entries_parent);
+                    //excluindo o lançamentos
+                    $entriesParent->delete();
+                }               
                 $entry->delete();
                 return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
             }
