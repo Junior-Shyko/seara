@@ -225,49 +225,42 @@ class EntryController extends Controller
     {
         //Excluindo os arquivo do lançamento
         EntryRepository::deleteFile($request->id);
-        
         try {
-            
-            //se o lançamento tiver um id de conta bancaria 
-            // então realiza a dedução do valor, mas não seja lançamento pai
-            $entry = EntryRepository::deleteLaunchBank($request->id);
+            //Instanciando o lançamento
+            $entry = Entry::where('entries_id', $request->id)->first();
 
-             //SE PARENT FOR 0, ENTÃO É CAIXA INTERNO
-            if($entry->entries_parent == 0 && !is_null($entry->entries_parent))
+            //LANÇAMENTO DIRETO NO CAIXA INTERNO
+            if($entry->entries_parent == 0 && $entry->entries_bank == 0)
             {
-                //procurando a conta
-                $accountBank = AccountBank::find($entry->entries_bank);
-                //reduzindo o valor da conta
-                $accountBank->balance -= $entry->entries_value;//remove valor da conta bancaria
-                $accountBank->save();
+                $type = EntryRepository::typeAccount($entry->entries_id_account); 
+                $entry->delete();
+                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
 
-                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
-                $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
-                
-                $entriesParent = Entry::find($entriesChild->entries_parent);
-                //excluindo o lançamentos
-                $entriesParent->delete();
-                $entry->delete();
-                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
-            }else{
-                //procurando a conta
-                $accountBank = AccountBank::find($entry->entries_bank);
-                if(!is_null($accountBank))
-                {
-                    //reduzindo o valor da conta
-                    $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
-                    $accountBank->save();
+            }elseif(is_null($entry->entries_parent) && $entry->entries_bank > 0){
+                //LANÇAMENTO DIRETO NA CONTA BANCARIA
+                //CONSULTAR A CONTA E VERIFICAR SE É RECEITA OU DESPESA
+                $type = EntryRepository::typeAccount($entry->entries_id_account); 
+                //SE FOR RECEITA REDUZ O VALOR, SE FOR DESPESA AUMENTA O VALOR
+                $alter = EntryRepository::alterBalanceEntry($type->account_types_name, $entry);
+                if($alter->original['status'] == 200){
+                    $entry->delete();
+                    return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
                 }
-                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO CASA EXISTA UM FILHO
-                $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
-                if(isset($entriesChild->entries_parent) && !is_null($entriesChild->entries_parent) )
-                {
-                    $entriesParent = Entry::find($entriesChild->entries_parent);
-                    //excluindo o lançamentos
-                    $entriesParent->delete();
-                }               
-                $entry->delete();
-                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
+            }else{
+                // LANÇAMENTO DE TRANFERENCIA
+                // $accountBank = AccountBank::find($entry->entries_bank);
+                // //reduzindo o valor da conta
+                // $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
+                // $accountBank->save();
+
+                // //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
+                // $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
+                
+                // $entriesParent = Entry::find($entriesChild->entries_parent);
+                // //excluindo o lançamentos
+                // $entriesParent->delete();
+                // $entry->delete();
+                // return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
             }
 
             //EXCLUSÃO DE CONTA PAI E CONTA FILHO
