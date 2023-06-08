@@ -5,7 +5,6 @@ Homestead.yaml
 Homestead.json
 .env
 .idea
-/public
 deploy.conf
 /.phpstorm.meta.php
 /_ide_helper.php
