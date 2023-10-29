@@ -50,6 +50,25 @@
                             <div class="col-md-4"></div>
                         </div>
                     </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="x_content">
+                <div class="panel">
+                    <div class="panel-body">
+                        @foreach ($accountGroup as $valueGroup)
+                        <label>{{$valueGroup->accountlaunch_name}}</label> <br>
+                            @foreach ($AccountLaunch as $valAccount)
+                            {{-- {{$valAccount->id}} - {{$valueGroup->id}} --}}
+                                @if ($valueGroup->id == $valAccount->id)
+                                    {{$valAccount->entries_description}} <br>
+                                @endif
+                            @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>

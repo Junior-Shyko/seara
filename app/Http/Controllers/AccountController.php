@@ -10,6 +10,7 @@ use Seara\AccountLaunch;
 use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
+use Seara\Account;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Http\Requests\UpdateAccountRequest;
 use Seara\Service\Financing\Account\CreateAccount;
@@ -166,5 +167,33 @@ class AccountController extends Controller
          //TODAS CONTAS
          $accounts = AccountLaunch::get();
         return view('report.account.index', compact('accounts'));
+    }
+
+    public function getReportAccount($company_id)
+    {
+        // dump($company_id);
+        $accountGroup = AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
+                            ->where('entries.entries_id_company',$company_id)
+                            ->groupBy('entries.entries_id_account')->get();
+        $AccountLaunch = AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
+                            ->join('users', 'entries.entries_id_user', '=', 'users.id')
+                            ->join('account_types' , 'account_launches.accountlaunch_type' ,'=', 'account_types.id')
+                            ->select(
+                                'users.id as userId', 'users.name', 'entries.*', 'account_launches.*',
+                                'account_types.id as typeAccountId', 'account_types.account_types_name'
+                            )
+                            ->where('entries.entries_id_company',$company_id)
+                            ->get();
+                            $br = "<br/>";
+                            $idAccount = 0;
+        foreach ($accountGroup as $keyGroup => $valueGroup) {
+            // echo $valueGroup->accountlaunch_name.$br;
+            foreach ($AccountLaunch as $key => $value) {
+               if($valueGroup->id == $value->id){
+                // dump($value->entries_description);
+               }
+            }
+        }
+        return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'AccountLaunch'));
     }
 }
