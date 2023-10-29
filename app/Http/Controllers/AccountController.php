@@ -6,11 +6,12 @@ use DB;
 use Throwable;
 use DataTables;
 use Carbon\Carbon;
+use Seara\Account;
+use Barryvdh\DomPDF\Facade as PDF;
 use Seara\AccountLaunch;
 use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
-use Seara\Account;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Http\Requests\UpdateAccountRequest;
 use Seara\Service\Financing\Account\CreateAccount;
@@ -194,6 +195,16 @@ class AccountController extends Controller
                }
             }
         }
-        return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'AccountLaunch'));
+
+        $pdf = PDF::loadView('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'AccountLaunch'));
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultPaperSize' =>  'a4'
+        ]);
+        
+        return $pdf->stream();
+
+        // return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'AccountLaunch'));
     }
 }

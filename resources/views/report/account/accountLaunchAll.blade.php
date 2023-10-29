@@ -29,12 +29,7 @@
         th,
         td {
             border-collapse: collapse;
-
             border: 1px solid;
-        }
-
-        .col-10 {
-            width: 20px;
         }
         .ml-5 {
             margin-left: 5px;
@@ -49,7 +44,11 @@
 <body>
     <section>
         <header>
-            <div class="col">Empresa: IGREJA EVANGELICA ASSEMBLEIA DE DEUS MINISTERIO DE MADUREIRA - CNPJ: 33.543.432/0001-97</div>
+            <div class="col">
+                <small>
+                    Empresa: <br/> IGREJA EVANGELICA ASSEMBLEIA DE DEUS MINISTERIO DE MADUREIRA - CNPJ: 33.543.432/0001-97
+                </small>
+            </div>
             <div class="col-right">Solicitado por: Fulano de tal</div>
         </header>
         <header>
@@ -64,7 +63,6 @@
                     <label>Data</label>
                 </td>
                 <td>Descrição</td>
-                <td>Lançado por</td>
                 <td>Cédito</td>
                 <td>Débito</td>
                 <td>Saldo</td>
@@ -74,7 +72,7 @@
             @endphp
             @foreach ($accountGroup as $valueGroup)
                 <tr>
-                    <td colspan="6" style="padding: 5px">
+                    <td colspan="5" style="padding: 5px">
                         <strong><label>Conta: {{ $valueGroup->accountlaunch_name }}</label></strong>
                     </td>
                 </tr>
@@ -95,11 +93,7 @@
                                 </small>
                                 
                             </td>
-                            <td >
-                                <small class="ml-5 td-launch">
-                                    {{ $valAccount->name }}
-                                </small>                                
-                            </td>
+                           
                             <td >
                                 <small class="ml-5 td-launch">
                                     @if($valAccount->account_types_name == 'Receita')
@@ -130,7 +124,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="5" style="padding: 5px; font-size: small; background: #dfdede">
+                    <td colspan="4" style="padding: 5px; font-size: small; background: #dfdede">
                        
                             <label>
                                 Totais do período
