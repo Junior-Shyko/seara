@@ -126,17 +126,17 @@
                             <li>
                                 <a data-cy="report-debt-and-payment" href="{{ url('relatorio/dividas-e-pagamentos') }}">Dívidas e Pagamentos</a>
                             </li>
-                            {{--                  <li><a href="#">Usuário</a></li>--}}
+                            <li><a href="{{ url('relatorio/contas') }}">Contas</a></li>
                             {{--                  <li><a href="#">Igreja</a></li>--}}
                             {{--                  <li><a>Contrato<span class="fa fa-chevron-down"></span></a>--}}
-                            {{--                    <ul class="nav child_menu">--}}
-                            {{--                      <li class="sub_menu"><a href="level2.html">Locação</a>--}}
-                            {{--                      </li>--}}
-                            {{--                      <li><a href="#level2_1">Serviço Voluntário</a>--}}
-                            {{--                      </li>--}}
-                            {{--                      <li><a href="#level2_2">Level Two</a>--}}
-                            {{--                      </li>--}}
-                            {{--                    </ul>--}}
+                            <!-- <ul class="nav child_menu">
+                              <li class="sub_menu"><a href="level2.html">Locação</a>
+                              </li>
+                              <li><a href="#level2_1">Serviço Voluntário</a>
+                              </li>
+                              <li><a href="#level2_2">Level Two</a>
+                              </li>
+                            </ul> -->
                             {{--                  </li>--}}
                         </ul>
                     </li>

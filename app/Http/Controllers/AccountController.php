@@ -2,18 +2,19 @@
 
 namespace Seara\Http\Controllers;
 
+use DB;
+use Throwable;
+use DataTables;
+use Carbon\Carbon;
+use Seara\AccountLaunch;
+use Illuminate\Http\Response;
+use Seara\Traits\ActionTable;
+use Illuminate\Http\JsonResponse;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Http\Requests\UpdateAccountRequest;
-use Seara\Service\Financing\Account\AccountRepository;
-use Seara\Service\Financing\Account\ArchiveAccount;
 use Seara\Service\Financing\Account\CreateAccount;
-use Seara\Traits\ActionTable;
-use Carbon\Carbon;
-use DataTables;
-use Illuminate\Http\JsonResponse;
-use DB;
-use Illuminate\Http\Response;
-use Throwable;
+use Seara\Service\Financing\Account\ArchiveAccount;
+use Seara\Service\Financing\Account\AccountRepository;
 
 class AccountController extends Controller
 {
@@ -158,5 +159,12 @@ class AccountController extends Controller
         });
 
         return $datatable->make(true);
+    }
+
+    public function reportAccount()
+    {
+         //TODAS CONTAS
+         $accounts = AccountLaunch::get();
+        return view('report.account.index', compact('accounts'));
     }
 }
