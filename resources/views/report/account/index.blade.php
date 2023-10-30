@@ -18,10 +18,12 @@
                         <div class="panel-body">
                             <div class="col-md-4"></div>
                             <div class="col-md-4">
+                            <form action="{{url('relatorio/todas-contas')}}" method="POST">
+                                {{ csrf_field() }}
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <label>Nome da conta</label>
-                                    <select name="entries_id_account" id="cod_account" class="form-control select2">
+                                    <select name="entries_id_account" id="cod_account" name="account" class="form-control select2">
                                         <option value=""></option>
                                         @foreach($accounts as $account)
                                         <option value="{{ $account->id }}">
@@ -34,18 +36,20 @@
                                 <div class="form-group">
                                     <div class="col-md-6">
                                         <label for="">Data Inicial</label>
-                                        <input type="text" name="dateInitial" class="form-control date-mask" id="dateInitial">
+                                        <input type="text" name="dateInitial" value="01/01/2000" class="form-control date-mask" id="dateInitial">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="">Data Final</label>
-                                        <input type="text" name="dateEnd" class="form-control date-mask" id="dateEnd">
+                                        <input type="text" name="dateEnd" value="29/10/2023" class="form-control date-mask" id="dateEnd">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12" style="margin-top: 10px">
-                                        <button class="btn btn-primary btn-block">Pesquisar</button>
+                                        <input type="text" name="company_id" value="{{Auth::user()->user_id_company}}">
+                                        <button type="submit" class="btn btn-primary btn-block">Pesquisar</button>
                                     </div>
                                 </div>
+                            </form>
                             </div>
                             <div class="col-md-4"></div>
                         </div>

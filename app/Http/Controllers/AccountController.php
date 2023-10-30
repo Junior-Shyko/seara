@@ -7,13 +7,17 @@ use Throwable;
 use DataTables;
 use Carbon\Carbon;
 use Seara\Account;
-use Barryvdh\DomPDF\Facade as PDF;
 use Seara\AccountLaunch;
+use Seara\FunctionGeneral;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Auth;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Http\Requests\UpdateAccountRequest;
+use Seara\Repository\AccountLaunchRepository;
 use Seara\Service\Financing\Account\CreateAccount;
 use Seara\Service\Financing\Account\ArchiveAccount;
 use Seara\Service\Financing\Account\AccountRepository;
@@ -170,33 +174,25 @@ class AccountController extends Controller
         return view('report.account.index', compact('accounts'));
     }
 
-    public function getReportAccount($company_id)
+    public function getReportAccount(Request $request)
     {
-        // dump($company_id);
-        $accountGroup = AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
-                            ->where('entries.entries_id_company',$company_id)
-                            ->groupBy('entries.entries_id_account')->get();
-        $AccountLaunch = AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
-                            ->join('users', 'entries.entries_id_user', '=', 'users.id')
-                            ->join('account_types' , 'account_launches.accountlaunch_type' ,'=', 'account_types.id')
-                            ->select(
-                                'users.id as userId', 'users.name', 'entries.*', 'account_launches.*',
-                                'account_types.id as typeAccountId', 'account_types.account_types_name'
-                            )
-                            ->where('entries.entries_id_company',$company_id)
-                            ->get();
-                            $br = "<br/>";
-                            $idAccount = 0;
-        foreach ($accountGroup as $keyGroup => $valueGroup) {
-            // echo $valueGroup->accountlaunch_name.$br;
-            foreach ($AccountLaunch as $key => $value) {
-               if($valueGroup->id == $value->id){
-                // dump($value->entries_description);
-               }
-            }
-        }
+        $idAccount = $request->entries_id_account;
+        $company_id = 0;
+        if($request->company_id == null || !isset($request->company_id))
+        {
+            $company_id = Auth::user()->user_company_id;
+        }else{
+            $company_id = $request->company_id;
+        };
+        $accountLaunch = new AccountLaunchRepository;
+        $dtinit = FunctionGeneral::DataBRtoMySQL($request->dateInitial);
+        $dtend  = FunctionGeneral::DataBRtoMySQL($request->dateEnd);
+        $accountGroup = $accountLaunch->getAccountLaunchEntryGroup($company_id, $dtinit, $dtend, $idAccount);
+        $accountLaunchAll = $accountLaunch->getAccountLaunchEntry($company_id, $dtinit, $dtend, $idAccount);
+        $dtInitReport = $request->dateInitial;
+        $dtEndReport = $request->dateEnd;
 
-        $pdf = PDF::loadView('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'AccountLaunch'));
+        $pdf = PDF::loadView('report.account.accountLaunchAll', compact('accounts', 'accountGroup',  'accountLaunchAll', 'dtInitReport', 'dtEndReport'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
@@ -205,6 +201,6 @@ class AccountController extends Controller
         
         return $pdf->stream();
 
-        // return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'AccountLaunch'));
+        // return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'accountLaunchAll', 'dtInitReport', 'dtEndReport'));
     }
 }

@@ -151,7 +151,7 @@ Route::resource('receivable', 'Financing\ReceivableController',[
 Route::get('relatorio/dividas-e-pagamentos', 'Report\DebtAndPaymentController@index');
 Route::post('report/debt-and-payment', 'Report\DebtAndPaymentController@generateReport');
 Route::get('relatorio/contas', 'AccountController@reportAccount');
-Route::get('relatorio/todas-contas/{id}', 'AccountController@getReportAccount');
+Route::post('relatorio/todas-contas/', 'AccountController@getReportAccount');
 
 // Pagamentos
 Route::get('pagamentos', 'Financing\PaymentController@index');

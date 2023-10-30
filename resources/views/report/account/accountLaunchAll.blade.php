@@ -46,13 +46,13 @@
         <header>
             <div class="col">
                 <small>
-                    Empresa: <br/> IGREJA EVANGELICA ASSEMBLEIA DE DEUS MINISTERIO DE MADUREIRA - CNPJ: 33.543.432/0001-97
+                    Empresa: <br/> {{$accountLaunchAll[0]['company_name']}} - CNPJ: {{$accountLaunchAll[0]['company_cnpj']}}
                 </small>
             </div>
-            <div class="col-right">Solicitado por: Fulano de tal</div>
+            <div class="col-right">Solicitado por: {{Auth::user()->name}}</div>
         </header>
         <header>
-            <div class="col">Período: 01/01/2022 a 31/12/2022</div>
+            <div class="col">Período: {{$dtInitReport}} a {{$dtEndReport}}</div>
             <div class="col-right">Seara Contabilidade</div>
         </header>
     </section>
@@ -76,7 +76,7 @@
                         <strong><label>Conta: {{ $valueGroup->accountlaunch_name }}</label></strong>
                     </td>
                 </tr>
-                @foreach ($AccountLaunch as $valAccount)
+                @foreach ($accountLaunchAll as $valAccount)
                     <tr>
                         {{-- {{$valAccount->id}} - {{$valueGroup->id}} --}}
                         @if ($valueGroup->id == $valAccount->id)
