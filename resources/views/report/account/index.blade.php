@@ -18,6 +18,14 @@
                         <div class="panel-body">
                             <div class="col-md-4"></div>
                             <div class="col-md-4">
+                                <div class="col-md-12">
+                                    @if (session('error'))
+                                        <div class="alert alert-error alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            {{ session('error') }}
+                                        </div>
+                                    @endif
+                                </div>
                             <form action="{{url('relatorio/todas-contas')}}" method="POST">
                                 {{ csrf_field() }}
                                 <div class="form-group">
@@ -36,16 +44,32 @@
                                 <div class="form-group">
                                     <div class="col-md-6">
                                         <label for="">Data Inicial</label>
-                                        <input type="text" name="dateInitial" value="01/01/2000" class="form-control date-mask" id="dateInitial">
+                                        <input type="text" name="dateInitial" value="{{$startMonthFormated}}" class="form-control date-mask" id="dateInitial">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="">Data Final</label>
-                                        <input type="text" name="dateEnd" value="29/10/2023" class="form-control date-mask" id="dateEnd">
+                                        <input type="text" name="dateEnd" value="{{$endMonthFormated}}" class="form-control date-mask" id="dateEnd">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-md-12" style="margin-top: 10px">
-                                        <input type="text" name="company_id" value="{{Auth::user()->user_id_company}}">
+                                    <div class="col-md-12" style="margin-top: 10px">                                      
+                                        @role('superAdmin')
+                                        <div class="form-group">
+                                            <label>Nome da igreja</label>
+                                            @if($company->company_fantasy == 'SEARA CONTABILIDADE')
+                                            <select name="company_id" id="cod_account" name="account" class="form-control select2">
+                                                <option value=""></option>
+                                                @foreach($companyAll as $company)
+                                                <option value="{{ $company->company_id }}">
+                                                    {{ $company->company_fantasy }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                            @endif
+                                        </div>
+                                        @else
+                                            <input type="hidden" name="company_id" value="{{Auth::user()->user_id_company}}">
+                                        @endrole
                                         <button type="submit" class="btn btn-primary btn-block">Pesquisar</button>
                                     </div>
                                 </div>

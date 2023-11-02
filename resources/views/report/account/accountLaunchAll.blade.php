@@ -38,6 +38,15 @@
         .td-launch {
             color: #4f4f4f !important"
         }
+        .float-r {
+            float: right;
+        }
+        .bg-tot {
+            background: #dfdede
+        }
+        .bg-balance {
+            background: #f3f3f3
+        }
     </style>
 </head>
 
@@ -46,16 +55,19 @@
         <header>
             <div class="col">
                 <small>
-                    Empresa: <br/> {{$accountLaunchAll[0]['company_name']}} - CNPJ: {{$accountLaunchAll[0]['company_cnpj']}}
+                    Empresa: {{$accountLaunchAll[0]['company_name']}} <br> 
+                    CNPJ: {{$accountLaunchAll[0]['company_cnpj']}}
                 </small>
             </div>
-            <div class="col-right">Solicitado por: {{Auth::user()->name}}</div>
+            <div class="col-right"></div>
         </header>
         <header>
             <div class="col">Período: {{$dtInitReport}} a {{$dtEndReport}}</div>
             <div class="col-right">Seara Contabilidade</div>
         </header>
+       
     </section>
+    <br>
     <table style="width: 100%;" border="1" cellpadding="1">
         <tbody>
             <tr>
@@ -67,8 +79,17 @@
                 <td>Débito</td>
                 <td>Saldo</td>
             </tr>
+            <tr class=" bg-balance">
+                <td colspan="3" class="bg-balance">
+                    Saldo Anterior:
+                </td>
+                <td colspan="2" class="float-r bg-balance" style="border: 0px;background: #f3f3f3; float: right;">
+                    <strong >R$: {{number_format($balance, 2, ',', '.')}}</strong>
+                </td>
+            </tr>
             @php
                 $balance = 0;
+                $previousBalance = 0;
             @endphp
             @foreach ($accountGroup as $valueGroup)
                 <tr>
@@ -84,7 +105,7 @@
                             <td>
                                 <small class="ml-5 td-launch">
                    
-                                    {{date('d/m/Y', strtotime($valAccount->created_at))}}
+                                    {{date('d/m/Y', strtotime($valAccount->entriesCreatedAt))}}
                                 </small>
                             </td>
                             <td >
@@ -99,7 +120,7 @@
                                     @if($valAccount->account_types_name == 'Receita')
                                         {{number_format($valAccount->entries_value,2,",",".")}}
                                         @php 
-                                        $balance = ($balance + $valAccount->entries_value)
+                                        $balance = ($balance + $previousBalance + $valAccount->entries_value)
                                         @endphp
                                     @endif
                                 </small>                                
@@ -109,7 +130,7 @@
                                     @if($valAccount->account_types_name == 'Despesa')
                                         {{number_format($valAccount->entries_value,2,",",".")}}
                                         @php 
-                                        $balance = ($balance - $valAccount->entries_value)
+                                        $balance = ($balance + $previousBalance - $valAccount->entries_value)
                                         @endphp
                                     @endif
                                 </small>                                
@@ -124,20 +145,35 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="4" style="padding: 5px; font-size: small; background: #dfdede">
+                    <td colspan="3" style="padding: 5px; font-size: small;" class="bg-tot">
                        
                             <label>
                                 Totais do período
                                     <span class="smallPeriod">(s.ant + ent + sai + banco)</span>
                             </label>
                     </td>
-                    <td style=" background: #dfdede">
-                        <label style="float: right;">
+                    <td class="bg-tot" colspan="2">
+                        <label class="float-r ">
                             R$: {{number_format($balance,2,",",".")}}
                         </label>
                     </td>
                 </tr>
             @endforeach
+            <tr class="bg-balance">
+                
+                <td colspan="3" style="padding: 5px; font-size: small;">
+                   
+                        <label>
+                            Resumo
+                                <span class="smallPeriod">(s.ant + ent + sai)</span>
+                        </label>
+                </td>
+                <td colspan="2">
+                    <label class="float-r " >
+                        <strong>R$: {{number_format($balance,2,",",".")}}</strong>
+                    </label>
+                </td>
+            </tr>
         </tbody>
     </table>
     <!-- DivTable.com -->

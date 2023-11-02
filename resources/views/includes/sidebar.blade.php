@@ -117,15 +117,17 @@
                             </li>
                         </ul>
                     </li>
-                    @if(Auth::user()->profile == 'owner')
+                   
                     <li>
                         <a data-cy="report-module">
                             <i class="fa fa-list-alt" aria-hidden="true"></i> Relatórios <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
+                            @role('superAdmin')
                             <li>
                                 <a data-cy="report-debt-and-payment" href="{{ url('relatorio/dividas-e-pagamentos') }}">Dívidas e Pagamentos</a>
                             </li>
+                            @endrole
                             <li><a href="{{ url('relatorio/contas') }}">Contas</a></li>
                             {{--                  <li><a href="#">Igreja</a></li>--}}
                             {{--                  <li><a>Contrato<span class="fa fa-chevron-down"></span></a>--}}
@@ -140,7 +142,7 @@
                             {{--                  </li>--}}
                         </ul>
                     </li>
-                    @endif
+                   
                 </ul>
             </div>
 

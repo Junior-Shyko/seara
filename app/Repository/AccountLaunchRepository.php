@@ -5,6 +5,7 @@ namespace Seara\Repository;
 use App\Account;
 use Carbon\Carbon;
 use Seara\AccountLaunch;
+use Illuminate\Support\Facades\DB;
 
 
 class AccountLaunchRepository
@@ -17,8 +18,8 @@ class AccountLaunchRepository
                                 return $query->where('entries_id_account', $idAccount);
                             })
                             ->where('entries.entries_id_company',$company_id)
-                            ->where('entries.created_at','>=',$dtInitial)
-                            ->where('entries.created_at','<=',$dtEnd)
+                            ->where('entries.entries_date_launch','>=',$dtInitial)
+                            ->where('entries.entries_date_launch','<=',$dtEnd)
                             ->groupBy('entries.entries_id_account')->get();
     }
 
@@ -34,11 +35,12 @@ class AccountLaunchRepository
         ->select(
             'users.id as userId', 'users.name', 'entries.*', 'account_launches.*',
             'account_types.id as typeAccountId', 'account_types.account_types_name',
-            'companies.company_name', 'companies.company_cnpj'
+            'companies.company_name', 'companies.company_cnpj',
+            'entries.entries_date_launch as entriesCreatedAt'
         )
         ->where('entries.entries_id_company',$company_id)
-        ->where('entries.created_at','>=',$dtInitial)
-        ->where('entries.created_at','<=',$dtEnd)
+        ->where('entries.entries_date_launch','>=',$dtInitial)
+        ->where('entries.entries_date_launch','<=',$dtEnd)
         ->get();
     }
 

@@ -8,6 +8,8 @@ use DataTables;
 use Carbon\Carbon;
 use Seara\Account;
 use Seara\AccountLaunch;
+use Seara\Models\Company;
+use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
 use Seara\Http\Requests\StoreAccount;
+use Seara\Repository\AccountBankRepository;
 use Seara\Http\Requests\UpdateAccountRequest;
 use Seara\Repository\AccountLaunchRepository;
 use Seara\Service\Financing\Account\CreateAccount;
@@ -171,7 +174,16 @@ class AccountController extends Controller
     {
          //TODAS CONTAS
          $accounts = AccountLaunch::get();
-        return view('report.account.index', compact('accounts'));
+         $company    = Company::getCompany(Auth::user()->user_id_company);
+         $companyAll = Company::get();
+        //inicio do mes e final do mes atual
+        $startMonth = Carbon::now()->startOfMonth();
+        $endMonth = Carbon::now()->endOfMonth();
+        $startMonthFormated = $startMonth->format('d/m/Y');
+        $endMonthFormated = $endMonth->format('d/m/Y');
+        return view('report.account.index', 
+            compact('accounts', 'company', 'companyAll','startMonthFormated', 'endMonthFormated' )
+        );
     }
 
     public function getReportAccount(Request $request)
@@ -184,15 +196,32 @@ class AccountController extends Controller
         }else{
             $company_id = $request->company_id;
         };
+        
         $accountLaunch = new AccountLaunchRepository;
         $dtinit = FunctionGeneral::DataBRtoMySQL($request->dateInitial);
         $dtend  = FunctionGeneral::DataBRtoMySQL($request->dateEnd);
+        //Total de lançamentos por grupo
         $accountGroup = $accountLaunch->getAccountLaunchEntryGroup($company_id, $dtinit, $dtend, $idAccount);
+        //Todos os lançamentos
         $accountLaunchAll = $accountLaunch->getAccountLaunchEntry($company_id, $dtinit, $dtend, $idAccount);
         $dtInitReport = $request->dateInitial;
         $dtEndReport = $request->dateEnd;
+        //saldo anterior
+        $prevBalan = Monetary::previousBalance($dtinit, $company_id);
+        $balance = ($prevBalan['receitas'] - $prevBalan['despesas']);
 
-        $pdf = PDF::loadView('report.account.accountLaunchAll', compact('accounts', 'accountGroup',  'accountLaunchAll', 'dtInitReport', 'dtEndReport'));
+        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceBank = AccountBankRepository::getBalance($company_id);
+        
+        //Se nao tiver registro
+        if(count($accountGroup) == 0 && count($accountLaunchAll) == 0)
+        {
+            return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
+        }
+
+
+        $pdf = PDF::loadView('report.account.accountLaunchAll', 
+            compact('accounts', 'accountGroup',  'accountLaunchAll', 'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
@@ -201,6 +230,7 @@ class AccountController extends Controller
         
         return $pdf->stream();
 
-        // return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'accountLaunchAll', 'dtInitReport', 'dtEndReport'));
+        // return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'accountLaunchAll', 
+        // 'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
     }
 }
