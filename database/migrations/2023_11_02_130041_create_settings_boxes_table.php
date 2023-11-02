@@ -17,6 +17,7 @@ class CreateSettingsBoxesTable extends Migration
             $table->increments('id');
             $table->dateTime('data_open')->nullable(false);
             $table->dateTime('data_close')->nullable(false);
+            $table->string('month', 50)->nulable(false);
             $table->integer('id_user_open')->nulable(false);
             $table->integer('id_user_close')->nulable(false);
             $table->integer('id_company')->unsigned();

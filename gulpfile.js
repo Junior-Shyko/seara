@@ -223,6 +223,13 @@ elixir(function(mix) {
         'dropzone.min.css',
         './node_modules/lightbox2/dist/css/lightbox.min.css',
     ], 'public/css/entry.min.css');
+
+    //SETTING BOX
+    mix.scripts([
+        'setting_box/setting-box.js'
+    ], 'public/js/setting_box/setting-box.js');
+
+
     /**************/
     /* Copy Fonts */
     /**************/

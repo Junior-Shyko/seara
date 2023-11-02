@@ -95,6 +95,9 @@
                             <i class="fa fa-money" aria-hidden="true"></i> Lançamento Caixa <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">
+                            <li>
+                                <a href="{{ url('abrir-fechar-caixa') }}">Abrir/Fechar caixa</a>
+                            </li>
                             @role('superAdmin')
                             <li>
                                 <a href="{{ url('tipo-banco') }}">Tipo bancario</a>

@@ -2,7 +2,6 @@
 
 namespace Seara\Http\Controllers;
 
-use Seara\Repository\EntryRepository;
 use Validator;
 use Seara\Entry;
 use Auth, DB, PDF;
@@ -10,12 +9,15 @@ use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountBank;
 use Seara\AccountType;
+use Seara\SettingsBox;
 use Seara\AccountLaunch;
 use Seara\SettingsEntry;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
+use Seara\Relation_launch_bank;
+use Seara\Repository\EntryRepository;
 use Illuminate\Http\RedirectResponse ;
 use Seara\Http\Controllers\Controller;
 use Spatie\Permission\Traits\HasRoles;
@@ -25,7 +27,6 @@ use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
-use Seara\Relation_launch_bank;
 
 class EntryController extends Controller
 {
@@ -71,6 +72,13 @@ class EntryController extends Controller
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
 
+        setlocale(LC_TIME, 'pt_BR');
+        $month = Carbon::now();
+        $boxOpen = SettingsBox::where([
+            'id_company' => Auth::user()->id,
+            'month' => $month->localeMonth
+        ])->first();
+
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
 
@@ -83,7 +91,8 @@ class EntryController extends Controller
             'accountBank',
             'idCompany',
             'entry',
-            'user'
+            'user',
+            'boxOpen'
         ));
     }
 

@@ -19,11 +19,24 @@
                         </h3>
                         <small class="badge badge-dark"> Código Igreja: {{$idCompany}}</small>
                         <input type="hidden" id="idCodeCompany" value="{{$idCompany}}">
-                    </div>
-                    
+                    </div>                    
                 </div>
-                <hr>
+              
             </div>
+            <div class="col-md-12">
+                @if (is_null($boxOpen))
+                <div class="alert alert-info alert-dismissible " role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                    </button>
+                    <h5>
+                        <strong>Ops!</strong>
+                        Você não tem registro de caixa aberto, então precisa abrir clicando, 
+                        <a href="" class="btn btn-default">aqui</a>
+                    </h5>
+                    </div>
+                @endif
+            </div>
+            <hr>
         </div>
         <div class="row">
             

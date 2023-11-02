@@ -75,9 +75,15 @@ Route::post('caixa/delete' , 'BoxController@destroy');
 Route::get('caixa/saldo-inicial' , 'BoxController@balance_initial');
 Route::get('caixa/abrir-caixa' , 'BoxController@box_open');
 
-Route::resource('caixa' , 'BoxController');
-Route::post('abrir-caixa' , 'BoxController@open_box');
-Route::post('fechar-caixa' , 'BoxController@close_box');
+// Route::resource('caixa' , 'BoxController');
+// Route::post('abrir-caixa' , 'BoxController@open_box');
+// Route::post('fechar-caixa' , 'BoxController@close_box');
+
+Route::group(['prefix' => 'caixa'], function () {
+    Route::resource('/' , 'SettingsBoxController');
+    Route::get('/datatable', 'SettingsBoxController@dataTable')->name('caixa.datatables');
+});
+
 
 Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
