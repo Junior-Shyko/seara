@@ -16,4 +16,8 @@ $(document).ready(function () {
       'registros'
     );
     userPermissionTable.loadTable();
+
+    $('#data_open_box').mask('00/00/0000');
+    $('#data_close_box').mask('00/00/0000');
+
 });

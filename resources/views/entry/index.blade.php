@@ -31,7 +31,7 @@
                     <h5>
                         <strong>Ops!</strong>
                         Você não tem registro de caixa aberto, então precisa abrir clicando, 
-                        <a href="" class="btn btn-default">aqui</a>
+                        <a href="{{url('caixa')}}" class="btn btn-default">aqui</a>
                     </h5>
                     </div>
                 @endif

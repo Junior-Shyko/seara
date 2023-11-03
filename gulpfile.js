@@ -226,6 +226,7 @@ elixir(function(mix) {
 
     //SETTING BOX
     mix.scripts([
+        './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
         'setting_box/setting-box.js'
     ], 'public/js/setting_box/setting-box.js');
 

@@ -81,6 +81,7 @@ Route::get('caixa/abrir-caixa' , 'BoxController@box_open');
 
 Route::group(['prefix' => 'caixa'], function () {
     Route::resource('/' , 'SettingsBoxController');
+    Route::post('store', 'SettingsBoxController@store');
     Route::get('/datatable', 'SettingsBoxController@dataTable')->name('caixa.datatables');
 });
 

@@ -13,7 +13,7 @@ class StoreSettinsRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,23 @@ class StoreSettinsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'data_open' => 'required|date_format:Y-m-d',
+            'data_close' => 'date_format:Y-m-d',
+            'id_user_open' => 'required|string'
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'data_open.date_format' => 'A data de abertura é obrigatória e data válida.',
+            'data_close.date_format'  => 'A data do fechamento não é válida',
+            'id_user_open.required' => 'Abertura do caixa exige um usuário'
         ];
     }
 }

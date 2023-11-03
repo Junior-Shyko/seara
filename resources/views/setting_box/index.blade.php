@@ -3,6 +3,7 @@
     <!-- Example -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.11/jquery.datetimepicker.min.css"
         rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endpush
 @section('main_container')
     <div class="right_col" role="main" style="min-height: 948px;">
@@ -40,17 +41,21 @@
                         <div class="x_content">
                             <div class="col-md-3"></div>
                             <div class="col-md-6">
-                                <form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left"
-                                    novalidate="">
+                                <div class="col-md-12">
+                                    @include('msg.message')
+                                </div>
+                                <form id="demo-form2" data-parsley-validate="" 
+                                    method="POST" action="{{url('caixa')}}"
+                                    class="form-horizontal form-label-left" novalidate="">
                                     <div class="item form-group">
                                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Data da
                                             abertura
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 ">
-                                            <input id="birthday" class="date-picker form-control" placeholder="dd/mm/yyyy"
-                                            type="text" required="required" onfocus="this.type='date'"
-                                            onmouseover="this.type='date'" onclick="this.type='date'">
+                                            <input id="data_open_box" class="form-control" placeholder="dd/mm/aaaa"
+                                            type="text" required="required"  name="data_open"
+                                             >
                                         </div>
                                     </div>
                                     <div class="item form-group">
@@ -59,15 +64,18 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 ">
-                                            <input id="birthday" class="date-picker form-control" placeholder="dd/mm/yyyy"
-                                            type="text" required="required" onfocus="this.type='date'"
-                                            onmouseover="this.type='date'" onclick="this.type='date'">
+                                            @if (count($boxOpen) > 0)
+                                            <input id="data_close_box" class="date-picker form-control" placeholder="dd/mm/aaaa"
+                                            type="text"  name="data_close">
+                                            @endif
+                                            
                                         </div>
                                     </div>
                                     
                                     <div class="ln_solid"></div>
                                     <div class="item form-group">
                                         <div class="col-md-6 col-sm-6 offset-md-3">
+                                            <input type="text" name="id_user_open" value="{{Auth::user()->id}}">
                                             <button type="submit" class="btn btn-success">
                                                 <i class="fa fa-money"></i> Abrir Caixa
                                             </button>
@@ -106,4 +114,6 @@
 @endpush
 @push('scripts')
     <script type="text/javascript" language="javascript" src="{{ asset('js/setting_box/setting-box.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 @endpush

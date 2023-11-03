@@ -7,6 +7,7 @@ use Seara\SettingsBox;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Seara\Http\Requests\StoreSettinsRequest;
 
 class SettingsBoxController extends Controller
 {
@@ -24,7 +25,7 @@ class SettingsBoxController extends Controller
             'id_company' => Auth::user()->id,
             'month' => $month->localeMonth
         ])->get();
-
+ 
         return view('setting_box.index', compact('boxOpen'));
     }
 
@@ -46,7 +47,32 @@ class SettingsBoxController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dump($request->all());
+        $time = Carbon::now();
+        $request['data_open'] = $request['data_open'] .' '.$time->format('H:i:s');
+        $dtOpen = Carbon::parse($request['data_open'])->format('Y-m-d H:i:s');
+        $request['data_open'] = $dtOpen;
+        
+        $month = Carbon::parse($request['data_open'])->localeMonth;
+        $request['month'] = $month;
+        $request['id_company'] = Auth::user()->user_id_company;
+
+        $boxOpen = SettingsBox::where([
+            'id_company' => Auth::user()->id,
+            'month' => $month
+        ])->get();
+          
+        if(count($boxOpen) == 0)
+        {
+            try {
+                SettingsBox::create($request->all());
+                return back()->with(['success' => 'Caixa aberto com sucesso']);
+              } catch (\Throwable $th) {
+               throw $th;
+              }
+        }else{
+            return back()->with(['error' => 'Já tem caixa aberto no mes da data escolhida']);
+        } 
     }
 
     /**
@@ -96,11 +122,11 @@ class SettingsBoxController extends Controller
 
     public function dataTable()
     {
-        $boxOpen = SettingsBox::join('users', 'settings_box.id_user_open', 'users.id')
-        ->join('users', 'settings_box.id_user_close', 'users.id')
-        ->select('users.*', 'settings_box.*')    
+        $boxOpen = SettingsBox::join('users', 'settings_boxes.id_user_open', '=', 'users.id')
+        // ->join('users', 'settings_boxes.id_user_close', '=','users.id')
+        ->select('users.*', 'settings_boxes.*')    
         ->where(
-            'id_company' ,'=', 2
+            'id_company' ,'=', Auth::user()->user_id_company
         )->get();
 
         $dataTable = DataTables::of($boxOpen);
@@ -113,7 +139,7 @@ class SettingsBoxController extends Controller
         $dataTable->editColumn(
             'data_open',
             function($box) {
-                $created_at = new Carbon($box->created_at);
+                $created_at = new Carbon($box->data_open);
                 return $created_at->format('d/m/Y à\s H:i:s');
             }
         );
@@ -121,8 +147,19 @@ class SettingsBoxController extends Controller
         $dataTable->editColumn(
             'data_close',
             function($box) {
-                $created_at = new Carbon($box->created_at);
-                return $created_at->format('d/m/Y à\s H:i:s');
+                if($box->data_close !== null)
+                {
+                    $created_at = new Carbon($box->created_at);
+                    return $created_at->format('d/m/Y à\s H:i:s');
+                }               
+            }
+        );
+        
+        $dataTable->editColumn(
+            'id_user_open',
+            function($box) {
+               
+                return $box->name;
             }
         );
 
