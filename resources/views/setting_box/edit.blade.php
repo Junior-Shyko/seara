@@ -10,7 +10,7 @@
         <div class="">
             <div class="page-title">
                 <div class="title_left">
-                    <h3>Configuração de caixas</h3>
+                    <h3>Editar de caixa</h3>
                 </div>
                 <div class="title_right">
 
@@ -42,12 +42,38 @@
                             <div class="clearfix"></div>
                         </div>
                         <div class="x_content">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                    <tbody>
+                                    <tr>
+                                    <th >Data da abertura:</th>
+                                    <td>{{\Carbon\Carbon::parse($setBox->data_open)->format('d/m/Y H:i:d')}}</td>
+                                    </tr>
+                                    <tr>
+                                    <th>Aberto por:</th>
+                                    <td>{{$setBox->name}}</td>
+                                    </tr>
+                                    <tr>
+                                    <th>Situação:</th>
+                                    <td>
+                                        {{$setBox->slug == 'open' ? 'Aberto' : 'Fechado'}}
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <th>Mês de Referência:</th>
+                                    <td>{{\Carbon\Carbon::parse($setBox->data_open)->month}}</td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+                                    </div>
+                            </div>
                             <div class="col-md-3"></div>
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     @include('msg.message')
                                 </div>
-                                <form id="demo-form2" data-parsley-validate="" method="POST" action="{{ url('caixa') }}"
+                                <form id="form-edit-box" data-parsley-validate="" method="POST" action="{{ url('caixa') }}"
                                     class="form-horizontal form-label-left" novalidate="">
                                     <div class="item form-group">
                                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Data da
@@ -55,24 +81,38 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 ">
-                                            <input id="data_open_box" class="form-control" placeholder="dd/mm/aaaa"
-                                                type="text" required="required" name="data_open">
+                                            <input id="data_open_box" class="form-control" 
+                                                placeholder="dd/mm/aaaa"
+                                                type="text" required="required"
+                                                name="data_open"
+                                                value="{{\Carbon\Carbon::parse($setBox->data_open)->format('d/m/Y H:i:d')}}">
                                         </div>
                                     </div>
                                     <div class="item form-group">
-                                        
+                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Data do
+                                            fechamento
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="col-md-6 col-sm-6 ">
+                                            <input id="data_close_box_edit" class="date-picker form-control"
+                                            placeholder="dd/mm/aaaa" type="text" name="data_close">
+                                            <p class="text-muted" style="color: darkgoldenrod;">Para fechar o caixa, basta preencher a data do fechamento.</p>
+                                        </div>
                                     </div>
 
                                     <div class="ln_solid"></div>
                                     <div class="item form-group">
+                                        
+                                        <div class="col-md-6">
+                                            <a href="{{url('caixa')}}" class="btn btn-default pull-left" title="Altera e/ou fecha o caixa">
+                                                <i class="fa fa-arrow-circle-left"></i> Voltar
+                                            </a>
+                                        </div>
                                         <div class="col-md-6 col-sm-6 offset-md-3">
                                             <input type="hidden" name="id_user_open" value="{{ Auth::user()->id }}">
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="fa fa-money"></i> Abrir Caixa
+                                            <button type="button" onClick="alterarCaixa({{$setBox->id}})" class="btn btn-success pull-right" title="Altera e/ou fecha o caixa">
+                                                <i class="fa fa-money"></i> Alterar Caixa
                                             </button>
-                                        </div>
-                                        <div class="col-md-6">
-
                                         </div>
                                     </div>
                                     <div class="ln_solid"></div>
@@ -81,31 +121,8 @@
                             <div class="col-md-3"></div>
                             <br>
                             <div class="clearfix"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-4">
-                                        <a href="" class="btn btn-primary btn-block">
-                                            Reabrir multiplo caixas
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4"></div>
-
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="table_settings_box">
-                                    <thead>
-                                        <tr class="bg-primary">
-                                            <th>Data Abertura</th>
-                                            <th>Data Fechamento</th>
-                                            <th>Aberto por</th>
-                                            <th>Fechado por</th>
-                                            <th>Ação</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
+                            
+                           
                         </div>
 
 

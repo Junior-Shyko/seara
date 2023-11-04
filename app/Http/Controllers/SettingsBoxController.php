@@ -4,9 +4,11 @@ namespace Seara\Http\Controllers;
 
 use Carbon\Carbon;
 use Seara\SettingsBox;
+use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Seara\Repository\SettingsBoxRepository;
 use Seara\Http\Requests\StoreSettinsRequest;
 
 class SettingsBoxController extends Controller
@@ -20,12 +22,8 @@ class SettingsBoxController extends Controller
     public function index()
     {
         setlocale(LC_TIME, 'pt_BR');
-        $month = Carbon::now();
-        $boxOpen = SettingsBox::where([
-            'id_company' => Auth::user()->id,
-            'month' => $month->localeMonth
-        ])->get();
- 
+        $dateNow = Carbon::now();
+        $boxOpen = SettingsBoxRepository::getBoxOpenClose($dateNow, Auth::user()->user_id_company);
         return view('setting_box.index', compact('boxOpen'));
     }
 
@@ -49,20 +47,15 @@ class SettingsBoxController extends Controller
     {
         // dump($request->all());
         $time = Carbon::now();
-        $request['data_open'] = $request['data_open'] .' '.$time->format('H:i:s');
-        $dtOpen = Carbon::parse($request['data_open'])->format('Y-m-d H:i:s');
-        $request['data_open'] = $dtOpen;
-        
-        $month = Carbon::parse($request['data_open'])->localeMonth;
-        $request['month'] = $month;
-        $request['id_company'] = Auth::user()->user_id_company;
+        $dtOpen = FunctionGeneral::DataBRtoMySQL($request['data_open']);
+        $request['data_open'] = $dtOpen.' '.$time->format('H:i:s');
 
-        $boxOpen = SettingsBox::where([
-            'id_company' => Auth::user()->id,
-            'month' => $month
-        ])->get();
-          
-        if(count($boxOpen) == 0)
+        //Se false é por que não tem caixa no mes respectivo
+        $request['month'] = SettingsBoxRepository::getMonthBox($request['data_open']);
+        $request['id_company'] = Auth::user()->user_id_company;
+        $boxOpen = SettingsBoxRepository::getBoxOpenClose($dtOpen, Auth::user()->user_id_company);
+        $request['slug'] = 'open';
+        if(!$boxOpen)
         {
             try {
                 SettingsBox::create($request->all());
@@ -92,9 +85,22 @@ class SettingsBoxController extends Controller
      * @param  \Seara\SettingsBox  $settingsBox
      * @return \Illuminate\Http\Response
      */
-    public function edit(SettingsBox $settingsBox)
+    public function edit($id)
     {
-        //
+        $user = Auth::user();
+        $setBox = SettingsBox::join('users', 'settings_boxes.id_user_open', '=', 'users.id')
+        ->select('users.*', 'settings_boxes.*')    
+        ->where(
+            'settings_boxes.id' ,'=', $id
+        )->first();
+        $role = $user->getRoleNames()->first();
+        if($role == 'superAdmin' || ($setBox->id_company == Auth::user()->user_id_company) )
+        {
+            return view('setting_box.edit', compact('setBox'));
+        }else{
+            return back()->with(['error' => 'Permissão Negada']);
+        }
+
     }
 
     /**
@@ -104,9 +110,19 @@ class SettingsBoxController extends Controller
      * @param  \Seara\SettingsBox  $settingsBox
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SettingsBox $settingsBox)
+    public function update(Request $request, SettingsBox $settingsBox, $id)
     {
-        //
+        dump($request->all());
+        dump($settingsBox);
+        $request['data_close'] = Carbon::parse($request['data_close'])->format('Y-m-d H:i:s');
+        $request['slug'] = 'close';
+        $request['id_user_close'] = Auth::user()->id;
+        try {
+            $box = $settingsBox->find($id)->update($request->all());
+            dump($box);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

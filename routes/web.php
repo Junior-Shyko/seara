@@ -79,9 +79,11 @@ Route::get('caixa/abrir-caixa' , 'BoxController@box_open');
 // Route::post('abrir-caixa' , 'BoxController@open_box');
 // Route::post('fechar-caixa' , 'BoxController@close_box');
 
-Route::group(['prefix' => 'caixa'], function () {
+Route::group(['prefix' => 'caixa','middleware' => ['auth']], function () {
     Route::resource('/' , 'SettingsBoxController');
     Route::post('store', 'SettingsBoxController@store');
+    Route::get('editar/{id}', 'SettingsBoxController@edit');
+    Route::put('update/{id}', 'SettingsBoxController@update');
     Route::get('/datatable', 'SettingsBoxController@dataTable')->name('caixa.datatables');
 });
 

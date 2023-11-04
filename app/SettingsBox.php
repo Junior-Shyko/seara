@@ -12,6 +12,7 @@ class SettingsBox extends Model
         'month',
         'id_user_open',
         'id_user_close',
-        'id_company'
+        'id_company',
+        'slug'
     ];
 }
