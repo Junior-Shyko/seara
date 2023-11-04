@@ -22,7 +22,7 @@ Class SettingsBoxRepository {
         {
             $month = Carbon::parse($date)->localeMonth;
         }else{
-            $month = $date->localeMonth;
+            $month = $date->month;
         }
         $boxOpen = SettingsBox::where([
             'id_company' => $id_company,
@@ -38,13 +38,15 @@ Class SettingsBoxRepository {
      * @param [string|object] $date
      * @return void
      */
-    public static function getMonthBox($date)
+    public static function getMonthYear($date)
     {
         if(gettype($date) == 'string')
         {
-            $month = Carbon::parse($date)->localeMonth;
+            $month['month'] = Carbon::parse($date)->month;
+            $month['year'] = Carbon::parse($date)->year;
         }else{
-            $month = $date->localeMonth;
+            $month['month'] = $date->month;
+            $month['year'] = $date->year;
         }
         return $month;
     }

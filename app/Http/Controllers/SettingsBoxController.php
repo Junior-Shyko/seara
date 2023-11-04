@@ -52,7 +52,9 @@ class SettingsBoxController extends Controller
         $request['date_open'] = $dtOpen.' '.$time->format('H:i:s');
 
         //Se false é por que não tem caixa no mes respectivo
-        $request['month'] = SettingsBoxRepository::getMonthBox($request['date_open']);
+        $monthYear = SettingsBoxRepository::getMonthYear($request['date_open']);
+        $request['month']   = $monthYear['month'];
+        $request['year']    = $monthYear['year'];
         $request['id_company'] = Auth::user()->user_id_company;
         $boxOpen = SettingsBoxRepository::getBoxOpenClose($dtOpen, Auth::user()->user_id_company);
         $request['slug'] = 'open';
