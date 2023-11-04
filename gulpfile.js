@@ -227,10 +227,11 @@ elixir(function(mix) {
     //SETTING BOX
     mix.scripts([
         './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+        'plugins/jquery.datetimepicker.full.min.js',
         'seara.js',
         'setting_box/setting-box.js'
     ], 'public/js/setting_box/setting-box.js');
-
+    mix.styles('plugins/jquery.datetimepicker.css', 'public/css/setting-box.css')
 
     /**************/
     /* Copy Fonts */

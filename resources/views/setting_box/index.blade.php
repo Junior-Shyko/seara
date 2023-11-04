@@ -1,9 +1,9 @@
 @extends('layouts.blank')
 @push('stylesheets')
     <!-- Example -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.11/jquery.datetimepicker.min.css"
-        rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="{{asset('css/setting-box.css')}}"  rel="stylesheet">
+{{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.11/jquery.datetimepicker.min.css"
+rel="stylesheet"> --}}
 @endpush
 @section('main_container')
     <div class="right_col" role="main" style="min-height: 948px;">
@@ -55,8 +55,8 @@
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 ">
-                                            <input id="data_open_box" class="form-control" placeholder="dd/mm/aaaa"
-                                                type="text" required="required" name="data_open">
+                                            <input id="date_open_box" class="form-control" placeholder="dd/mm/aaaa"
+                                                type="text" required="required" name="date_open" autocomplete="false">
                                         </div>
                                     </div>
                                     <div class="item form-group">
@@ -119,5 +119,6 @@
     {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/receipt.min.css')}}"> --}}
 @endpush
 @push('scripts')
-    <script type="text/javascript" language="javascript" src="{{ asset('js/setting_box/setting-box.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/setting_box/setting-box.js') }}"></script>
+
 @endpush

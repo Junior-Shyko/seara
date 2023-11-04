@@ -3,6 +3,7 @@
 namespace Seara\Http\Controllers;
 
 use Carbon\Carbon;
+use Seara\Models\User;
 use Seara\SettingsBox;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
@@ -47,11 +48,11 @@ class SettingsBoxController extends Controller
     {
         // dump($request->all());
         $time = Carbon::now();
-        $dtOpen = FunctionGeneral::DataBRtoMySQL($request['data_open']);
-        $request['data_open'] = $dtOpen.' '.$time->format('H:i:s');
+        $dtOpen = FunctionGeneral::DataBRtoMySQL($request['date_open']);
+        $request['date_open'] = $dtOpen.' '.$time->format('H:i:s');
 
         //Se false é por que não tem caixa no mes respectivo
-        $request['month'] = SettingsBoxRepository::getMonthBox($request['data_open']);
+        $request['month'] = SettingsBoxRepository::getMonthBox($request['date_open']);
         $request['id_company'] = Auth::user()->user_id_company;
         $boxOpen = SettingsBoxRepository::getBoxOpenClose($dtOpen, Auth::user()->user_id_company);
         $request['slug'] = 'open';
@@ -110,19 +111,26 @@ class SettingsBoxController extends Controller
      * @param  \Seara\SettingsBox  $settingsBox
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SettingsBox $settingsBox, $id)
+    public function update(Request $request, $id)
     {
-        dump($request->all());
-        dump($settingsBox);
-        $request['data_close'] = Carbon::parse($request['data_close'])->format('Y-m-d H:i:s');
-        $request['slug'] = 'close';
-        $request['id_user_close'] = Auth::user()->id;
-        try {
-            $box = $settingsBox->find($id)->update($request->all());
-            dump($box);
-        } catch (\Throwable $th) {
-            throw $th;
+        $time = Carbon::now();
+        $dtOpen = FunctionGeneral::DataBRtoMySQL($request['date_open']);
+        $request['date_open'] = $dtOpen.' '.$time->format('H:i:s');
+        //Para data do fechamento preenchida
+        if(!is_null($request['date_close']))
+        {
+            $request['date_close'] = Carbon::parse($request['date_close'])->format('Y-m-d H:i:s');
+            $request['slug'] = 'close';
+            $request['id_user_close'] = Auth::user()->id;
         }
+        try {
+            $box = SettingsBox::find($id);
+            $box->update($request->all());
+            return response()->json(['message' => 'Caixa alterado com sucesso', 'status' => 200], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Ocorreu um erro inesperado.', 'status' => 400], 400);
+        }
+
     }
 
     /**
@@ -153,21 +161,22 @@ class SettingsBoxController extends Controller
             }
         );
         $dataTable->editColumn(
-            'data_open',
+            'date_open',
             function($box) {
-                $created_at = new Carbon($box->data_open);
+                $created_at = new Carbon($box->date_open);
                 return $created_at->format('d/m/Y à\s H:i:s');
             }
         );
         
         $dataTable->editColumn(
-            'data_close',
+            'date_close',
             function($box) {
-                if($box->data_close !== null)
+                if($box->date_close !== null)
                 {
                     $created_at = new Carbon($box->created_at);
                     return $created_at->format('d/m/Y à\s H:i:s');
-                }               
+                }
+                return '--';        
             }
         );
         
@@ -176,6 +185,16 @@ class SettingsBoxController extends Controller
             function($box) {
                
                 return $box->name;
+            }
+        );
+
+        $dataTable->editColumn(
+            'id_user_close',
+            function($box) {
+                if($box->id_user_close > 0){
+                    return User::find($box->id_user_close)->name;
+                }
+               return '--';
             }
         );
 

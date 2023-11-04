@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class SettingsBox extends Model
 {
     protected $fillable = [
-        'data_open',
-        'data_close',
+        'date_open',
+        'date_close',
         'month',
         'id_user_open',
         'id_user_close',

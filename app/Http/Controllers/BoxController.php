@@ -195,8 +195,8 @@ class BoxController extends Controller
 
     public function open_box(Request $request)
     {
-        $data_open = FunctionGeneral::DataBRtoMySQL($request['date_box_open']);
-        $request['boxies_date_open'] = $data_open;
+        $date_open = FunctionGeneral::DataBRtoMySQL($request['date_box_open']);
+        $request['boxies_date_open'] = $date_open;
         $request['boxies_status'] = 'Aberto';
         $request['boxies_balance_end'] = 0.00;
         $initial = FunctionGeneral::moeda($request['boxies_balance_initial_modal']);

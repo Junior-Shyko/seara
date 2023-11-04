@@ -1,8 +1,8 @@
 $(document).ready(function () {
 
     var colunas = [
-        { data: 'data_open', name: 'data_open' },
-        { data: 'data_close', name: 'data_close' },
+        { data: 'date_open', name: 'date_open' },
+        { data: 'date_close', name: 'date_close' },
         { data: 'id_user_open', name: 'id_user_open'},
         { data: 'id_user_close', name: 'id_user_close'},
         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'no-break' }
@@ -17,8 +17,18 @@ $(document).ready(function () {
     );
     userPermissionTable.loadTable();
 
-    $('#data_open_box').mask('00/00/0000');
-    $('#data_close_box').mask('00/00/0000');
+    // $('#date_open_box').mask('00/00/0000');
+    // $('#date_close_box').mask('00/00/0000');
+    jQuery.datetimepicker.setLocale('pt-BR');
+    $("#date_open_box").datetimepicker({
+      format:'d/m/Y H:i'
+    });
+    $("#date_open_box").datetimepicker({
+      format:'d/m/Y H:i'
+    });
+    $("#date_close_box_edit").datetimepicker({
+      format:'d/m/Y H:i'
+    });
 
 });
 
@@ -35,7 +45,7 @@ function editBoxOpenClose(id)
 
 function alterarCaixa(id)
 {
-  if($("#data_close_box_edit").val() !== "")
+  if($("#date_close_box_edit").val() !== "")
   {
     // SearaAlert.confirm('Deseja realmente fechar esse caixa?', 'Fechar Caixa', 'Desistir', id);
     swal({
@@ -47,8 +57,6 @@ function alterarCaixa(id)
       /* Read more about isConfirmed, isDenied below */
       console.log(result)
       if (result) {
-        // Swal.fire('Saved!', '', 'success')
-        // form-edit-box
         updateSettingBox(id);
 
       } else if (result.isDenied) {
@@ -57,6 +65,7 @@ function alterarCaixa(id)
     })
   }else{
     console.log('id', id)
+    updateSettingBox(id)
   }
 }
 
@@ -70,11 +79,14 @@ function updateSettingBox(id)
       data: form,
       dataType: "json",
       success: function (response) {
-        console.log(response)
-          // SearaAlert.success(response.message);
-          // //REMOVENDO MODAL
-          // $("#modalAcessClient").modal('hide');
-          // reloadTable('table_permission_user')
+        if(response.status == 200)
+        {
+          notify.success('Sucesso!', response.message);
+        }
+      },
+      error: function(res, status) {
+        console.log(res, status)
+        notify.error('Ops!', es.responseJSON.message);
       }
   });
 }
