@@ -3,6 +3,8 @@ $(document).ready(function () {
     var colunas = [
         { data: 'date_open', name: 'date_open' },
         { data: 'date_close', name: 'date_close' },
+        { data: 'month', name: 'month' },
+        { data: 'year', name: 'year' },
         { data: 'id_user_open', name: 'id_user_open'},
         { data: 'id_user_close', name: 'id_user_close'},
         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'no-break' }
@@ -17,7 +19,7 @@ $(document).ready(function () {
     );
     userPermissionTable.loadTable();
 
-    // $('#date_open_box').mask('00/00/0000');
+    // $('#date_open_box').mask('00/00/0000 00:00');
     // $('#date_close_box').mask('00/00/0000');
     jQuery.datetimepicker.setLocale('pt-BR');
     $("#date_open_box").datetimepicker({

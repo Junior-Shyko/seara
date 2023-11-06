@@ -56,7 +56,7 @@ rel="stylesheet"> --}}
                                         </label>
                                         <div class="col-md-6 col-sm-6 ">
                                             <input id="date_open_box" class="form-control" placeholder="dd/mm/aaaa"
-                                                type="text" required="required" name="date_open" autocomplete="false">
+                                                type="text" required="required" name="date_open" maxlength="20" autocomplete="false">
                                         </div>
                                     </div>
                                     <div class="item form-group">
@@ -99,6 +99,8 @@ rel="stylesheet"> --}}
                                         <tr class="bg-primary">
                                             <th>Data Abertura</th>
                                             <th>Data Fechamento</th>
+                                            <th>Referente</th>
+                                            <th>Ano</th>
                                             <th>Aberto por</th>
                                             <th>Fechado por</th>
                                             <th>Ação</th>

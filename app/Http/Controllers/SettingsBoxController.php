@@ -46,6 +46,12 @@ class SettingsBoxController extends Controller
      */
     public function store(Request $request)
     {
+        $dt = Carbon::parse($request['date_open']);
+        if($dt < date('2000-01-01'))
+        {
+            dump('mostrar um alerta');
+        }
+        dd($dt);
         // dump($request->all());
         $time = Carbon::now();
         $dtOpen = FunctionGeneral::DataBRtoMySQL($request['date_open']);
@@ -169,6 +175,12 @@ class SettingsBoxController extends Controller
                 return $created_at->format('d/m/Y à\s H:i:s');
             }
         );
+        $dataTable->editColumn(
+            'month',
+            function($box) {
+               return SettingsBoxRepository::getMonthToNumner($box->month);
+            }
+        );
         
         $dataTable->editColumn(
             'date_close',
@@ -211,6 +223,13 @@ class SettingsBoxController extends Controller
                 'Editar Caixa',
                 'editBoxOpenClose',
                 'fa-pencil'
+            ),
+            $this->actionButton(
+                $id,
+                'Fechar Caixa',
+                'editBoxOpenClose',
+                'fa-times-circle-o',
+                'btn-danger'
             )
         ]);
     }
