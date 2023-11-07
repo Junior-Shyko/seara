@@ -92,3 +92,35 @@ function updateSettingBox(id)
       }
   });
 }
+
+function showConfirmOpenClose(id)
+{
+  swal({
+    title: 'Deseja realmente reabrir esse caixa?',
+    showCancelButton: true,
+    confirmButtonText: 'Sim, reabrir!',
+    cancelButtonText: 'Desistir'
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    console.log(result)
+    if (result) {
+      reopenBox(id);
+
+    } else if (result.isDenied) {
+      Swal.fire('Changes are not saved', '', 'info')
+    }
+  })
+}
+
+function reopenBox(id)
+{
+  $.ajax({
+    type: "put",
+    url: SearaApp.baseURL + 'caixa/update/'+ id,
+    data: {slug: 'open'},
+    dataType: "json",
+    success: function (response) {
+      console.log({response})
+    }
+  });
+}

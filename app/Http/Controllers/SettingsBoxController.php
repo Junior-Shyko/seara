@@ -51,8 +51,7 @@ class SettingsBoxController extends Controller
         {
             dump('mostrar um alerta');
         }
-        dd($dt);
-        // dump($request->all());
+
         $time = Carbon::now();
         $dtOpen = FunctionGeneral::DataBRtoMySQL($request['date_open']);
         $request['date_open'] = $dtOpen.' '.$time->format('H:i:s');
@@ -121,23 +120,24 @@ class SettingsBoxController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $time = Carbon::now();
-        $dtOpen = FunctionGeneral::DataBRtoMySQL($request['date_open']);
-        $request['date_open'] = $dtOpen.' '.$time->format('H:i:s');
-        //Para data do fechamento preenchida
-        if(!is_null($request['date_close']))
-        {
-            $request['date_close'] = Carbon::parse($request['date_close'])->format('Y-m-d H:i:s');
-            $request['slug'] = 'close';
-            $request['id_user_close'] = Auth::user()->id;
-        }
-        try {
-            $box = SettingsBox::find($id);
-            $box->update($request->all());
-            return response()->json(['message' => 'Caixa alterado com sucesso', 'status' => 200], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'Ocorreu um erro inesperado.', 'status' => 400], 400);
-        }
+        dump($request->all());
+        // $time = Carbon::now();
+        // $dtOpen = FunctionGeneral::DataBRtoMySQL($request['date_open']);
+        // $request['date_open'] = $dtOpen.' '.$time->format('H:i:s');
+        // //Para data do fechamento preenchida
+        // if(!is_null($request['date_close']))
+        // {
+        //     $request['date_close'] = Carbon::parse($request['date_close'])->format('Y-m-d H:i:s');
+        //     $request['slug'] = 'close';
+        //     $request['id_user_close'] = Auth::user()->id;
+        // }
+        // try {
+        //     $box = SettingsBox::find($id);
+        //     $box->update($request->all());
+        //     return response()->json(['message' => 'Caixa alterado com sucesso', 'status' => 200], 200);
+        // } catch (\Throwable $th) {
+        //     return response()->json(['message' => 'Ocorreu um erro inesperado.', 'status' => 400], 400);
+        // }
 
     }
 
@@ -226,9 +226,9 @@ class SettingsBoxController extends Controller
             ),
             $this->actionButton(
                 $id,
-                'Fechar Caixa',
-                'editBoxOpenClose',
-                'fa-times-circle-o',
+                'Reabrir Caixa',
+                'showConfirmOpenClose',
+                'fa-repeat',
                 'btn-danger'
             )
         ]);
