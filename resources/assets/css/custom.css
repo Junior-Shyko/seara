@@ -4300,6 +4300,23 @@ background-color: #343a40;
 color: #fff;
 background-color: #17a2b8;
 }
+.badge-danger {
+    color: #fff;
+    background-color: #dc3545;
+}
+.badge-info {
+    color: #fff;
+    background-color: #17a2b8;
+}
+.badge-primary {
+    color: #fff;
+    background-color: #007bff;
+}
+.badge-warning {
+    color:#212529;
+    background-color: #ffc107;
+}
+
 .space-money {
 display: flex;
 justify-content: space-around

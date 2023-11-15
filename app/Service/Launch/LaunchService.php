@@ -76,4 +76,7 @@ class LaunchService
     {
         return AccountBank::where('company_id', '=', $idCompany)->sum('balance');
     }
+
+    
+
 }

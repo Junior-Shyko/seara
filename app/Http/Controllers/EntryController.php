@@ -72,12 +72,7 @@ class EntryController extends Controller
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
 
-        setlocale(LC_TIME, 'pt_BR');
-        $month = Carbon::now();
-        $boxOpen = SettingsBox::where([
-            'id_company' => Auth::user()->id,
-            'month' => $month->localeMonth
-        ])->first();
+        $boxOpen = EntryRepository::getBoxMonthOpenClose();
 
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
@@ -130,6 +125,10 @@ class EntryController extends Controller
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         $request['entries_date_launch'] = $date_launch;
 
+
+        //abertura de caixa
+        EntryRepository::verifyExistEntryMonthAndOpenBox($date_launch);
+        dd($request->all());
         try {
             //por padrão 
             $request['entries_bank'] = 0;

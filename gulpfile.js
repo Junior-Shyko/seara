@@ -226,6 +226,8 @@ elixir(function(mix) {
 
     //SETTING BOX
     mix.scripts([
+        './node_modules/moment/min/moment.min.js',
+        './node_modules/moment/locale/pt-br.js',
         './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
         'plugins/jquery.datetimepicker.full.min.js',
         'seara.js',

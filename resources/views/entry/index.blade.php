@@ -25,15 +25,11 @@
             </div>
             <div class="col-md-12">
                 @if (is_null($boxOpen))
-                <div class="alert alert-info alert-dismissible " role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
-                    </button>
-                    <h5>
-                        <strong>Ops!</strong>
-                        Você não tem registro de caixa aberto, então precisa abrir clicando, 
-                        <a href="{{url('caixa')}}" class="btn btn-default">aqui</a>
-                    </h5>
-                    </div>
+                <h5 class="badge badge-primary" >
+                    <strong>Ops!</strong>
+                    Você não tem registro de caixa iniciado, seu próximo lançamento será a data de inicio do caixa
+                    desse mês atual.
+                </h5>
                 @endif
             </div>
             <hr>
@@ -117,12 +113,20 @@
                                             Lançar Movimento
                                         </button>
                                       </div>
-                                </li>
+                                </li>                                
                                 <li>
                                     <button type="button" class="btn btn-dark">
                                         <a  href="{{url('lancar')}}" style="color: white;">
                                             <i class="fa fa-refresh"></i>
                                             Atualizar valores
+                                        </a>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" class="btn btn-danger">
+                                        <a  href="{{url('caixa')}}" style="color: white;">
+                                            <i class="fa fa-close"></i>
+                                            Fechar Caixa
                                         </a>
                                     </button>
                                 </li>

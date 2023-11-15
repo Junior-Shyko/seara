@@ -50,8 +50,7 @@ rel="stylesheet"> --}}
                                 <form id="demo-form2" data-parsley-validate="" method="POST" action="{{ url('caixa') }}"
                                     class="form-horizontal form-label-left" novalidate="">
                                     <div class="item form-group">
-                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Data da
-                                            abertura
+                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Data de início
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 ">
@@ -81,18 +80,7 @@ rel="stylesheet"> --}}
                             <div class="col-md-3"></div>
                             <br>
                             <div class="clearfix"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="col-md-4"></div>
-                                    <div class="col-md-4">
-                                        <a href="" class="btn btn-primary btn-block">
-                                            Reabrir multiplo caixas
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4"></div>
-
-                                </div>
-                            </div>
+                            
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="table_settings_box">
                                     <thead>
