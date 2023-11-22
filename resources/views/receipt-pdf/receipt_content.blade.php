@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  window.print();
+  // window.print();
   </script>
 <table border="0" style="margin-left: 25px">
   <tr style="height: 99;">
@@ -39,6 +39,7 @@
   </tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
+
   <tr>
     <td colspan="3" class="text-bold top-align">Recebi(emos) de: </td>
     <td colspan="9" class="top-align">{{ mb_strtoupper($receipt->receipt_received_from) }}</td>
@@ -63,17 +64,23 @@
     <td colspan="10" class="text-center">{{ mb_strtoupper($receipt->receipt_local) }}, {{ mb_strtoupper($receipt->extensiveDate()) }}</td>
     <td colspan="1"></td>
   </tr>
+  <tr><td><br></td></tr>
+  <tr><td><br></td></tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
   <tr><td colspan="12" class="offset-5"></td></tr>
   <tr>
     <td colspan="3"></td>
-    <td colspan="6"><hr></td>
+    <td colspan="6"  class="text-center">
+      <hr>
+      {{ $receipt->receipt_emitter }} {{ $receipt->receipt_document }}
+    </td>
     <td colspan="3"></td>
   </tr>
   <tr>
     <td colspan="3"></td>
-    <td colspan="6" class="text-center">{{ $receipt->receipt_emitter }} {{ $receipt->receipt_document }}</td>
+    <td colspan="6" class="text-center"></td>
     <td colspan="3"></td>
   </tr>
+  <tr><td><br></td></tr>
 </table> 
