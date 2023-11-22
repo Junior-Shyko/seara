@@ -11,24 +11,36 @@ Class SettingsBoxRepository {
 
     /**
      * Retorna true quando existe registro de caixa do respectivo mes da data de parametro
+     * no formato da data brasileira
      *
      * @param [string|object] $date
      * @param [integer] $id_company
      * @return void
      */
-    public static function getBoxOpenClose($date, $id_company)
+    public static function getExistBoxMonth($date, $id_company = null)
     {
-        if(gettype($date) == 'string')
+        $boxOpen = false;
+        if(gettype($date) == 'string' && $date !== null)
         {
-            $month = Carbon::parse($date)->localeMonth;
-        }else{
+            $dtFormat = FunctionGeneral::DataBRtoMySQL($date);
+            $month = Carbon::parse($dtFormat);
+            // dd($date);
+            $boxOpen = SettingsBox::where([
+                'id_company' => $id_company,
+                'month' => $month->month,
+                'year' => $month->year
+            ])->get();
+          
+        }elseif(gettype($date) == 'object' && $date !== null){
             $month = $date->month;
-        }
-        $boxOpen = SettingsBox::where([
-            'id_company' => $id_company,
-            'month' => $month
-        ])->get();
 
+            $boxOpen = SettingsBox::where([
+                'id_company' => $id_company,
+                'month' => $month,
+                'year' => $date->year
+            ])->get();
+        }
+      
         return count($boxOpen) == 0 ? false : true;
     }
 
@@ -101,5 +113,27 @@ Class SettingsBoxRepository {
                 return 'Janeiro';
                 break;
         }
+    }
+
+    /**
+     * Retorna um objeto inteiro da primeira consulta que for encontrado com os
+     * parametros passado. Data no formato brasileiro
+     *
+     * @param [integer] $id_company
+     * @param [string] $date
+     * @return void
+     */
+    public static function getBoxOpenOrClose($id_company, $date)
+    {
+        $dtFormat = FunctionGeneral::DataBRtoMySQL($date);
+        $month = Carbon::parse($dtFormat);
+
+        $boxOpen = SettingsBox::where([
+            'id_company' => $id_company,
+            'month' => $month->month,
+            'year' => $month->year
+        ])->first();
+
+        return $boxOpen;
     }
 }

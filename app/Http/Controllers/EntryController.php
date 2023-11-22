@@ -34,7 +34,7 @@ class EntryController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('checkBox')->only(['store']);
     }
 
     /**
@@ -109,6 +109,7 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
+       
         $rules = [
             'entries_description' => 'required',
             'entries_id_account' => 'required',
@@ -125,10 +126,11 @@ class EntryController extends Controller
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         $request['entries_date_launch'] = $date_launch;
 
-
+        // dump($date_launch);
         //abertura de caixa
-        EntryRepository::verifyExistEntryMonthAndOpenBox($date_launch);
-        dd($request->all());
+        $entryRepo = EntryRepository::verifyExistEntryMonthAndOpenBox($request->entries_date_launch);
+        $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
+        $request['entries_date_launch'] = $date_launch;
         try {
             //por padrão 
             $request['entries_bank'] = 0;

@@ -24,7 +24,7 @@ class SettingsBoxController extends Controller
     {
         setlocale(LC_TIME, 'pt_BR');
         $dateNow = Carbon::now();
-        $boxOpen = SettingsBoxRepository::getBoxOpenClose($dateNow, Auth::user()->user_id_company);
+        $boxOpen = SettingsBoxRepository::getExistBoxMonth($dateNow, Auth::user()->user_id_company);
         return view('setting_box.index', compact('boxOpen'));
     }
 
@@ -61,7 +61,7 @@ class SettingsBoxController extends Controller
         $request['month']   = $monthYear['month'];
         $request['year']    = $monthYear['year'];
         $request['id_company'] = Auth::user()->user_id_company;
-        $boxOpen = SettingsBoxRepository::getBoxOpenClose($dtOpen, Auth::user()->user_id_company);
+        $boxOpen = SettingsBoxRepository::getExistBoxMonth($dtOpen, Auth::user()->user_id_company);
         $request['slug'] = 'open';
         if(!$boxOpen)
         {

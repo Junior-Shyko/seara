@@ -92,7 +92,7 @@ Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
 Route::resource('tipo-conta', 'AccountTypeController');
-Route::resource('lancar' , 'EntryController');
+Route::resource('lancar' , 'EntryController')->middleware('auth');
 Route::post('caixa/upload' , 'EntryController@upload');
 Route::get('all-launch/{company}', 'EntryController@getAll');
 Route::post('lancar/delete' , 'EntryController@destroy')->middleware('auth.basic');

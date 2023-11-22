@@ -108,8 +108,8 @@ class EntryRepository {
                 ->get();
         //Retorna a quantidade
         // return count($entry);
-        $boxOpen = SettingsBoxRepository::getBoxOpenClose($date, $idCompany);
-
+        $boxOpen = SettingsBoxRepository::getExistBoxMonth($date, $idCompany);
+      
         if($boxOpen == false || count($entry) == 0 ){
             $time = Carbon::now();
             

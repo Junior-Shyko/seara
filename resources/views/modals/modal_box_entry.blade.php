@@ -6,6 +6,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">Lançamento no Caixa</h4>
+              
             </div>
             <div class="modal-body">
                 <div class="row alert space-money" id="infoMonthLaunch">
