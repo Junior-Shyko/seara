@@ -73,7 +73,7 @@ class EntryController extends Controller
         $entry = Entry::where('entries_id_company', $idCompany)->get();
 
         $boxOpen = EntryRepository::getBoxMonthOpenClose();
-
+       
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
 
@@ -126,11 +126,11 @@ class EntryController extends Controller
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         $request['entries_date_launch'] = $date_launch;
 
-        // dump($date_launch);
         //abertura de caixa
         $entryRepo = EntryRepository::verifyExistEntryMonthAndOpenBox($request->entries_date_launch);
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
-        $request['entries_date_launch'] = $date_launch;
+        //Data do lançamento
+        $request['entries_date_launch'] = $request->entries_date_launch;
         try {
             //por padrão 
             $request['entries_bank'] = 0;
@@ -141,7 +141,7 @@ class EntryController extends Controller
             if(!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])){
                 $request['entries_bank'] = $request['idAccountBank'];
             }
-            
+
             $entry = Entry::create($request->all());
             $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([

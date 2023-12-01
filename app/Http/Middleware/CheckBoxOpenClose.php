@@ -22,11 +22,13 @@ class CheckBoxOpenClose
 
         $id_company = Auth::user()->user_id_company;
         $openClose =  SettingsBoxRepository::getBoxOpenOrClose($id_company, $request->entries_date_launch);
-        if($openClose->slug == 'close')
+        if(isset($openClose->slug) && $openClose->slug == 'close')
         {
             return response()->json(['message' => 'Vocẽ não poderá lançar movimento com um caixa fechado'], 403);
+        }else{
+            return $next($request);
         }
 
-        return $next($request);
+        
     }
 }

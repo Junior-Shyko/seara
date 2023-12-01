@@ -55,7 +55,7 @@ class SettingsBoxController extends Controller
         $time = Carbon::now();
         $dtOpen = FunctionGeneral::DataBRtoMySQL($request['date_open']);
         $request['date_open'] = $dtOpen.' '.$time->format('H:i:s');
-
+        // dd($request->all());
         //Se false é por que não tem caixa no mes respectivo
         $monthYear = SettingsBoxRepository::getMonthYear($request['date_open']);
         $request['month']   = $monthYear['month'];
@@ -166,14 +166,17 @@ class SettingsBoxController extends Controller
 
     public function dataTable()
     {
+
         $boxOpen = SettingsBox::join('users', 'settings_boxes.id_user_open', '=', 'users.id')
         // ->join('users', 'settings_boxes.id_user_close', '=','users.id')
         ->select('users.*', 'settings_boxes.*')    
         ->where(
             'id_company' ,'=', Auth::user()->user_id_company
-        )->get();
+        )
+        ->get();
 
         $dataTable = DataTables::of($boxOpen);
+
         $dataTable->addColumn(
             'action',
             function($box) {
@@ -199,8 +202,8 @@ class SettingsBoxController extends Controller
             function($box) {
                 if($box->date_close !== null)
                 {
-                    $created_at = new Carbon($box->created_at);
-                    return $created_at->format('d/m/Y à\s H:i:s');
+                    $date_close = new Carbon($box->date_close);
+                    return $date_close->format('d/m/Y à\s H:i:s');
                 }
                 return '--';        
             }
@@ -208,8 +211,7 @@ class SettingsBoxController extends Controller
         
         $dataTable->editColumn(
             'id_user_open',
-            function($box) {
-               
+            function($box) {               
                 return $box->name;
             }
         );
@@ -234,14 +236,15 @@ class SettingsBoxController extends Controller
                 $id,
                 'Editar Caixa',
                 'editBoxOpenClose',
-                'fa-pencil'
+                'fa-pencil',
+                'btn-success'
             ),
             $this->actionButton(
                 $id,
                 'Reabrir Caixa',
                 'showConfirmOpenClose',
                 'fa-repeat',
-                'btn-danger'
+                'btn-info'
             )
         ]);
     }

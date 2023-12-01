@@ -184,6 +184,7 @@
                                     </div>
                                 </div>
                             </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -192,7 +193,8 @@
         </div>
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
-    @include('modals.modal_box_entry', ['saldo' => $internal, 'accountBank' => $accountBank])
+    
+    @include('modals.modal_box_entry', ['saldo' => $internal, 'accountBank' => $accountBank, 'boxOpen' => $boxOpen])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
     {{-- EXCLUINDO UM LANCAMENTO --}}

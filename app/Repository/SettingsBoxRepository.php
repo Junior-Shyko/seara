@@ -22,15 +22,18 @@ Class SettingsBoxRepository {
         $boxOpen = false;
         if(gettype($date) == 'string' && $date !== null)
         {
-            $dtFormat = FunctionGeneral::DataBRtoMySQL($date);
-            $month = Carbon::parse($dtFormat);
+            // dump($date);
+            // $dtFormat = FunctionGeneral::DataBRtoMySQL($date);
+            $month = Carbon::parse($date);
+            // dump($month->month);
+            // dump($month->year);
             // dd($date);
             $boxOpen = SettingsBox::where([
                 'id_company' => $id_company,
                 'month' => $month->month,
                 'year' => $month->year
             ])->get();
-          
+            // dump($boxOpen);
         }elseif(gettype($date) == 'object' && $date !== null){
             $month = $date->month;
 

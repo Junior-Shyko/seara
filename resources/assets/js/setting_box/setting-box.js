@@ -19,6 +19,7 @@ $(document).ready(function () {
       'registro',
       'registros'
     );
+
     settingsBox.loadTable();
 
     // $('#date_open_box').mask('00/00/0000 00:00');

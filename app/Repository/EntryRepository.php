@@ -89,10 +89,10 @@ class EntryRepository {
         $month = Carbon::now();
 
         $boxOpen = SettingsBox::where([
-            'id_company' => Auth::user()->id,
-            'month' => $month->month
+            'id_company' => Auth::user()->user_id_company,
+            'month' => $month->month,
+            'year' => $month->year
         ])->first();
-
         return $boxOpen;
     }
 
@@ -106,11 +106,15 @@ class EntryRepository {
         $entry = Entry::whereMonth('entries_date_launch', $month)
                 ->where('entries_id_company',$idCompany)
                 ->get();
+
+                
         //Retorna a quantidade
         // return count($entry);
         $boxOpen = SettingsBoxRepository::getExistBoxMonth($date, $idCompany);
-      
-        if($boxOpen == false || count($entry) == 0 ){
+        // dump($boxOpen);
+        // dump(count($entry));
+        // dd($entry);
+        if($boxOpen == false && count($entry) == 0 ){
             $time = Carbon::now();
             
             $request['date_open'] = $date.' '.$time->format('H:i:s');

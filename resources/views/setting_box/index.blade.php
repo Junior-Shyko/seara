@@ -50,7 +50,7 @@ rel="stylesheet"> --}}
                                 <form id="demo-form2" data-parsley-validate="" method="POST" action="{{ url('caixa') }}"
                                     class="form-horizontal form-label-left" novalidate="">
                                     <div class="item form-group">
-                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Data de início
+                                        <label class="col-form-label col-md-6 col-sm-6 label-align" for="first-name">Data de início
                                             <span class="required">*</span>
                                         </label>
                                         <div class="col-md-6 col-sm-6 ">
