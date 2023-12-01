@@ -2,7 +2,6 @@
 
 namespace Seara\Http\Controllers;
 
-use Seara\Repository\EntryRepository;
 use Validator;
 use Seara\Entry;
 use Auth, DB, PDF;
@@ -10,12 +9,15 @@ use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountBank;
 use Seara\AccountType;
+use Seara\SettingsBox;
 use Seara\AccountLaunch;
 use Seara\SettingsEntry;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
+use Seara\Relation_launch_bank;
+use Seara\Repository\EntryRepository;
 use Illuminate\Http\RedirectResponse ;
 use Seara\Http\Controllers\Controller;
 use Spatie\Permission\Traits\HasRoles;
@@ -25,7 +27,6 @@ use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
-use Seara\Relation_launch_bank;
 
 class EntryController extends Controller
 {
@@ -33,7 +34,7 @@ class EntryController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('checkBox')->only(['store']);
     }
 
     /**
@@ -71,6 +72,8 @@ class EntryController extends Controller
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
 
+        $boxOpen = EntryRepository::getBoxMonthOpenClose();
+       
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
 
@@ -83,7 +86,8 @@ class EntryController extends Controller
             'accountBank',
             'idCompany',
             'entry',
-            'user'
+            'user',
+            'boxOpen'
         ));
     }
 
@@ -105,6 +109,7 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
+       
         $rules = [
             'entries_description' => 'required',
             'entries_id_account' => 'required',
@@ -121,6 +126,11 @@ class EntryController extends Controller
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         $request['entries_date_launch'] = $date_launch;
 
+        //abertura de caixa
+        $entryRepo = EntryRepository::verifyExistEntryMonthAndOpenBox($request->entries_date_launch);
+        $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
+        //Data do lançamento
+        $request['entries_date_launch'] = $request->entries_date_launch;
         try {
             //por padrão 
             $request['entries_bank'] = 0;
@@ -131,7 +141,7 @@ class EntryController extends Controller
             if(!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])){
                 $request['entries_bank'] = $request['idAccountBank'];
             }
-            
+
             $entry = Entry::create($request->all());
             $name = AccountType::getNameType($request['entries_id_account']);
             return response()->json([

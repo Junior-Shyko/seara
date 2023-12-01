@@ -3,10 +3,13 @@
 namespace Seara\Repository;
 
 use Seara\Entry;
+use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountBank;
+use Seara\SettingsBox;
 use Seara\AccountLaunch;
 use Seara\Seara\Monetary;
+use Illuminate\Support\Facades\Auth;
 
 class EntryRepository {
 
@@ -72,6 +75,68 @@ class EntryRepository {
             return response()->json(['message' => $e->getMessage(), 'status' => 400], 400);
         } 
        
+    }
+
+    /**
+     * Retorna a informação se existe algum registro lançado no caixa no mes respectivo
+     *
+     * @param [type] $date
+     * @return void
+     */
+    static public function getBoxMonthOpenClose()
+    {
+        setlocale(LC_TIME, 'pt_BR');
+        $month = Carbon::now();
+
+        $boxOpen = SettingsBox::where([
+            'id_company' => Auth::user()->user_id_company,
+            'month' => $month->month,
+            'year' => $month->year
+        ])->first();
+        return $boxOpen;
+    }
+
+    static function verifyExistEntryMonthAndOpenBox($date)
+    {
+        //recebe a data em formato USA
+        $month = Carbon::parse($date)->month;
+        //id da igreja
+        $idCompany = Auth::user()->user_id_company;
+        //verifica se dentro do mes do lançamento tem algum retgistro
+        $entry = Entry::whereMonth('entries_date_launch', $month)
+                ->where('entries_id_company',$idCompany)
+                ->get();
+
+                
+        //Retorna a quantidade
+        // return count($entry);
+        $boxOpen = SettingsBoxRepository::getExistBoxMonth($date, $idCompany);
+        // dump($boxOpen);
+        // dump(count($entry));
+        // dd($entry);
+        if($boxOpen == false && count($entry) == 0 ){
+            $time = Carbon::now();
+            
+            $request['date_open'] = $date.' '.$time->format('H:i:s');
+    
+            //Se false é por que não tem caixa no mes respectivo
+            $monthYear = SettingsBoxRepository::getMonthYear($request['date_open']);
+            $request['month']           = $monthYear['month'];
+            $request['year']            = $monthYear['year'];
+            $request['id_company']      = $idCompany; 
+            $request['id_user_open']    = Auth::user()->id; 
+            $request['slug']            = 'open';
+            // dump($boxOpen);
+            // dd($request);
+            try {
+                SettingsBox::create($request);
+                return true;
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+           
+        }
+        return false;
     }
 
 }

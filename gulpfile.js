@@ -223,6 +223,18 @@ elixir(function(mix) {
         'dropzone.min.css',
         './node_modules/lightbox2/dist/css/lightbox.min.css',
     ], 'public/css/entry.min.css');
+
+    //SETTING BOX
+    mix.scripts([
+        './node_modules/moment/min/moment.min.js',
+        './node_modules/moment/locale/pt-br.js',
+        './vendor/bower_components/jquery-mask-plugin/dist/jquery.mask.js',
+        'plugins/jquery.datetimepicker.full.min.js',
+        'seara.js',
+        'setting_box/setting-box.js'
+    ], 'public/js/setting_box/setting-box.js');
+    mix.styles('plugins/jquery.datetimepicker.css', 'public/css/setting-box.css')
+
     /**************/
     /* Copy Fonts */
     /**************/

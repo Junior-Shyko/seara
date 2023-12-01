@@ -6,8 +6,26 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">Lançamento no Caixa</h4>
+              
             </div>
             <div class="modal-body">
+                @if(is_null($boxOpen))
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            <strong>Aviso!</strong> <br>
+                           <small class="" style="color: black">
+                            Não está constando nenhum caixa aberto nesse mês atual, para isso, você deve 
+                            encerrar o caixa do Mês anterior.
+                           </small>
+                            <small style="color: black">Deseja fazer isso agora?  Pode clicando 
+                                <a href="#" class="text-primary">aqui</a> .
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 <div class="row alert space-money" id="infoMonthLaunch">
                     
                     <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">

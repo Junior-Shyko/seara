@@ -19,11 +19,20 @@
                         </h3>
                         <small class="badge badge-dark"> Código Igreja: {{$idCompany}}</small>
                         <input type="hidden" id="idCodeCompany" value="{{$idCompany}}">
-                    </div>
-                    
+                    </div>                    
                 </div>
-                <hr>
+              
             </div>
+            <div class="col-md-12">
+                @if (is_null($boxOpen))
+                <h5 class="badge badge-primary" >
+                    <strong>Ops!</strong>
+                    Você não tem registro de caixa iniciado, seu próximo lançamento será a data de inicio do caixa
+                    desse mês atual.
+                </h5>
+                @endif
+            </div>
+            <hr>
         </div>
         <div class="row">
             
@@ -104,12 +113,20 @@
                                             Lançar Movimento
                                         </button>
                                       </div>
-                                </li>
+                                </li>                                
                                 <li>
                                     <button type="button" class="btn btn-dark">
                                         <a  href="{{url('lancar')}}" style="color: white;">
                                             <i class="fa fa-refresh"></i>
                                             Atualizar valores
+                                        </a>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" class="btn btn-danger">
+                                        <a  href="{{url('caixa')}}" style="color: white;">
+                                            <i class="fa fa-close"></i>
+                                            Fechar Caixa
                                         </a>
                                     </button>
                                 </li>
@@ -167,6 +184,7 @@
                                     </div>
                                 </div>
                             </div>
+                           
                         </div>
                     </div>
                 </div>
@@ -175,7 +193,8 @@
         </div>
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
-    @include('modals.modal_box_entry', ['saldo' => $internal, 'accountBank' => $accountBank])
+    
+    @include('modals.modal_box_entry', ['saldo' => $internal, 'accountBank' => $accountBank, 'boxOpen' => $boxOpen])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
     {{-- EXCLUINDO UM LANCAMENTO --}}

@@ -22,6 +22,7 @@
     "form-serializer": "^2.5.0",
     "jquery-datetimepicker": "^2.5.21",
     "lightbox2": "^2.11.3",
+    "moment": "^2.29.4",
     "require-dir": "^0.3.2",
     "sweetalert2": "^6.6.5"
   }

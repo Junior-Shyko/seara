@@ -75,15 +75,24 @@ Route::post('caixa/delete' , 'BoxController@destroy');
 Route::get('caixa/saldo-inicial' , 'BoxController@balance_initial');
 Route::get('caixa/abrir-caixa' , 'BoxController@box_open');
 
-Route::resource('caixa' , 'BoxController');
-Route::post('abrir-caixa' , 'BoxController@open_box');
-Route::post('fechar-caixa' , 'BoxController@close_box');
+// Route::resource('caixa' , 'BoxController');
+// Route::post('abrir-caixa' , 'BoxController@open_box');
+// Route::post('fechar-caixa' , 'BoxController@close_box');
+
+Route::group(['prefix' => 'caixa','middleware' => ['auth']], function () {
+    Route::resource('/' , 'SettingsBoxController');
+    Route::post('store', 'SettingsBoxController@store');
+    Route::get('editar/{id}', 'SettingsBoxController@edit');
+    Route::put('update/{id}', 'SettingsBoxController@update');
+    Route::get('/datatable', 'SettingsBoxController@dataTable')->name('caixa.datatables');
+});
+
 
 Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
 Route::resource('tipo-conta', 'AccountTypeController');
-Route::resource('lancar' , 'EntryController');
+Route::resource('lancar' , 'EntryController')->middleware('auth');
 Route::post('caixa/upload' , 'EntryController@upload');
 Route::get('all-launch/{company}', 'EntryController@getAll');
 Route::post('lancar/delete' , 'EntryController@destroy')->middleware('auth.basic');
