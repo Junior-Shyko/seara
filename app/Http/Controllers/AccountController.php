@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\pdf\Facade as PDF;
 use Illuminate\Support\Facades\Auth;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Repository\AccountBankRepository;
@@ -188,6 +188,8 @@ class AccountController extends Controller
 
     public function getReportAccount(Request $request)
     {
+       ini_set('max_execution_time', '120');
+ob_start();
         $idAccount = $request->entries_id_account;
         $company_id = 0;
         if($request->company_id == null || !isset($request->company_id))
@@ -218,19 +220,24 @@ class AccountController extends Controller
         {
             return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
         }
-
-
-        $pdf = PDF::loadView('report.account.accountLaunchAll', 
-            compact('accounts', 'accountGroup',  'accountLaunchAll', 'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
+//        dd($accountLaunchAll);
+        $pdf = PDF::loadView('report.account.accountLaunchAll',
+            compact('accounts', 'accountGroup',  'accountLaunchAll', 'dtInitReport',
+              'dtEndReport', 'balance', 'balanceBank'));
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true,
             'isRemoteEnabled' => true,
             'defaultPaperSize' =>  'a4'
         ]);
-        
-        return $pdf->stream();
+    //     $pdf->loadHtml(ob_get_clean());
+    // $pdf->set_paper('letter', 'portrait');
+    // $pdf->render();
+    // $pdf->stream("Solicitud_de_permiso_con_goce_de_sueldo.pdf");
+        ob_end_clean();
+        return $pdf->stream('report');
 
-        // return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'accountLaunchAll', 
-        // 'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
+//         return view('report.account.accountLaunchAll',
+//             compact('accounts', 'accountGroup', 'accountLaunchAll',
+//         'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
     }
 }
