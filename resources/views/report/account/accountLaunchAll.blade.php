@@ -55,7 +55,7 @@
         <header>
             <div class="col">
                 <small>
-                    Empresa: {{$accountLaunchAll[0]['company_name']}} <br> 
+                    Empresa: {{$accountLaunchAll[0]['company_name']}} <br>
                     CNPJ: {{$accountLaunchAll[0]['company_cnpj']}}
                 </small>
             </div>
@@ -65,7 +65,7 @@
             <div class="col">Período: {{$dtInitReport}} a {{$dtEndReport}}</div>
             <div class="col-right">Seara Contabilidade</div>
         </header>
-       
+
     </section>
     <br>
     <table style="width: 100%;" border="1" cellpadding="1">
@@ -83,13 +83,16 @@
                 <td colspan="3" class="bg-balance">
                     Saldo Anterior:
                 </td>
-                <td colspan="2" class="float-r bg-balance" style="border: 0px;background: #f3f3f3; float: right;">
+                <td colspan="2" class="bg-balance" style="border: 0px;background: #f3f3f3;">
                     <strong >R$: {{number_format($balance, 2, ',', '.')}}</strong>
                 </td>
             </tr>
             @php
                 $balance = 0;
                 $previousBalance = 0;
+                $balancePartial = 0;
+                $accountPartial = 0;
+                $indiceEncontrado = 'false';
             @endphp
             @foreach ($accountGroup as $valueGroup)
                 <tr>
@@ -97,14 +100,15 @@
                         <strong><label>Conta: {{ $valueGroup->accountlaunch_name }}</label></strong>
                     </td>
                 </tr>
-                @foreach ($accountLaunchAll as $valAccount)
+                @php $accountPartial = $valueGroup->id; @endphp
+                @foreach ($accountLaunchAll as $key => $valAccount)
                     <tr>
                         {{-- {{$valAccount->id}} - {{$valueGroup->id}} --}}
                         @if ($valueGroup->id == $valAccount->id)
                             {{-- {{$valAccount->entries_description}} --}}
                             <td>
                                 <small class="ml-5 td-launch">
-                   
+
                                     {{date('d/m/Y', strtotime($valAccount->entriesCreatedAt))}}
                                 </small>
                             </td>
@@ -112,41 +116,46 @@
                                 <small class="ml-5 td-launch">
                                     {{ $valAccount->entries_description }}
                                 </small>
-                                
+
                             </td>
-                           
+
                             <td >
                                 <small class="ml-5 td-launch">
                                     @if($valAccount->account_types_name == 'Receita')
                                         {{number_format($valAccount->entries_value,2,",",".")}}
-                                        @php 
+                                        @php
                                         $balance = ($balance + $previousBalance + $valAccount->entries_value)
                                         @endphp
                                     @endif
-                                </small>                                
+                                </small>
                             </td>
                             <td >
                                 <small class="ml-5 td-launch">
                                     @if($valAccount->account_types_name == 'Despesa')
                                         {{number_format($valAccount->entries_value,2,",",".")}}
-                                        @php 
+                                        @php
                                         $balance = ($balance + $previousBalance - $valAccount->entries_value)
                                         @endphp
                                     @endif
-                                </small>                                
+                                </small>
                             </td>
                             <td >
                                 <small class="ml-5 td-launch">
                                     {{number_format($balance,2,",",".")}}
-                                </small>                                
+                                </small>
+
+{{--                                {{$balance }} - {{$accountPartial}} - {{$key}}--}}
                             </td>
-                            
+                      @php  $indiceEncontrado = 'true';@endphp
                         @endif
+
+
                     </tr>
                 @endforeach
+
                 <tr>
                     <td colspan="3" style="padding: 5px; font-size: small;" class="bg-tot">
-                       
+
                             <label>
                                 Totais do período
                                     <span class="smallPeriod">(s.ant + ent + sai + banco)</span>
@@ -158,11 +167,15 @@
                         </label>
                     </td>
                 </tr>
+                @if($indiceEncontrado == 'true')
+                @php  $balance = 0; @endphp
+                @endif
+                @php  $indiceEncontrado = 'false';  @endphp
             @endforeach
             <tr class="bg-balance">
-                
+
                 <td colspan="3" style="padding: 5px; font-size: small;">
-                   
+
                         <label>
                             Resumo
                                 <span class="smallPeriod">(s.ant + ent + sai)</span>

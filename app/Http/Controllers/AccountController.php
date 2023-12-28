@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
-use Barryvdh\pdf\Facade as PDF;
+use \PDF;
 use Illuminate\Support\Facades\Auth;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Repository\AccountBankRepository;
@@ -188,8 +188,9 @@ class AccountController extends Controller
 
     public function getReportAccount(Request $request)
     {
+
        ini_set('max_execution_time', '120');
-ob_start();
+
         $idAccount = $request->entries_id_account;
         $company_id = 0;
         if($request->company_id == null || !isset($request->company_id))
@@ -198,7 +199,7 @@ ob_start();
         }else{
             $company_id = $request->company_id;
         };
-        
+
         $accountLaunch = new AccountLaunchRepository;
         $dtinit = FunctionGeneral::DataBRtoMySQL($request->dateInitial);
         $dtend  = FunctionGeneral::DataBRtoMySQL($request->dateEnd);
@@ -214,30 +215,35 @@ ob_start();
 
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance($company_id);
-        
+
         //Se nao tiver registro
         if(count($accountGroup) == 0 && count($accountLaunchAll) == 0)
         {
             return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
         }
-//        dd($accountLaunchAll);
-        $pdf = PDF::loadView('report.account.accountLaunchAll',
-            compact('accounts', 'accountGroup',  'accountLaunchAll', 'dtInitReport',
-              'dtEndReport', 'balance', 'balanceBank'));
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultPaperSize' =>  'a4'
-        ]);
-    //     $pdf->loadHtml(ob_get_clean());
-    // $pdf->set_paper('letter', 'portrait');
-    // $pdf->render();
-    // $pdf->stream("Solicitud_de_permiso_con_goce_de_sueldo.pdf");
-        ob_end_clean();
-        return $pdf->stream('report');
+        return view('report.account.accountLaunchAll',
+            compact( 'accountGroup', 'accountLaunchAll',
+        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
 
-//         return view('report.account.accountLaunchAll',
-//             compact('accounts', 'accountGroup', 'accountLaunchAll',
-//         'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
+//         $pdf = PDF::loadView('report.account.accountLaunchAll',
+//             compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
+//               'dtEndReport', 'balance', 'balanceBank'));
+//
+////        $pdf->render();
+////
+////
+//
+//        return $pdf->stream('report.pdf');
+//        dd($accountLaunchAll);
+//         $pdf->loadHtml(ob_get_clean());
+//     $pdf->set_paper('letter', 'portrait');
+//     $pdf->render();
+
+        // ob_end_clean();
+        // return $pdf->stream('report');
+
+//        return view('report.account.accountLaunchAll',
+//            compact('accounts', 'accountGroup', 'accountLaunchAll',
+//        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
     }
 }
