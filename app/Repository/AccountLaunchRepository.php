@@ -17,12 +17,22 @@ class AccountLaunchRepository
                             ->when($idAccount, function ($query) use ($idAccount) {
                                 return $query->where('entries_id_account', $idAccount);
                             })
+                            ->select('account_launches.*', 'account_launches.id as idAccountLaunch','entries.*')
                             ->where('entries.entries_id_company',$company_id)
                             ->where('entries.entries_date_launch','>=',$dtInitial)
                             ->where('entries.entries_date_launch','<=',$dtEnd)
                             ->groupBy('entries.entries_id_account')->get();
     }
 
+    /**
+     * Retorna de uma igreja todos os lançamentos e suas contas, se não especificar a conta
+     *
+     * @param [int] $company_id
+     * @param [date] $dtInitial
+     * @param [date] $dtEnd
+     * @param [int] $idAccount
+     * @return void
+     */
     public function getAccountLaunchEntry($company_id, $dtInitial, $dtEnd, $idAccount = null)
     {
         return AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
@@ -33,7 +43,7 @@ class AccountLaunchRepository
             return $query->where('entries_id_account', $idAccount);
         })
         ->select(
-            'users.id as userId', 'users.name', 'entries.*', 'account_launches.*',
+            'users.id as userId', 'users.name', 'entries.*', 'account_launches.*', 'account_launches.id as idAccountLaunch',
             'account_types.id as typeAccountId', 'account_types.account_types_name',
             'companies.company_name', 'companies.company_cnpj',
             'entries.entries_date_launch as entriesCreatedAt'
@@ -43,5 +53,13 @@ class AccountLaunchRepository
         ->where('entries.entries_date_launch','<=',$dtEnd)
         ->get();
     }
-
+    static function getValueAccountLaunchEntry($company_id, $dtInitial,$idAccount)
+    {
+        return AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
+            ->select('account_launches.*', 'account_launches.id as idAccountLaunch','entries.*')
+            ->where('entries.entries_id_company',$company_id)
+            ->where('entries.entries_date_launch','<=',$dtInitial)
+            ->where('entries_id_account', $idAccount)
+            ->groupBy('entries.entries_id_account')->sum('entries_value');
+    }
 }

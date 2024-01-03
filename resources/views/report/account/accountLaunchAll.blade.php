@@ -36,7 +36,7 @@
             font-size: medium;
         }
         .td-launch {
-            color: #4f4f4f !important"
+            color: #4f4f4f !important;
         }
         .float-r {
             float: right;
@@ -46,6 +46,9 @@
         }
         .bg-balance {
             background: #f3f3f3
+        }
+        .tr-center {
+            text-align: center;
         }
     </style>
 </head>
@@ -81,10 +84,11 @@
             </tr>
             <tr class=" bg-balance">
                 <td colspan="3" class="bg-balance">
-                    Saldo Anterior:
+                    Saldo Anterior (Geral) :
                 </td>
                 <td colspan="2" class="bg-balance" style="border: 0px;background: #f3f3f3;">
                     <strong >R$: {{number_format($balance, 2, ',', '.')}}</strong>
+
                 </td>
             </tr>
             @php
@@ -95,9 +99,25 @@
                 $indiceEncontrado = 'false';
             @endphp
             @foreach ($accountGroup as $valueGroup)
+
                 <tr>
                     <td colspan="5" style="padding: 5px">
                         <strong><label>Conta: {{ $valueGroup->accountlaunch_name }}</label></strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <span> Saldo Anterior: R$ <strong>
+                        @php
+                            $balancePrevious =  \Seara\Repository\AccountLaunchRepository::getValueAccountLaunchEntry(
+                                 $valueGroup->entries_id_company,
+                                 $dtinit,
+                                 $valueGroup->idAccountLaunch
+                             );
+                            echo number_format($balancePrevious, 2, ',', '.');
+                        @endphp
+                            </strong>
+                        </span>
                     </td>
                 </tr>
                 @php $accountPartial = $valueGroup->id; @endphp
@@ -119,7 +139,7 @@
 
                             </td>
 
-                            <td >
+                            <td class="tr-center">
                                 <small class="ml-5 td-launch">
                                     @if($valAccount->account_types_name == 'Receita')
                                         {{number_format($valAccount->entries_value,2,",",".")}}
@@ -129,7 +149,7 @@
                                     @endif
                                 </small>
                             </td>
-                            <td >
+                            <td class="tr-center">
                                 <small class="ml-5 td-launch">
                                     @if($valAccount->account_types_name == 'Despesa')
                                         {{number_format($valAccount->entries_value,2,",",".")}}
@@ -139,7 +159,7 @@
                                     @endif
                                 </small>
                             </td>
-                            <td >
+                            <td class="tr-center">
                                 <small class="ml-5 td-launch">
                                     {{number_format($balance,2,",",".")}}
                                 </small>
@@ -163,7 +183,10 @@
                     </td>
                     <td class="bg-tot" colspan="2">
                         <label class="float-r ">
-                            R$: {{number_format($balance,2,",",".")}}
+                            @php $sum = 0;
+                            $sum = ($balancePrevious + $balance);
+                            @endphp
+                            R$: {{number_format($sum,2,",",".")}}
                         </label>
                     </td>
                 </tr>
@@ -172,21 +195,21 @@
                 @endif
                 @php  $indiceEncontrado = 'false';  @endphp
             @endforeach
-            <tr class="bg-balance">
+{{--            <tr class="bg-balance">--}}
 
-                <td colspan="3" style="padding: 5px; font-size: small;">
+{{--                <td colspan="3" style="padding: 5px; font-size: small;">--}}
 
-                        <label>
-                            Resumo
-                                <span class="smallPeriod">(s.ant + ent + sai)</span>
-                        </label>
-                </td>
-                <td colspan="2">
-                    <label class="float-r " >
-                        <strong>R$: {{number_format($balance,2,",",".")}}</strong>
-                    </label>
-                </td>
-            </tr>
+{{--                        <label>--}}
+{{--                            Resumo--}}
+{{--                                <span class="smallPeriod">(s.ant + ent + sai)</span>--}}
+{{--                        </label>--}}
+{{--                </td>--}}
+{{--                <td colspan="2">--}}
+{{--                    <label class="float-r " >--}}
+{{--                        <strong>R$: {{number_format($balance,2,",",".")}}</strong>--}}
+{{--                    </label>--}}
+{{--                </td>--}}
+{{--            </tr>--}}
         </tbody>
     </table>
     <!-- DivTable.com -->

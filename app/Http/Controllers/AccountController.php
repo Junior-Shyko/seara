@@ -189,7 +189,7 @@ class AccountController extends Controller
     public function getReportAccount(Request $request)
     {
 
-       ini_set('max_execution_time', '120');
+       ini_set('max_execution_time', '600');
 
         $idAccount = $request->entries_id_account;
         $company_id = 0;
@@ -205,6 +205,7 @@ class AccountController extends Controller
         $dtend  = FunctionGeneral::DataBRtoMySQL($request->dateEnd);
         //Total de lançamentos por grupo
         $accountGroup = $accountLaunch->getAccountLaunchEntryGroup($company_id, $dtinit, $dtend, $idAccount);
+//        dd($accountGroup);
         //Todos os lançamentos
         $accountLaunchAll = $accountLaunch->getAccountLaunchEntry($company_id, $dtinit, $dtend, $idAccount);
         $dtInitReport = $request->dateInitial;
@@ -212,7 +213,9 @@ class AccountController extends Controller
         //saldo anterior
         $prevBalan = Monetary::previousBalance($dtinit, $company_id);
         $balance = ($prevBalan['receitas'] - $prevBalan['despesas']);
-
+//        dump($prevBalan['receitas']);
+//        dump($prevBalan['despesas']);
+//        die($balance);
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance($company_id);
 
@@ -221,15 +224,15 @@ class AccountController extends Controller
         {
             return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
         }
-        return view('report.account.accountLaunchAll',
-            compact( 'accountGroup', 'accountLaunchAll',
-        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
+//        return view('report.account.accountLaunchAll',
+//            compact( 'accountGroup', 'accountLaunchAll',
+//        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank', 'dtinit'));
 
-//         $pdf = PDF::loadView('report.account.accountLaunchAll',
-//             compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
-//               'dtEndReport', 'balance', 'balanceBank'));
-//
-////        $pdf->render();
+         $pdf = PDF::loadView('report.account.accountLaunchAll',
+             compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
+               'dtEndReport', 'balance', 'balanceBank','dtinit'));
+
+        return $pdf->stream('report');
 ////
 ////
 //

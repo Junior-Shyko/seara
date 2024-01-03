@@ -234,7 +234,7 @@ class Monetary {
 
     static public function previousBalance($dtIniti, $idCompany) {
         $dateSubDay = Carbon::parse($dtIniti)->subDays(1);
-
+//        dump($idCompany);
         $totalRec = 0;
         $totalDes = 0;
         $total = 0;
