@@ -9,7 +9,7 @@
         <div class="col-md-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2 data-cy="title">Relatório <small>dívidas e pagamentos</small></h2>
+                    <h2 data-cy="title">Relatório <small>Relatório de contas por período</small></h2>
 
                     <div class="clearfix"></div>
                 </div>

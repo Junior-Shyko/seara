@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
-use Barryvdh\DomPDF\Facade as PDF;
+use \PDF;
 use Illuminate\Support\Facades\Auth;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Repository\AccountBankRepository;
@@ -188,6 +188,9 @@ class AccountController extends Controller
 
     public function getReportAccount(Request $request)
     {
+
+       ini_set('max_execution_time', '120');
+
         $idAccount = $request->entries_id_account;
         $company_id = 0;
         if($request->company_id == null || !isset($request->company_id))
@@ -196,7 +199,7 @@ class AccountController extends Controller
         }else{
             $company_id = $request->company_id;
         };
-        
+
         $accountLaunch = new AccountLaunchRepository;
         $dtinit = FunctionGeneral::DataBRtoMySQL($request->dateInitial);
         $dtend  = FunctionGeneral::DataBRtoMySQL($request->dateEnd);
@@ -209,28 +212,22 @@ class AccountController extends Controller
         //saldo anterior
         $prevBalan = Monetary::previousBalance($dtinit, $company_id);
         $balance = ($prevBalan['receitas'] - $prevBalan['despesas']);
-
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = AccountBankRepository::getBalance($company_id);
-        
+
         //Se nao tiver registro
         if(count($accountGroup) == 0 && count($accountLaunchAll) == 0)
         {
             return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
         }
-
-
-        $pdf = PDF::loadView('report.account.accountLaunchAll', 
-            compact('accounts', 'accountGroup',  'accountLaunchAll', 'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultPaperSize' =>  'a4'
-        ]);
-        
-        return $pdf->stream();
-
-        // return view('report.account.accountLaunchAll', compact('accounts', 'accountGroup', 'accountLaunchAll', 
-        // 'dtInitReport', 'dtEndReport', 'balance', 'balanceBank'));
+        return view('report.account.accountLaunchAll',
+            compact( 'accountGroup', 'accountLaunchAll',
+        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank', 'dtinit'));
+        //Para geração em PDF, mas tem um problema de timout qndo é muito registros
+        //         $pdf = PDF::loadView('report.account.accountLaunchAll',
+        //             compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
+        //               'dtEndReport', 'balance', 'balanceBank','dtinit'));
+        //
+        //        return $pdf->stream('report');
     }
 }
