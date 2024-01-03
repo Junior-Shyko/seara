@@ -51,6 +51,7 @@
             text-align: center;
         }
     </style>
+
 </head>
 
 <body>
@@ -123,9 +124,7 @@
                 @php $accountPartial = $valueGroup->id; @endphp
                 @foreach ($accountLaunchAll as $key => $valAccount)
                     <tr>
-                        {{-- {{$valAccount->id}} - {{$valueGroup->id}} --}}
                         @if ($valueGroup->id == $valAccount->id)
-                            {{-- {{$valAccount->entries_description}} --}}
                             <td>
                                 <small class="ml-5 td-launch">
 
@@ -163,8 +162,6 @@
                                 <small class="ml-5 td-launch">
                                     {{number_format($balance,2,",",".")}}
                                 </small>
-
-{{--                                {{$balance }} - {{$accountPartial}} - {{$key}}--}}
                             </td>
                       @php  $indiceEncontrado = 'true';@endphp
                         @endif
@@ -175,7 +172,6 @@
 
                 <tr>
                     <td colspan="3" style="padding: 5px; font-size: small;" class="bg-tot">
-
                             <label>
                                 Totais do período
                                     <span class="smallPeriod">(s.ant + ent + sai + banco)</span>
@@ -214,5 +210,9 @@
     </table>
     <!-- DivTable.com -->
 </body>
-
+<script>
+    window.addEventListener("load", (event) => {
+        window.print();
+    });
+</script>
 </html>

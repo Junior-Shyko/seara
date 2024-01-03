@@ -53,6 +53,14 @@ class AccountLaunchRepository
         ->where('entries.entries_date_launch','<=',$dtEnd)
         ->get();
     }
+
+    /**
+     * Retorna o valor sometário dos lançamento de uma conta, anterior a uma data estabelecida
+     * @param [int] $company_id
+     * @param [date] $dtInitial
+     * @param [int] $idAccount
+     * @return void
+     * */
     static function getValueAccountLaunchEntry($company_id, $dtInitial,$idAccount)
     {
         return AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
