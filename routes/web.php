@@ -85,6 +85,7 @@ Route::group(['prefix' => 'caixa','middleware' => ['auth']], function () {
     Route::get('editar/{id}', 'SettingsBoxController@edit');
     Route::put('update/{id}', 'SettingsBoxController@update');
     Route::get('/datatable', 'SettingsBoxController@dataTable')->name('caixa.datatables');
+    Route::get('routine', 'SettingsBoxController@routineOpenClose');
 });
 
 

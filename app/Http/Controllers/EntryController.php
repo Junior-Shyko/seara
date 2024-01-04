@@ -578,4 +578,5 @@ class EntryController extends Controller
 
         return response()->json(['message' => 'success', 'value' => $save->original['value']] , 200);
     }
+
 }

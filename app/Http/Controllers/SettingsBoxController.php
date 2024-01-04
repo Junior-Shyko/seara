@@ -3,6 +3,7 @@
 namespace Seara\Http\Controllers;
 
 use Carbon\Carbon;
+use Seara\Models\Company;
 use Seara\Models\User;
 use Seara\SettingsBox;
 use Seara\FunctionGeneral;
@@ -97,7 +98,7 @@ class SettingsBoxController extends Controller
     {
         $user = Auth::user();
         $setBox = SettingsBox::join('users', 'settings_boxes.id_user_open', '=', 'users.id')
-        ->select('users.*', 'settings_boxes.*')    
+        ->select('users.*', 'settings_boxes.*')
         ->where(
             'settings_boxes.id' ,'=', $id
         )->first();
@@ -169,7 +170,7 @@ class SettingsBoxController extends Controller
 
         $boxOpen = SettingsBox::join('users', 'settings_boxes.id_user_open', '=', 'users.id')
         // ->join('users', 'settings_boxes.id_user_close', '=','users.id')
-        ->select('users.*', 'settings_boxes.*')    
+        ->select('users.*', 'settings_boxes.*')
         ->where(
             'id_company' ,'=', Auth::user()->user_id_company
         )
@@ -248,4 +249,104 @@ class SettingsBoxController extends Controller
             )
         ]);
     }
+
+    public function routineOpenClose()
+    {
+        ini_set('max_execution_time', 0);
+        $br = '<br/>';
+       $allCompany = Company::get();
+       echo "Rotina para ".count($allCompany).' igrejas'.$br;
+        $years = [
+            2000,
+            2001,
+            2002,
+            2003,
+            2004,
+            2005,
+            2006,
+            2007,
+            2008,
+            2009,
+            2010,
+            2011,
+            2012,
+            2013,
+            2014,
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+            2021,
+            2022,
+            2023
+        ];
+        $months = [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+        ];
+//        dump($allCompany);
+       foreach ($allCompany as $key => $comp)
+       {
+           foreach ($years as $year)
+           {
+//               dump($year.' - '.$comp->company_name);
+
+               foreach ($months as $month)
+               {
+                   echo $month.'/'.$year.', p/ '.$comp->company_name.' , key = '.$key.$br;;
+                    $user = $comp->users()->get();
+
+                    $idUser = 0;
+                   if(isset($user[0]))
+                   {
+                       $idUser = $user[0]['id'];
+                   }
+                   $last = Carbon::create($year, $month)->endOfMonth()->toDateString();
+                   $date_open = $year.'-'.$month.'-01 00';
+                   $date_close = $year.'-'.$month.'-01 00';
+
+
+//                   dump($last);
+//                   dump(Carbon::createFromFormat('Y-m-d H', $date_open)->toDateTimeString());
+                   $last = Carbon::create($year, $month)->endOfMonth()->toDateString();
+                   $date_open = $year.'-'.$month.'-01 00';
+                   $date_close =  $last.  ' 00';
+
+//                   $settingBox = [
+//                       'date_open' => Carbon::createFromFormat('Y-m-d H', $date_open)->toDateTimeString(),
+//                       'date_close' => Carbon::createFromFormat('Y-m-d H', $date_close)->toDateTimeString(),
+//                       'month' => $month,
+//                       'year' => $year,
+//                       'id_user_open' => $idUser,
+//                       'id_user_close' => $idUser,
+//                       'id_company' => $allCompany->company_id,
+//                       'slug' => 'close'
+//                   ];
+//                   try {
+//                       SettingsBox::create($settingBox);
+//                       if($year == 2023 && $month == 12){
+//                           exit;
+//                       }
+//                   }catch (\Exception $e)
+//                   {
+//                       dump($e->getMessage());
+//                   }
+
+               }
+           }
+       }
+    }
+
 }
