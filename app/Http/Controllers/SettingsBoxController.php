@@ -255,7 +255,7 @@ class SettingsBoxController extends Controller
         ini_set('max_execution_time', 0);
         $br = '<br/>';
        $allCompany = Company::get();
-       echo "Rotina para ".count($allCompany).' igrejas'.$br;
+       echo "Rotina para ".count($allCompany).' igrejas'.$br.$br;
         $years = [
             2000,
             2001,
@@ -296,16 +296,17 @@ class SettingsBoxController extends Controller
             11,
             12
         ];
-//        dump($allCompany);
+
        foreach ($allCompany as $key => $comp)
        {
            foreach ($years as $year)
            {
-//               dump($year.' - '.$comp->company_name);
 
+               echo "Gerando caixa".$br;
                foreach ($months as $month)
                {
-                   echo $month.'/'.$year.', p/ '.$comp->company_name.' , key = '.$key.$br;;
+
+                   echo $month.'/'.$year.', p/ '.$comp->company_name.' , key = '.$key.$br;
                     $user = $comp->users()->get();
 
                     $idUser = 0;
@@ -317,36 +318,40 @@ class SettingsBoxController extends Controller
                    $date_open = $year.'-'.$month.'-01 00';
                    $date_close = $year.'-'.$month.'-01 00';
 
-
-//                   dump($last);
-//                   dump(Carbon::createFromFormat('Y-m-d H', $date_open)->toDateTimeString());
                    $last = Carbon::create($year, $month)->endOfMonth()->toDateString();
                    $date_open = $year.'-'.$month.'-01 00';
                    $date_close =  $last.  ' 00';
-
-//                   $settingBox = [
-//                       'date_open' => Carbon::createFromFormat('Y-m-d H', $date_open)->toDateTimeString(),
-//                       'date_close' => Carbon::createFromFormat('Y-m-d H', $date_close)->toDateTimeString(),
-//                       'month' => $month,
-//                       'year' => $year,
-//                       'id_user_open' => $idUser,
-//                       'id_user_close' => $idUser,
-//                       'id_company' => $allCompany->company_id,
-//                       'slug' => 'close'
-//                   ];
-//                   try {
-//                       SettingsBox::create($settingBox);
-//                       if($year == 2023 && $month == 12){
+                   echo "Abrindo caixa".$br;
+                   $settingBox = [
+                       'date_open' => Carbon::createFromFormat('Y-m-d H', $date_open)->toDateTimeString(),
+                       'date_close' => Carbon::createFromFormat('Y-m-d H', $date_close)->toDateTimeString(),
+                       'month' => $month,
+                       'year' => $year,
+                       'id_user_open' => $idUser,
+                       'id_user_close' => $idUser,
+                       'id_company' => $comp->company_id,
+                       'slug' => 'close'
+                   ];
+                   try {
+                       SettingsBox::create($settingBox);
+                       echo "Fechando caixa".$br.$br;
+                       if($key == 365 && $year == 2023 && $month == 12){
 //                           exit;
-//                       }
-//                   }catch (\Exception $e)
-//                   {
-//                       dump($e->getMessage());
-//                   }
+                           return redirect('caixa/routine/finish');
+                       }
+                   }catch (\Exception $e)
+                   {
+                       dump($e->getMessage());
+                   }
 
                }
            }
        }
+    }
+
+    public function finishRoutine()
+    {
+        echo "Finalizado";
     }
 
 }

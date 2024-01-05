@@ -98,7 +98,7 @@
                     <h4 class="card-title">Valor Atual <i class="fa fa-refresh"></i> </h4>
                     <p class="card-text">Rotina que irá criar caixa em cada mês de lançamento da igreja.</p>
                     <div class="pricing_footer">
-                        <a href="{{url('lancar')}}" class="btn btn-success btn-block">Abrir/Fechar Caixa</a>
+                        <a href="{{url('caixa/routine')}}" class="btn btn-success btn-block">Abrir/Fechar Caixa</a>
                     </div>
                 </div>
             </div>
