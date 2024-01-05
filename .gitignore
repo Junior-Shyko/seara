@@ -13,4 +13,3 @@ public/build
 npm-debug.log
 /build
 /files
-docker-compose.yml
