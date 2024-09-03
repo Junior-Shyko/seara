@@ -33,10 +33,10 @@ class LaunchService
         // DB::enableQueryLog();
         $entry  = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            // ->where('account_types.account_types_name','=', $type)
+            ->where('account_types.account_types_name','=', $type)
             ->where('entries.entries_id_company', '=', $idCompany)
             ->where('entries.entries_bank', '=', 0)
-            ->orWhere('entries.entries_parent', '=', 0)        
+            // ->orWhere('entries.entries_parent', '=', 0)
             ->select(
                 'account_launches.accountlaunch_type',
                 'account_types.id',
@@ -47,10 +47,11 @@ class LaunchService
                 'entries.entries_id as idEntry',
                 'account_types.id as idAccountType'
             )->get();
-        //retorna o valor encontrado
-        //dd( DB::getQueryLog());
+        //retorna o valor encontrados
+       
         $receita = 0;
         $despesa = 0;
+        
         foreach ($entry as $key => $value) {
             switch ($value['account_types_name']) {
                 case 'Receita':
@@ -61,6 +62,8 @@ class LaunchService
                     break;
             }
         }
+
+        // dump( DB::getQueryLog());
         $saldo = ($receita - $despesa);
         // empty($value) ? $value = 0 : $value = $value->sum('entries_value');
         return $saldo;
