@@ -510,6 +510,10 @@ class EntryController extends Controller
             ->where('entries_date_launch', '<=', $dtend)
             ->where('companies.company_id', '=', $idCompany)
             ->orderBy('entries_date_launch', 'asc')->get();
+        //Se não tiver registro de lançamento, só cria um objeto company
+        if(count($entries) == 0){
+            $entries = Company::where('company_id',$idCompany)->get();
+        }
 
         //valor somados dos lançamentos
         $internal = LaunchService::getBoxInternal($idCompany);

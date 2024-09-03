@@ -38,7 +38,9 @@
             <thead>
                 <tr>
                     <th colspan="5" style="border: 1px solid black; border-radius: 5px;" class="center-text">
-                        <label>{{$entries[0]->company_name}}</label>
+                        <label>
+                           {{$entries[0]->company_name}}
+                        </label>
                     </th>
                 </tr>
                 <tr>
@@ -153,7 +155,7 @@
                     </td>
                     <td class="center-text title-table">
                         @php 
-                            $total = ($previousBalance + $recipes - $expenses);
+                            $total = ($previousBalance + $recipes) - $expenses;
                             $balanceAll = ($total + $balanceBank);
                             echo '<strong>'.number_format($balanceAll,2,',','.').'</strong>';
                         @endphp
