@@ -9,6 +9,9 @@ use DB;
 class LaunchService
 {
 
+    const BANK_INCOME  = 56; //TRANSFERENCIA DE BANCO SENDO RECEITA 
+    const BANK_EXPENSE = 58; //TRANSFERENCIA DE BANCO SENDO DESPESA 
+
     /**
      * Retorna o saldo atual dos lancamento/Caixa interno
      *
@@ -28,15 +31,12 @@ class LaunchService
      * @param [type] $type
      * @return void
      */
-    static function getCountValueLaunch($idCompany, $type, $transaction)
+    static function getCountValueLaunch($idCompany)
     {
         // DB::enableQueryLog();
         $entry  = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->where('account_types.account_types_name','=', $type)
             ->where('entries.entries_id_company', '=', $idCompany)
-            ->where('entries.entries_bank', '=', 0)
-            // ->orWhere('entries.entries_parent', '=', 0)
             ->select(
                 'account_launches.accountlaunch_type',
                 'account_types.id',
@@ -44,28 +44,37 @@ class LaunchService
                 'entries.entries_id_account',
                 'entries.entries_id_company',
                 'entries.entries_value',
+                'entries.entries_id_account',
+                'entries.entries_bank',
                 'entries.entries_id as idEntry',
                 'account_types.id as idAccountType'
             )->get();
         //retorna o valor encontrados
-       
         $receita = 0;
         $despesa = 0;
-        
-        foreach ($entry as $key => $value) {
-            switch ($value['account_types_name']) {
+        foreach ($entry as $key => $entries) {
+            switch ($entries['account_types_name']) {
                 case 'Receita':
-                    $receita = ($receita + $value['entries_value']);
+                    //Se lançado direto no caixa faz a somatória                   
+                    if($entries['entries_bank'] == 0){
+                        $receita = ($receita + $entries['entries_value']);
+                    }elseif(
+                        //se a conta bancaria e receita de uma transferencia, então soma
+                        $entries['entries_bank'] > 0 
+                        && $entries['entries_id_account'] == self::BANK_INCOME
+                    )
+                    {
+                        $receita = ($receita + $entries['entries_value']);
+                    }
                     break;
                 case 'Despesa':
-                    $despesa = ($despesa + $value['entries_value']);
+                    $despesa = ($despesa + $entries['entries_value']);
                     break;
             }
         }
 
-        // dump( DB::getQueryLog());
+        // dd( DB::getQueryLog());
         $saldo = ($receita - $despesa);
-        // empty($value) ? $value = 0 : $value = $value->sum('entries_value');
         return $saldo;
     }
 
@@ -77,7 +86,7 @@ class LaunchService
      */
     static public function getBoxBank($idCompany)
     {
-        return AccountBank::where('company_id', '=', $idCompany)->sum('balance');
+        return AccountBank::where('company_id', '=', $idCompany)->get();
     }
 
     

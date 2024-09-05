@@ -14,6 +14,7 @@ class Entry extends Model
         'entries_description' ,
         'entries_id_company' ,
         'entries_id_user' ,
+        'entries_id_account',
         'entries_value' ,
         'entries_id_box' ,
         'entries_file',
