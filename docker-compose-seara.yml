@@ -1,0 +1,43 @@
+version: '2'
+services:
+  database:
+    image: mariadb:10
+    container_name: database_seara
+    volumes:
+      - database:/var/lib/mysql
+      - ./files:/opt/files
+    ports:
+      - 4242:3306
+    environment:
+      - MYSQL_DATABASE=seara
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - labseara
+
+  php:
+    image: junioroliveira/seara:1.0.2 #imagem
+    container_name: seara_php_pro
+    working_dir: /code
+    volumes:
+      - ./:/code
+      # - composercache:/.composer
+      - './docker/php/docker-php-composer.ini:/usr/local/etc/php/conf.d/docker-php-composer.ini'
+    networks:
+      - labseara
+
+  searawebprod:
+    image: fcoedno/nginx:1.13.8-dev
+    container_name: web_seara_seara
+    depends_on:
+      - php
+    ports:
+      - 8000:80
+    networks:
+      - labseara
+
+volumes:
+  database:
+  searaphprod:
+
+networks:
+  labseara:

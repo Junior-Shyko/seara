@@ -1,40 +1,48 @@
-FROM node:6 as front_builder
-WORKDIR /code
-RUN npm install -g bower gulp@3.X
-RUN apt-get update && apt-get install -y git
-COPY resources/assets ./resources/assets
-COPY package.json package-lock.json bower.json .bowerrc ./
-RUN npm install gulp@3.x laravel-elixir \
-    && bower install --allow-root
-COPY gulpfile.js ./
-RUN gulp
+# Usar a imagem oficial do PHP com extensões necessárias para Laravel
+FROM php:7.2-fpm
 
-FROM php:7.2.23-cli-alpine as back_builder
-WORKDIR /code
-RUN apk update --no-cache && apk add --no-cache git
-RUN curl https://getcomposer.org/composer-1.phar -o composer.phar -LR -z composer.phar \
-    && chmod +x composer.phar \
-    && mv composer.phar /usr/local/bin/composer
-# Instal dependencies
+# Instalar dependências do sistema
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip \
+    nginx \
+    supervisor
+
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
+# Instalar extensões do PHP
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+
 COPY composer.json composer.lock ./
-ENV APP_ENV=production
-RUN mkdir database && composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
-# Copies the application and execute laravel-specific bootstrapping
-COPY bootstrap ./bootstrap
-COPY config ./config
-COPY database ./database
-COPY public/index.php ./public/index.php
-COPY public/robots.txt ./public/robots.txt
-COPY resources/lang ./resources/lang
-COPY resources/views ./resources/views
-COPY routes ./routes
-COPY app ./app
-COPY artisan ./
-RUN composer dump-autoload -o && composer run-script setup
+RUN chown -R www-data:www-data /var/www
 
-FROM alpine:3.4
-COPY --from=back_builder /code /code
-COPY --from=front_builder /code/public/js /code/public/js
-COPY --from=front_builder /code/public/css /code/public/css
-COPY --from=front_builder /code/public/fonts /code/public/fonts
-COPY --from=front_builder /code/public/img /code/public/img
+# Definir o diretório de trabalho
+WORKDIR /var/www
+
+# Instalar as dependências do Composer
+# Copiar arquivos de configuração do Laravel
+COPY .env.example .env
+
+
+# Expor a porta 9000 e iniciar o PHP-FPM
+EXPOSE 9000
+
+# Copiar o arquivo de configuração do supervisor
+
+COPY ./ /var/www
+# Comando para iniciar o supervisor
+# CMD ["/usr/bin/supervisord"]
