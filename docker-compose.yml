@@ -22,7 +22,7 @@ services:
   #     - MYSQL_DATABASE=seara
   #     - MYSQL_ROOT_PASSWORD=root
   php:
-    image: junioroliveira/seara:1.0.0 #imagem
+    image: fcoedno/php:7.1-fpm-dev #imagem
     container_name: php_prod
     volumes:
       - ./:/code
@@ -61,13 +61,13 @@ services:
   #     - NGINX_HOST=seara.localhost
   #     - NGINX_ROOT=/code/public
   #     - NGINX_FPM_HOST=phptest
-  # node:
-  #   container_name: node_prod
-  #   build: docker/node/
-  #   volumes:
-  #     - ./:/code
-  #   working_dir: /code
-  #   command: tail -f /dev/null
+  node:
+     container_name: node_prod
+     build: docker/node/
+     volumes:
+       - ./:/code
+     working_dir: /code
+     command: tail -f /dev/null
 volumes:
   database:
   # composercache:

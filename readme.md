@@ -17,15 +17,15 @@ Agora suba o container com `docker-compose`
 
 Hora de instalar as dependências do projeto
 
-    docker-compose exec php composer install
-    docker-compose exec node npm install gulp@3.x laravel-elixir
-    docker-compose exec node bower install --allow-root
+    docker compose exec php composer install
+    docker compose exec node npm install gulp@3.x laravel-elixir
+    docker compose exec node bower install --allow-root
 
 Agora algumas configurações básicas
 
     docker-compose exec php php artisan key:generate
     docker-compose exec php php artisan migrate
-    docker-compose exec node gulp
+    docker compose exec node gulp
 
 Talvez seja necessário configurar algumas permissões:
 
