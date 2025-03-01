@@ -22,11 +22,7 @@
             </option>
             @endforeach
         </select>
-    </div>
-    <div class="col-md-4 col-sm-12 col-xs-12  form-group">
-        <label for="">Valor</label>
-        <input type="text" name="balance" placeholder="R$ 0,00" class="form-control valueAccontBank" value="0.00">
-    </div>
+    </div>s
 </div>
 <div class="row">
     <div class="col-md-4 col-sm-12 col-xs-12 form-group">
