@@ -55,7 +55,6 @@
                                         <tr>
                                             <th>Nome do banco</th>
                                             <th>Tipo de conta</th>
-                                            <th>Valor Atual</th>
                                             <th>N. Conta</th>
                                             <th>N. Agência<th>
                                             <th>Ação</th>

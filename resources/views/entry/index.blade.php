@@ -23,39 +23,9 @@
                 </div>
               
             </div>
-            <div class="col-md-12">
-                @if (is_null($boxOpen))
-                <h5 class="badge badge-primary" >
-                    <strong>Ops!</strong>
-                    Você não tem registro de caixa iniciado, seu próximo lançamento será a data de inicio do caixa
-                    desse mês atual.
-                </h5>
-                @endif
-            </div>
-            <hr>
+
         </div>
         <div class="row">
-            
-            <!--
-                    <div class="tile_count">
-                        {{-- <div class="col-md-3 col-sm-6  tile_stats_count">
-                <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Saldo Banco</span>
-                <div class="count" id="bankBalance"></div>
-                <span class="count_bottom text-info">Valores do caixa no banco</span>
-            </div>
-            <div class="col-md-3 col-sm-6  tile_stats_count">
-                <span class="count_top text-success"><i class="fa fa-money  text-success"></i> Saldo Interno</span>
-                <div class="count" id="internalBalance"></div>
-                <span class="count_bottom text-success">Valores do caixa interno</span>
-            </div> --}}
-                    
-                        <div class="col-md-3 col-sm-6  tile_stats_count">
-                            <span class="count_top text-info"><i class="fa fa-money  text-info"></i> Seu saldo atual de caixa</span>
-                            <div class="count" id="generalBalance"></div>
-                            {{-- <span class="count_bottom text-info">Seu valor atual de caixa geral</span> --}}
-                        </div>
-                    
-                    </div>-->
             <div class="row" style="">
                 <div class="tile_count">
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 tile_stats_count">
