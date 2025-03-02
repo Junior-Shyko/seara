@@ -1,7 +1,7 @@
 var companyTable;
 
 $(document).ready(function(){
-
+	console.log('home')
 	// var colunas = [
 	//   { data: 'company_name', name: 'company_name' },
 	//   { data: 'company_fantasy', name: 'company_fantasy' },

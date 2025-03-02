@@ -34,3 +34,5 @@ Talvez seja necessário configurar algumas permissões:
 Alterar composer v1 para v2
     
     composer self-update --2
+Npm container v5.6.0
+Npm maquina local 8.19.4

@@ -12,8 +12,7 @@
     "cypress": "^3.4.1",
     "gulp": "^3.9.1",
     "laravel-elixir": "^6.0.0-18",
-    "minimatch": "^3.0.2",
-    "run-sequence": "^2.2.1"
+    "minimatch": "^3.0.2"
   },
   "dependencies": {
     "bower": "^1.8.0",

@@ -127,7 +127,8 @@
                                     </div>
                                     <div class="col-md-3">
                                         <small>Valor para transferência</small>
-                                        <input type="text" name="realValueTranfer" id="realValueTranfer" class="form-control">
+                                        <input type="text" name="realValueTranfer" 
+                                        id="realValueTranfer" class="form-control" value="50">
                                     </div>
                                     <div class="col-md-5">
                                         <label>informações</label>
@@ -142,7 +143,7 @@
                                         <small class="text-danger">Conta de entrada</small>
                                         <select name="" id="selectAccountBankEntry" class="form-control">
                                             <option value="">--Selecione--</option>
-                                            <option value="0    ">Caixa Interno</option>
+                                            <option value="0">CAIXA INTERNO</option>
                                             @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}

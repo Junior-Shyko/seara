@@ -155,17 +155,7 @@ class EntryController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
+  
     /**
      * Show the form for editing the specified resource.
      *
@@ -221,7 +211,6 @@ class EntryController extends Controller
             return response()->json(['message' => 'success'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'error'], 400);
-            //return redirect()->back()->with('error' ,  'Ocorreu um erro');
         }
     }
 
@@ -238,7 +227,6 @@ class EntryController extends Controller
         try {
             //Instanciando o lançamento
             $entry = Entry::where('entries_id', $request->id)->first();
-
             //LANÇAMENTO DIRETO NO CAIXA INTERNO
             if($entry->entries_parent == 0 && $entry->entries_bank == 0)
             {
@@ -258,25 +246,20 @@ class EntryController extends Controller
                 }
             }else{
                 // LANÇAMENTO DE TRANFERENCIA
-                // $accountBank = AccountBank::find($entry->entries_bank);
-                // //reduzindo o valor da conta
-                // $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
-                // $accountBank->save();
+                $accountBank = AccountBank::find($entry->entries_bank);
+                //reduzindo o valor da conta
+                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
+                $accountBank->save();
 
-                // //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
-                // $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
+                //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
+                $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
                 
-                // $entriesParent = Entry::find($entriesChild->entries_parent);
-                // //excluindo o lançamentos
-                // $entriesParent->delete();
-                // $entry->delete();
-                // return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
+                $entriesParent = Entry::find($entriesChild->entries_parent);
+                //excluindo o lançamentos
+                $entriesParent->delete();
+                $entry->delete();
+                return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
             }
-
-            //EXCLUSÃO DE CONTA PAI E CONTA FILHO
-
-
-            
            
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
