@@ -71,7 +71,6 @@ class EntryController extends Controller
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
-        
         $balanceGeneral = ($generalBalnaceBank + $interInternal);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();

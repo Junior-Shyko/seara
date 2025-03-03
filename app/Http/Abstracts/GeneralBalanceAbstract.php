@@ -19,8 +19,8 @@ abstract class GeneralBalanceAbstract
         $sumOfValue = 0;
         $subtrationOfValue = 0;
         foreach ($balance as $valueBank) {  
+            $types = static::getTypeLancheToCompany($idCompany, $valueBank->entries_id_account);    
             if ($valueBank->entries_bank > 0 && is_null($valueBank->entries_parent)) {
-                $types = static::getTypeLancheToCompany($idCompany, $valueBank->entries_id_account);    
                 foreach ($types as $type) {
                     if ($type->account_types_name === 'Despesa') {
                         $subtrationOfValue += $type->entries_value;
@@ -28,6 +28,15 @@ abstract class GeneralBalanceAbstract
                     if ($type->account_types_name === 'Receita') {
                         $sumOfValue += $type->entries_value;
                     }
+                }
+            }
+            elseif($valueBank->entries_bank > 0 && !is_null($valueBank->entries_parent)){
+             // Se for transferência entre caixa para banco
+                foreach ($types as $type) {
+                    if($valueBank->transaction_id == 1 && $valueBank->entries_parent < 0)
+                    {
+                        $sumOfValue = ($sumOfValue + $type->entries_value);
+                    }        
                 }
             }
 
@@ -63,8 +72,8 @@ abstract class GeneralBalanceAbstract
         $sumOfValue = 0;
         $subtrationOfValue = 0;
         foreach ($balance as $valueBank) {  
+            $types = static::getTypeLancheToCompany($idCompany, $valueBank->entries_id_account);
             if ($valueBank->entries_bank == 0 && is_null($valueBank->entries_parent)) {
-                $types = static::getTypeLancheToCompany($idCompany, $valueBank->entries_id_account);
     
                 foreach ($types as $type) {
                     if ($type->account_types_name === 'Despesa') {
@@ -75,7 +84,16 @@ abstract class GeneralBalanceAbstract
                     }
                 }
             }
-
+            elseif($valueBank->entries_bank > 0 && !is_null($valueBank->entries_parent)){
+             // Se for transferência entre caixa para banco
+                foreach ($types as $type) {
+                    if($valueBank->transaction_id == 1 && $valueBank->entries_parent == 0)
+                    {
+                        $subtrationOfValue = ($subtrationOfValue + $type->entries_value);
+                    }        
+                }
+            }
+          
         }
         return ($sumOfValue - $subtrationOfValue);
     }
