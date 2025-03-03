@@ -291,7 +291,7 @@ function searchPeriod(idCompany) {
             {data: 'entries_date_launch', name: 'entries_date_launch'},
             {data: 'entries_description', name: 'entries_description'},
             {data: 'entries_value', name: 'entries_value'},
-            {data: 'entries_id_account', name: 'entries_id_account'},
+            {data: 'entries_id_account', name: 'entries_id_account'}
             {data: 'entries_id_user', name: 'entries_id_user'},
             {data: 'action', name: 'action'}
         ];

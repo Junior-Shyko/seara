@@ -126,8 +126,6 @@ class EntryController extends Controller
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         $request['entries_date_launch'] = $date_launch;
 
-        //abertura de caixa
-        $entryRepo = EntryRepository::verifyExistEntryMonthAndOpenBox($request->entries_date_launch);
         $date_launch = FunctionGeneral::DataBRtoMySQL($request->entries_date_launch);
         //Data do lançamento
         $request['entries_date_launch'] = $request->entries_date_launch;
@@ -367,6 +365,14 @@ class EntryController extends Controller
             })
             ->editColumn('entries_id_account', function ($mov) {
                 return $mov->account_types_name;
+            })
+            ->editColumn('entries_bank', function ($mov) {
+                if($mov->entries_bank > 0){
+                   return "Banco";
+                }
+                if($mov->entries_bank == 0){
+                    return "Interno";
+                }
             })
             ->addColumn('action', function ($mov) {
                 $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');

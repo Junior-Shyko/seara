@@ -146,6 +146,7 @@
                                                     <th>Histórico</th>
                                                     <th>Valor</th>
                                                     <th>Tipo</th>
+                                                    <th>Caixa</th>
                                                     <th>Lançado por</th>
                                                     <th>Ações</th>
                                                 </tr>
