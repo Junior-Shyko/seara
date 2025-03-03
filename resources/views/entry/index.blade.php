@@ -32,7 +32,11 @@
                         <span class="count_top">
                             <i class="fa fa-university" aria-hidden="true"></i> Todos Banco
                         </span>
-                        <div class="count">{{number_format($balanceBank, 2 , ',', '.')}}</div>
+                        <div class="count">
+                            @php 
+                                echo number_format($generalBalnaceBank, 2 , ',', '.');
+                            @endphp
+                        </div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral de todos caixa banco
@@ -43,7 +47,7 @@
                         <span class="count_top">
                             <i class="fa fa-money" aria-hidden="true"></i> Caixa Interno
                         </span>
-                        <div class="count">{{number_format($internal, 2 , ',', '.')}}</div>
+                        <div class="count">{{number_format($interInternal, 2 , ',', '.')}}</div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral do caixa interno
@@ -165,7 +169,7 @@
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
     
-    @include('modals.modal_box_entry', ['saldo' => $internal, 'accountBank' => $accountBank, 'boxOpen' => $boxOpen])
+    @include('modals.modal_box_entry', ['saldo' => $interInternal, 'accountBank' => $accountBank, 'boxOpen' => $boxOpen])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
     {{-- EXCLUINDO UM LANCAMENTO --}}

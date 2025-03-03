@@ -2,20 +2,15 @@
 
 namespace Seara\Repository;
 
-use Seara\Bank;
-use App\Account;
 use Carbon\Carbon;
 use Seara\AccountBank;
 use Seara\Seara\Monetary;
-use Illuminate\Http\Request;
-use Doctrine\DBAL\Tools\Dumper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Seara\Repository\BankRepository;
-use Seara\Service\Launch\CreateLaunch;
+use Seara\Http\Abstracts\GeneralBalanceAbstract;
 use Seara\Service\AccountBank\AccountBankService;
 
-class AccountBankRepository
+class AccountBankRepository extends GeneralBalanceAbstract
 {
 
 
@@ -49,17 +44,6 @@ class AccountBankRepository
             ->get();
     }
 
-    static public function getBalance($idCompany)
-    {
-        $balance = AccountBank::where('company_id', $idCompany)->get();
-        $balanceActual = 0;
-        //SOMANDO TODOS OS VALORES
-        foreach ($balance as $value) {
-            $balanceActual = ($balanceActual + $value->balance);
-        }
-        return $balanceActual;
-    }
-
     static public function update($request)
     {
         $money = Monetary::money_real($request['balance']);
@@ -79,8 +63,7 @@ class AccountBankRepository
     {
         //se tiver um where então faz a condição buscando a conta de acondo com o id
         return DB::table('account_banks')
-            ->join('type_banks', 'account_banks.typeBank_id', '=', 'type_banks.id')
-            //->join('banks', 'account_banks.bank_id', '=', 'banks.id')                   
+            ->join('type_banks', 'account_banks.typeBank_id', '=', 'type_banks.id')                
             ->join('banks', function ($query) use ($idAccount) {
                 if ($idAccount != null) {
                     $query->on('account_banks.bank_id', '=', 'banks.id')
@@ -278,12 +261,7 @@ class AccountBankRepository
         return AccountBank::where('company_id', $idCompany)->get();
     }
 
-    private function transfer_between_accounts($idAccountEnd, $valueEnd, $idAccountEntry, $valueEntry)
-    {
-
-        dd($idAccountEnd);
-    }
-
+   
     static function create_register_launch($idAccountLaunch, $desc, $idCompany, $idUser, $value, $transaction_id)
     {
         $launch['entries_id_account'] = $idAccountLaunch;
@@ -322,6 +300,8 @@ class AccountBankRepository
             return response()->json(['message' => $th->getMessage(), 'status' => 400], 400);
         }
     }
+
+  
 
 
 }

@@ -9,16 +9,13 @@ use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountBank;
 use Seara\AccountType;
-use Seara\SettingsBox;
 use Seara\AccountLaunch;
-use Seara\SettingsEntry;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Relation_launch_bank;
 use Seara\Repository\EntryRepository;
-use Illuminate\Http\RedirectResponse ;
 use Seara\Http\Controllers\Controller;
 use Spatie\Permission\Traits\HasRoles;
 use Seara\Service\Launch\LaunchService;
@@ -27,6 +24,7 @@ use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
+use Seara\Repository\AccountInternalRepository;
 
 class EntryController extends Controller
 {
@@ -66,9 +64,15 @@ class EntryController extends Controller
         $bank = LaunchService::getBoxBank($idCompany);
         //valor somados dos lançamentos
         $internal = LaunchService::getBoxInternal($idCompany);
-        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
-        $balanceBank = AccountBankRepository::getBalance($idCompany);
-        $balanceGeneral = ($internal + $balanceBank);
+
+        // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceBank = new AccountBankRepository();
+        $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
+        // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceInternal = new AccountInternalRepository();
+        $interInternal = $balanceInternal->getInternalInternal($idCompany);
+        
+        $balanceGeneral = ($generalBalnaceBank + $interInternal);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
 
@@ -79,9 +83,9 @@ class EntryController extends Controller
 
         return view('entry.index', compact(
             'accounts',
-            'internal',
+            'interInternal',
             'company',
-            'balanceBank',
+            'generalBalnaceBank',
             'balanceGeneral',
             'accountBank',
             'idCompany',
@@ -350,8 +354,7 @@ class EntryController extends Controller
             )
             ->orderBy('entries.entries_date_launch', 'asc')
             ->get();
-                // dump(DB::connection('mysql'));
-        // dd(DB::getQueryLog());
+
         return DataTables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {
                 $date = new Carbon($mov->entries_date_launch);
@@ -473,8 +476,9 @@ class EntryController extends Controller
         //SALDO DO CAIXA INTERNO
         $internal = LaunchService::getBoxInternal($idCompany);
         //SALDO GERAL
-        $balanceBank = AccountBankRepository::getBalance($idCompany);
-        $balanceGeneral = ($internal + $balanceBank);
+        $balanceBank = new AccountBankRepository();
+        $generalBalnaceBank = $balanceBank->getBalance($idCompany);
+        $balanceGeneral = ($internal + $generalBalnaceBank);
         return $balanceGeneral;
     }
 
