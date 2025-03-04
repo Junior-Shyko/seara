@@ -2,8 +2,11 @@
 
 namespace Seara\Http\Abstracts;
 
+use Seara\AccountType;
 use Seara\Entry;
 use Illuminate\Database\Eloquent\Collection;
+use Seara\Repository\AccountBankRepository;
+use function dump;
 
 abstract class GeneralBalanceAbstract
 {
@@ -18,26 +21,15 @@ abstract class GeneralBalanceAbstract
         $balance = Entry::where('entries_id_company', $idCompany)->get();
         $sumOfValue = 0;
         $subtrationOfValue = 0;
-        foreach ($balance as $valueBank) {  
-            $types = static::getTypeLancheToCompany($idCompany, $valueBank->entries_id_account);    
-            if ($valueBank->entries_bank > 0 && is_null($valueBank->entries_parent)) {
-                foreach ($types as $type) {
-                    if ($type->account_types_name === 'Despesa') {
-                        $subtrationOfValue += $type->entries_value;
-                    }
-                    if ($type->account_types_name === 'Receita') {
-                        $sumOfValue += $type->entries_value;
-                    }
-                }
+        $idBoxInternal = 29;
+        foreach ($balance as $valueBank) {
+
+                $type = AccountType::getNameType($valueBank->entries_id_account);
+            if($valueBank->entries_bank !== $idBoxInternal && $type == 'Receita') {
+                $sumOfValue += $valueBank->entries_value;
             }
-            elseif($valueBank->entries_bank > 0 && !is_null($valueBank->entries_parent)){
-             // Se for transferência entre caixa para banco
-                foreach ($types as $type) {
-                    if($valueBank->transaction_id == 1 && $valueBank->entries_parent < 0)
-                    {
-                        $sumOfValue = ($sumOfValue + $type->entries_value);
-                    }        
-                }
+            if($valueBank->entries_bank !== $idBoxInternal && $type == 'Despesa') {
+                $subtrationOfValue += $valueBank->entries_value;
             }
 
         }
@@ -55,7 +47,7 @@ abstract class GeneralBalanceAbstract
     {
         return Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-               ->where('account_launches.id', '=', $accountLanunches)
+//               ->whereIn('account_launches.id',[$accountLanunches])
                ->where('entries.entries_id_company', '=', $idCompany)
                ->get();
     }
@@ -71,29 +63,17 @@ abstract class GeneralBalanceAbstract
         $balance = Entry::where('entries_id_company', $idCompany)->get();
         $sumOfValue = 0;
         $subtrationOfValue = 0;
-        foreach ($balance as $valueBank) {  
-            $types = static::getTypeLancheToCompany($idCompany, $valueBank->entries_id_account);
-            if ($valueBank->entries_bank == 0 && is_null($valueBank->entries_parent)) {
-    
-                foreach ($types as $type) {
-                    if ($type->account_types_name === 'Despesa') {
-                        $subtrationOfValue += $type->entries_value;
-                    }
-                    if ($type->account_types_name === 'Receita') {
-                        $sumOfValue += $type->entries_value;
-                    }
-                }
+        $typesAccount = AccountBankRepository::getRelationAccountBank();
+        $idBoxInternal = 29;
+        foreach ($balance as $key => $valueBank) {
+            $type = AccountType::getNameType($valueBank->entries_id_account);
+            if($valueBank->entries_bank == $idBoxInternal && $type == 'Receita') {
+                $sumOfValue += $valueBank->entries_value;
             }
-            elseif($valueBank->entries_bank > 0 && !is_null($valueBank->entries_parent)){
-             // Se for transferência entre caixa para banco
-                foreach ($types as $type) {
-                    if($valueBank->transaction_id == 1 && $valueBank->entries_parent == 0)
-                    {
-                        $subtrationOfValue = ($subtrationOfValue + $type->entries_value);
-                    }        
-                }
+            if($valueBank->entries_bank == $idBoxInternal && $type == 'Despesa') {
+                $subtrationOfValue += $valueBank->entries_value;
             }
-          
+
         }
         return ($sumOfValue - $subtrationOfValue);
     }

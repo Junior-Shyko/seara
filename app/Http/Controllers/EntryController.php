@@ -7,7 +7,6 @@ use Seara\Entry;
 use Auth, DB, PDF;
 use Carbon\Carbon;
 use Seara\FileLaunch;
-use Seara\AccountBank;
 use Seara\AccountType;
 use Seara\AccountLaunch;
 use Seara\Models\Company;
@@ -16,7 +15,6 @@ use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Relation_launch_bank;
 use Seara\Repository\EntryRepository;
-use Seara\Http\Controllers\Controller;
 use Spatie\Permission\Traits\HasRoles;
 use Seara\Service\Launch\LaunchService;
 use Seara\Permission as SearaPermission;
@@ -71,6 +69,10 @@ class EntryController extends Controller
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
+//        dump($generalBalnaceBank);
+//        dd($interInternal);
+
+
         $balanceGeneral = ($generalBalnaceBank + $interInternal);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
@@ -247,10 +249,10 @@ class EntryController extends Controller
                 }
             }else{
                 // LANÇAMENTO DE TRANFERENCIA
-                $accountBank = AccountBank::find($entry->entries_bank);
-                //reduzindo o valor da conta
-                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
-                $accountBank->save();
+//                $accountBank = AccountBank::find($entry->entries_bank);
+//                //reduzindo o valor da conta
+//                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
+//                $accountBank->save();
 
                 //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
                 $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
@@ -338,6 +340,8 @@ class EntryController extends Controller
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
             ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->join('account_banks', 'entries.entries_bank', '=', 'account_banks.id')
+            ->join('banks', 'account_banks.bank_id', '=', 'banks.id')
             ->where('entries.entries_date_launch', '>=', $dtIni)
             ->where('entries.entries_date_launch', '<=', $dtEnd)
             ->where('entries.entries_id_company', '=', $idCompany)
@@ -349,7 +353,8 @@ class EntryController extends Controller
                 'account_launches.accountlaunch_type',
                 'account_types.account_types_name',
                 'account_launches.id as idAccontLaunch',
-                'account_launches.accountlaunch_name'
+                'account_launches.accountlaunch_name',
+                'banks.name as nomeBanco'
             )
             ->orderBy('entries.entries_date_launch', 'asc')
             ->get();
@@ -366,15 +371,29 @@ class EntryController extends Controller
                 return number_format($mov->entries_value, 2, ',', '.');
             })
             ->editColumn('entries_id_account', function ($mov) {
-                return $mov->account_types_name;
+                $badge = '';
+                $icon = '';
+                switch ($mov->account_types_name) {
+                    case "Receita":
+                        $badge = 'text-success';
+                        $icon = 'fa-check-square';
+                        break;
+                    case "Despesa":
+                        $badge = 'text-danger';
+                        $icon = 'fa-times';
+                        break;
+                    case "Transferência":
+                        $badge = 'text-primary';
+                        $icon = 'fa-retweet';
+                        break;
+                }
+                return  '<span>
+                            <i class="fa '.$icon.' '.$badge.'" aria-hidden="true"></i> '
+                            .$mov->account_types_name.
+                        '</span>';
             })
             ->editColumn('entries_bank', function ($mov) {
-                if($mov->entries_bank > 0){
-                   return "Banco";
-                }
-                if($mov->entries_bank == 0){
-                    return "Interno";
-                }
+                return $mov->nomeBanco;
             })
             ->addColumn('action', function ($mov) {
                 $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
@@ -420,7 +439,7 @@ class EntryController extends Controller
                 <i class="fa fa-trash"></i></button>
                 ';
             })
-            ->rawColumns(['entries_description', 'action'])
+            ->rawColumns(['entries_description','entries_id_account', 'action'])
             ->make(true);
     }
 
