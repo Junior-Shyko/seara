@@ -101,14 +101,14 @@ class AccountBankRepository extends GeneralBalanceAbstract
         $idaccountBank = 0;
         $idaccountBank2 = 0;
         //verifica se tem saldo para transferencia
-        $verifyBalanceToAccount = self::verifyBalanceToAccount($request);
+//        $verifyBalanceToAccount = self::verifyBalanceToAccount($request);
 
         //false em caso de nao ter saldo suficiente
-        if (!$verifyBalanceToAccount)
-            return response()->json([
-                'type' => 'error',
-                'message' => 'Confira o valor para ser transferido por que o saldo está insuficiente.'
-            ], 400);
+//        if (!$verifyBalanceToAccount)
+//            return response()->json([
+//                'type' => 'error',
+//                'message' => 'Confira o valor para ser transferido por que o saldo está insuficiente.'
+//            ], 400);
 
         //preenchendo array com os campos e valores para um lancamento
         try {
@@ -164,7 +164,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
     
         //So PEGA AS INFO SE NÃO FOR CAIXA INTERNO
         if ($request['idAccountEnd'] > 0) {
-            $account = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEnd']);
+            $account = self::getAccountBankAndTypeToCompany(1, $request['idAccountEnd']);
             //primeiro registro, mas o retorno é somente um registro de uma collection
             $bank['nameBank'] = $account[0]->nameBank;
             $bank['number'] = $account[0]->number;
@@ -172,7 +172,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
         }
 
         if ($request['idAccountEntry'] > 0) {
-            $account2 = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEntry']);
+            $account2 = self::getAccountBankAndTypeToCompany(1, $request['idAccountEntry']);
             $bank2['nameBank'] = $account2[0]->nameBank;
             $bank2['number'] = $account2[0]->number;
             //FORÇANDO QNDO FOR CAIXA INTERNO, O VALOR FICAR 0;
@@ -219,8 +219,8 @@ class AccountBankRepository extends GeneralBalanceAbstract
 
         $launch['entries_id_account'] = $idAccountLaunch;
         $launch['entries_description'] = $desc;
-        $launch['entries_id_company'] = Auth::user()->user_id_company;
-        $launch['entries_id_user'] = Auth::user()->id;
+        $launch['entries_id_company'] = 1;
+        $launch['entries_id_user'] = 1;
         $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();
         $launch['transaction_id'] = $transaction_id;
