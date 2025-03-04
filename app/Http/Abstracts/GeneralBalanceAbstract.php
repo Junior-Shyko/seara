@@ -99,12 +99,14 @@ abstract class GeneralBalanceAbstract
                     $valueBank->entries_parent > 0)
                 {
                     $transferOfValueSum += $valueBank->entries_value;
+                }else{
+                    $transferOfValueSub += $valueBank->entries_value;
                 }
             }
 
         }
         $sumReceita = ($sumOfValue + $transferOfValueSum);
-        return ($sumReceita - $subtrationOfValue);
+        return ($sumReceita - $subtrationOfValue - $transferOfValueSub);
     }
 
 }
