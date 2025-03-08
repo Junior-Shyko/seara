@@ -76,12 +76,8 @@ class EntryController extends Controller
         $balanceGeneral = ($generalBalnaceBank + $interInternal);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
-
-        $boxOpen = EntryRepository::getBoxMonthOpenClose();
-       
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
-        // dd($accountBank );
         return view('entry.index', compact(
             'accounts',
             'interInternal',
@@ -91,8 +87,7 @@ class EntryController extends Controller
             'accountBank',
             'idCompany',
             'entry',
-            'user',
-            'boxOpen'
+            'user'
         ));
     }
 
@@ -340,8 +335,8 @@ class EntryController extends Controller
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
             ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->join('account_banks', 'entries.entries_bank', '=', 'account_banks.id')
-            ->join('banks', 'account_banks.bank_id', '=', 'banks.id')
+            // ->join('account_banks', 'entries.entries_bank', '=', 'account_banks.id')
+            // ->join('banks', 'account_banks.bank_id', '=', 'banks.id')
             ->where('entries.entries_date_launch', '>=', $dtIni)
             ->where('entries.entries_date_launch', '<=', $dtEnd)
             ->where('entries.entries_id_company', '=', $idCompany)
@@ -353,8 +348,8 @@ class EntryController extends Controller
                 'account_launches.accountlaunch_type',
                 'account_types.account_types_name',
                 'account_launches.id as idAccontLaunch',
-                'account_launches.accountlaunch_name',
-                'banks.name as nomeBanco'
+                'account_launches.accountlaunch_name'
+                // 'banks.name as nomeBanco'
             )
             ->orderBy('entries.entries_date_launch', 'asc')
             ->get();
@@ -393,7 +388,12 @@ class EntryController extends Controller
                         '</span>';
             })
             ->editColumn('entries_bank', function ($mov) {
-                return $mov->nomeBanco;
+                if($mov->entries_bank == 0)
+                {
+                    return 'Caixa Interno';
+                }else{
+                    return 'Caixa Banco';
+                }
             })
             ->addColumn('action', function ($mov) {
                 $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
@@ -416,8 +416,12 @@ class EntryController extends Controller
                 if($mov->entries_parent == -1){
                     $disabled = 'disabled';
                 }
+                $disabledTransfer = '';
+                if($mov->transaction_id == 1){
+                    $disabledTransfer = 'disabled';
+                }
                 //qualquer outro nivel de acesso
-                return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
+                return '<button class="btn btn-primary btn-xs '.$disabledTransfer.'" type="button" title="Editar do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-date="' . $dtLauch . '"

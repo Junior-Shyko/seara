@@ -169,7 +169,10 @@
     </div>
     {{-- @include('modals.entry.modal_lauch') --}}
     
-    @include('modals.modal_box_entry', ['saldo' => $interInternal, 'accountBank' => $accountBank, 'boxOpen' => $boxOpen])
+    @include('modals.modal_box_entry', [
+        'saldo' => $interInternal, 
+        'accountBank' => $accountBank
+        ])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
     {{-- EXCLUINDO UM LANCAMENTO --}}

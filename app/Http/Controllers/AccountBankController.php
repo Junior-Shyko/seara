@@ -28,6 +28,13 @@ class AccountBankController extends Controller
     const TRANSFER = 2;
 
     const CHILD = -1;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    
     /**
      * Display a listing of the resource.
      *

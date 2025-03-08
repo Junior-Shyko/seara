@@ -42,10 +42,18 @@
                     <ul class="nav nav-tabs" id="tabs-form-launch" role="tablist">
                         <li role="presentation" class="active">
                             <a href="#bank" aria-controls="bank" id="tab-bank" role="tab"
-                            data-toggle="tab">Lançamento</a>
+                            data-toggle="tab">
+                                <i class="fa fa-university" aria-hidden="true"></i>
+                                Caixa Banco
+                            </a>
                         </li>
-                       <li role="presentation"><a href="#home" id="tab-home" aria-controls="home" role="tab"
-                                data-toggle="tab" data-form="form_entry_internal">Caixa interno</a></li>
+                       <li role="presentation">
+                            <a href="#home" id="tab-home" aria-controls="home" role="tab"
+                                data-toggle="tab" data-form="form_entry_internal">
+                            <i class="fa fa-money" aria-hidden="true"></i>
+                            Caixa interno
+                            </a>
+                        </li>
                                
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
                                 data-toggle="tab">Transferência</a></li>
@@ -119,11 +127,11 @@
                                         <select name="" id="selectAccountBankEnd" class="form-control">
                                             <option value="">--Selecione--</option>
                                             <option value="0">CAIXA INTERNO</option>
-                                            @foreach ($accountBank as $bank)
+                                            {{-- @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}
                                                 </option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                     </div>
                                     <div class="col-md-3">
@@ -159,7 +167,7 @@
                                     </div>
                                     <div class="col-md-5">
                                         <label>informações</label>
-                                        <p>Saldo: <small id="balanceEntryAccount">0.00</small>  - Tipo: Poupança - N. Conta: 6Y7U-XX</p>
+                                        <p>Saldo: <small id="balanceEntryAccount"></small></p>
                                     </div>
                                 </div>
                             </div>
@@ -167,7 +175,7 @@
                             <div class="modal-footer">
                                 <input type="hidden" name="valueGetInfo" id="valueGetInfo">
                                 
-                                <input type="hidden" name="valueInternal" id="valueInternal" value="{{ number_format($saldo, 2, ',', '.') }}">
+                                <input type="hidden" name="valueInternal" id="valueInternal" value="0">
                                 <input type="hidden" name="transaction_id" id="transaction_id_transfer" value="2">
                                 <button type="button" class="btn btn-default  pull-left"
                                     data-dismiss="modal">Sair</button>

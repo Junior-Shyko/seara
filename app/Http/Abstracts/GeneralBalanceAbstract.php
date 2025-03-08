@@ -47,7 +47,7 @@ abstract class GeneralBalanceAbstract
             }
             // Transferencia entre bancos
             if($valueBank->entries_bank !== 0 && $type === 'Transferência') {
-               
+            //    var_dump($subtrationOfValue );
                 if( $valueBank->transaction_id == 1 &&
                     $valueBank->entries_parent != 0 &&
                     $valueBank->entries_parent != self::BOXINTERNAL
@@ -62,10 +62,21 @@ abstract class GeneralBalanceAbstract
                     $valueBank->entries_parent == -1
                 )
                 {
-                    dump($valueBank->transaction_id == 1);
-                    dump($valueBank->entries_parent);
-                    dump($valueBank->entries_value);
+                // dump($type.'-'.$valueBank->entries_id.'-'.$valueBank->entries_value);
+         
+                    // dump($valueBank->transaction_id == 1);
+                    // dump($valueBank->entries_parent);
+                    // dump($valueBank->entries_value);
                     $sumOfValue += $valueBank->entries_value;
+                }else if(
+                    $valueBank->transaction_id == self::TRANSFER && 
+                    $valueBank->entries_parent == self::BOXINTERNAL ||
+                    $valueBank->entries_parent > 0
+                )
+                {
+                    // dump($type.'-'.s$valueBank->entries_id.'-'.$valueBank->entries_value);
+         
+                    $subtrationOfValue += $valueBank->entries_value; 
                 }
             }
             // Transferencia recebida do caixa interno
@@ -87,8 +98,8 @@ abstract class GeneralBalanceAbstract
             //     // }
             // }
         }
-        dump($sumOfValue);
-        dump($subtrationOfValue);
+        // dump($sumOfValue);
+        // dump($subtrationOfValue);
         // dump($transferOfValue);
         // dump($sumTransfer);
         return ( $sumOfValue - $subtrationOfValue );
