@@ -81,7 +81,7 @@ class EntryController extends Controller
        
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
-
+        // dd($accountBank );
         return view('entry.index', compact(
             'accounts',
             'interInternal',
@@ -492,12 +492,12 @@ class EntryController extends Controller
     public function general($idCompany)
     {
         //SALDO DO CAIXA INTERNO
-        $internal = LaunchService::getBoxInternal($idCompany);
-        //SALDO GERAL
-        $balanceBank = new AccountBankRepository();
-        $generalBalnaceBank = $balanceBank->getBalance($idCompany);
-        $balanceGeneral = ($internal + $generalBalnaceBank);
-        return $balanceGeneral;
+        // $internal = LaunchService::getBoxInternal($idCompany);
+        // //SALDO GERAL
+        // $balanceBank = new AccountBankRepository();
+        // $generalBalnaceBank = $balanceBank->getBalance($idCompany);
+        // $balanceGeneral = ($internal + $generalBalnaceBank);
+        return 0;
     }
 
     public function reportBox($dateInit, $dateEnd, $idCompany)

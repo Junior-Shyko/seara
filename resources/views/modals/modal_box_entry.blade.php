@@ -12,7 +12,7 @@
 
                 <div class="row alert space-money" id="infoMonthLaunch">
                     
-                    <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
+                    {{-- <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
                         <h5 class="">
                             <strong>
                                 Banco: <br>
@@ -35,16 +35,16 @@
                             </strong>
                         </h5>
                         <span id="balance_box_general"> 0</span>
-                    </div>
+                    </div> --}}
                 </div>
                 <div>
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" id="tabs-form-launch" role="tablist">
                         <li role="presentation" class="active">
                             <a href="#bank" aria-controls="bank" id="tab-bank" role="tab"
-                            data-toggle="tab">Bancos</a>
+                            data-toggle="tab">Lançamento</a>
                         </li>
-                        <li role="presentation"><a href="#home" id="tab-home" aria-controls="home" role="tab"
+                       <li role="presentation"><a href="#home" id="tab-home" aria-controls="home" role="tab"
                                 data-toggle="tab" data-form="form_entry_internal">Caixa interno</a></li>
                                
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab"
@@ -71,6 +71,7 @@
                                                 <label for="">Selecione um banco</label>                                       
                                                 <select name="entries_bank" id="select-form-option-bank" class="form-control">
                                                     <option value="--">-- --</option>
+                                                    <option value="0">CAIXA INTERNO</option>
                                                     @foreach ($accountBank as $bank)
                                                         <option 
                                                             value="{{ $bank->bank_id }}"
@@ -143,7 +144,7 @@
                                         <small class="text-danger">Conta de entrada</small>
                                         <select name="" id="selectAccountBankEntry" class="form-control">
                                             <option value="">--Selecione--</option>
-                                            <option value="0">CAIXA INTERNO</option>
+                                            {{-- <option value="0">CAIXA INTERNO</option> --}}
                                             @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}

@@ -4,6 +4,7 @@ namespace Seara\Repository;
 
 use Carbon\Carbon;
 use Seara\AccountBank;
+use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -98,6 +99,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
      */
     static public function transfer($request)
     {
+       
         $idaccountBank = 0;
         $idaccountBank2 = 0;
         //verifica se tem saldo para transferencia
@@ -114,6 +116,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
         try {
             //se for caixa interno não registra saida de valor
             $valueBalance = Monetary::money_real($request['value']);
+            
             //Retirando o valor do saldo da conta bancaria          
             if ($request['idAccountEnd'] > 0) {
                 $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
@@ -121,7 +124,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
                 $idaccountBank = $accountBank->id;
                 $accountBank->save();
             }
-
+           
 
             if ($request['idAccountEntry'] > 0) {
                 $accountBank2 = AccountBank::findOrFail($request['idAccountEntry']);
@@ -148,7 +151,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
      */
     static public function fieldsEntry($request, $type)
     {
-       
+        
         //PARA REGISTRAR DA CONTA BANCARIA NO LANÇAMENTO
         $bankEntries = isset($request['entries_bank']) ? $request['entries_bank'] : 0;
         $bank = [];
@@ -161,10 +164,11 @@ class AccountBankRepository extends GeneralBalanceAbstract
         $account2 = new AccountBank('Caixa Interno', 0);
         $bank2['nameBank'] = $account2->nameBank;
         $bank2['number'] = $account2->number;
-    
+      
         //So PEGA AS INFO SE NÃO FOR CAIXA INTERNO
         if ($request['idAccountEnd'] > 0) {
-            $account = self::getAccountBankAndTypeToCompany(1, $request['idAccountEnd']);
+            $account = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEnd']);
+           
             //primeiro registro, mas o retorno é somente um registro de uma collection
             $bank['nameBank'] = $account[0]->nameBank;
             $bank['number'] = $account[0]->number;
@@ -172,7 +176,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
         }
 
         if ($request['idAccountEntry'] > 0) {
-            $account2 = self::getAccountBankAndTypeToCompany(1, $request['idAccountEntry']);
+            $account2 = self::getAccountBankAndTypeToCompany(Auth::user()->user_id_company, $request['idAccountEntry']);
             $bank2['nameBank'] = $account2[0]->nameBank;
             $bank2['number'] = $account2[0]->number;
             //FORÇANDO QNDO FOR CAIXA INTERNO, O VALOR FICAR 0;
@@ -219,8 +223,8 @@ class AccountBankRepository extends GeneralBalanceAbstract
 
         $launch['entries_id_account'] = $idAccountLaunch;
         $launch['entries_description'] = $desc;
-        $launch['entries_id_company'] = 1;
-        $launch['entries_id_user'] = 1;
+        $launch['entries_id_company'] = Auth::user()->user_id_company;
+        $launch['entries_id_user'] = Auth::user()->id;
         $launch['entries_value'] = Monetary::money_real($request['value']);
         $launch['entries_date_launch'] = Carbon::now();
         $launch['transaction_id'] = $transaction_id;
@@ -299,6 +303,25 @@ class AccountBankRepository extends GeneralBalanceAbstract
         } catch (\Exception $th) {
             return response()->json(['message' => $th->getMessage(), 'status' => 400], 400);
         }
+    }
+
+    static public function getAccountBankAndBankToCompany($idCompany)
+    {
+        $accountBanks =  Company::join('account_banks', 'companies.company_id', '=','account_banks.company_id')
+                ->join('banks', 'account_banks.bank_id', '=','banks.id')
+                ->where('account_banks.company_id', $idCompany)
+                ->select('account_banks.*', 'account_banks.id as idAccountBank', 'banks.*', 'banks.name as nameBank')
+                ->get();
+        $idsAccountBanks = [0];
+        foreach ($accountBanks as $bank) {
+            // dump($bank);
+            if($bank->nameBank == 'Caixa Interno')
+            {
+                array_push($idsAccountBanks, $bank->idAccountBank);
+            }
+        }
+
+        return $idsAccountBanks;
     }
 
   
