@@ -23,23 +23,17 @@ abstract class GeneralBalanceAbstract
     {
         $balance = Entry::where('entries_id_company', $idCompany)->get();
         $idBoxInternal = AccountBankRepository::getAccountBankAndBankToCompany($idCompany);
-        
-        // dump($idBoxInternal);
         $sumOfValue = 0;
         $subtrationOfValue = 0;
         $transferOfValue = 0;
         $sumTransfer = 0;
         foreach ($balance as $valueBank) {
+
             $type = AccountType::getNameType($valueBank->entries_id_account);
-            
-            
             if($valueBank->entries_bank > 0 && $type == 'Receita') {
-                // dump($sumOfValue);
-                // dump($type.'-'.$valueBank->entries_id.'-'.$valueBank->entries_value);
-                // dump($valueBank->entries_value);
                 $sumOfValue += $valueBank->entries_value;
             }
-            if( $valueBank->entries_bank > 0 && 
+            if( $valueBank->entries_bank > 0 &&
                 $type == 'Despesa' &&
                 $valueBank->transaction_id == 0 // Garante que não será transferência
             ) {
@@ -47,7 +41,6 @@ abstract class GeneralBalanceAbstract
             }
             // Transferencia entre bancos
             if($valueBank->entries_bank !== 0 && $type === 'Transferência') {
-            //    var_dump($subtrationOfValue );
                 if( $valueBank->transaction_id == 1 &&
                     $valueBank->entries_parent != 0 &&
                     $valueBank->entries_parent != self::BOXINTERNAL
@@ -56,29 +49,22 @@ abstract class GeneralBalanceAbstract
                     $transferOfValue += $valueBank->entries_value;
                 }
                 // Transferencia que o banco recebeu do caixa interno
-                // dump( $sumTransfer.' - '.$sumOfValue.' - '.$valueBank->entries_parent);
-                if($valueBank->transaction_id == self::TRANSFER && 
+                if($valueBank->transaction_id == self::TRANSFER &&
                     $valueBank->entries_parent == self::BOXINTERNAL ||
                     $valueBank->entries_parent == -1
                 )
                 {
-                // dump($type.'-'.$valueBank->entries_id.'-'.$valueBank->entries_value);
-         
-                    // dump($valueBank->transaction_id == 1);
-                    // dump($valueBank->entries_parent);
-                    // dump($valueBank->entries_value);
                     $sumOfValue += $valueBank->entries_value;
                 }else if(
-                    $valueBank->transaction_id == self::TRANSFER && 
+                    $valueBank->transaction_id == self::TRANSFER &&
                     $valueBank->entries_parent == self::BOXINTERNAL ||
                     $valueBank->entries_parent > 0
                 )
                 {
-                    // dump($type.'-'.s$valueBank->entries_id.'-'.$valueBank->entries_value);
-         
-                    $subtrationOfValue += $valueBank->entries_value; 
+                    $subtrationOfValue += $valueBank->entries_value;
                 }
             }
+            // @todo criar calculo de transferencia do caixa interno
             // Transferencia recebida do caixa interno
             // if($valueBank->entries_bank > 0 && $type === 'Transferência') {
                 
@@ -98,10 +84,6 @@ abstract class GeneralBalanceAbstract
             //     // }
             // }
         }
-        // dump($sumOfValue);
-        // dump($subtrationOfValue);
-        // dump($transferOfValue);
-        // dump($sumTransfer);
         return ( $sumOfValue - $subtrationOfValue );
     }
 
@@ -116,7 +98,6 @@ abstract class GeneralBalanceAbstract
     {
         return Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-//               ->whereIn('account_launches.id',[$accountLanunches])
                ->where('entries.entries_id_company', '=', $idCompany)
                ->get();
     }
@@ -138,7 +119,6 @@ abstract class GeneralBalanceAbstract
 
         foreach ($balance as $key => $valueBank) {
             $type = AccountType::getNameType($valueBank->entries_id_account);
-
             if($valueBank->entries_bank == 0 && $type == 'Receita') {
                 $sumOfValue += $valueBank->entries_value;
             }

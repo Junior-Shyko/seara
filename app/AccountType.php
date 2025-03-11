@@ -16,7 +16,6 @@ class AccountType extends Model
     public static function getNameType($idAccount) {
         $name = AccountType::join('account_launches', 'account_types.id', '=', 'account_launches.accountlaunch_type')
         ->where('account_launches.id','=',$idAccount)->get();
-
-        return $name[0]->account_types_name;
+        return isset($name[0]->account_types_name) ? $name[0]->account_types_name : null;
     }
 }

@@ -58,21 +58,13 @@ class EntryController extends Controller
         $accounts = AccountLaunch::get();
         //DADOS DA IGREJA COMPLETO
         $company = Company::getCompany($idCompany);
-        //valor somados das contas bancárias
-        $bank = LaunchService::getBoxBank($idCompany);
-        //valor somados dos lançamentos
-        $internal = LaunchService::getBoxInternal($idCompany);
-
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = new AccountBankRepository();
         $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
+
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
-//        dump($generalBalnaceBank);
-//        dd($interInternal);
-
-
         $balanceGeneral = ($generalBalnaceBank + $interInternal);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
