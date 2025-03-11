@@ -7,19 +7,14 @@ use Seara\Entry;
 use Auth, DB, PDF;
 use Carbon\Carbon;
 use Seara\FileLaunch;
-use Seara\AccountBank;
 use Seara\AccountType;
-use Seara\SettingsBox;
 use Seara\AccountLaunch;
-use Seara\SettingsEntry;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
 use Seara\Relation_launch_bank;
 use Seara\Repository\EntryRepository;
-use Illuminate\Http\RedirectResponse ;
-use Seara\Http\Controllers\Controller;
 use Spatie\Permission\Traits\HasRoles;
 use Seara\Service\Launch\LaunchService;
 use Seara\Permission as SearaPermission;
@@ -27,6 +22,7 @@ use Spatie\Permission\Models\Permission;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
+use Seara\Repository\AccountInternalRepository;
 
 class EntryController extends Controller
 {
@@ -62,32 +58,28 @@ class EntryController extends Controller
         $accounts = AccountLaunch::get();
         //DADOS DA IGREJA COMPLETO
         $company = Company::getCompany($idCompany);
-        //valor somados das contas bancárias
-        $bank = LaunchService::getBoxBank($idCompany);
-        //valor somados dos lançamentos
-        $internal = LaunchService::getBoxInternal($idCompany);
-        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
-        $balanceBank = AccountBankRepository::getBalance($idCompany);
-        $balanceGeneral = ($internal + $balanceBank);
+        // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceBank = new AccountBankRepository();
+        $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
+
+        // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceInternal = new AccountInternalRepository();
+        $interInternal = $balanceInternal->getInternalInternal($idCompany);
+        $balanceGeneral = ($generalBalnaceBank + $interInternal);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
-
-        $boxOpen = EntryRepository::getBoxMonthOpenClose();
-       
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
-
         return view('entry.index', compact(
             'accounts',
-            'internal',
+            'interInternal',
             'company',
-            'balanceBank',
+            'generalBalnaceBank',
             'balanceGeneral',
             'accountBank',
             'idCompany',
             'entry',
-            'user',
-            'boxOpen'
+            'user'
         ));
     }
 
@@ -244,10 +236,10 @@ class EntryController extends Controller
                 }
             }else{
                 // LANÇAMENTO DE TRANFERENCIA
-                $accountBank = AccountBank::find($entry->entries_bank);
-                //reduzindo o valor da conta
-                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
-                $accountBank->save();
+//                $accountBank = AccountBank::find($entry->entries_bank);
+//                //reduzindo o valor da conta
+//                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
+//                $accountBank->save();
 
                 //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
                 $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
@@ -335,6 +327,8 @@ class EntryController extends Controller
         $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
             ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            // ->join('account_banks', 'entries.entries_bank', '=', 'account_banks.id')
+            // ->join('banks', 'account_banks.bank_id', '=', 'banks.id')
             ->where('entries.entries_date_launch', '>=', $dtIni)
             ->where('entries.entries_date_launch', '<=', $dtEnd)
             ->where('entries.entries_id_company', '=', $idCompany)
@@ -347,11 +341,11 @@ class EntryController extends Controller
                 'account_types.account_types_name',
                 'account_launches.id as idAccontLaunch',
                 'account_launches.accountlaunch_name'
+                // 'banks.name as nomeBanco'
             )
             ->orderBy('entries.entries_date_launch', 'asc')
             ->get();
-                // dump(DB::connection('mysql'));
-        // dd(DB::getQueryLog());
+
         return DataTables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {
                 $date = new Carbon($mov->entries_date_launch);
@@ -364,14 +358,33 @@ class EntryController extends Controller
                 return number_format($mov->entries_value, 2, ',', '.');
             })
             ->editColumn('entries_id_account', function ($mov) {
-                return $mov->account_types_name;
+                $badge = '';
+                $icon = '';
+                switch ($mov->account_types_name) {
+                    case "Receita":
+                        $badge = 'text-success';
+                        $icon = 'fa-check-square';
+                        break;
+                    case "Despesa":
+                        $badge = 'text-danger';
+                        $icon = 'fa-times';
+                        break;
+                    case "Transferência":
+                        $badge = 'text-primary';
+                        $icon = 'fa-retweet';
+                        break;
+                }
+                return  '<span>
+                            <i class="fa '.$icon.' '.$badge.'" aria-hidden="true"></i> '
+                            .$mov->account_types_name.
+                        '</span>';
             })
             ->editColumn('entries_bank', function ($mov) {
-                if($mov->entries_bank > 0){
-                   return "Banco";
-                }
-                if($mov->entries_bank == 0){
-                    return "Interno";
+                if($mov->entries_bank == 0)
+                {
+                    return 'Caixa Interno';
+                }else{
+                    return 'Caixa Banco';
                 }
             })
             ->addColumn('action', function ($mov) {
@@ -395,8 +408,12 @@ class EntryController extends Controller
                 if($mov->entries_parent == -1){
                     $disabled = 'disabled';
                 }
+                $disabledTransfer = '';
+                if($mov->transaction_id == 1){
+                    $disabledTransfer = 'disabled';
+                }
                 //qualquer outro nivel de acesso
-                return '<button class="btn btn-primary btn-xs" type="button" title="Editar do Registro"
+                return '<button class="btn btn-primary btn-xs '.$disabledTransfer.'" type="button" title="Editar do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-date="' . $dtLauch . '"
@@ -418,7 +435,7 @@ class EntryController extends Controller
                 <i class="fa fa-trash"></i></button>
                 ';
             })
-            ->rawColumns(['entries_description', 'action'])
+            ->rawColumns(['entries_description','entries_id_account', 'action'])
             ->make(true);
     }
 
@@ -471,11 +488,12 @@ class EntryController extends Controller
     public function general($idCompany)
     {
         //SALDO DO CAIXA INTERNO
-        $internal = LaunchService::getBoxInternal($idCompany);
-        //SALDO GERAL
-        $balanceBank = AccountBankRepository::getBalance($idCompany);
-        $balanceGeneral = ($internal + $balanceBank);
-        return $balanceGeneral;
+        // $internal = LaunchService::getBoxInternal($idCompany);
+        // //SALDO GERAL
+        // $balanceBank = new AccountBankRepository();
+        // $generalBalnaceBank = $balanceBank->getBalance($idCompany);
+        // $balanceGeneral = ($internal + $generalBalnaceBank);
+        return 0;
     }
 
     public function reportBox($dateInit, $dateEnd, $idCompany)

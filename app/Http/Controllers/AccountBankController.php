@@ -19,6 +19,7 @@ use Seara\Relation_launch_bank;
 use Spatie\Permission\Models\Permission;
 use Seara\Repository\AccountBankRepository;
 use Seara\Service\TypeAccountBank\GetTypeAccountBank;
+use function dd;
 
 class AccountBankController extends Controller
 {
@@ -27,6 +28,13 @@ class AccountBankController extends Controller
     const TRANSFER = 2;
 
     const CHILD = -1;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    
     /**
      * Display a listing of the resource.
      *
@@ -190,6 +198,7 @@ class AccountBankController extends Controller
 
     public function actionTransfer(Request $request)
     {
+
         $typeEntry = 0;
         $request['transaction_id'] == 1 ? $typeEntry = AccountBankController::ENTRY : $typeEntry = AccountBankController::TRANSFER;
         //PASSANDO O VALOR DA TRANSFERENCIA E O VALOR ATUAL DA DETERMINADA CONTA
@@ -228,14 +237,17 @@ class AccountBankController extends Controller
         }
         //SE FOR TRANSFERENCIA DO BANCO PARA O CAIXA INTERNO
         elseif($typeEntry == 2 && $request['idAccountEnd'] > 0){
+
            if($request['bank_to_bank'] == "true")
            {
                 $launch = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
                 $launch['entries_parent'] = AccountBankController::CHILD;//ADD ID DA CONTA FILHA
+                $launch['entries_bank'] = $request->idAccountEnd;
                 $entriesParent =  CreateLaunch::create($launch);    
                 //LANÇAMENTO DE RECEITA
                 $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
                 $launch2['entries_parent'] = $transfer->original['id_bank_end'];
+
                 $entriesChild = CreateLaunch::create($launch2);
 
                 //INSERINDO REGISTRO DO RELACIONAMENTO LANCAMENTO COM BANCO
