@@ -125,6 +125,7 @@ abstract class GeneralBalanceAbstract
             if($valueBank->entries_bank == 0  && $type == 'Despesa') {
                 $subtrationOfValue += $valueBank->entries_value;
             }
+
             if($valueBank->entries_bank == 0  && $type === 'Transferência') {
                 if( $valueBank->transaction_id == 1 &&
                     $valueBank->entries_parent != 0 &&
