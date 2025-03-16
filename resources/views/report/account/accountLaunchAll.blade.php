@@ -191,21 +191,7 @@
                 @endif
                 @php  $indiceEncontrado = 'false';  @endphp
             @endforeach
-{{--            <tr class="bg-balance">--}}
 
-{{--                <td colspan="3" style="padding: 5px; font-size: small;">--}}
-
-{{--                        <label>--}}
-{{--                            Resumo--}}
-{{--                                <span class="smallPeriod">(s.ant + ent + sai)</span>--}}
-{{--                        </label>--}}
-{{--                </td>--}}
-{{--                <td colspan="2">--}}
-{{--                    <label class="float-r " >--}}
-{{--                        <strong>R$: {{number_format($balance,2,",",".")}}</strong>--}}
-{{--                    </label>--}}
-{{--                </td>--}}
-{{--            </tr>--}}
         </tbody>
     </table>
     <!-- DivTable.com -->

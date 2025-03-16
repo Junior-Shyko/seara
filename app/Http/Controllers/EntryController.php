@@ -529,18 +529,19 @@ class EntryController extends Controller
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
         $balanceBank = ($generalBalnaceBank + $interInternal);
-   
-        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total', 
-        'previousBalance','balanceBank'));
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultPaperSize' =>  'a4'
-        ]);
+
+//        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total',
+//        'previousBalance','balanceBank'));
+//        $pdf->setOptions([
+//            'isHtml5ParserEnabled' => true,
+//            'isRemoteEnabled' => true,
+//            'orientation' => 'landscape',
+//            'isPhpEnabled' => true
+//        ]);
         
-        //return $pdf->stream();
-        //dd($entries);
-        return view('entry.report.perPeriod', 
+//        return $pdf->stream();
+
+        return view('entry.report.perPeriod',
           compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance','balanceBank'));
     }
 

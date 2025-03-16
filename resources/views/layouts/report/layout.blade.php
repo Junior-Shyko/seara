@@ -18,15 +18,14 @@
             }
         </style>
         <title>Relatório por período - @yield('title')</title>
-        @stack('stylesheets')
+
     </head>
     <body  class="nav-md" id="app">
         <div class="container body">
-            <div class="main_container">
+            <div class="">
                 @yield('main_container')
             </div>
         </div>
-        <script src="{{ asset("js/gentelella.min.js") }}"></script>
         @stack('scripts')
     </body>
 </html>

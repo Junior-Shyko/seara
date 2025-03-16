@@ -220,14 +220,14 @@ class AccountController extends Controller
         {
             return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
         }
-        return view('report.account.accountLaunchAll',
-            compact( 'accountGroup', 'accountLaunchAll',
-        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank', 'dtinit'));
+//        return view('report.account.accountLaunchAll',
+//            compact( 'accountGroup', 'accountLaunchAll',
+//        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank', 'dtinit'));
         //Para geração em PDF, mas tem um problema de timout qndo é muito registros
-//                 $pdf = PDF::loadView('report.account.accountLaunchAll',
-//                     compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
-//                       'dtEndReport', 'balance', 'balanceBank','dtinit'));
-//
-//                return $pdf->stream('report');
+                 $pdf = PDF::loadView('report.account.accountLaunchAll',
+                     compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
+                       'dtEndReport', 'balance', 'balanceBank','dtinit'));
+
+                return $pdf->stream('report');
     }
 }
