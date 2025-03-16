@@ -213,21 +213,21 @@ class AccountController extends Controller
         $prevBalan = Monetary::previousBalance($dtinit, $company_id);
         $balance = ($prevBalan['receitas'] - $prevBalan['despesas']);
         //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
-        $balanceBank = AccountBankRepository::getBalance($company_id);
+        $balanceBank = 0;
 
         //Se nao tiver registro
         if(count($accountGroup) == 0 && count($accountLaunchAll) == 0)
         {
             return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
         }
-        return view('report.account.accountLaunchAll',
-            compact( 'accountGroup', 'accountLaunchAll',
-        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank', 'dtinit'));
+//        return view('report.account.accountLaunchAll',
+//            compact( 'accountGroup', 'accountLaunchAll',
+//        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank', 'dtinit'));
         //Para geração em PDF, mas tem um problema de timout qndo é muito registros
-        //         $pdf = PDF::loadView('report.account.accountLaunchAll',
-        //             compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
-        //               'dtEndReport', 'balance', 'balanceBank','dtinit'));
-        //
-        //        return $pdf->stream('report');
+                 $pdf = PDF::loadView('report.account.accountLaunchAll',
+                     compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
+                       'dtEndReport', 'balance', 'balanceBank','dtinit'));
+
+                return $pdf->stream('report');
     }
 }

@@ -522,23 +522,26 @@ class EntryController extends Controller
             $entries = Company::where('company_id',$idCompany)->get();
         }
 
-        //valor somados dos lançamentos
-        $internal = LaunchService::getBoxInternal($idCompany);
-        //RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
-        $balanceBank = AccountBankRepository::getBalance($idCompany);
-        $balanceGeneral = ($internal + $balanceBank);
-   
-        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total', 
-        'previousBalance','balanceBank'));
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultPaperSize' =>  'a4'
-        ]);
+        $balanceBank = new AccountBankRepository();
+        $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
+
+        // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        $balanceInternal = new AccountInternalRepository();
+        $interInternal = $balanceInternal->getInternalInternal($idCompany);
+        $balanceBank = ($generalBalnaceBank + $interInternal);
+
+//        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total',
+//        'previousBalance','balanceBank'));
+//        $pdf->setOptions([
+//            'isHtml5ParserEnabled' => true,
+//            'isRemoteEnabled' => true,
+//            'orientation' => 'landscape',
+//            'isPhpEnabled' => true
+//        ]);
         
-        //return $pdf->stream();
-        //dd($entries);
-        return view('entry.report.perPeriod', 
+//        return $pdf->stream();
+
+        return view('entry.report.perPeriod',
           compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance','balanceBank'));
     }
 
