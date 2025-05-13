@@ -70,6 +70,9 @@ class EntryController extends Controller
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
+//        dump($generalBalnaceBank);
+//        dump($interInternal);
+//        dd($balanceInternal);
         return view('entry.index', compact(
             'accounts',
             'interInternal',

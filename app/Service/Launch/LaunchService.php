@@ -89,6 +89,27 @@ class LaunchService
         return AccountBank::where('company_id', '=', $idCompany)->get();
     }
 
-    
+    public function getServiceTransferAccountBank($type, $valueBank, $transferOfValueSub, $transferOfValueSum): array
+    {
+        if(
+            $type === 'Transferência' &&
+            $valueBank->entries_bank > 0 &&
+            $valueBank->transaction_id == 1
+        )
+        {
+            if($valueBank->entries_parent == -1)
+            {
+                $transferOfValueSub += $valueBank->entries_value;
+            }elseif($valueBank->entries_parent > 0)
+            {
+                $transferOfValueSum += $valueBank->entries_value;
+            }
+        }
+
+        return [
+            'transferOfValueSub' => $transferOfValueSub,
+            'transferOfValueSum' => $transferOfValueSum
+        ];
+    }
 
 }

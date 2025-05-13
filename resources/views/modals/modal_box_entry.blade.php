@@ -78,8 +78,8 @@
                                             <div class="col-md-12">
                                                 <label for="">Selecione um banco</label>                                       
                                                 <select name="entries_bank" id="select-form-option-bank" class="form-control">
-                                                    <option value="--">-- --</option>
-                                                    <option value="0">CAIXA INTERNO</option>
+                                                    <option value="--">-- Selecione --</option>
+
                                                     @foreach ($accountBank as $bank)
                                                         <option 
                                                             value="{{ $bank->bank_id }}"
@@ -126,12 +126,12 @@
                                         <small class="text-danger">Conta de saída</small>
                                         <select name="" id="selectAccountBankEnd" class="form-control">
                                             <option value="">--Selecione--</option>
-                                            <option value="0">CAIXA INTERNO</option>
-                                            {{-- @foreach ($accountBank as $bank)
+
+                                            @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}
                                                 </option>
-                                            @endforeach --}}
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-3">

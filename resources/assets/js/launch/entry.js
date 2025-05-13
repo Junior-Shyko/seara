@@ -291,7 +291,7 @@ function searchPeriod(idCompany) {
             {data: 'entries_date_launch', name: 'entries_date_launch'},
             {data: 'entries_description', name: 'entries_description'},
             {data: 'entries_value', name: 'entries_value'},
-            {data: 'entries_id_account', name: 'entries_id_account'}
+            {data: 'entries_id_account', name: 'entries_id_account'},
             {data: 'entries_id_user', name: 'entries_id_user'},
             {data: 'action', name: 'action'}
         ];
@@ -585,13 +585,17 @@ function transferValue() {
 
 function saveDataForm(name_form) {
     var form = $('#'+name_form).serialize();
-
     var seriArray = $('#'+name_form).serializeArray();
-
+    console.log({seriArray})
     //VAR INICIANDO COMO FALSO PARA LANCAMENTO CAIXA INTERNO
     var verifyBank = false;
     var idBank = 0;
     var valueLanchBank = 0;
+    // Verificando a data de lancamento
+
+    let isValid = true;
+
+
     //FAZENDO UMA VARREDURA NOS CAMPOS DO FORMULARIO
     jQuery.each( seriArray, function( i, field ) {
         //SE ACHAR O INDICE ENTRIES_BANK ENTAO ALTERA O VALOR DA VARIAVEL
@@ -600,7 +604,25 @@ function saveDataForm(name_form) {
             idBank = seriArray[i].value;
             valueLanchBank = seriArray[3].value;
         }
+        if(field.name == "entries_date_launch" && field.value !== "")3.752,66
+        {
+            const format = 'DD/MM/YYYY';
+            const dateVerify = moment(field.value, format, true);
+            const dateStr = field.value;
+            isValid = dateVerify.isValid() && !dateStr.includes('/0000');
+        }
+
     });
+    if(!isValid){
+        new PNotify({
+            title: 'Ops!',
+            text: 'A data tem que ser uma data válida',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
+        return false;
+    }
+
     if(verifyBank) {
        alterValueBank(idBank, valueLanchBank);
     }
@@ -608,7 +630,7 @@ function saveDataForm(name_form) {
     form = form + '&entries_id_company=' + idCompany
     //enviando requisição
     SearaAjax.post('lancar', form, function( response ){
-        
+
         if(response.typeAccount == 'Despesa') {
             $("#modalUploadLaunch").modal('show');
         }

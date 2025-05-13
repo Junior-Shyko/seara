@@ -6,6 +6,7 @@ use Seara\AccountType;
 use Seara\Entry;
 use Illuminate\Database\Eloquent\Collection;
 use Seara\Repository\AccountBankRepository;
+use Seara\Service\Launch\LaunchService;
 use function dump;
 
 abstract class GeneralBalanceAbstract
@@ -129,14 +130,54 @@ abstract class GeneralBalanceAbstract
             if($valueBank->entries_bank == 0  && $type === 'Transferência') {
                 if( $valueBank->transaction_id == 1 &&
                     $valueBank->entries_parent != 0 &&
-                    $valueBank->entries_parent > 0)
+                    $valueBank->entries_parent == 0)
                 {
+                    dump('igual a 0');
                     $transferOfValueSum += $valueBank->entries_value;
                 }else{
                     $transferOfValueSub += $valueBank->entries_value;
                 }
             }
-            if($valueBank->entries_bank > 0  && $type === 'Transferência') {
+            // @refatorar
+            $lauch = new LaunchService();
+            $totalService = $lauch->getServiceTransferAccountBank($type, $valueBank, $transferOfValueSub, $transferOfValueSum);
+
+            if(
+                $type === 'Transferência' &&
+                $valueBank->entries_bank > 0 &&
+                $valueBank->transaction_id == 1
+            )
+            {
+                if($valueBank->entries_parent == -1)
+                {
+                    $transferOfValueSub += $valueBank->entries_value;
+                }elseif($valueBank->entries_parent > 0)
+                {
+                    $transferOfValueSum += $valueBank->entries_value;
+                }
+            }
+
+            if($valueBank->entries_bank == 0  && $type === 'Transferência') {
+
+                if( $valueBank->transaction_id == 1 &&
+                    $valueBank->entries_parent != 0 &&
+                    $valueBank->entries_parent > 0)
+                {
+//                    dump( $valueBank->entries_parent);
+                    $transferOfValueSum += $valueBank->entries_value;
+                }else{
+                    $transferOfValueSub += $valueBank->entries_value;
+                }
+            }
+
+
+            if(
+                $valueBank->entries_bank > 0  &&
+                $type === 'Transferência' &&
+                $valueBank->transaction_id == 1 &&
+                $valueBank->entries_parent == 0
+            ) {
+
                 if( $valueBank->transaction_id == 1 &&
                     $valueBank->entries_parent == 0)
                 {

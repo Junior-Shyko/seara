@@ -17,7 +17,6 @@ $(document).ready(function () {
         columns: [
             {data: 'nameBank', name: 'nameBank'},
             {data: 'nameTypeBank', name: 'nameTypeBank'},
-            {data: 'balance', name: 'balance'},
             {data: 'number', name: 'number'},
             {data: 'agency_number', name: 'agency_number'},
             {data: 'action', name: 'action', searchable: false, className: 'nowrap'}

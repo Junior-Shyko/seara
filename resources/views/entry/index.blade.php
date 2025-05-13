@@ -97,12 +97,7 @@
                                     </button>
                                 </li>
                                 <li>
-                                    <button type="button" class="btn btn-danger">
-                                        <a  href="{{url('caixa')}}" style="color: white;">
-                                            <i class="fa fa-close"></i>
-                                            Fechar Caixa
-                                        </a>
-                                    </button>
+
                                 </li>
                                 @endrole
                             </ul>
