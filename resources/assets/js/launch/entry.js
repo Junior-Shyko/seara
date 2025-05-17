@@ -201,6 +201,7 @@ function getLaunch(idCompany) {
         {data: 'entries_description', name: 'entries_description'},
         {data: 'entries_value', name: 'entries_value'},
         {data: 'entries_id_account', name: 'entries_id_account'},
+        {data: 'entries_bank', name: 'entries_bank'},
         {data: 'entries_id_user', name: 'entries_id_user'},
         {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
     ];
