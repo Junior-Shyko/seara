@@ -13,3 +13,4 @@ public/build
 npm-debug.log
 /build
 /files
+phpdocker/mysql/
