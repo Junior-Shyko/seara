@@ -308,93 +308,86 @@ class EntryController extends Controller
     }
 
     public function getAll(Request $request, $idCompany)
-    {
+{
+    $dtIni = $request->dtIni;
+    $dtEnd = $request->dtEnd;
 
-        $dtIni = $request->dtIni;
-        $dtEnd = $request->dtEnd;
-        if (isset($request->dtIni) && empty($request->dtIni)) {
-            $startDate = Carbon::now();
-            $dtIni = $startDate->startOfMonth();
-        } elseif (!isset($request->dtIni)) {
-            $startDate = Carbon::now();
-            $dtIni = $startDate->startOfMonth();
-        }
-        if (isset($request->dtEnd) && empty($request->dtEnd)) {
-            $endDate = Carbon::now();
-            $dtEnd = $endDate->startOfMonth();
-        } elseif (!isset($request->dtEnd)) {
-            $endDate = Carbon::now();
-            $dtEnd = $endDate->lastOfMonth();
-        }
-        // DB::enableQueryLog();
-        $mov = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
-            ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            // ->join('account_banks', 'entries.entries_bank', '=', 'account_banks.id')
-            // ->join('banks', 'account_banks.bank_id', '=', 'banks.id')
-            ->where('entries.entries_date_launch', '>=', $dtIni)
-            ->where('entries.entries_date_launch', '<=', $dtEnd)
-            ->where('entries.entries_id_company', '=', $idCompany)
-            ->select(
-                'users.id as idUser',
-                'users.name',
-                'entries.*',
-                'account_types.*',
-                'account_launches.accountlaunch_type',
-                'account_types.account_types_name',
-                'account_launches.id as idAccontLaunch',
-                'account_launches.accountlaunch_name'
-                // 'banks.name as nomeBanco'
-            )
-            ->orderBy('entries.entries_date_launch', 'asc')
-            ->get();
+    // Configuração das datas padrão
+    if (empty($request->dtIni) || !isset($request->dtIni)) {
+        $startDate = Carbon::now();
+        $dtIni = $startDate->startOfMonth();
+    }
 
-        return DataTables::of($mov)->addIndexColumn()
-            ->editColumn('entries_date_launch', function ($mov) {
-                $date = new Carbon($mov->entries_date_launch);
-                return $date->format('d/m/Y');
-            })
-            ->editColumn('entries_id_user', function ($mov) {
-                return $mov->name;
-            })
-            ->editColumn('entries_value', function ($mov) {
-                return number_format($mov->entries_value, 2, ',', '.');
-            })
-            ->editColumn('entries_id_account', function ($mov) {
-                $badge = '';
-                $icon = '';
-                switch ($mov->account_types_name) {
-                    case "Receita":
-                        $badge = 'text-success';
-                        $icon = 'fa-check-square';
-                        break;
-                    case "Despesa":
-                        $badge = 'text-danger';
-                        $icon = 'fa-times';
-                        break;
-                    case "Transferência":
-                        $badge = 'text-primary';
-                        $icon = 'fa-retweet';
-                        break;
-                }
-                return  '<span>
-                            <i class="fa '.$icon.' '.$badge.'" aria-hidden="true"></i> '
-                            .$mov->account_types_name.
-                        '</span>';
-            })
-            ->editColumn('entries_bank', function ($mov) {
-                if($mov->entries_bank == 0)
-                {
-                    return 'Caixa Interno';
-                }else{
-                    return 'Caixa Banco';
-                }
-            })
-            ->addColumn('action', function ($mov) {
-                $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
+    if (empty($request->dtEnd) || !isset($request->dtEnd)) {
+        $endDate = Carbon::now();
+        $dtEnd = $endDate->lastOfMonth();
+    }
 
-                //botão da visualização de role User
-                $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
+    // Construção da query base
+    $query = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
+        ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+        ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+        ->where('entries.entries_id_company', '=', $idCompany)
+        ->select(
+            'users.id as idUser',
+            'users.name',
+            'entries.*',
+            'account_types.*',
+            'account_launches.accountlaunch_type',
+            'account_types.account_types_name',
+            'account_launches.id as idAccontLaunch',
+            'account_launches.accountlaunch_name'
+        );
+
+    // Adicionar condições de data apenas se ambas existirem
+    if (!empty($request->dtIni) && !empty($request->dtEnd)) {
+        $query->where('entries.entries_date_launch', '>=', $dtIni)
+              ->where('entries.entries_date_launch', '<=', $dtEnd);
+    }
+
+    // Executar a query com ordenação
+    $mov = $query->orderBy('entries.entries_date_launch', 'asc')
+                 ->get();
+
+    return DataTables::of($mov)->addIndexColumn()
+        ->editColumn('entries_date_launch', function ($mov) {
+            $date = new Carbon($mov->entries_date_launch);
+            return $date->format('d/m/Y');
+        })
+        ->editColumn('entries_id_user', function ($mov) {
+            return $mov->name;
+        })
+        ->editColumn('entries_value', function ($mov) {
+            return number_format($mov->entries_value, 2, ',', '.');
+        })
+        ->editColumn('entries_id_account', function ($mov) {
+            $badge = '';
+            $icon = '';
+            switch ($mov->account_types_name) {
+                case "Receita":
+                    $badge = 'text-success';
+                    $icon = 'fa-check-square';
+                    break;
+                case "Despesa":
+                    $badge = 'text-danger';
+                    $icon = 'fa-times';
+                    break;
+                case "Transferência":
+                    $badge = 'text-primary';
+                    $icon = 'fa-retweet';
+                    break;
+            }
+            return '<span>
+                        <i class="fa '.$icon.' '.$badge.'" aria-hidden="true"></i> '
+                        .$mov->account_types_name.
+                    '</span>';
+        })
+        ->editColumn('entries_bank', function ($mov) {
+            return $mov->entries_bank == 0 ? 'Caixa Interno' : 'Caixa Banco';
+        })
+        ->addColumn('action', function ($mov) {
+            $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
+            $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-day="' . $mov->entries_day . '"
@@ -403,20 +396,14 @@ class EntryController extends Controller
                 data-target="#modalInfoLaunch">
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>';
 
-                if(Auth::user()->hasRole('user') ) {
-                    return $btnUserRole;
-                }
-                //desabilitanco exclusao para lancamentos filhos
-                $disabled = '';
-                if($mov->entries_parent == -1){
-                    $disabled = 'disabled';
-                }
-                $disabledTransfer = '';
-                if($mov->transaction_id == 1){
-                    $disabledTransfer = 'disabled';
-                }
-                //qualquer outro nivel de acesso
-                return '<button class="btn btn-primary btn-xs '.$disabledTransfer.'" type="button" title="Editar do Registro"
+            if (Auth::user()->hasRole('user')) {
+                return $btnUserRole;
+            }
+
+            $disabled = $mov->entries_parent == -1 ? 'disabled' : '';
+            $disabledTransfer = $mov->transaction_id == 1 ? 'disabled' : '';
+
+            return '<button class="btn btn-primary btn-xs '.$disabledTransfer.'" type="button" title="Editar do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-date="' . $dtLauch . '"
@@ -435,12 +422,11 @@ class EntryController extends Controller
                 data-parent="'. $mov->entries_parent .'"
                 data-type="' . $mov->account_types_name . '"
                 data-target="#modalDeleteComponent">
-                <i class="fa fa-trash"></i></button>
-                ';
-            })
-            ->rawColumns(['entries_description','entries_id_account', 'action'])
-            ->make(true);
-    }
+                <i class="fa fa-trash"></i></button>';
+        })
+        ->rawColumns(['entries_description', 'entries_id_account', 'action'])
+        ->make(true);
+}
 
     public function info($id)
     {
