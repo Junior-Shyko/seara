@@ -258,8 +258,8 @@
         console.log(moment().format());
         var dtInit = moment().startOf('month').format("DD/MM/YYYY");
         var today = moment().endOf("month").format("DD/MM/YYYY");;
-        $("#dateInitial").val(dtInit);
-        $("#dateEnd").val(today);
+        // $("#dateInitial").val(dtInit);
+        // $("#dateEnd").val(today);
         $("#inputDtInit").val(btoa(dtInit));
         $("#inputDtEnd").val(btoa(today));
     </script>

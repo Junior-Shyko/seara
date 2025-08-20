@@ -285,44 +285,53 @@ function showDivs() {
 }
 
 function searchPeriod(idCompany) {
-    var init = brDatetoUsa($("#dateInitial").val())
-    var end = brDatetoUsa($("#dateEnd").val())
-    if ( $.fn.dataTable.isDataTable( '#entry-table' ) ) {
-        let colunas = [
-            {data: 'entries_date_launch', name: 'entries_date_launch'},
-            {data: 'entries_description', name: 'entries_description'},
-            {data: 'entries_value', name: 'entries_value'},
-            {data: 'entries_id_account', name: 'entries_id_account'},
-            {data: 'entries_id_user', name: 'entries_id_user'},
-            {data: 'action', name: 'action'}
-        ];
+   
+    
+    // Obtém as datas e converte para formato USA, se existirem
+    const dateInitial = $("#dateInitial").val();
+    const dateEnd = $("#dateEnd").val();
+    const init = dateInitial ? brDatetoUsa(dateInitial) : '';
+    const end = dateEnd ? brDatetoUsa(dateEnd) : '';
 
-        var table = $('#entry-table').DataTable( {
+    // Configuração das colunas da DataTable
+    const columns = [
+        { data: 'entries_date_launch', name: 'entries_date_launch' },
+        { data: 'entries_description', name: 'entries_description' },
+        { data: 'entries_value', name: 'entries_value' },
+        { data: 'account_types_name', name: 'account_types_name' },
+        { data: 'entries_id_account', name: 'entries_id_account' },
+        { data: 'entries_id_user', name: 'entries_id_user' },
+        { data: 'action', name: 'action' }
+    ];
+
+    // Verifica se a DataTable já existe
+    if ($.fn.dataTable.isDataTable('#entry-table')) {
+        // Destroi a tabela existente
+        const existingTable = $('#entry-table').DataTable({
             paging: false,
             retrieve: true,
             pageLength: 100
-        } );
-        table.destroy();
-        table = $('#entry-table').DataTable( {
-            pageLength: 100,
-            ajax: SearaApp.baseURL+'all-launch/'+idCompany+'?dtIni='+init+'&dtEnd='+end,
-            columns: colunas,
-            order: [[ 0, "asc" ]],
-            drawCallback: function () {
-                var api = this.api();
-                var sum = 0;
-                $( api.table().footer() ).html(
-                    sum = api.column( 2, {page:'current'} ).data().sum()
-                );
-              }
-        } );
+        });
+        existingTable.destroy();
     }
-    else {
-        table = $('#entry-table').DataTable( {
-            paging: false
-        } );
-        console.log('primeiro else');
-    }
+
+    // Monta a URL da requisição com ou sem período
+    const ajaxUrl = init && end 
+        ? `${SearaApp.baseURL}all-launch/${idCompany}?dtIni=${init}&dtEnd=${end}`
+        : `${SearaApp.baseURL}all-launch/${idCompany}`;
+
+    // Inicializa a nova DataTable
+    $('#entry-table').DataTable({
+        pageLength: 100,
+        ajax: ajaxUrl,
+        columns: columns,
+        order: [[0, "asc"]],
+        drawCallback: function() {
+            const api = this.api();
+            const sum = api.column(2, { page: 'current' }).data().sum();
+            $(api.table().footer()).html(sum);
+        }
+    });
 }
 
 var dtInit = '';
