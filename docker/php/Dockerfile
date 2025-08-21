@@ -18,4 +18,6 @@ RUN apt-get update && apt-get install -y \
        --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd pdo pdo_mysql
 
+RUN docker-php-ext-install zip
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

@@ -30,7 +30,7 @@ class EntryController extends Controller
 
     public function __construct()
     {
-        $this->middleware('checkBox')->only(['store']);
+        // $this->middleware('checkBox')->only(['store']);
     }
 
     /**
@@ -104,7 +104,18 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-       
+      
+
+        $data = EntryRepository::verifyLastDayMounth($request);
+
+        
+        if($data->getStatusCode() !== 200)
+        {
+            return response([
+                    'status' => 'error', 
+                    'message' => "Não é permitido lançamento nessa data"], 422);
+        }
+
         $rules = [
             'entries_description' => 'required',
             'entries_id_account' => 'required',

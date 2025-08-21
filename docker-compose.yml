@@ -57,7 +57,7 @@ services:
     volumes:
       - ./:/var/www
     tty: true
-    command: sh -c "npm install -g bower gulp@3 && bower install --allow-root && gulp watch"
+    command: sh -c "npm install -g bower gulp@3 && bower install --allow-root"
     networks:
       - laravel
 
