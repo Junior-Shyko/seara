@@ -11,6 +11,7 @@ use Seara\AccountLaunch;
 use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EntryRepository
 {
@@ -138,7 +139,7 @@ class EntryRepository
         return false;
     }
 
-    static public function verifyLastDayMounth(Request $request)
+    static public function verifyLastDayMounth(Request $request): JsonResponse
     {
         $dateString = $request['entries_date_launch']; // Ex: "20/08/2025"
 
@@ -148,6 +149,13 @@ class EntryRepository
         // 2) Pegar o último dia do mês atual
         $lastDayOfMonth = Carbon::now()->endOfMonth();
 
+        // Data mínima permitida
+        $minDate = Carbon::create(2022, 1, 1); // 01/01/2022
+        if ($date->lt($minDate)) {
+            return response()->json([
+                'error' => 'A data não pode ser anterior a ' . $minDate->format('d/m/Y')
+            ], 422);
+        }
 
         // 3) Comparar
         if ($date->gt($lastDayOfMonth)) {
@@ -161,7 +169,7 @@ class EntryRepository
                 'error' => 'Data inválida. Formato esperado: dd/mm/YYYY.'
             ], 422);
         }
-
+        // retorno de sucesso
         return response()->json([
             'message' => $date, 'status' => 200
         ]);

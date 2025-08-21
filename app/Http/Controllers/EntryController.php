@@ -104,16 +104,15 @@ class EntryController extends Controller
      */
     public function store(Request $request)
     {
-      
-
-        $data = EntryRepository::verifyLastDayMounth($request);
-
+        //validando as datas permitidas
+        $dateValid = EntryRepository::verifyLastDayMounth($request);
+        $res = json_decode($dateValid->getContent(), true);        
         
-        if($data->getStatusCode() !== 200)
+        if($dateValid->getStatusCode() !== 200)
         {
             return response([
                     'status' => 'error', 
-                    'message' => "Não é permitido lançamento nessa data"], 422);
+                    'message' => $res['error']], 422);
         }
 
         $rules = [

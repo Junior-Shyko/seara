@@ -596,7 +596,6 @@ function transferValue() {
 function saveDataForm(name_form) {
     var form = $('#'+name_form).serialize();
     var seriArray = $('#'+name_form).serializeArray();
-    console.log({seriArray})
     //VAR INICIANDO COMO FALSO PARA LANCAMENTO CAIXA INTERNO
     var verifyBank = false;
     var idBank = 0;
@@ -604,8 +603,6 @@ function saveDataForm(name_form) {
     // Verificando a data de lancamento
 
     let isValid = true;
-
-
     //FAZENDO UMA VARREDURA NOS CAMPOS DO FORMULARIO
     jQuery.each( seriArray, function( i, field ) {
         //SE ACHAR O INDICE ENTRIES_BANK ENTAO ALTERA O VALOR DA VARIAVEL
@@ -614,7 +611,7 @@ function saveDataForm(name_form) {
             idBank = seriArray[i].value;
             valueLanchBank = seriArray[3].value;
         }
-        if(field.name == "entries_date_launch" && field.value !== "")3.752,66
+        if(field.name == "entries_date_launch" && field.value !== "")
         {
             const format = 'DD/MM/YYYY';
             const dateVerify = moment(field.value, format, true);
