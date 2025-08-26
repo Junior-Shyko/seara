@@ -20,7 +20,6 @@ services:
        bash -c "
           composer install --no-interaction --optimize-autoloader &&
           php artisan config:cache &&
-          php artisan migrate --force &&
           php-fpm
         "
     healthcheck:
