@@ -6,5 +6,5 @@ function reloadAllMasks()
 
 $(document).ready(function(){
   $('.money-mask').mask("#.##0,00", {reverse: true});
-  $('.date-mask').mask('00/00/0000', {placeholder: "__/__/____"});
+  $('.date-mask').mask('00/00/00', {placeholder: "__/__/__"});
 });

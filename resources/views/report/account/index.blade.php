@@ -44,7 +44,8 @@
                                 <div class="form-group">
                                     <div class="col-md-6">
                                         <label for="">Data Inicial</label>
-                                        <input type="text" name="dateInitial" value="{{$startMonthFormated}}" class="form-control date-mask" id="dateInitial">
+                                        <input type="text" name="dateInitial" value="{{$startMonthFormated}}"
+                                         class="form-control date-mask" id="dateInitial">
                                     </div>
                                     <div class="col-md-6">
                                         <label for="">Data Final</label>
