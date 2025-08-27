@@ -3,13 +3,11 @@ version: '3.8'
 services:
   # Serviço PHP-FPM
   php:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
+    image: seara:latest
     container_name: laravel-php
     working_dir: /var/www
     volumes:
-      - ./:/var/www
+      # - ./:/var/www
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     networks:
       - laravel

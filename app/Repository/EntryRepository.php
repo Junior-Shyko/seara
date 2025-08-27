@@ -9,16 +9,19 @@ use Seara\AccountBank;
 use Seara\SettingsBox;
 use Seara\AccountLaunch;
 use Seara\Seara\Monetary;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-class EntryRepository {
+class EntryRepository
+{
 
     static public function deleteFile($id)
     {
-        
+
         //exclusao dos arquivos, caso tenha
         $files = FileLaunch::where('file_launches_id_entry', '=', $id)->get();
-       
+
         foreach ($files as $key => $value) {
             FileLaunch::where('id', $value->id)->delete();
         }
@@ -27,14 +30,13 @@ class EntryRepository {
     static public function deleteLaunchBank($idEntry)
     {
         $entry = Entry::where('entries_id', $idEntry)->first();
-        if($entry->entries_bank == 0 || !empty($entry->entries_bank) && is_null($entry->entries_parent))
-        {
-            $account_bank = AccountBank::find($entry->entries_bank);//instanciando o conta
-            if(!is_null($account_bank)){
-                $valueBank = Monetary::money_real($entry->entries_value);//formatando o valor
-                $account_bank->balance  -= (float) $valueBank;//reduzindo o valor da conta
-                $account_bank->save();//salvando os dados
-            }               
+        if ($entry->entries_bank == 0 || !empty($entry->entries_bank) && is_null($entry->entries_parent)) {
+            $account_bank = AccountBank::find($entry->entries_bank); //instanciando o conta
+            if (!is_null($account_bank)) {
+                $valueBank = Monetary::money_real($entry->entries_value); //formatando o valor
+                $account_bank->balance  -= (float) $valueBank; //reduzindo o valor da conta
+                $account_bank->save(); //salvando os dados
+            }
         }
 
         return $entry;
@@ -43,7 +45,7 @@ class EntryRepository {
     static function typeAccount($id)
     {
         return AccountLaunch::join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->where('account_launches.id', '=' , $id)
+            ->where('account_launches.id', '=', $id)
             ->select('account_types.account_types_name')->first();
     }
 
@@ -61,20 +63,19 @@ class EntryRepository {
             switch ($type) {
                 case 'Receita':
                     $acc_bank = AccountBank::find($entry->entries_bank);
-                    $acc_bank->balance = ($acc_bank->balance - $entry->entries_value);//remove valor da conta bancaria
+                    $acc_bank->balance = ($acc_bank->balance - $entry->entries_value); //remove valor da conta bancaria
                     $acc_bank->save();
                     break;
-                case 'Despesa':                    
+                case 'Despesa':
                     $accountBank = AccountBank::find($entry->entries_bank);
-                    $accountBank->balance += $entry->entries_value;//adiciona valor da conta bancaria
+                    $accountBank->balance += $entry->entries_value; //adiciona valor da conta bancaria
                     $accountBank->save();
                     break;
             }
             return response()->json(['message' => 'success', 'status' => 200], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage(), 'status' => 400], 400);
-        } 
-       
+        }
     }
 
     /**
@@ -104,27 +105,27 @@ class EntryRepository {
         $idCompany = Auth::user()->user_id_company;
         //verifica se dentro do mes do lançamento tem algum retgistro
         $entry = Entry::whereMonth('entries_date_launch', $month)
-                ->where('entries_id_company',$idCompany)
-                ->get();
+            ->where('entries_id_company', $idCompany)
+            ->get();
 
-                
+
         //Retorna a quantidade
         // return count($entry);
         $boxOpen = SettingsBoxRepository::getExistBoxMonth($date, $idCompany);
         // dump($boxOpen);
         // dump(count($entry));
         // dd($entry);
-        if($boxOpen == false && count($entry) == 0 ){
+        if ($boxOpen == false && count($entry) == 0) {
             $time = Carbon::now();
-            
-            $request['date_open'] = $date.' '.$time->format('H:i:s');
-    
+
+            $request['date_open'] = $date . ' ' . $time->format('H:i:s');
+
             //Se false é por que não tem caixa no mes respectivo
             $monthYear = SettingsBoxRepository::getMonthYear($request['date_open']);
             $request['month']           = $monthYear['month'];
             $request['year']            = $monthYear['year'];
-            $request['id_company']      = $idCompany; 
-            $request['id_user_open']    = Auth::user()->id; 
+            $request['id_company']      = $idCompany;
+            $request['id_user_open']    = Auth::user()->id;
             $request['slug']            = 'open';
             // dump($boxOpen);
             // dd($request);
@@ -134,9 +135,43 @@ class EntryRepository {
             } catch (\Throwable $th) {
                 throw $th;
             }
-           
         }
         return false;
     }
 
+    static public function verifyLastDayMounth(Request $request): JsonResponse
+    {
+        $dateString = $request['entries_date_launch']; // Ex: "20/08/2025"
+
+        // 1) Validar se a data é válida no formato "d/m/Y"
+        $date = Carbon::createFromFormat('d/m/Y', $dateString);
+
+        // 2) Pegar o último dia do mês atual
+        $lastDayOfMonth = Carbon::now()->endOfMonth();
+
+        // Data mínima permitida
+        $minDate = Carbon::create(2022, 1, 1); // 01/01/2022
+        if ($date->lt($minDate)) {
+            return response()->json([
+                'error' => 'A data não pode ser anterior a ' . $minDate->format('d/m/Y')
+            ], 422);
+        }
+
+        // 3) Comparar
+        if ($date->gt($lastDayOfMonth)) {
+            return response()->json([
+                'error' => 'A data não pode ser maior que ' . $lastDayOfMonth->format('d/m/Y')
+            ], 422);
+        }
+
+        if ($date === false) {
+            return response()->json([
+                'error' => 'Data inválida. Formato esperado: dd/mm/YYYY.'
+            ], 422);
+        }
+        // retorno de sucesso
+        return response()->json([
+            'message' => $date, 'status' => 200
+        ]);
+    }
 }
