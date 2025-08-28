@@ -169,6 +169,8 @@ $(document).ready(function () {
         format:'d/m/y'
     });
 
+       
+
     var $form_entry_internal = $(".form_entry_internal");
     $form_entry_internal.select2();
     $form_entry_internal.on("change", function (e) {
@@ -367,7 +369,8 @@ function getFiles(id) {
 /** Modal de alterar lançamento*/
 $('#modalEditLauch').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
-    $("#dateLaunchEdit").val(button.data('date'));
+
+    $("#dateLaunchEdit").val(converterToTwoDigit(button.data('date')));
     $("#entriesDescriptionEdit").val(button.data('his'));
     $("#entriesValueEdit").val(button.data('val'));
     $("#labelDescType").html(button.data('typ'));
