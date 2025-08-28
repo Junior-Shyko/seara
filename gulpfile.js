@@ -169,7 +169,7 @@ elixir(function(mix) {
         'crud.js',
         'financing/income_category.js'
     ], 'public/js/financing/income_category.min.js');
-    mix.version('public/js/financing/income_category.min.js');
+    // mix.version('public/js/financing/income_category.min.js');
 
     // Financing > receivable
     mix.scripts([
@@ -177,7 +177,7 @@ elixir(function(mix) {
         'crud.js',
         'financing/receivable.js'
     ], 'public/js/financing/receivable.min.js');
-    mix.version('public/js/financing/receivable.min.js');
+    // mix.version('public/js/financing/receivable.min.js');
 
     // Financing > payment
     mix.scripts([
@@ -185,13 +185,13 @@ elixir(function(mix) {
         'crud.js',
         'financing/payment.js'
     ], 'public/js/financing/payment.min.js');
-    mix.version('public/js/financing/payment.min.js');
+    // mix.version('public/js/financing/payment.min.js');
 
     // Account Launch
     mix.scripts([
         'launch/account_launch.js'
     ], 'public/js/launch/account_launch.min.js');
-    mix.version('public/js/launch/account_launch.min.js');    
+    // mix.version('public/js/launch/account_launch.min.js');    
 
     // Launch
     mix.scripts([
@@ -202,7 +202,7 @@ elixir(function(mix) {
         //'./node_modules/lightbox2/dist/js/lightbox.min.js',
         'launch/entry.js'
     ], 'public/js/launch/entry.min.js');
-    mix.version('public/js/launch/entry.min.js');
+    // mix.version('public/js/launch/entry.min.js');
    
     //BANK
     mix.scripts(['bank/bank.js'], 'public/js/bank/bank.js');

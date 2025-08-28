@@ -42,7 +42,8 @@
                 <div class="col-md-4 col-sm-3 col-xs-12 form-group" id="divRectroativeLaunch" >
                     <label for="">Data</label>
                     <div class='input-group date'>
-                        <input type='text' name="entries_date_launch" class="form-control date-mask"  id='dateRetroactive' value="{{date('d/m/Y')}}"/>
+                        <input type='text' name="entries_date_launch" class="form-control date-mask"  
+                        id='dateRetroactive' value="{{date('d/m/y')}}"/>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-9 col-xs-12 form-group  has-feedback">

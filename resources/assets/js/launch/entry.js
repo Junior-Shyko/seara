@@ -154,20 +154,22 @@ $(document).ready(function () {
       placeholder: 'Escolha a conta',
       allowClear: true
     });
-    //$.datetimepicker.setLocale('pt-BR');
+    $.datetimepicker.setLocale('pt-BR');
     $('#dateRetroactive').datetimepicker({
         timepicker:false,
-        format:'d/m/Y'
+        format:'d/m/y'
     });
     $('#dateInitial').datetimepicker({
         timepicker:false,
-        format:'d/m/Y',
+        format:'d/m/y',
         startDate:'-30d'
     });
     $('#dateEnd').datetimepicker({
         timepicker:false,
-        format:'d/m/Y'
+        format:'d/m/y'
     });
+
+       
 
     var $form_entry_internal = $(".form_entry_internal");
     $form_entry_internal.select2();
@@ -367,7 +369,8 @@ function getFiles(id) {
 /** Modal de alterar lançamento*/
 $('#modalEditLauch').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
-    $("#dateLaunchEdit").val(button.data('date'));
+
+    $("#dateLaunchEdit").val(converterToTwoDigit(button.data('date')));
     $("#entriesDescriptionEdit").val(button.data('his'));
     $("#entriesValueEdit").val(button.data('val'));
     $("#labelDescType").html(button.data('typ'));
@@ -613,12 +616,12 @@ function saveDataForm(name_form) {
         }
         if(field.name == "entries_date_launch" && field.value !== "")
         {
-            const format = 'DD/MM/YYYY';
+            const format = 'DD/MM/YY';
             const dateVerify = moment(field.value, format, true);
             const dateStr = field.value;
-            isValid = dateVerify.isValid() && !dateStr.includes('/0000');
+            isValid = dateVerify.isValid() && !dateStr.includes('/00');
         }
-
+console.log(isValid);
     });
     if(!isValid){
         new PNotify({

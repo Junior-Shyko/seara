@@ -24,6 +24,17 @@ function usaDatetoBr(datestring)
   var dateSplitted = datestring.split('-');
   return dateSplitted[2] + '/' + dateSplitted[1] + '/' + dateSplitted[0];
 }
+// Retornando a data padrao EUA com dois digitos no ano
+function converterToTwoDigit(dateComplet) {
+    if (!dateComplet) return '';
+    
+    let parts = dateComplet.split('/');
+    if (parts.length === 3) {
+        return parts[0] + '/' + parts[1] + '/' + parts[2].slice(-2);
+    }
+    return dateComplet;
+}
+
 
 function dataAtualFormatada(dt){
   var data = new Date(dt),

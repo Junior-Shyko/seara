@@ -42,7 +42,8 @@
                         <div class="col-md-4 col-sm-6 form-group">
                             <label for="">Data</label>
                             <div class='input-group date'>
-                                <input type='text' name="entries_date_launch" class="form-control date-mask"  id='dateRetroactive' value="{{ \Carbon\Carbon::parse($launch[0]->entries_date_launch)->format('d/m/Y')}} "/>
+                                <input type='text' name="entries_date_launch" class="form-control date-mask" 
+                                 id='dateRetroactive' value="{{ \Carbon\Carbon::parse($launch[0]->entries_date_launch)->format('d/m/y')}} "/>
                             </div>
                         </div>
                         <hr>

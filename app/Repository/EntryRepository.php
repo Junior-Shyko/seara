@@ -143,35 +143,44 @@ class EntryRepository
     {
         $dateString = $request['entries_date_launch']; // Ex: "20/08/2025"
 
-        // 1) Validar se a data é válida no formato "d/m/Y"
-        $date = Carbon::createFromFormat('d/m/Y', $dateString);
+       try {
+            // 1) Validar se a data é válida no formato "d/m/y" (dois últimos dígitos do ano)
+            $date = Carbon::createFromFormat('d/m/y', $dateString);
+            if ($date === false) {
+                return response()->json([
+                    'error' => 'Data inválida. Formato esperado: dd/mm/yy.'
+                ], 422);
+            }
 
-        // 2) Pegar o último dia do mês atual
-        $lastDayOfMonth = Carbon::now()->endOfMonth();
+            // 2) Pegar o último dia do mês atual
+            $lastDayOfMonth = Carbon::now()->endOfMonth();
 
-        // Data mínima permitida
-        $minDate = Carbon::create(2022, 1, 1); // 01/01/2022
-        if ($date->lt($minDate)) {
+            // Data mínima permitida
+            $minDate = Carbon::create(2022, 1, 1); // 01/01/2022
+            if ($date->lt($minDate)) {
+                return response()->json([
+                    'error' => 'A data não pode ser anterior a ' . $minDate->format('d/m/Y')
+                ], 422);
+            }
+
+            // 3) Comparar se a data é maior que o último dia do mês atual
+            if ($date->gt($lastDayOfMonth)) {
+                return response()->json([
+                    'error' => 'A data não pode ser maior que ' . $lastDayOfMonth->format('d/m/Y')
+                ], 422);
+            }
+
+            // Retorno de sucesso
             return response()->json([
-                'error' => 'A data não pode ser anterior a ' . $minDate->format('d/m/Y')
+                'message' => 'Data válida',
+                'date' => $date->format('d/m/Y'), // Formatar a data para exibição
+                'status' => 200
+            ]);
+        } catch (\Exception $e) {
+            // Capturar erro caso a data seja inválida ou o formato esteja incorreto
+            return response()->json([
+                'error' => 'Data inválida. Formato esperado: dd/mm/yy.'
             ], 422);
         }
-
-        // 3) Comparar
-        if ($date->gt($lastDayOfMonth)) {
-            return response()->json([
-                'error' => 'A data não pode ser maior que ' . $lastDayOfMonth->format('d/m/Y')
-            ], 422);
-        }
-
-        if ($date === false) {
-            return response()->json([
-                'error' => 'Data inválida. Formato esperado: dd/mm/YYYY.'
-            ], 422);
-        }
-        // retorno de sucesso
-        return response()->json([
-            'message' => $date, 'status' => 200
-        ]);
     }
 }
