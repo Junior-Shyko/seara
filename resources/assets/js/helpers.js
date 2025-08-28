@@ -28,9 +28,9 @@ function usaDatetoBr(datestring)
 function converterToTwoDigit(dateComplet) {
     if (!dateComplet) return '';
     
-    let partes = dateComplet.split('/');
-    if (partes.length === 3) {
-        return partes[0] + '/' + partes[1] + '/' + partes[2].slice(-2);
+    let parts = dateComplet.split('/');
+    if (parts.length === 3) {
+        return parts[0] + '/' + parts[1] + '/' + parts[2].slice(-2);
     }
     return dateComplet;
 }
