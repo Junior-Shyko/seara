@@ -61,18 +61,16 @@ class EntryController extends Controller
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = new AccountBankRepository();
         $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
-
+        
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
+        // Valor total do caixa banco + caixa interno
         $balanceGeneral = ($generalBalnaceBank + $interInternal);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         //todas as contas bancarias
         $accountBank = AccountBankRepository::getAccountBankAndTypeToCompany($idCompany);
-//        dump($generalBalnaceBank);
-//        dump($interInternal);
-//        dd($balanceInternal);
         return view('entry.index', compact(
             'accounts',
             'interInternal',
