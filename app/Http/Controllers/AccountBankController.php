@@ -198,7 +198,7 @@ class AccountBankController extends Controller
 
     public function actionTransfer(Request $request)
     {
-
+      
         $typeEntry = 0;
         $request['transaction_id'] == 1 ? $typeEntry = AccountBankController::ENTRY : $typeEntry = AccountBankController::TRANSFER;
         //PASSANDO O VALOR DA TRANSFERENCIA E O VALOR ATUAL DA DETERMINADA CONTA
@@ -261,9 +261,13 @@ class AccountBankController extends Controller
                 );
 
            }elseif($request['bank_to_bank'] == "false"){
+             
                 $launch = AccountBankRepository::fieldsEntry($request->all(), 'receita');
+                 
                 $launch['entries_parent'] = AccountBankController::CHILD;//ADD ID DA CONTA FILHA
-                $entriesParent =  CreateLaunch::create($launch);     
+               
+                $entriesParent =  CreateLaunch::create($launch);    
+                 
                 //LANÇAMENTO DE RECEITA
                 $launch2 = AccountBankRepository::fieldsEntry($request->all(), 'transferencia');
                 $launch2['entries_parent'] = $transfer->original['id_bank_end'];

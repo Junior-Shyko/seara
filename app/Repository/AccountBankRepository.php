@@ -113,6 +113,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
 //            ], 400);
 
         //preenchendo array com os campos e valores para um lancamento
+        
         try {
             //se for caixa interno não registra saida de valor
             $valueBalance = Monetary::money_real($request['value']);
@@ -120,9 +121,11 @@ class AccountBankRepository extends GeneralBalanceAbstract
             //Retirando o valor do saldo da conta bancaria          
             if ($request['idAccountEnd'] > 0) {
                 $accountBank = AccountBank::findOrFail($request['idAccountEnd']);
-                $accountBank->balance = $accountBank->balance - $valueBalance;
+               
+                $accountBank->balance = ($accountBank->balance - $valueBalance);
                 $idaccountBank = $accountBank->id;
                 $accountBank->save();
+        
             }
            
 
@@ -132,7 +135,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
                 $idaccountBank2 = $accountBank2->id;
                 $accountBank2->save();
             }
-
+            
             return response()->json([
                 'type' => 'success',
                 'id_bank_end' => $idaccountBank,
