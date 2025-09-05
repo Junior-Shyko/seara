@@ -12,13 +12,13 @@
 
                 <div class="row alert space-money" id="infoMonthLaunch">
                     
-                    {{-- <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
+                    <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
                         <h5 class="">
                             <strong>
                                 Banco: <br>
                             </strong>
                         </h5>
-                        <span id="balance_bank"> 0</span>
+                        <span id="balance_bank">0</span>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge badge-dark">
                         <h5 class="">
@@ -35,7 +35,7 @@
                             </strong>
                         </h5>
                         <span id="balance_box_general"> 0</span>
-                    </div> --}}
+                    </div>
                 </div>
                 <div>
                     <!-- Nav tabs -->
@@ -126,7 +126,7 @@
                                         <small class="text-danger">Conta de saída</small>
                                         <select name="" id="selectAccountBankEnd" class="form-control">
                                             <option value="">--Selecione--</option>
-
+                                            <option value="0">CAIXA INTERNO</option>
                                             @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}
@@ -140,8 +140,8 @@
                                         id="realValueTranfer" class="form-control" value="50">
                                     </div>
                                     <div class="col-md-5">
-                                        <label>informações</label>
-                                        <p>Saldo: <small id="balanceEndAccount">0.00</small> - Tipo: <small id="infoTypeAccountBank"></small> - N. Conta: 76543-09</p>
+                                        {{-- <label>informações</label>
+                                        <p>Saldo: <small id="balanceEndAccount">0.00</small> - Tipo: <small id="infoTypeAccountBank"></small> - N. Conta: 76543-09</p> --}}
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-xs-12">
@@ -153,11 +153,11 @@
                                         <select name="" id="selectAccountBankEntry" class="form-control">
                                             <option value="">--Selecione--</option>
                                             <option value="0">CAIXA INTERNO</option>
-                                            {{-- @foreach ($accountBank as $bank)
+                                            @foreach ($accountBank as $bank)
                                                 <option value="{{ $bank->id }}">
                                                     {{ $bank->nameBank }}
                                                 </option>
-                                            @endforeach --}}
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-3">
@@ -166,8 +166,8 @@
                                         <input type="text" name="" id="" class="form-control"> --}}
                                     </div>
                                     <div class="col-md-5">
-                                        <label>informações</label>
-                                        <p>Saldo: <small id="balanceEntryAccount"></small></p>
+                                        {{-- <label>informações</label>
+                                        <p>Saldo: <small id="balanceEntryAccount"></small></p> --}}
                                     </div>
                                 </div>
                             </div>

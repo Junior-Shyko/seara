@@ -107,10 +107,7 @@ abstract class GeneralBalanceAbstract
          $balance = Entry::where('entries_id_company', $idCompany)->get();
         $sumOfValue = 0;
         $subtrationOfValue = 0;
-        $transferOfValueSum = 0; // Soma os valores de transferencia recebido
-        $transferOfValueSub = 0; // Soma os valores de transferencia repassado
-        $idBoxInternal = AccountBankRepository::getAccountBankAndBankToCompany($idCompany);
-
+       
         foreach ($balance as $key => $valueBank) {
             $type = AccountType::getNameType($valueBank->entries_id_account);
             if($valueBank->entries_bank == 0 && $type == 'Receita') {
@@ -119,37 +116,24 @@ abstract class GeneralBalanceAbstract
             if($valueBank->entries_bank == 0  && $type == 'Despesa') {
                 $subtrationOfValue += $valueBank->entries_value;
             }
-          
-            if($valueBank->entries_bank == 0  && $type === 'Transferência') {
-               
-                // if( $valueBank->transaction_id == 1 &&
-                //     $valueBank->entries_parent != 0 &&
-                //     $valueBank->entries_parent > 0)
-                // {
-                //     $transferOfValueSum += $valueBank->entries_value;
-                // }else{
-                //     $transferOfValueSub += $valueBank->entries_value;
-                // }
-            }
-
-            // Transferencia recebida do caixa banco para caixa interno
+            
+            // Transferencia bancaria
             if($valueBank->entries_bank > 0  && $type === 'Transferência') {
-               
+                // Recebida do caixa banco para caixa interno
                 if( $valueBank->transaction_id == 1 &&
                     $valueBank->entries_parent > 0)
                 {
                    
                     $sumOfValue += $valueBank->entries_value;
                 }
-                //else{
-                //     $transferOfValueSub += $valueBank->entries_value;
-                // }
+                else{ // Do caixa interno para o caixa banco
+                    $subtrationOfValue += $valueBank->entries_value;
+                }
                
             }
 
         }
-        //  dump($sumOfValue, $subtrationOfValue, $transferOfValueSum );
-          // $sumReceita = ($sumOfValue + $transferOfValueSum);
+
         return ($sumOfValue - $subtrationOfValue);
 
     }

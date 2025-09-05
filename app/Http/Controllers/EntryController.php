@@ -61,8 +61,7 @@ class EntryController extends Controller
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = new AccountBankRepository();
         $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
-        
-        // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+                // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
         // Valor total do caixa banco + caixa interno
@@ -473,7 +472,8 @@ class EntryController extends Controller
 
     public function bank($idCompany)
     {
-        return LaunchService::getBoxBank($idCompany);
+        $balanceBank = new AccountBankRepository();
+        return $balanceBank->getBalanceBank($idCompany);
     }
 
     public function internal($idCompany)

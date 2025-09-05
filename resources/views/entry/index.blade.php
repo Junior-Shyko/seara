@@ -166,7 +166,8 @@
     
     @include('modals.modal_box_entry', [
         'saldo' => $interInternal, 
-        'accountBank' => $accountBank
+        'accountBank' => $accountBank,
+        'generalBalnaceBank' => $generalBalnaceBank
         ])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
