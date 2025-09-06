@@ -76,7 +76,6 @@
             <caption  style="color: #423f3f">Movimento do caixa</caption>
         </th>
     </tr>
-
     <tr>
         <th class="title-table" style="width: 5px;"><label class="margin5">Data</label></th>
         <th class="title-table" style="width: 300px;"><label class="margin5">Histórico</label></th>

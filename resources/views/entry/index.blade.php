@@ -106,7 +106,9 @@
                         <div class="x_content">
                            <div class="row">
                             @include('msg.message')
-                            <div class="col-md-12">
+                            <div class="col-md-12"
+                            style="padding: 10px;  border-bottom: 1px solid #c3c3c3; margin-bottom: 15px;"
+                            >
                                 <div class="col-md-2 col-xs-6">
                                     <label for="">Data Inicial</label>
                                     <input type="text" name="dateInitial" class="form-control date-mask" id="dateInitial">
@@ -134,11 +136,10 @@
                                 </div>
                             </div>
                            </div>
-                           <div class="row">
+                           <div class="row text-center">
                                 <div class="table-responsive">
-                                <div class="clearfix"><hr></div>
-                                <div class="col-md-12 col-xs-12">                                   
-                                        <table id="entry-table" class="table table-hover">
+                                <div class="col-md-12 col-xs-12">                                  
+                                        <table id="entry-table" class="table table-hover text-center">
                                             <thead>
                                                 <tr>
                                                     <th>Dia</th>

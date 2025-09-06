@@ -758,7 +758,8 @@ var SearaLoader = (function(){
     swal({
       title: title,
       imageUrl: asset('img/ring.svg'),
-      showConfirmButton: false
+      showConfirmButton: false,
+      allowOutsideClick: false,
     })
   }
 
