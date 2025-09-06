@@ -348,9 +348,8 @@ class EntryController extends Controller
         }
 
         // Executar a query com ordenação
-        $mov = $query->orderBy('entries.entries_date_launch', 'asc')
+        $mov = $query->orderBy('entries.entries_date_launch', 'desc')
             ->get();
-
         return DataTables::of($mov)->addIndexColumn()
             ->editColumn('entries_date_launch', function ($mov) {
                 $date = new Carbon($mov->entries_date_launch);
