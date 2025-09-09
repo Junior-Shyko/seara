@@ -80,7 +80,8 @@ var SearaLoader = (function(){
     swal({
       title: title,
       imageUrl: asset('img/ring.svg'),
-      showConfirmButton: false
+      showConfirmButton: false,
+      allowOutsideClick: false,
     })
   }
 
@@ -120,6 +121,21 @@ var SearaAlert = (function(){
     });
   }
 
+  function alertLoading()
+  {
+    return swal({
+        title: 'Aguarde...',
+        html: 'Verificando o valor bancário',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        showCancelButton: false,
+        onOpen: () => {
+         
+          swal.showLoading()} ,
+    });
+  }
+
   function confirmAlert(title = '', textConfirm = '', textCancel = '', redirect = '')
   {
     return swal({
@@ -143,7 +159,8 @@ var SearaAlert = (function(){
   return {
     error: alertError,
     success: alertSuccess,
-    confirm: confirmAlert
+    confirm: confirmAlert,
+    loading: alertLoading
   }
 
 }());

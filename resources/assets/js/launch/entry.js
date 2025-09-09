@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
 
     //id da empresa
@@ -215,27 +216,43 @@ function getLaunch(idCompany) {
     } );
     table.destroy();
     table = $('#entry-table').DataTable({
+        dom: 'Bfrtip', // Adiciona os botões ao DOM
         processing: true,
         serverSide: true,
         pageLength: 100,
+        buttons: [
+            {
+                extend: 'excel',
+                text: 'Exportar planilha do Excel',
+                filename: 'dados_exportados',
+                className: 'btn btn-secondary',
+                charset: 'utf-8',
+                bom: true // Para caracteres especiais
+            },
+            {
+                extend: 'pdf',
+                text: 'Imprimir em PDF',
+                filename: 'dados_exportados',
+                orientation: 'landscape', // ou 'portrait'
+                pageSize: 'A4',
+                className: 'btn btn-primary',
+                title: 'Imprimir em pdf tabela de lançamentos',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4] // colunas específicas
+                },
+
+                customize: function(doc) {
+                    // Personalizar o PDF se necessário
+                    doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                }
+            }
+        ],
         ajax: SearaApp.baseURL+'all-launch/'+idCompany,
-        columns: colunas,
-        drawCallback: function () {
-            var api = this.api();
-            var sum = 0;
-            $( api.table().footer() ).html(
-                sum = api.column( 2, {page:'current'} ).data().sum()
-            );
-          }
+        columns: colunas
     });
-    var table = $('#entry-table').DataTable();
-    table
-        .order(  [ 0, 'asc' ] )
-        .draw();
 }
 
 function bankBalance(idCompany) {
-    var valueBankBalance = '';
     $.ajax({
         type: "GET",
         url:SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
@@ -245,6 +262,22 @@ function bankBalance(idCompany) {
             $("#bankBalance").html(value);
             $("#balance_bank").html('R$: ' + value);
         }
+    });
+}
+
+function getBankGeneral(idCompany) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "GET",
+            url: SearaApp.baseURL + 'api/saldo-banco/' + idCompany,
+            dataType: "json",
+            success: function (response) {
+                resolve(response);
+            },
+            error: function(xhr, status, error) {
+                reject(error);
+            }
+        });
     });
 }
 
@@ -341,7 +374,13 @@ var dtEnd = '';
 
 function showReport(idCompany) {
     dtInit = btoa($("#dateInitial").val()); 
-    dtEnd = btoa($("#dateEnd").val()); 
+    dtEnd = btoa($("#dateEnd").val());
+
+    if(dtInit == '' || dtEnd == '') {
+        dtInit = " ";
+        dtEnd = " ";
+    }
+
     $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd + '/company/'+idCompany );
 }
 
@@ -476,6 +515,7 @@ function formatValueToFront(action, idAccountBank, balanceInternal, smalTextInfo
         $.get(SearaApp.baseURL + 'api/account-bank/get-info-account/' + id,
             function (data, textStatus, jqXHR) {
                 var valueReal = formatFloatToBrCoin(data.balance);
+                console.log(valueReal)
                 if(action == 'saida'){
                     $("#valueGetInfo").val(data.balance);//RECEBE O VALOR DA CONTA ESCOLHIDA
                 }
@@ -519,21 +559,33 @@ $("#selectAccountBankEntry").change(function (e) {
 }); 
 //AO SAIR DO CAMPO SE FAZ A VELIDAÇÃO DE VALORES
 $('#realValueTranfer').on('blur', function () {
-    // var valueAccountBank = $("#valueGetInfo").val();
-    // var valueRealTransfer = $('#realValueTranfer').val();
-    // //CONVERTENDO O VALOR REAL PARA FLOAT
-    // var valor = convertBrCoinToFloat(valueRealTransfer);
-    // //SE O VALOR FOR MAIOR QUE O VALOR DA CONTA BANCARIA
-    // if(valor > parseFloat(valueAccountBank)) {
-    //     $("#realValueTranfer").focus();
-    //     new PNotify({
-    //         title: 'Erro',
-    //         text: 'Valor maior que o saldo da conta',
-    //         type: 'error',
-    //         styling: 'bootstrap3'
-    //     });
-    //     return false;
-    // }    
+    // Verificando se tem saldo no banco pra transferencia
+    const valueBank = getBankGeneral(404)
+        .then(valueBank => {
+            SearaAlert.loading();
+            if(valueBank < parseFloat($("#realValueTranfer").val().replace(/[R$.\s]/g, '').replace(',', '.'))){
+                setTimeout(() => {
+                    SearaLoader.hideModal();
+                    new PNotify({
+                        title: 'Ops!',
+                        text: 'O valor da transferência não pode ser maior que o saldo da conta',
+                        type: 'error',
+                        styling: 'bootstrap3'
+                    });
+                }, 1000);
+                
+                $("#btnTransferValue").hide();
+            }else{
+                $("#btnTransferValue").show();
+                setTimeout(() => {
+                    SearaLoader.hideModal();
+                }, 1000);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+           
 });
 
 function transferValue() {

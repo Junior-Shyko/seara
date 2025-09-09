@@ -21,40 +21,64 @@ abstract class GeneralBalanceAbstract
      * @param [int] $idCompany
      * @return double
      */
-    public function getBalanceBank($idCompany): float
+    public function getBalanceBank($idCompany)
     {
         $balance = Entry::where('entries_id_company', $idCompany)->get();
-        $sumValueBank = 0;
-        $subValueBank = 0;
+        $idBoxInternal = AccountBankRepository::getAccountBankAndBankToCompany($idCompany);
+        $sumOfValue = 0;
+        $subtrationOfValue = 0;
+        $transferOfValue = 0;
+        $sumTransfer = 0;
      
         foreach ($balance as $valueBank) {
             // Tipo do caixa
-            $type = AccountType::getNameType($valueBank->entries_id_account);
-            // Receita que entrou no banco sem ser transferencia
-            // Exemplo: Recebimento de cliente que entrou direto no banco
-            // e não passou pelo caixa interno
-            // Soma dos valores de receita
-            if (
-                $valueBank->entries_bank > 0 &&
-                $type === 'Receita' &&
-                $valueBank->entries_parent === null
-            ) {
-                $sumValueBank += $valueBank->entries_value;
+          
+           $type = AccountType::getNameType($valueBank->entries_id_account);
+            if( $valueBank->entries_bank > 0 && 
+                $type == 'Receita' && 
+                $valueBank->parent_id === null &&
+                $valueBank->transaction_id == 0 // Garante que não será transferência
+                ) {
+                $sumOfValue += $valueBank->entries_value;
+               
             }
-            // Soma dos valores de despesa
-            if (
-                $valueBank->entries_bank > 0 &&
-                $type === 'Despesa' &&
-                $valueBank->entries_parent === null
+            if( $valueBank->entries_bank > 0 &&
+                $type == 'Despesa' &&
+                $valueBank->transaction_id == 0 // Garante que não será transferência
             ) {
-                $subValueBank += $valueBank->entries_value;
+                $subtrationOfValue += $valueBank->entries_value;
             }
-
+            // @todo criar calculo de transferencia do caixa interno
+            // Transferencia recebida do caixa interno
+           
+            if($valueBank->entries_bank > 0 && $type === 'Transferência') {
+                
+                if( $valueBank->transaction_id == 1 &&
+                    $valueBank->entries_parent != 0 &&
+                    $valueBank->entries_parent != self::BOXINTERNAL
+                )
+                {
+                    $transferOfValue += $valueBank->entries_value;
+                }
+                if($valueBank->transaction_id == self::TRANSFER &&
+                    $valueBank->entries_parent == self::BOXINTERNAL ||
+                    $valueBank->entries_parent == -1
+                )
+                {
+                    $sumOfValue += $valueBank->entries_value;
+                }else if(
+                    $valueBank->transaction_id == self::TRANSFER &&
+                    $valueBank->entries_parent == self::BOXINTERNAL ||
+                    $valueBank->entries_parent > 0
+                )
+                {
+                    $subtrationOfValue += $valueBank->entries_value;
+                }
+            }
         }
-
-        $generalBankValue = ($sumValueBank - $subValueBank);
-
-        return $generalBankValue;
+           
+        // dump($sumOfValue,$subtrationOfValue, $transferOfValue);
+        return ( $sumOfValue - $subtrationOfValue );
     }
 
     /**
@@ -78,33 +102,39 @@ abstract class GeneralBalanceAbstract
      * @param [int] $idCompany
      * @return double
      */
-    public function getInternalInternal($idCompany): float
+    public function getInternalInternal($idCompany)
     {
-        $balance = Entry::where('entries_id_company', $idCompany)->get();
-        $valueInternalRecipe = 0;
-        $valueInternalExpense = 0;
+         $balance = Entry::where('entries_id_company', $idCompany)->get();
+        $sumOfValue = 0;
+        $subtrationOfValue = 0;
+       
         foreach ($balance as $key => $valueBank) {
-            // Tipo do caixa
             $type = AccountType::getNameType($valueBank->entries_id_account);
-            // Soma dos valores de receita
-            if (
-                $valueBank->entries_bank == 0 &&
-                $type === 'Receita' &&
-                $valueBank->entries_parent == null
-            ) {
-                $valueInternalRecipe += $valueBank->entries_value;
+            if($valueBank->entries_bank == 0 && $type == 'Receita') {
+                $sumOfValue += $valueBank->entries_value;
             }
-            // Soma dos valores de despesa
-            if (
-                $valueBank->entries_bank == 0 &&
-                $type === 'Despesa' &&
-                $valueBank->entries_parent === null
-            ) {
-                $valueInternalExpense += $valueBank->entries_value;
+            if($valueBank->entries_bank == 0  && $type == 'Despesa') {
+                $subtrationOfValue += $valueBank->entries_value;
             }
+            
+            // Transferencia bancaria
+            if($valueBank->entries_bank > 0  && $type === 'Transferência') {
+                // Recebida do caixa banco para caixa interno
+                if( $valueBank->transaction_id == 1 &&
+                    $valueBank->entries_parent > 0)
+                {
+                   
+                    $sumOfValue += $valueBank->entries_value;
+                }
+                else{ // Do caixa interno para o caixa banco
+                    $subtrationOfValue += $valueBank->entries_value;
+                }
+               
+            }
+
         }
 
-        return ($valueInternalRecipe - $valueInternalExpense);
+        return ($sumOfValue - $subtrationOfValue);
 
     }
 }

@@ -46,11 +46,9 @@ class EntryController extends Controller
             $idCompany = intval(app('request')->input('company'));
         }
         //CASO O USUARIO NÃO SEJA UM SUPER ADMIN, ENTRA NA CONDIÇÃO PARA VERIFICAÇÃO
-        if(!$user->hasRole('superAdmin'))
-        {
-             //verifica se o id das empresas são iguais
-            if($idCompany !== $user->user_id_company)
-            {
+        if (!$user->hasRole('superAdmin')) {
+            //verifica se o id das empresas são iguais
+            if ($idCompany !== $user->user_id_company) {
                 return redirect('/')->withErrors('Você não tem permissão de acesso.')->withInput();
             }
         }
@@ -61,7 +59,6 @@ class EntryController extends Controller
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = new AccountBankRepository();
         $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
-        
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
@@ -104,13 +101,13 @@ class EntryController extends Controller
     {
         //validando as datas permitidas
         $dateValid = EntryRepository::verifyLastDayMounth($request);
-        $res = json_decode($dateValid->getContent(), true);        
-        
-        if($dateValid->getStatusCode() !== 200)
-        {
+        $res = json_decode($dateValid->getContent(), true);
+
+        if ($dateValid->getStatusCode() !== 200) {
             return response([
-                    'status' => 'error', 
-                    'message' => $res['error']], 422);
+                'status' => 'error',
+                'message' => $res['error']
+            ], 422);
         }
 
         $rules = [
@@ -138,8 +135,8 @@ class EntryController extends Controller
             $reques = Monetary::money_real($request['entries_value']);
             $request['entries_value'] = $reques;
             //recebendo o id do registro da conta bancária
-            
-            if(!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])){
+
+            if (!empty($request['idAccountBank']) || !is_null($request['idAccountBank'])) {
                 $request['entries_bank'] = $request['idAccountBank'];
             }
 
@@ -156,7 +153,7 @@ class EntryController extends Controller
         }
     }
 
-  
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -229,39 +226,36 @@ class EntryController extends Controller
             //Instanciando o lançamento
             $entry = Entry::where('entries_id', $request->id)->first();
             //LANÇAMENTO DIRETO NO CAIXA INTERNO
-            if($entry->entries_parent == 0 && $entry->entries_bank == 0)
-            {
-                $type = EntryRepository::typeAccount($entry->entries_id_account); 
+            if ($entry->entries_parent == 0 && $entry->entries_bank == 0) {
+                $type = EntryRepository::typeAccount($entry->entries_id_account);
                 $entry->delete();
                 return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
-
-            }elseif(is_null($entry->entries_parent) && $entry->entries_bank > 0){
+            } elseif (is_null($entry->entries_parent) && $entry->entries_bank > 0) {
                 //LANÇAMENTO DIRETO NA CONTA BANCARIA
                 //CONSULTAR A CONTA E VERIFICAR SE É RECEITA OU DESPESA
-                $type = EntryRepository::typeAccount($entry->entries_id_account); 
+                $type = EntryRepository::typeAccount($entry->entries_id_account);
                 //SE FOR RECEITA REDUZ O VALOR, SE FOR DESPESA AUMENTA O VALOR
                 $alter = EntryRepository::alterBalanceEntry($type->account_types_name, $entry);
-                if($alter->original['status'] == 200){
+                if ($alter->original['status'] == 200) {
                     $entry->delete();
                     return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
                 }
-            }else{
+            } else {
                 // LANÇAMENTO DE TRANFERENCIA
-//                $accountBank = AccountBank::find($entry->entries_bank);
-//                //reduzindo o valor da conta
-//                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
-//                $accountBank->save();
+                //                $accountBank = AccountBank::find($entry->entries_bank);
+                //                //reduzindo o valor da conta
+                //                $accountBank->balance += $entry->entries_value;//remove valor da conta bancaria
+                //                $accountBank->save();
 
                 //EXCLUINDO O REGISTRO DE LANÇAMENTO FILHO
                 $entriesChild = Relation_launch_bank::where('entries_child', $request->id)->first();
-                
+
                 $entriesParent = Entry::find($entriesChild->entries_parent);
                 //excluindo o lançamentos
                 $entriesParent->delete();
                 $entry->delete();
                 return redirect()->back()->with('success', 'Lançamento Excluído com sucesso');
             }
-           
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocorreu um erro!');
         }
@@ -316,86 +310,85 @@ class EntryController extends Controller
     }
 
     public function getAll(Request $request, $idCompany)
-{
-    $dtIni = $request->dtIni;
-    $dtEnd = $request->dtEnd;
+    {
+        $dtIni = $request->dtIni;
+        $dtEnd = $request->dtEnd;
 
-    // Configuração das datas padrão
-    if (empty($request->dtIni) || !isset($request->dtIni)) {
-        $startDate = Carbon::now();
-        $dtIni = $startDate->startOfMonth();
-    }
+        // Configuração das datas padrão
+        if (empty($request->dtIni) || !isset($request->dtIni)) {
+            $startDate = Carbon::now();
+            $dtIni = $startDate->startOfMonth();
+        }
 
-    if (empty($request->dtEnd) || !isset($request->dtEnd)) {
-        $endDate = Carbon::now();
-        $dtEnd = $endDate->lastOfMonth();
-    }
+        if (empty($request->dtEnd) || !isset($request->dtEnd)) {
+            $endDate = Carbon::now();
+            $dtEnd = $endDate->lastOfMonth();
+        }
 
-    // Construção da query base
-    $query = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
-        ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-        ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-        ->where('entries.entries_id_company', '=', $idCompany)
-        ->select(
-            'users.id as idUser',
-            'users.name',
-            'entries.*',
-            'account_types.*',
-            'account_launches.accountlaunch_type',
-            'account_types.account_types_name',
-            'account_launches.id as idAccontLaunch',
-            'account_launches.accountlaunch_name'
-        );
+        // Construção da query base
+        $query = Entry::join('users', 'entries.entries_id_user', '=', 'users.id')
+            ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->where('entries.entries_id_company', '=', $idCompany)
+            ->select(
+                'users.id as idUser',
+                'users.name',
+                'entries.*',
+                'account_types.*',
+                'account_launches.accountlaunch_type',
+                'account_types.account_types_name',
+                'account_launches.id as idAccontLaunch',
+                'account_launches.accountlaunch_name'
+            );
 
-    // Adicionar condições de data apenas se ambas existirem
-    if (!empty($request->dtIni) && !empty($request->dtEnd)) {
-        $query->where('entries.entries_date_launch', '>=', $dtIni)
-              ->where('entries.entries_date_launch', '<=', $dtEnd);
-    }
+        // Adicionar condições de data apenas se ambas existirem
+        if (!empty($request->dtIni) && !empty($request->dtEnd)) {
+            $query->where('entries.entries_date_launch', '>=', $dtIni)
+                ->where('entries.entries_date_launch', '<=', $dtEnd);
+        }
 
-    // Executar a query com ordenação
-    $mov = $query->orderBy('entries.entries_date_launch', 'asc')
-                 ->get();
-
-    return DataTables::of($mov)->addIndexColumn()
-        ->editColumn('entries_date_launch', function ($mov) {
-            $date = new Carbon($mov->entries_date_launch);
-            return $date->format('d/m/Y');
-        })
-        ->editColumn('entries_id_user', function ($mov) {
-            return $mov->name;
-        })
-        ->editColumn('entries_value', function ($mov) {
-            return number_format($mov->entries_value, 2, ',', '.');
-        })
-        ->editColumn('entries_id_account', function ($mov) {
-            $badge = '';
-            $icon = '';
-            switch ($mov->account_types_name) {
-                case "Receita":
-                    $badge = 'text-success';
-                    $icon = 'fa-check-square';
-                    break;
-                case "Despesa":
-                    $badge = 'text-danger';
-                    $icon = 'fa-times';
-                    break;
-                case "Transferência":
-                    $badge = 'text-primary';
-                    $icon = 'fa-retweet';
-                    break;
-            }
-            return '<span>
-                        <i class="fa '.$icon.' '.$badge.'" aria-hidden="true"></i> '
-                        .$mov->account_types_name.
+        // Executar a query com ordenação
+        $mov = $query->orderBy('entries.entries_date_launch', 'desc')
+            ->get();
+        return DataTables::of($mov)->addIndexColumn()
+            ->editColumn('entries_date_launch', function ($mov) {
+                $date = new Carbon($mov->entries_date_launch);
+                return $date->format('d/m/Y');
+            })
+            ->editColumn('entries_id_user', function ($mov) {
+                return $mov->name;
+            })
+            ->editColumn('entries_value', function ($mov) {
+                return number_format($mov->entries_value, 2, ',', '.');
+            })
+            ->editColumn('entries_id_account', function ($mov) {
+                $badge = '';
+                $icon = '';
+                switch ($mov->account_types_name) {
+                    case "Receita":
+                        $badge = 'text-success';
+                        $icon = 'fa-check-square';
+                        break;
+                    case "Despesa":
+                        $badge = 'text-danger';
+                        $icon = 'fa-times';
+                        break;
+                    case "Transferência":
+                        $badge = 'text-primary';
+                        $icon = 'fa-retweet';
+                        break;
+                }
+                return '<span>
+                        <i class="fa ' . $icon . ' ' . $badge . '" aria-hidden="true"></i> '
+                    . $mov->account_types_name .
                     '</span>';
-        })
-        ->editColumn('entries_bank', function ($mov) {
-            return $mov->entries_bank == 0 ? 'Caixa Interno' : 'Caixa Banco';
-        })
-        ->addColumn('action', function ($mov) {
-            $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
-            $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
+            })
+            ->editColumn('entries_bank', function ($mov) {
+                return $mov->entries_bank == 0 ? 'Caixa Interno' : 'Caixa Banco';
+            })
+            ->addColumn('action', function ($mov) {
+                $dtLauch = Carbon::parse($mov->entries_date_launch)->format('d/m/Y');
+                $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-day="' . $mov->entries_day . '"
@@ -404,14 +397,14 @@ class EntryController extends Controller
                 data-target="#modalInfoLaunch">
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>';
 
-            if (Auth::user()->hasRole('user')) {
-                return $btnUserRole;
-            }
+                if (Auth::user()->hasRole('user')) {
+                    return $btnUserRole;
+                }
 
-            $disabled = $mov->entries_parent == -1 ? 'disabled' : '';
-            $disabledTransfer = $mov->transaction_id == 1 ? 'disabled' : '';
+                $disabled = $mov->entries_parent == -1 ? 'disabled' : '';
+                $disabledTransfer = $mov->transaction_id == 1 ? 'disabled' : '';
 
-            return '<button class="btn btn-primary btn-xs '.$disabledTransfer.'" type="button" title="Editar do Registro"
+                return '<button class="btn btn-primary btn-xs ' . $disabledTransfer . '" type="button" title="Editar do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-date="' . $dtLauch . '"
@@ -422,19 +415,19 @@ class EntryController extends Controller
                 data-namel="' . $mov->accountlaunch_name . '"
                 data-target="#modalEditLauch">
                 <i class="fa fa-edit" aria-hidden="true"></i></button>
-                '.$btnUserRole.'
-                <button class="btn btn-danger btn-xs" '.$disabled.' type="button" title="Excluir Registro"
+                ' . $btnUserRole . '
+                <button class="btn btn-danger btn-xs" ' . $disabled . ' type="button" title="Excluir Registro"
                 data-toggle="modal"
                 data-id="' . $mov->entries_id . '"
                 data-name="' . $mov->entries_description . '"
-                data-parent="'. $mov->entries_parent .'"
+                data-parent="' . $mov->entries_parent . '"
                 data-type="' . $mov->account_types_name . '"
                 data-target="#modalDeleteComponent">
                 <i class="fa fa-trash"></i></button>';
-        })
-        ->rawColumns(['entries_description', 'entries_id_account', 'action'])
-        ->make(true);
-}
+            })
+            ->rawColumns(['entries_description', 'entries_id_account', 'action'])
+            ->make(true);
+    }
 
     public function info($id)
     {
@@ -473,7 +466,8 @@ class EntryController extends Controller
 
     public function bank($idCompany)
     {
-        return LaunchService::getBoxBank($idCompany);
+        $balanceBank = new AccountBankRepository();
+        return $balanceBank->getBalanceBank($idCompany);
     }
 
     public function internal($idCompany)
@@ -495,51 +489,68 @@ class EntryController extends Controller
 
     public function reportBox($dateInit, $dateEnd, $idCompany)
     {
+        // Inicializa variáveis de data
+        $dtinit = null;
+        $dtend = null;
+        $perInitial = '';
+        $perEnd = '';
+        $total = 0;
+        $previousBalance = 0;
 
-        $dtinit = FunctionGeneral::DataBRtoMySQL(base64_decode($dateInit));
-        $dtend  = FunctionGeneral::DataBRtoMySQL(base64_decode($dateEnd));
-        $per    = Monetary::getValueBoxPerPeriodo($dtinit, $dtend, $idCompany);
-        $total  = ($per['receitas'] - $per['despesas']);
+        // Verifica se há período definido (datas de início e fim não estão vazias)
+        $hasPeriod = !empty($dateInit) && !empty($dateEnd);
 
-        $perInitial = base64_decode($dateInit);
-        $perEnd = base64_decode($dateEnd);
-        //VALOR DO SALDO ANTERIOR
-        $prevBalan = Monetary::previousBalance($dtinit, $idCompany);
-        $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
+        if ($hasPeriod) {
+            // Conversão das datas de formato BR para MySQL
+            $dtinit = FunctionGeneral::DataBRtoMySQL(base64_decode($dateInit));
+            $dtend = FunctionGeneral::DataBRtoMySQL(base64_decode($dateEnd));
 
-        $entries = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
-            ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->where('entries_date_launch', '>=', $dtinit)
-            ->where('entries_date_launch', '<=', $dtend)
-            ->where('companies.company_id', '=', $idCompany)
-            ->orderBy('entries_date_launch', 'asc')->get();
-        //Se não tiver registro de lançamento, só cria um objeto company
-        if(count($entries) == 0){
-            $entries = Company::where('company_id',$idCompany)->get();
+            // Cálculo do período (receitas - despesas)
+            $per = Monetary::getValueBoxPerPeriodo($dtinit, $dtend, $idCompany);
+            $total = ($per['receitas'] - $per['despesas']);
+
+            // Datas decodificadas para exibição
+            $perInitial = base64_decode($dateInit);
+            $perEnd = base64_decode($dateEnd);
+
+            // Cálculo do saldo anterior
+            $prevBalan = Monetary::previousBalance($dtinit, $idCompany);
+            $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
         }
 
-        $balanceBank = new AccountBankRepository();
-        $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
+        // Busca de registros da Entry com joins
+        $query = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
+            ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->where('companies.company_id', '=', $idCompany);
 
-        // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+        // Aplica filtro de data apenas se houver período definido
+        if ($hasPeriod) {
+            $query->whereBetween('entries_date_launch', [$dtinit, $dtend]);
+        }
+
+        // Ordena por data de lançamento e obtém os resultados
+        $entries = $query->orderBy('entries_date_launch', 'asc')->get();
+
+        // Se não houver registros de lançamento, retorna apenas dados da empresa
+        if (count($entries) == 0) {
+            $entries = Company::where('company_id', $idCompany)->get();
+        }
+
+        // Cálculo do saldo bancário
+        $balanceBank = new AccountBankRepository();
+        $generalBalanceBank = $balanceBank->getBalanceBank($idCompany);
+
+        // Cálculo do saldo interno
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
-        $balanceBank = ($generalBalnaceBank + $interInternal);
+        $balanceBank = ($generalBalanceBank + $interInternal);
 
-//        $pdf = PDF::loadView('entry.report.perPeriod', compact('entries', 'perInitial', 'perEnd', 'total',
-//        'previousBalance','balanceBank'));
-//        $pdf->setOptions([
-//            'isHtml5ParserEnabled' => true,
-//            'isRemoteEnabled' => true,
-//            'orientation' => 'landscape',
-//            'isPhpEnabled' => true
-//        ]);
-        
-//        return $pdf->stream();
-
-        return view('entry.report.perPeriod',
-          compact('entries', 'perInitial', 'perEnd',  'total' , 'previousBalance','balanceBank'));
+        // Retorno da view com os dados compactados
+        return view(
+            'entry.report.perPeriod',
+            compact('entries', 'perInitial', 'perEnd', 'total', 'previousBalance', 'balanceBank')
+        );
     }
 
     /**
@@ -582,12 +593,11 @@ class EntryController extends Controller
     {
         $alterValur = new AccountBankRepository;
         $save = $alterValur->updateAccountToLauch($request->all());
-        
-        if(isset($save->original['status']) && $save->original['status'] == 400) {
-            return response()->json(['message' => 'error'] , 400);
+
+        if (isset($save->original['status']) && $save->original['status'] == 400) {
+            return response()->json(['message' => 'error'], 400);
         }
 
-        return response()->json(['message' => 'success', 'value' => $save->original['value']] , 200);
+        return response()->json(['message' => 'success', 'value' => $save->original['value']], 200);
     }
-
 }

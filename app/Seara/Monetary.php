@@ -232,32 +232,46 @@ class Monetary {
         return ['receitas' => $totalRec, 'despesas' => $totalDes];
     }
 
-    static public function previousBalance($dtIniti, $idCompany) {
-        $dateSubDay = Carbon::parse($dtIniti)->subDays(1);
-//        dump($idCompany);
+    static public function previousBalance($dtIniti = null, $idCompany) {
+        
+        // Inicializa os totais
         $totalRec = 0;
         $totalDes = 0;
-        $total = 0;
-        //$id_company = 1;
-        //SOMENTE AS ENTRADAS(receitas)
-        $valueRec = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
+
+        // Monta a query base para receitas e despesas
+        $baseQuery = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
             ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->where('account_types.account_types_name','=','Receita')
             ->where('entries.entries_id_company', '=', $idCompany)
-            ->where('entries.entries_date_launch', '<=', $dateSubDay)
-            ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+            ->select(
+                'account_launches.*',
+                'account_types.*',
+                'entries.*',
+                'entries.entries_id as idEntry',
+                'account_types.id as idAccountType'
+            );
+
+        // Aplica filtro de data apenas se $dtIniti for fornecida
+        if ($dtIniti !== "") {
+           
+            $dateSubDay = Carbon::parse($dtIniti)->subDay();
+            $baseQuery->where('entries.entries_date_launch', '<=', $dateSubDay);
+             // Clona a query base para receitas
+            $queryRec = clone $baseQuery;
+            $valueRec = $queryRec->where('account_types.account_types_name', '=', 'Receita')->get();
             $totalRec = $valueRec->sum('entries_value');
 
-        // SOMENTE AS SAÍDAS(despesas)
-        $valueDes = Entry::join('account_launches','entries.entries_id_account','=','account_launches.id')
-            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->where('account_types.account_types_name','=','Despesa')
-            ->where('entries.entries_id_company', '=', $idCompany)
-            ->where('entries.entries_date_launch', '<=', $dateSubDay)
-            ->select('account_launches.*', 'account_types.*', 'entries.*', 'entries.entries_id as idEntry', 'account_types.id as idAccountType')->get();
+            // Clona a query base para despesas
+            $queryDes = clone $baseQuery;
+            $valueDes = $queryDes->where('account_types.account_types_name', '=', 'Despesa')->get();
             $totalDes = $valueDes->sum('entries_value');
-            
-        return ['receitas' => $totalRec, 'despesas' => $totalDes];
+        }
+        
+        // Retorna os totais de receitas, despesas e saldo
+        return [
+            'receitas' => $totalRec,
+            'despesas' => $totalDes,
+            'saldo' => $totalRec - $totalDes
+        ];
     }
 
 }
