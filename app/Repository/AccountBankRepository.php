@@ -199,7 +199,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
                 }
                 break;
             case 'receita':
-                $desc = 'Trasnferência recebida de conta nº ' . $bank['number'] . ' ' . $bank['nameBank'];
+                $desc = 'Transferência recebida de conta nº ' . $bank['number'] . ' ' . $bank['nameBank'];
                 $idAccountLaunch = 56;
                 //transferencia do caixa interno para conta bancaria
                 if ($bank['number'] == 0 && $bank2['number'] > 0) {
@@ -207,7 +207,7 @@ class AccountBankRepository extends GeneralBalanceAbstract
                 }
                 break;
             case 'transferencia':
-                $desc = 'Trasnferência bancária entre caixas: '.
+                $desc = 'Transferência bancária entre caixas: '.
                 $bank['number'] . ' ' . $bank['nameBank']. ' e '.
                 $bank2['number'] . ' ' . $bank2['nameBank'];
                 $idAccountLaunch = 58;
