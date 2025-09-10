@@ -103,54 +103,51 @@
     @endphp
 
     @foreach ($entries as $key => $entry)
-        <tr>
-            {{--PRIMEIRA COLUNA--}}
+       <tr>
+         {{--PRIMEIRA COLUNA--}}
             <th style="width: 10%;" class="border-table">
                 <small>
                     {{ \Carbon\Carbon::parse($entry->entries_date_launch)->format('d/m/Y')}}
                 </small>
             </th>
-            {{--SEGUNDA COLUNA--}}
-            <td  class="border-table">{{$entry->accountlaunch_history}}
+        {{--SEGUNDA COLUNA----}}
+            <td  class="border-table">               
+                @if($entry->accountlaunch_name === "Transferência" || $entry->accountlaunch_name === "Transferência bancária")
+                    {{$entry->entries_description}}
+                @else
+                    {{$entry->accountlaunch_history}}
+                @endif
+               
             </td>
-            {{--TERCEIRA COLUNA--}}
+        {{--TERCEIRA COLUNA--}}
             <td class="center-text border-table">
                 @if ($entry->account_types_name == "Receita")
                     {{ number_format($entry->entries_value,2,',','.') }}
                     @php $recipes = ($recipes + $entry->entries_value); @endphp
                 @endif
-                @if(
-                    $entry->accountlaunch_name == "Transferência" &&
-                    $entry->account_types_name == "Despesa" &&
-                    $entry->entries_parent == 0 )
-                    @php
-                        $recipes = ($recipes + $entry->entries_value);
-                        echo number_format($entry->entries_value,2,',','.');
-                    @endphp
-                @endif
-            </td>
-            {{-- QUARTA COLUNA --}}
-            <td class="center-text border-table">
-                @if ($entry->account_types_name == "Despesa" && $entry->entries_parent !== 0)
+                {{-- Lançamento de transferência que entra no caixa mas como receita--}}
+                {{-- Parente > 0 significa que entrou valor --}}
+                @if (
+                    $entry->account_types_name == "Transferência" && 
+                    $entry->accountlaunch_name === "Transferência" &&
+                    $entry->entries_parent > 0)
                     {{ number_format($entry->entries_value,2,',','.') }}
-                    @php $expenses += $entry->entries_value; @endphp
+                    @php $recipes = ($recipes + $entry->entries_value); @endphp
                 @endif
-                @if(
-                    $entry->account_types_name == "Transferência" &&
+               
+            </td>
+        {{-- QUARTA COLUNA --}}
+            <td class="center-text border-table">
+                @if ($entry->account_types_name == "Despesa")
+                    {{ number_format($entry->entries_value,2,',','.') }}
+                    @php $expenses = ($expenses + $entry->entries_value); @endphp
+                @endif
+                @if (
+                    $entry->account_types_name == "Transferência" && 
                     $entry->accountlaunch_name == "Transferência" &&
-                    $entry->entries_parent == -1 )
-                    @php
-                        $expenses += $entry->entries_value;
-                        echo number_format($entry->entries_value,2,',','.');
-                    @endphp
-                @elseif(
-                    $entry->account_types_name == "Transferência" &&
-                    $entry->accountlaunch_name == "Despesa" &&
-                    $entry->entries_parent == 0 )
-                    @php
-                        $recipes = ($recipes + $entry->entries_value);
-                        echo number_format($entry->entries_value,2,',','.');
-                    @endphp
+                    $entry->entries_parent === -1)
+                    {{ number_format($entry->entries_value,2,',','.') }}
+                    @php $expenses = ($expenses + $entry->entries_value); @endphp
                 @endif
             </td>
             {{-- QUINTA COLUNA--}}
@@ -161,46 +158,31 @@
                             $balance = ($balance + $previousBalance + $entry->entries_value);
                             echo number_format($balance,2,',','.');
                         @endphp
-                    @elseif($entry->account_types_name == "Despesa")
-                        @php
-                            $balance = ( $balance + $previousBalance - $entry->entries_value);
-                            echo number_format($balance,2,',','.');
-                        @endphp
-                    @elseif(
-                            $entry->account_types_name == "Transferência" &&
-                            $entry->accountlaunch_name == "Despesa" &&
-                            $entry->entries_parent == 0 )
-                        @php
-                            $recipes = ($recipes + $entry->entries_value);
-                            echo number_format($entry->entries_value,2,',','.');
-                        @endphp
                     @endif
-                @else
-                    @if ($entry->account_types_name == "Receita")
+
+                    @if($entry->account_types_name == "Despesa")
                         @php
-                            $balance = ($balance + $entry->entries_value);
-                                //echo $key.'- '.$balance.' - '. $entry->entries_value;
-                                echo number_format($entry->entries_value,2,',','.');
-                        @endphp
-                    @elseif($entry->account_types_name == "Despesa")
-                        @php
-                            $balance = ( $balance - $entry->entries_value);
-                            echo number_format($balance,2,',','.');
-                        @endphp
-                    @elseif($entry->account_types_name == "Transferência" && $entry->entries_parent == -1 )
-                        @php
-                            $balance = ( $balance - $entry->entries_value);
-//                                dump($entry->entries_value);
-                            echo number_format($entry->entries_value,2,',','.');
-                        @endphp
-                    @elseif($entry->accountlaunch_name == "Transferência" && $entry->entries_parent === 0)
-                        @php
-                            echo number_format($entry->entries_value,2,',','.');
+                            $balance = ( $balance + $previousBalance);
+                            // echo number_format($balance,2,',','.');
                         @endphp
                     @endif
                 @endif
+                @if ($entry->account_types_name == "Receita")
+                    @php
+                        $balance = ($balance + $entry->entries_value);
+                        echo number_format($balance,2,',','.');
+                    @endphp
+                @endif
+                @if($entry->account_types_name == "Despesa")
+                    @php
+                        $balance = ( $balance - $entry->entries_value);
+                        echo number_format($balance,2,',','.');
+                    @endphp
+                @endif
+                
+
             </td>
-        </tr>
+       </tr>
     @endforeach
 
     <tr>
