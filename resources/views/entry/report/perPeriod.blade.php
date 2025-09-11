@@ -121,18 +121,26 @@
             </td>
         {{--TERCEIRA COLUNA--}}
             <td class="center-text border-table">
+              
                 @if ($entry->account_types_name == "Receita")
                     {{ number_format($entry->entries_value,2,',','.') }}
-                    @php $recipes = ($recipes + $entry->entries_value); @endphp
+                    @php
+                        if($entry->accountlaunch_name == 'Transferência bancária' || $entry->accountlaunch_name == 'Transferência')
+                        {
+                            //não soma valor de transferência como receita
+                            $recipes = ($recipes + 0);                           
+                        }else{
+                             $recipes = ($recipes + $entry->entries_value); 
+                        }                  
+                   @endphp
                 @endif
                 {{-- Lançamento de transferência que entra no caixa mas como receita--}}
                 {{-- Parente > 0 significa que entrou valor --}}
                 @if (
-                    $entry->account_types_name == "Transferência" && 
-                    $entry->accountlaunch_name === "Transferência" &&
+                    ($entry->accountlaunch_name === "Transferência bancária" ||
+                    $entry->accountlaunch_name === "Transferência") &&
                     $entry->entries_parent > 0)
                     {{ number_format($entry->entries_value,2,',','.') }}
-                    @php $recipes = ($recipes + $entry->entries_value); @endphp
                 @endif
                
             </td>
@@ -147,7 +155,6 @@
                     $entry->accountlaunch_name == "Transferência" &&
                     $entry->entries_parent === -1)
                     {{ number_format($entry->entries_value,2,',','.') }}
-                    @php $expenses = ($expenses + $entry->entries_value); @endphp
                 @endif
             </td>
             {{-- QUINTA COLUNA--}}
@@ -163,7 +170,6 @@
                     @if($entry->account_types_name == "Despesa")
                         @php
                             $balance = ( $balance + $previousBalance);
-                            // echo number_format($balance,2,',','.');
                         @endphp
                     @endif
                 @endif

@@ -531,7 +531,7 @@ class EntryController extends Controller
 
         // Ordena por data de lançamento e obtém os resultados
         $entries = $query->orderBy('entries_date_launch', 'asc')->get();
-       
+
         // Se não houver registros de lançamento, retorna apenas dados da empresa
         if (count($entries) == 0) {
             $entries = Company::where('company_id', $idCompany)->get();
