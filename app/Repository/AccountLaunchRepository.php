@@ -35,12 +35,18 @@ class AccountLaunchRepository
      */
     public function getAccountLaunchEntry($company_id, $dtInitial, $dtEnd, $idAccount = null)
     {
+        $accountLaunchAll = [];
         return AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
         ->join('users', 'entries.entries_id_user', '=', 'users.id')
         ->join('account_types' , 'account_launches.accountlaunch_type' ,'=', 'account_types.id')
         ->join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
         ->when($idAccount, function ($query) use ($idAccount) {
             return $query->where('entries_id_account', $idAccount);
+        })
+        ->chunk(500, function ($launches) use (&$accountLaunchAll) {
+            foreach ($launches as $launch) {
+                $accountLaunchAll[] = $launch; // Ou processe aqui
+            }
         })
         ->select(
             'users.id as userId', 'users.name', 'entries.*', 'account_launches.*', 'account_launches.id as idAccountLaunch',

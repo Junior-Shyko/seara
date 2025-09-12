@@ -489,6 +489,7 @@ class EntryController extends Controller
 
     public function reportBox($dateInit, $dateEnd, $idCompany)
     {
+         ini_set('max_execution_time', '120');
         // Inicializa variáveis de data
         $dtinit = null;
         $dtend = null;
@@ -546,11 +547,18 @@ class EntryController extends Controller
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
         $balanceBank = ($generalBalanceBank + $interInternal);
 
-        // Retorno da view com os dados compactados
-        return view(
-            'entry.report.perPeriod',
-            compact('entries', 'perInitial', 'perEnd', 'total', 'previousBalance', 'balanceBank')
-        );
+        // // Retorno da view com os dados compactados
+        // return view(
+        //     'entry.report.perPeriod',
+        //     compact('entries', 'perInitial', 'perEnd', 'total', 'previousBalance', 'balanceBank')
+        // );
+
+         $pdf = PDF::loadView('entry.report.perPeriod',
+                     compact( 'entries', 'perInitial', 'perEnd', 'total', 'previousBalance', 'balanceBank'));
+
+                return $pdf->stream('report');
+
+
     }
 
     /**
