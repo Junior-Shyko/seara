@@ -12,7 +12,7 @@
 
                 <div class="row alert space-money" id="infoMonthLaunch">
                     
-                    <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
+                    {{-- <div class="col-xs-12 col-sm-12 col-md-3 info-money-box badge bg-green">
                         <h5 class="">
                             <strong>
                                 Banco: <br>
@@ -35,7 +35,7 @@
                             </strong>
                         </h5>
                         <span id="balance_box_general"> 0</span>
-                    </div>
+                    </div> --}}
                 </div>
                 <div>
                     <!-- Nav tabs -->
