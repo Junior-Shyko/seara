@@ -188,7 +188,7 @@ class AccountController extends Controller
 
     public function getReportAccount(Request $request)
     {
-
+        
        ini_set('max_execution_time', '120');
 
         $idAccount = $request->entries_id_account;
@@ -203,10 +203,13 @@ class AccountController extends Controller
         $accountLaunch = new AccountLaunchRepository;
         $dtinit = FunctionGeneral::DataBRtoMySQL($request->dateInitial);
         $dtend  = FunctionGeneral::DataBRtoMySQL($request->dateEnd);
+       
         //Total de lançamentos por grupo
         $accountGroup = $accountLaunch->getAccountLaunchEntryGroup($company_id, $dtinit, $dtend, $idAccount);
+        
         //Todos os lançamentos
         $accountLaunchAll = $accountLaunch->getAccountLaunchEntry($company_id, $dtinit, $dtend, $idAccount);
+
         $dtInitReport = $request->dateInitial;
         $dtEndReport = $request->dateEnd;
         //saldo anterior
@@ -220,14 +223,16 @@ class AccountController extends Controller
         {
             return back()->with('error', 'Não existe lançamento nesse período ou verifique a sua pesquisa.');
         }
-//        return view('report.account.accountLaunchAll',
-//            compact( 'accountGroup', 'accountLaunchAll',
-//        'dtInitReport', 'dtEndReport', 'balance', 'balanceBank', 'dtinit'));
         //Para geração em PDF, mas tem um problema de timout qndo é muito registros
-                 $pdf = PDF::loadView('report.account.accountLaunchAll',
-                     compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
-                       'dtEndReport', 'balance', 'balanceBank','dtinit'));
+        // $pdf = PDF::loadView('report.account.accountLaunchAll',
+        //     compact( 'accountGroup',  'accountLaunchAll', 'dtInitReport',
+        //     'dtEndReport', 'balance', 'balanceBank','dtinit'));
 
-                return $pdf->stream('report');
+        // return $pdf->stream('report');
+        // dd($accountGroup);
+         return view('report.account.accountLaunchAll', 
+            compact('accountGroup',  'accountLaunchAll', 'dtInitReport',
+            'dtEndReport', 'balance', 'balanceBank','dtinit')
+        );
     }
 }

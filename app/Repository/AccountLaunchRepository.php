@@ -2,10 +2,8 @@
 
 namespace Seara\Repository;
 
-use App\Account;
-use Carbon\Carbon;
 use Seara\AccountLaunch;
-use Illuminate\Support\Facades\DB;
+use Seara\FunctionGeneral;
 
 
 class AccountLaunchRepository
@@ -13,14 +11,18 @@ class AccountLaunchRepository
 
     public function getAccountLaunchEntryGroup($company_id, $dtInitial, $dtEnd, $idAccount = null)
     {
+        
+        // Converter datas com ano de 2 dígitos para 4 dígitos
+        $dtInitialConverted = FunctionGeneral::convertTwoDigitYearToFour($dtInitial);
+        $dtEndConverted = FunctionGeneral::convertTwoDigitYearToFour($dtEnd);
         return AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
                             ->when($idAccount, function ($query) use ($idAccount) {
                                 return $query->where('entries_id_account', $idAccount);
                             })
                             ->select('account_launches.*', 'account_launches.id as idAccountLaunch','entries.*')
                             ->where('entries.entries_id_company',$company_id)
-                            ->where('entries.entries_date_launch','>=',$dtInitial)
-                            ->where('entries.entries_date_launch','<=',$dtEnd)
+                            ->where('entries.entries_date_launch', '>=', $dtInitialConverted)
+                            ->where('entries.entries_date_launch', '<=', $dtEndConverted)
                             ->groupBy('entries.entries_id_account')->get();
     }
 
@@ -35,18 +37,12 @@ class AccountLaunchRepository
      */
     public function getAccountLaunchEntry($company_id, $dtInitial, $dtEnd, $idAccount = null)
     {
-        $accountLaunchAll = [];
         return AccountLaunch::join('entries', 'account_launches.id' , '=', 'entries.entries_id_account')
         ->join('users', 'entries.entries_id_user', '=', 'users.id')
         ->join('account_types' , 'account_launches.accountlaunch_type' ,'=', 'account_types.id')
         ->join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
         ->when($idAccount, function ($query) use ($idAccount) {
             return $query->where('entries_id_account', $idAccount);
-        })
-        ->chunk(500, function ($launches) use (&$accountLaunchAll) {
-            foreach ($launches as $launch) {
-                $accountLaunchAll[] = $launch; // Ou processe aqui
-            }
         })
         ->select(
             'users.id as userId', 'users.name', 'entries.*', 'account_launches.*', 'account_launches.id as idAccountLaunch',

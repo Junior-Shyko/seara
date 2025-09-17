@@ -93,36 +93,39 @@
                 </td>
             </tr>
             @php
-                $balance = 0;
+                $balanceSum = 0;
+                $balanceDespesa = 0;
                 $previousBalance = 0;
                 $balancePartial = 0;
                 $accountPartial = 0;
                 $indiceEncontrado = 'false';
             @endphp
             @foreach ($accountGroup as $valueGroup)
-
+            
+                @php
+                    $balancePrevious =  \Seara\Repository\AccountLaunchRepository::getValueAccountLaunchEntry(
+                            $valueGroup->entries_id_company,
+                            $dtinit,
+                            $valueGroup->idAccountLaunch
+                        );
+                          
+                @endphp
                 <tr>
                     <td colspan="5" style="padding: 5px">
                         <strong><label>Conta: {{ $valueGroup->accountlaunch_name }}</label></strong>
                     </td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td colspan="5">
                         <span> Saldo Anterior: R$ <strong>
-                        @php
-                            $balancePrevious =  \Seara\Repository\AccountLaunchRepository::getValueAccountLaunchEntry(
-                                 $valueGroup->entries_id_company,
-                                 $dtinit,
-                                 $valueGroup->idAccountLaunch
-                             );
-                            echo number_format($balancePrevious, 2, ',', '.');
-                        @endphp
+                       
                             </strong>
                         </span>
                     </td>
-                </tr>
+                </tr> --}}
                 @php $accountPartial = $valueGroup->id; @endphp
                 @foreach ($accountLaunchAll as $key => $valAccount)
+               
                     <tr>
                         @if ($valueGroup->id == $valAccount->id)
                             <td>
@@ -141,10 +144,28 @@
                             <td class="tr-center">
                                 <small class="ml-5 td-launch">
                                     @if($valAccount->account_types_name == 'Receita')
+                                        @php
+                                            if($valAccount->accountlaunch_name == 'Transferência bancária' || $valAccount->accountlaunch_name == 'Transferência')
+                                            {
+                                                //não soma valor de transferência como receita
+                                                // $recipes = ($recipes + 0);                           
+                                            }else{
+                                                $balance = ($balance + $valAccount->entries_value);
+                                                $balanceSum += $valAccount->entries_value;
+                                            }                  
+                                        @endphp
                                         {{number_format($valAccount->entries_value,2,",",".")}}
                                         @php
-                                        $balance = ($balance + $previousBalance + $valAccount->entries_value)
+                                        
+                                        
                                         @endphp
+                                    @endif
+                                    @if (
+                                        ($valAccount->accountlaunch_name === "Transferência bancária" ||
+                                        $valAccount->accountlaunch_name === "Transferência") &&
+                                        $valAccount->entries_parent > 0)
+                                        {{ number_format($valAccount->entries_value,2,',','.') }}
+                                        
                                     @endif
                                 </small>
                             </td>
@@ -153,8 +174,14 @@
                                     @if($valAccount->account_types_name == 'Despesa')
                                         {{number_format($valAccount->entries_value,2,",",".")}}
                                         @php
-                                        $balance = ($balance + $previousBalance - $valAccount->entries_value)
+                                        $balanceDespesa = ($balanceDespesa + $valAccount->entries_value)
                                         @endphp
+                                    @endif
+                                     @if (
+                                        $valAccount->account_types_name == "Transferência" && 
+                                        $valAccount->accountlaunch_name == "Transferência" &&
+                                        $valAccount->entries_parent === -1)
+                                        {{ number_format($valAccount->entries_value,2,',','.') }}
                                     @endif
                                 </small>
                             </td>
@@ -174,12 +201,14 @@
                     <td colspan="3" style="padding: 5px; font-size: small;" class="bg-tot">
                             <label>
                                 Totais do período
-                                    <span class="smallPeriod">(s.ant + ent + sai + banco)</span>
+                                    <span class="smallPeriod">(s.ant + ent + sai)</span>
                             </label>
                     </td>
                     <td class="bg-tot" colspan="2">
                         <label class="float-r ">
+                            
                             @php $sum = 0;
+                           
                             $sum = ($balancePrevious + $balance);
                             @endphp
                             R$: {{number_format($sum,2,",",".")}}
@@ -191,6 +220,18 @@
                 @endif
                 @php  $indiceEncontrado = 'false';  @endphp
             @endforeach
+            <tr>
+
+                <td colspan="5" style="padding: 5px; text-align: end;" class="bg-tot">
+                    <label>
+                        TOTAL GERAL: R$ 
+                            @php
+                               $tot = $balanceSum - $balanceDespesa;
+                                 echo number_format($tot,2,",",".");
+                            @endphp
+                    </label>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -198,7 +239,7 @@
 </body>
 <script>
     window.addEventListener("load", (event) => {
-        window.print();
+        //window.print();
     });
 </script>
 </html>

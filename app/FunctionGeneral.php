@@ -2,11 +2,12 @@
 
 namespace Seara;
 
-use Illuminate\Database\Eloquent\Model;
 use DB;
-use Seara\Models\Profile;
-use Seara\Models\User;
 use Seara\Box;
+use Carbon\Carbon;
+use Seara\Models\User;
+use Seara\Models\Profile;
+use Illuminate\Database\Eloquent\Model;
 
 class FunctionGeneral extends Model
 {
@@ -45,5 +46,21 @@ class FunctionGeneral extends Model
 	{
 		$box = Box::all();
 		return $box;
+	}
+
+
+	// Função auxiliar para conversão
+	public static function convertTwoDigitYearToFour($dateString)
+	{
+		// Parse a data assumindo formato como 'YY-MM-DD' ou 'DD-MM-YY'. Ajuste o formato aqui se necessário.
+		$carbonDate = Carbon::createFromFormat('y-m-d', $dateString); // 'y' é para ano de 2 dígitos
+
+		// Se o parsing falhar, você pode adicionar validação ou fallback
+		if (!$carbonDate) {
+			throw new \Exception("Formato de data inválido: " . $dateString);
+		}
+
+		// Retorna no formato YYYY-MM-DD
+		return $carbonDate->format('Y-m-d');
 	}
 }
