@@ -36,6 +36,7 @@
         td {
             border-collapse: collapse;
             border: 1px solid;
+            font-size: small
         }
 
 
@@ -52,7 +53,7 @@
 
 </head>
 <body>
-<section>
+<section style="border: 1px solid black; padding: 5px;">
     <header>
         <div class="col">
             <small>
@@ -69,21 +70,22 @@
 
 </section>
 <br>
-<table style="width: 100%;" border="1" cellpadding="1">
-    <thead>
+    <table  style="width: 100%;">
+      <tr>
+         <th><caption  style="color: #423f3f">Movimento do caixa</caption></th>
+      </tr>
+
+    </table>
+<table>
+
     <tr>
-        <th  colspan="5" class="center-text" style="border-bottom: 1px solid black;">
-            <caption  style="color: #423f3f">Movimento do caixa</caption>
-        </th>
-    </tr>
-    <tr>
-        <th class="title-table" style="width: 5px;"><label class="margin5">Data</label></th>
+        <th class="title-table"><label class="margin5">Data</label></th>
         <th class="title-table" style="width: 300px;"><label class="margin5">Histórico</label></th>
         <th class="title-table"><label class="margin5 ">Receita</label></th>
         <th class="title-table"><label class="margin5">Despesa</label></th>
         <th class="title-table"><label class="margin5">Saldo</label></th>
     </tr>
-    </thead>
+
     <tbody>
     <tr>
         <td colspan="4" class="border-table">
@@ -162,14 +164,15 @@
                 @if ($key == 0)
                     @if ($entry->account_types_name == "Receita")
                         @php
-                            $balance = ($balance + $previousBalance + $entry->entries_value);
-                            echo number_format($balance,2,',','.');
+                            // $balance = ($balance + $previousBalance + $entry->entries_value);
+                            // echo number_format($balance,2,',','.');
                         @endphp
                     @endif
 
                     @if($entry->account_types_name == "Despesa")
                         @php
                             $balance = ( $balance + $previousBalance);
+                            
                         @endphp
                     @endif
                 @endif
