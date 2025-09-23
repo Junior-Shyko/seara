@@ -2,6 +2,8 @@
 
 namespace Seara\Repository;
 
+use Seara\Entry;
+use Carbon\Carbon;
 use Seara\AccountLaunch;
 use Seara\FunctionGeneral;
 
@@ -71,5 +73,19 @@ class AccountLaunchRepository
             ->where('entries.entries_date_launch','<=',$dtInitial)
             ->where('entries_id_account', $idAccount)
             ->groupBy('entries.entries_id_account')->sum('entries_value');
+    }
+
+    static function getAccountRecipe($month, $year, $company_id)
+    {
+        // obter o ano completo a partir do ano de 2 dígitos
+        $yearConverter = Carbon::createFromFormat('y', $year);
+        return Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+            ->where('account_types.account_types_name', 'Receita') // Filtra apenas lançamentos do tipo 'Receita'
+            ->whereMonth('entries.entries_date_launch', $month) // Filtra pelo mês no campo 'entries_date_launch'
+            ->whereYear('entries.entries_date_launch', $yearConverter->year) // Filtra pelo ano no campo 'entries_date_launch'
+            ->where('entries.entries_id_company', $company_id)
+            ->select('entries.*', 'account_launches.*', 'account_types.*') // Seleciona todas as colunas; ajuste se quiser campos específicos
+            ->sum('entries.entries_value');
     }
 }

@@ -235,4 +235,26 @@ class AccountController extends Controller
             'dtEndReport', 'balance', 'balanceBank','dtinit')
         );
     }
+
+    public function getReportFinancial()
+    {
+        return view('report.financial.index', 
+            compact('accounts', 'company', 'companyAll','startMonthFormated', 'endMonthFormated' )
+        );
+    }
+
+    public function reportFinancial(Request $request)
+    {
+       
+        if($request->company_id == Auth::user()->user_id_company || Auth::user()->hasRole('superAdmin') )
+        {
+            dump($request->all());
+            dump('dono da conta');
+            $accountLaunch = AccountLaunchRepository::getAccountRecipe($request->month_financial, $request->year_financial,$request->company_id);
+            dump($accountLaunch);
+            dd($request->all());
+        }
+
+    }
+
 }

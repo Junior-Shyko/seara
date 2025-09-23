@@ -130,6 +130,7 @@
                             </li>
                             @endrole
                             <li><a href="{{ url('relatorio/contas') }}">Contas</a></li>
+                            <li><a href="{{ url('relatorio/financeiro') }}">Financeiro</a></li>
                             {{--                  <li><a href="#">Igreja</a></li>--}}
                             {{--                  <li><a>Contrato<span class="fa fa-chevron-down"></span></a>--}}
                             <!-- <ul class="nav child_menu">
