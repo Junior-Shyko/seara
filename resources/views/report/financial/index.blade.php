@@ -24,8 +24,8 @@
                         <div class="clearfix">
                             <br>
                         </div>
-                        <form action="{{url('relatorio/financeiro/')}}" data-parsley-validate="" 
-                            method="POST" class="form-horizontal form-label-left" novalidate="">
+                        <form action="{{url('relatorio/gerar-financeiro/')}}" data-parsley-validate="" 
+                            method="GET" class="form-horizontal form-label-left" novalidate="">
 
                             <div class="item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Qual o mês?
@@ -33,6 +33,7 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6 ">
                                     <select name="month_financial" id="month_financial" class="form-control">
+                                        <option value="0">-- Selecione o mês --</option>
                                         <option value="1">Janeiro</option>
                                         <option value="2">Fevereiro</option>
                                         <option value="3">Março</option>
@@ -54,7 +55,7 @@
                                 </label>
                                 <div class="col-md-6 col-sm-6  form-group has-feedback">
                                     <input type="text" class="form-control has-feedback-left" id="year_financial"
-                                        name="year_financial" placeholder="First Name">
+                                        name="year_financial" placeholder="Últimos dígitos do ano">
                                     <span class="form-control-feedback left" aria-hidden="true">20</span>
                                 </div>
                             </div>

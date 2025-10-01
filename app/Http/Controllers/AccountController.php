@@ -3,6 +3,7 @@
 namespace Seara\Http\Controllers;
 
 use DB;
+use \PDF;
 use Throwable;
 use DataTables;
 use Carbon\Carbon;
@@ -15,12 +16,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
-use \PDF;
 use Illuminate\Support\Facades\Auth;
 use Seara\Http\Requests\StoreAccount;
 use Seara\Repository\AccountBankRepository;
+use Seara\Repository\SettingsBoxRepository;
 use Seara\Http\Requests\UpdateAccountRequest;
 use Seara\Repository\AccountLaunchRepository;
+use Seara\Repository\AccountInternalRepository;
 use Seara\Service\Financing\Account\CreateAccount;
 use Seara\Service\Financing\Account\ArchiveAccount;
 use Seara\Service\Financing\Account\AccountRepository;
@@ -28,6 +30,12 @@ use Seara\Service\Financing\Account\AccountRepository;
 class AccountController extends Controller
 {
     use ActionTable;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -248,11 +256,42 @@ class AccountController extends Controller
        
         if($request->company_id == Auth::user()->user_id_company || Auth::user()->hasRole('superAdmin') )
         {
-            dump($request->all());
-            dump('dono da conta');
-            $accountLaunch = AccountLaunchRepository::getAccountRecipe($request->month_financial, $request->year_financial,$request->company_id);
-            dump($accountLaunch);
-            dd($request->all());
+            $yearConverter = Carbon::createFromFormat('y', $request->year_financial);
+            // dump($request->all());
+            // dump($yearConverter->year);
+            $company = Company::getCompany($request->company_id);
+            // dump($company->company_name);
+            $monthExtensive = SettingsBoxRepository::getMonthToNumner($request->month_financial);
+            // dump($monthExtensive);
+            $accountLaunchReceipt = AccountLaunchRepository::getAccountRecipe($request->month_financial,$yearConverter,$request->company_id);
+            $accountLaunchExpense = AccountLaunchRepository::getAccountExpenses($request->month_financial,$yearConverter ,$request->company_id);
+            dump($accountLaunchReceipt);
+            dd($accountLaunchExpense);
+            // Formando uma data que é o ultimo dia do mês anterior escolhido
+            $ultimoDiaAnterior = Carbon::createFromDate($yearConverter->year, (int) $request->month_financial, 1)
+            ->subDay()
+            ->endOfDay();           
+            // Cálculo do saldo anterior            
+            $prevBalan = Monetary::previousBalance($ultimoDiaAnterior->format('Y-m-d'), $request->company_id);
+            $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
+        
+            $balanceBank = new AccountBankRepository();
+            $generalBalnaceBank = $balanceBank->getBalanceBank($request->company_id);
+            // dump($generalBalnaceBank);
+            // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
+            $balanceInternal = new AccountInternalRepository();
+            $interInternal = $balanceInternal->getInternalInternal($request->company_id);
+            // dump($interInternal);
+            // Valor total do caixa banco + caixa interno
+            $balanceGeneral = ($generalBalnaceBank + $interInternal);
+            // dd($balanceGeneral);
+
+            $pdf = PDF::loadView('report.financial.report',
+            compact( 'company',  'monthExtensive', 'accountLaunchReceipt',
+            'accountLaunchExpense', 'previousBalance','balanceGeneral', 'generalBalnaceBank', 'interInternal'));
+
+        return $pdf->stream('relatorio-financeiro');
+
         }
 
     }

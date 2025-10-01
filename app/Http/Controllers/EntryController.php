@@ -59,11 +59,14 @@ class EntryController extends Controller
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceBank = new AccountBankRepository();
         $generalBalnaceBank = $balanceBank->getBalanceBank($idCompany);
+        dump($generalBalnaceBank);
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
         $balanceInternal = new AccountInternalRepository();
         $interInternal = $balanceInternal->getInternalInternal($idCompany);
+        dump($interInternal);
         // Valor total do caixa banco + caixa interno
         $balanceGeneral = ($generalBalnaceBank + $interInternal);
+        // dd($balanceGeneral);
         //VERIFICANDO AUTORIZAÇÃO
         $entry = Entry::where('entries_id_company', $idCompany)->get();
         //todas as contas bancarias
@@ -513,7 +516,7 @@ class EntryController extends Controller
             // Datas decodificadas para exibição
             $perInitial = base64_decode($dateInit);
             $perEnd = base64_decode($dateEnd);
-
+            dd($dtinit);
             // Cálculo do saldo anterior
             $prevBalan = Monetary::previousBalance($dtinit, $idCompany);
             $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
