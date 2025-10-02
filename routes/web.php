@@ -94,9 +94,10 @@ Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
 Route::resource('tipo-conta', 'AccountTypeController');
-Route::resource('lancar' , 'EntryController')->middleware('auth');
+Route::resource('lancar' , 'FinancialEntryController')->middleware('auth');
 Route::post('caixa/upload' , 'EntryController@upload');
-Route::get('all-launch/{company}', 'EntryController@getAll');
+// Route::get('all-launch/{company}', 'EntryController@getAll');
+Route::get('all-launch/{company}', 'FinancialEntryController@datatable');
 Route::post('lancar/delete' , 'EntryController@destroy')->middleware('auth.basic');
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
