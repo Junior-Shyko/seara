@@ -199,16 +199,16 @@ function getLaunchAccount(codAccount) {
 var idCompany = $("#idCodeCompany").val();
 
 function getLaunch(idCompany) {
-    let colunas = [
-        {data: 'entries_date_launch', name: 'entries_date_launch'},
-        {data: 'entries_description', name: 'entries_description'},
-        {data: 'entries_value', name: 'entries_value'},
-        {data: 'entries_id_account', name: 'entries_id_account'},
-        {data: 'entries_bank', name: 'entries_bank'},
-        {data: 'entries_id_user', name: 'entries_id_user'},
+    const colunas = [
+        { data: 'date', name: 'date' },
+        { data: 'description', name: 'description' },
+        { data: 'total_amount', name: 'total_amount' },
+        { data: 'type_badge', name: 'type_badge' },
+        { data: 'account_info', name: 'entries.account.nam' },
+        { data: 'user', name: 'user' },
         {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
     ];
-    
+
     var table = $('#entry-table').DataTable( {
         paging: false,
         retrieve: true,
@@ -330,12 +330,12 @@ function searchPeriod(idCompany) {
 
     // Configuração das colunas da DataTable
     const columns = [
-        { data: 'entries_date_launch', name: 'entries_date_launch' },
-        { data: 'entries_description', name: 'entries_description' },
-        { data: 'entries_value', name: 'entries_value' },
-        { data: 'account_types_name', name: 'account_types_name' },
-        { data: 'entries_id_account', name: 'entries_id_account' },
-        { data: 'entries_id_user', name: 'entries_id_user' },
+        { data: 'date', name: 'date' },
+        { data: 'description', name: 'description' },
+        { data: 'total_amount', name: 'total_amount' },
+        { data: 'type_badge', name: 'type_badge' },
+        { data: 'account_info', name: 'entries.account.nam' },
+        { data: 'user', name: 'user' },
         { data: 'action', name: 'action' }
     ];
 
