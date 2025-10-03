@@ -200,13 +200,14 @@ var idCompany = $("#idCodeCompany").val();
 
 function getLaunch(idCompany) {
     const colunas = [
-        { data: 'date', name: 'date' },
+        { data: 'created_at', name: 'created_at', orderable: true }, // Nova coluna oculta para ordenação},
         { data: 'description', name: 'description' },
-        { data: 'total_amount', name: 'total_amount' },
+        { data: 'total_amount', name: 'total_amount' , orderable: true},
         { data: 'type_badge', name: 'type_badge' },
-        { data: 'account_info', name: 'entries.account.nam' },
+        { data: 'account_info', name: 'entries.account.nam' ,},
         { data: 'user', name: 'user' },
-        {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
+        {data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap'},
+
     ];
 
     var table = $('#entry-table').DataTable( {
@@ -248,7 +249,8 @@ function getLaunch(idCompany) {
             }
         ],
         ajax: SearaApp.baseURL+'all-launch/'+idCompany,
-        columns: colunas
+        columns: colunas,
+        order: [[0, 'desc']]
     });
 }
 
