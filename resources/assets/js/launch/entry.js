@@ -250,7 +250,7 @@ function getLaunch(idCompany) {
         ],
         ajax: SearaApp.baseURL+'all-launch/'+idCompany,
         columns: colunas,
-        order: [[0, 'desc']]
+        order: [[0, 'asc']]
     });
 }
 

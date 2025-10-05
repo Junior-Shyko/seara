@@ -137,4 +137,36 @@ abstract class GeneralBalanceAbstract
         return ($sumOfValue - $subtrationOfValue);
 
     }
+
+    /**
+     * Converte data com ano de 2 dígitos para 4 dígitos
+     * 
+     * @param string $date Data no formato dd/mm/yy
+     * @return string Data no formato dd/mm/yyyy
+     */
+    private function convertDateToFullYear($date)
+    {
+        // Remove espaços em branco
+        $date = trim($date);
+        
+        // Verifica se a data já tem 4 dígitos no ano
+        if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $date)) {
+            return $date; // Já está no formato correto
+        }
+        
+        // Verifica se está no formato dd/mm/yy
+        if (!preg_match('/^\d{2}\/\d{2}\/\d{2}$/', $date)) {
+            throw new \InvalidArgumentException("Formato de data inválido: {$date}");
+        }
+        
+        // Separa dia, mês e ano
+        list($day, $month, $year) = explode('/', $date);
+        
+        // Converte ano de 2 para 4 dígitos
+        // Regra: se ano <= 50, assume 20xx, senão 19xx
+        $fullYear = (int)$year <= 50 ? '20' . $year : '19' . $year;
+        
+        return sprintf('%02d/%02d/%s', $day, $month, $fullYear);
+    }
+
 }

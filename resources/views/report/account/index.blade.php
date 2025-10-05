@@ -26,7 +26,8 @@
                                         </div>
                                     @endif
                                 </div>
-                            <form action="{{url('relatorio/todas-contas')}}" method="POST">
+                            {{-- <form action="{{url('relatorio/todas-contas')}}" method="POST"> --}}
+                                <form action="{{url('financial/reports/by-category')}}" method="POST">
                                 {{ csrf_field() }}
                                 <div class="form-group">
                                     <div class="col-md-12">

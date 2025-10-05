@@ -1,5 +1,6 @@
 <?php
 
+use Seara\Http\Controllers\Financial\FinancialReportController;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -180,7 +181,12 @@ Route::group(['prefix' => 'permission', 'middleware' => ['role:admin|superAdmin'
     Route::post('alter-role' , 'UserController@alterRoleUser');
     Route::post('alter-permission' , 'UserController@alterPermissionUser');
 });
+// ROTAS PARA RELATÓRIOS FINANCEIROS
 
-Route::get('csrf', function() {
-    return csrf_token();
+Route::prefix('financial/reports')->name('financial.reports.')->group(function() {
+    Route::get('/', 'FinancialReportController@index');
+    Route::post('/by-category','FinancialReportController@byCategory');
+    Route::post('/detailed', [FinancialReportController::class, 'detailed'])->name('detailed');
+    Route::post('/export-pdf', [FinancialReportController::class, 'exportPdf'])->name('export-pdf');
+    Route::post('/export-excel', [FinancialReportController::class, 'exportExcel'])->name('export-excel');
 });
