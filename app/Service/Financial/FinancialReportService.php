@@ -29,6 +29,8 @@ class FinancialReportService
         // Query principal: Agrupa por categoria
         $reportData = FinancialEntry::select(
                 'category_id',
+                'financial_entries.entry_date',
+                'financial_entries.description',
                 DB::raw('SUM(CASE 
                     WHEN type = "credit" THEN amount 
                     WHEN type = "debit" THEN -amount 
@@ -46,7 +48,7 @@ class FinancialReportService
         // Calcular totais gerais
         $totalIncome = 0;
         $totalExpense = 0;
-           
+            // dd($reportData);
         $categories = $reportData->map(function ($item) use (&$totalIncome, &$totalExpense, $start, $end, $companyId) {
             $isIncome = $item->total > 0;
            
@@ -55,7 +57,7 @@ class FinancialReportService
             } else {
                 $totalExpense += abs($item->total);
             }
-
+            
             return [
                 'category_id' => $item->category_id,
                 'category_name' => $item->category ? $item->category->accountlaunch_name : 'Sem Categoria',
@@ -63,6 +65,8 @@ class FinancialReportService
                 'total_formatted' => 'R$ ' . number_format(abs($item->total), 2, ',', '.'),
                 'type' => $isIncome ? 'income' : 'expense',
                 'type_label' => $isIncome ? 'Receita' : 'Despesa',
+                'date_entry' => $item->entry_date,
+                'description' => $item->description ?? '',
                 'count' => $this->getEntriesCountByCategory($item->category_id, $start, $end, $companyId)
             ];
         });

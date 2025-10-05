@@ -73,7 +73,7 @@ class FinancialReportController extends Controller
                 $endDate,
                 $companyId
             );
-
+        //  dd($report);
            return view('financial.reports.by-category', compact('report'));
             
         } catch (\Exception $e) {
