@@ -88,4 +88,19 @@ class AccountLaunchRepository
             ->select('entries.*', 'account_launches.*', 'account_types.*') // Seleciona todas as colunas; ajuste se quiser campos específicos
             ->sum('entries.entries_value');
     }
+
+    static function getTypeAccount($id)
+    {
+        $account = AccountLaunch::join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+                    ->select('account_types.*')
+                    ->where('account_launches.id', $id)
+                    ->first();
+        
+        if($account)
+        {
+            return $account->account_types_name;
+        }else{
+            return null;
+        }
+    }
 }

@@ -22,15 +22,15 @@ class FinancialReportService
     {
         $dateStart = SettingsBoxRepository::convertDateToFullYear($startDate);
         $dateEnd = SettingsBoxRepository::convertDateToFullYear($endDate);
-        // Converter datas de dd/mm/yyyy para Y-m-d
+        
         $start = Carbon::createFromFormat('d/m/Y', $dateStart)->startOfDay();
         $end = Carbon::createFromFormat('d/m/Y', $dateEnd)->endOfDay();
 
-        // Query principal: Agrupa por categoria
+        // ========================================
+        // 1. DADOS AGREGADOS (para totais)
+        // ========================================
         $reportData = FinancialEntry::select(
                 'category_id',
-                'financial_entries.entry_date',
-                'financial_entries.description',
                 DB::raw('SUM(CASE 
                     WHEN type = "credit" THEN amount 
                     WHEN type = "debit" THEN -amount 
@@ -48,10 +48,10 @@ class FinancialReportService
         // Calcular totais gerais
         $totalIncome = 0;
         $totalExpense = 0;
-            // dd($reportData);
+
         $categories = $reportData->map(function ($item) use (&$totalIncome, &$totalExpense, $start, $end, $companyId) {
             $isIncome = $item->total > 0;
-           
+        
             if ($isIncome) {
                 $totalIncome += $item->total;
             } else {
@@ -65,9 +65,56 @@ class FinancialReportService
                 'total_formatted' => 'R$ ' . number_format(abs($item->total), 2, ',', '.'),
                 'type' => $isIncome ? 'income' : 'expense',
                 'type_label' => $isIncome ? 'Receita' : 'Despesa',
-                'date_entry' => $item->entry_date,
-                'description' => $item->description ?? '',
                 'count' => $this->getEntriesCountByCategory($item->category_id, $start, $end, $companyId)
+            ];
+        });
+
+        // ========================================
+        // 2. DADOS DETALHADOS (todos os lançamentos)
+        // ========================================
+        $allEntries = FinancialEntry::with([
+                'category:id,accountlaunch_name,accountlaunch_type',
+                'account:id,name,type',
+                'transaction:id,type,description',
+                'createdBy:id,name'
+            ])
+            ->whereBetween('entry_date', [$start, $end])
+            ->where('company_id', $companyId)
+            ->whereNotNull('category_id')
+            ->orderBy('entry_date', 'DESC')
+            ->orderBy('category_id')
+            ->get()
+            ->map(function ($entry) {
+                return [
+                    'id' => $entry->id,
+                    'date' => $entry->entry_date->format('d/m/Y'),
+                    'date_carbon' => $entry->entry_date,
+                    'description' => $entry->description,
+                    'category_id' => $entry->category_id,
+                    'category_name' => $entry->category ? $entry->category->accountlaunch_name : 'Sem Categoria',
+                    'account_name' => $entry->account ? $entry->account->name : '-',
+                    'type' => $entry->type,
+                    'type_label' => $entry->type === 'credit' ? 'Crédito' : 'Débito',
+                    'amount' => $entry->amount,
+                    'amount_formatted' => 'R$ ' . number_format($entry->amount, 2, ',', '.'),
+                    'amount_signed' => $entry->type === 'credit' ? $entry->amount : -$entry->amount,
+                    'amount_signed_formatted' => ($entry->type === 'debit' ? '-' : '+') . 'R$ ' . number_format($entry->amount, 2, ',', '.'),
+                    'transaction_type' => $entry->transaction ? $entry->transaction->type : '-',
+                    'created_by' => $entry->createdBy ? $entry->createdBy->name : '-'
+                ];
+            });
+
+        // ========================================
+        // 3. AGRUPAR LANÇAMENTOS POR CATEGORIA
+        // ========================================
+        $entriesByCategory = $allEntries->groupBy('category_id')->map(function ($entries, $categoryId) {
+            return [
+                'category_id' => $categoryId,
+                'category_name' => $entries->first()['category_name'],
+                'entries' => $entries->values()->toArray(),
+                'count' => $entries->count(),
+                'subtotal' => $entries->sum('amount_signed'),
+                'subtotal_formatted' => 'R$ ' . number_format(abs($entries->sum('amount_signed')), 2, ',', '.')
             ];
         });
 
@@ -81,7 +128,9 @@ class FinancialReportService
                 'start_carbon' => $start,
                 'end_carbon' => $end
             ],
-            'categories' => $categories,
+            'categories' => $categories, // Resumo agregado
+            'entries' => $allEntries, // Todos os lançamentos (lista simples)
+            'entries_by_category' => $entriesByCategory, // Lançamentos agrupados por categoria
             'totals' => [
                 'income' => $totalIncome,
                 'income_formatted' => 'R$ ' . number_format($totalIncome, 2, ',', '.'),
@@ -92,7 +141,7 @@ class FinancialReportService
                 'balance_class' => $balance >= 0 ? 'text-success' : 'text-danger'
             ],
             'summary' => [
-                'total_entries' => $this->getTotalEntries($start, $end, $companyId),
+                'total_entries' => $allEntries->count(),
                 'total_categories' => $categories->count()
             ]
         ];

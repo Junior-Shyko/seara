@@ -675,7 +675,7 @@ function saveDataForm(name_form) {
             const dateStr = field.value;
             isValid = dateVerify.isValid() && !dateStr.includes('/00');
         }
-console.log(isValid);
+;
     });
     if(!isValid){
         new PNotify({
@@ -693,27 +693,27 @@ console.log(isValid);
     //concatenendo com id da compania
     form = form + '&entries_id_company=' + idCompany
     //enviando requisição
-    SearaAjax.post('lancar', form, function( response ){
-
-        if(response.typeAccount == 'Despesa') {
-            $("#modalUploadLaunch").modal('show');
-        }
-        $(".idEntry").val(response.id);
-        $("#entry-table").DataTable().ajax.reload();
-        bankBalance(idCompany);
-        internalBalance(idCompany);
-        general(idCompany);
-        new PNotify({
-            title: 'Sucesso',
-            text: response.message,
-            type: response.status,
-            styling: 'bootstrap3'
-        });
-        if(response.typeAccount == 'Receita') {
-            setTimeout(() => {
-                // window.location.reload();
-            }, 2000);
-        }
+    SearaAjax.post('financial/entries', form, function( response ){
+        console.log(response)
+        // if(response.typeAccount == 'Despesa') {
+        //     $("#modalUploadLaunch").modal('show');
+        // }
+        // $(".idEntry").val(response.id);
+        // $("#entry-table").DataTable().ajax.reload();
+        // bankBalance(idCompany);
+        // internalBalance(idCompany);
+        // general(idCompany);
+        // new PNotify({
+        //     title: 'Sucesso',
+        //     text: response.message,
+        //     type: response.status,
+        //     styling: 'bootstrap3'
+        // });
+        // if(response.typeAccount == 'Receita') {
+        //     setTimeout(() => {
+        //         // window.location.reload();
+        //     }, 2000);
+        // }
         
     })
     .fail(function(jqXHR){

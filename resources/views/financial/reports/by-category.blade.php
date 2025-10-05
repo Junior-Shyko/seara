@@ -30,11 +30,12 @@
         td {
             border-collapse: collapse;
             border: 1px solid;
+            font-size: small;
         }
 
         .ml-5 {
             margin-left: 5px;
-            font-size: medium;
+            font-size: small;
         }
 
         .td-launch {
@@ -78,66 +79,95 @@
 
     </section>
     <br>
-    <table style="width: 100%;" border="1" cellpadding="1">
-        <thead>
-            <tr class="bg-light">
-
-                <th class="text-center">Data</th>
-                <th class="text-center">Tipo</th>
-                {{-- <th class="text-center">Quantidade</th> --}}
-                <th class="text-right">Receita</th>
-                <th class="text-right">Despesa</th>
-                <th class="text-right">Valor Total</th>
+<table style="width: 100%;" border="1" cellpadding="1">
+    <thead>
+        <tr class="bg-light">
+            <th class="text-center">Data</th>
+            <th class="text-center">Descrição</th>
+            <th class="text-right">Receita</th>
+            <th class="text-right">Despesa</th>
+            <th class="text-right">Valor Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php
+            $balance = 0;
+        @endphp
+        
+        @foreach ($report['entries_by_category'] as $categoryGroup)
+            {{-- Cabeçalho da Categoria --}}
+            <tr style="background-color: #edf4fa;">
+                <td colspan="5">
+                    <strong>Conta : </strong>{{ $categoryGroup['category_name'] }} -
+                    {{ $categoryGroup['count'] }} lançamento(s)
+                </td>
             </tr>
-
-        </thead>
-        <tbody>
-            @forelse($report['categories'] as $category)
+            
+            {{-- Lançamentos da Categoria --}}
+            @foreach ($categoryGroup['entries'] as $entry)
                 <tr>
-                    <td colspan="5">
-                        Categoria : {{ $category['category_name'] }}
-                    </td>
-                </tr>
-                <tr>
-                    {{-- <td></td> --}}
-                    <td>{{ $category['date_entry'] }}</td>
-                    <td>{{ $category['description'] }}</td>
+                    <td>{{ $entry['date'] }}</td>
+                    <td>{{ $entry['description'] }}</td>
                     <td class="text-center">
-                        @if ($category['type'] === 'income')
-                            <span class="badge badge-success">{{ $category['total_formatted'] }}</span>
+                        @if ($entry['type'] === 'credit')
+                            <span class="badge badge-success">
+                                {{ number_format($entry['amount'], 2, ',', '.') }}
+                            </span>
                         @endif
                     </td>
                     <td class="text-center">
-                        @if ($category['type'] === 'expense')
-                            <span class="badge badge-success">{{ $category['total_formatted'] }}</span>
+                        @if ($entry['type'] === 'debit')
+                            <span class="badge badge-danger">
+                                {{ number_format($entry['amount'], 2, ',', '.') }}
+                            </span>
                         @endif
                     </td>
-                    {{-- <td class="text-center">{{ $category['count'] }}</td> --}}
                     <td class="text-right">
-                        <strong class="{{ $category['type'] === 'income' ? 'text-success' : 'text-danger' }}">
-                            {{ $category['total_formatted'] }}
-                        </strong>
+                        @if ($entry['type'] === 'credit')
+                            @php
+                                $balance += $entry['amount'];
+                            @endphp
+                        @else
+                            @php
+                                $balance -= $entry['amount'];
+                            @endphp
+                        @endif
+                        {{ number_format($balance, 2, ',', '.') }}
                     </td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center text-muted">
-                        Nenhum lançamento encontrado no período
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-        <tfoot class="bg-light">
-            <tr>
-                <td colspan="4" class="text-right"><strong>TOTAL GERAL:</strong></td>
+            @endforeach
+            
+            {{-- Subtotal da Categoria --}}
+            <tr style="background-color: #f1f3f5;">
+                <td colspan="4" class="text-right" style="font-size: small;">
+                    <strong>Resumo da conta {{ $categoryGroup['category_name'] }}:</strong>
+                </td>
                 <td class="text-right">
-                    <strong class="{{ $report['totals']['balance_class'] }}">
-                        {{ $report['totals']['balance_formatted'] }}
+                    <strong class="{{ $categoryGroup['subtotal'] >= 0 ? 'text-success' : 'text-danger' }}">
+                        {{ $categoryGroup['subtotal_formatted'] }}
                     </strong>
                 </td>
             </tr>
-        </tfoot>
-    </table>
+            <tr>
+                <td>
+                    <br>
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+    
+    {{-- Total Geral (fora do loop) --}}
+    <tfoot class="bg-light">
+        <tr>
+            <td colspan="4" class="text-right"><strong>TOTAL GERAL:</strong></td>
+            <td class="text-right">
+                <strong class="{{ $report['totals']['balance_class'] }}">
+                    {{ $report['totals']['balance_formatted'] }}
+                </strong>
+            </td>
+        </tr>
+    </tfoot>
+</table>
 
 </body>
 

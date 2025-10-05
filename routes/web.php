@@ -186,7 +186,11 @@ Route::group(['prefix' => 'permission', 'middleware' => ['role:admin|superAdmin'
 Route::prefix('financial/reports')->name('financial.reports.')->group(function() {
     Route::get('/', 'FinancialReportController@index');
     Route::post('/by-category','FinancialReportController@byCategory');
-    Route::post('/detailed', [FinancialReportController::class, 'detailed'])->name('detailed');
-    Route::post('/export-pdf', [FinancialReportController::class, 'exportPdf'])->name('export-pdf');
-    Route::post('/export-excel', [FinancialReportController::class, 'exportExcel'])->name('export-excel');
+    // Route::post('/detailed', [FinancialReportController::class, 'detailed'])->name('detailed');
+    // Route::post('/export-pdf', [FinancialReportController::class, 'exportPdf'])->name('export-pdf');
+    // Route::post('/export-excel', [FinancialReportController::class, 'exportExcel'])->name('export-excel');
+});
+Route::prefix('financial')->name('financial.')->group(function() {
+    Route::get('/entries/create', 'FinancialEntryController@create')->name('entries.create');
+    Route::post('/entries', 'FinancialEntryController@store')->name('entries.store');
 });

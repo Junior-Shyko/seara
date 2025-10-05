@@ -35,7 +35,7 @@ class FinancialReportController extends Controller
      */
     public function byCategory(Request $request)
     {
-        
+
         $request->validate([
             'dateInitial' => ['required', function ($attribute, $value, $fail) {
                 // Tenta converter com 2 dígitos
@@ -65,7 +65,7 @@ class FinancialReportController extends Controller
         $startDate = $this->normalizeDate($request->dateInitial);
         $endDate = $this->normalizeDate($request->dateEnd);
 
-        $companyId = auth()->user()->company_id ?? 406;
+        $companyId = $request->company_id ?? auth()->user()->user_company_id;
 
         try {
             $report = $this->reportService->getReportByCategory(
@@ -73,32 +73,31 @@ class FinancialReportController extends Controller
                 $endDate,
                 $companyId
             );
-        //  dd($report);
            return view('financial.reports.by-category', compact('report'));
             
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            // return back()
-            //     ->withErrors(['error' => 'Erro ao gerar relatório: ' . $e->getMessage()])
-            //     ->withInput();
+
+            return back()
+                ->withErrors(['error' => 'Erro ao gerar relatório: ' . $e->getMessage()])
+                ->withInput();
         }
     }
 
     /**
- * Normaliza data para formato dd/mm/yyyy
- */
-private function normalizeDate($date)
-{
-    // Tenta converter com 2 dígitos primeiro
-    $carbonDate = \Carbon\Carbon::createFromFormat('d/m/y', $date);
-    
-    if (!$carbonDate) {
-        // Se falhar, tenta com 4 dígitos
-        $carbonDate = \Carbon\Carbon::createFromFormat('d/m/Y', $date);
+     * Normaliza data para formato dd/mm/yyyy
+     */
+    private function normalizeDate($date)
+    {
+        // Tenta converter com 2 dígitos primeiro
+        $carbonDate = \Carbon\Carbon::createFromFormat('d/m/y', $date);
+        
+        if (!$carbonDate) {
+            // Se falhar, tenta com 4 dígitos
+            $carbonDate = \Carbon\Carbon::createFromFormat('d/m/Y', $date);
+        }
+        
+        return $carbonDate->format('d/m/Y');
     }
-    
-    return $carbonDate->format('d/m/Y');
-}
 
     /**
      * Gera relatório detalhado

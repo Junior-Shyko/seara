@@ -2,6 +2,7 @@
 
 namespace Seara;
 
+use Seara\Models\Company;
 use Illuminate\Database\Eloquent\Model;
 
 class FinancialAccount extends Model

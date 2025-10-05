@@ -2,6 +2,8 @@
 
 namespace Seara;
 
+use Seara\Models\User;
+use Seara\Models\Company;
 use Illuminate\Database\Eloquent\Model;
 
 class FinancialEntry extends Model
