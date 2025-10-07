@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Seara\Http\Controllers;
 
-use Seara\Service\Financial\FinancialReportService;
-use Illuminate\Http\Request;
 use Seara\AccountLaunch;
+use Seara\Models\Company;
+use Illuminate\Http\Request;
 use Seara\Http\Controllers\Controller;
+use Seara\Service\Financial\FinancialReportService;
 
 class FinancialReportController extends Controller
 {
@@ -66,14 +67,15 @@ class FinancialReportController extends Controller
         $endDate = $this->normalizeDate($request->dateEnd);
 
         $companyId = $request->company_id ?? auth()->user()->user_company_id;
-
+        $company = Company::getCompany($companyId);
         try {
             $report = $this->reportService->getReportByCategory(
                 $startDate,
                 $endDate,
-                $companyId
+                $companyId,
+                $request->entries_id_account
             );
-           return view('financial.reports.by-category', compact('report'));
+           return view('financial.reports.by-category', compact('report', 'company'));
             
         } catch (\Exception $e) {
 

@@ -18,7 +18,7 @@ class FinancialReportService
      * @param int $companyId
      * @return array
      */
-    public function getReportByCategory($startDate, $endDate, $companyId)
+    public function getReportByCategory($startDate, $endDate, $companyId, $categoryId = null)
     {
         $dateStart = SettingsBoxRepository::convertDateToFullYear($startDate);
         $dateEnd = SettingsBoxRepository::convertDateToFullYear($endDate);
@@ -41,6 +41,10 @@ class FinancialReportService
             ->whereBetween('entry_date', [$start, $end])
             ->where('company_id', $companyId)
             ->whereNotNull('category_id')
+            ->when($categoryId, function ($query) use ($categoryId) {
+                // FILTRO CONDICIONAL: Se $categoryId não for null, filtra
+                return $query->where('category_id', $categoryId);
+            })
             ->groupBy('category_id')
             ->orderBy('total', 'DESC')
             ->get();
@@ -81,6 +85,10 @@ class FinancialReportService
             ->whereBetween('entry_date', [$start, $end])
             ->where('company_id', $companyId)
             ->whereNotNull('category_id')
+            ->when($categoryId, function ($query) use ($categoryId) {
+                // FILTRO CONDICIONAL: Se $categoryId não for null, filtra
+                return $query->where('category_id', $categoryId);
+            })
             ->orderBy('entry_date', 'DESC')
             ->orderBy('category_id')
             ->get()
@@ -121,16 +129,24 @@ class FinancialReportService
         // Saldo final
         $balance = $totalIncome - $totalExpense;
 
+        // INFORMAÇÃO ADICIONAL: Se filtrou por categoria
+        $filteredCategory = null;
+        if ($categoryId) {
+            $filteredCategory = AccountLaunch::find($categoryId);
+        }
+
         return [
+            'filtered_category' => $filteredCategory,
+            'is_filtered' => !is_null($categoryId), 
             'period' => [
                 'start' => $start->format('d/m/Y'),
                 'end' => $end->format('d/m/Y'),
                 'start_carbon' => $start,
                 'end_carbon' => $end
             ],
-            'categories' => $categories, // Resumo agregado
-            'entries' => $allEntries, // Todos os lançamentos (lista simples)
-            'entries_by_category' => $entriesByCategory, // Lançamentos agrupados por categoria
+            'categories' => $categories,
+            'entries' => $allEntries,
+            'entries_by_category' => $entriesByCategory,
             'totals' => [
                 'income' => $totalIncome,
                 'income_formatted' => 'R$ ' . number_format($totalIncome, 2, ',', '.'),

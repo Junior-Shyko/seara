@@ -695,25 +695,25 @@ function saveDataForm(name_form) {
     //enviando requisição
     SearaAjax.post('financial/entries', form, function( response ){
         console.log(response)
-        // if(response.typeAccount == 'Despesa') {
-        //     $("#modalUploadLaunch").modal('show');
-        // }
-        // $(".idEntry").val(response.id);
-        // $("#entry-table").DataTable().ajax.reload();
-        // bankBalance(idCompany);
-        // internalBalance(idCompany);
-        // general(idCompany);
-        // new PNotify({
-        //     title: 'Sucesso',
-        //     text: response.message,
-        //     type: response.status,
-        //     styling: 'bootstrap3'
-        // });
-        // if(response.typeAccount == 'Receita') {
-        //     setTimeout(() => {
-        //         // window.location.reload();
-        //     }, 2000);
-        // }
+        if(response.typeAccount == 'Despesa') {
+            $("#modalUploadLaunch").modal('show');
+        }
+        $(".idEntry").val(response.id);
+        $("#entry-table").DataTable().ajax.reload();
+        bankBalance(idCompany);
+        internalBalance(idCompany);
+        general(idCompany);
+        new PNotify({
+            title: 'Sucesso',
+            text: response.message,
+            type: response.status,
+            styling: 'bootstrap3'
+        });
+        if(response.typeAccount == 'Receita') {
+            setTimeout(() => {
+                // window.location.reload();
+            }, 2000);
+        }
         
     })
     .fail(function(jqXHR){

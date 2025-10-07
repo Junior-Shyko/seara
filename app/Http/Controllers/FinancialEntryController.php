@@ -7,6 +7,7 @@ use Seara\Transaction;
 use Seara\AccountLaunch;
 use Seara\FinancialEntry;
 use Seara\Models\Company;
+use Seara\Seara\Monetary;
 use Illuminate\Support\Str;
 use Seara\FinancialAccount;
 use Illuminate\Http\Request;
@@ -110,9 +111,7 @@ class FinancialEntryController extends Controller
             // Alterando para novoo padrao (income, expense ou transfer)
             $type = $this->getReturnTypeAccount($typeAccount);
            
-            $entries_value = str_replace(',', '.', $request->entries_value);
-            $numeric_value = filter_var($entries_value, FILTER_VALIDATE_FLOAT);
-
+            $numeric_value = Monetary::money_real($request->entries_value);
             // 1. Criar Transaction (cabeçalho)
             $transaction = Transaction::create([
                 'uuid' => $this->generateUuid(),

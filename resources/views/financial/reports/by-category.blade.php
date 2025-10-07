@@ -66,8 +66,8 @@
         <header>
             <div class="col">
                 <small>
-                    Empresa: <br>
-                    CNPJ:
+                    Empresa: {{$company->company_name}}<br>
+                    CNPJ: {{$company->company_cnpj}}
                 </small>
             </div>
             <div class="col-right"></div>
@@ -86,7 +86,7 @@
             <th class="text-center">Descrição</th>
             <th class="text-right">Receita</th>
             <th class="text-right">Despesa</th>
-            <th class="text-right">Valor Total</th>
+            <th class="text-right">Saldo</th>
         </tr>
     </thead>
     <tbody>
@@ -98,8 +98,8 @@
             {{-- Cabeçalho da Categoria --}}
             <tr style="background-color: #edf4fa;">
                 <td colspan="5">
-                    <strong>Conta : </strong>{{ $categoryGroup['category_name'] }} -
-                    {{ $categoryGroup['count'] }} lançamento(s)
+                    <strong>Conta : </strong>{{ $categoryGroup['category_name'] }} | 
+                    {{ $categoryGroup['count'] }} lançamento(s) 
                 </td>
             </tr>
             
@@ -149,7 +149,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
+                <td colspan="5">
                     <br>
                 </td>
             </tr>
