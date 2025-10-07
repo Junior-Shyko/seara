@@ -127,4 +127,10 @@ class FinancialAccountController extends Controller
     {
         //
     }
+
+    public function getAllAccount($id)
+    {
+        $accounts = FinancialAccount::where('company_id', $id)->get();
+        return response()->json($accounts);
+    }
 }
