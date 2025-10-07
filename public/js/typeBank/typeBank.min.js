@@ -153,6 +153,7 @@ $("#btn_delete_type_account_bank").click(function (e) {
 
 $("#btnSaveAccontBank").click(function (e){
     var form = $("#formAccountBank").serialize();
+    console.log(form)
     //validação
     if(
         $(".accountBankNumber").val() == '' ||
@@ -169,10 +170,10 @@ $("#btnSaveAccontBank").click(function (e){
     //referenciando url
     if(idAccontBank == '' ){
         typeRequest = "POST";
-        urlRequest = SearaApp.baseURL + 'conta-bancaria';
+        urlRequest = SearaApp.baseURL + 'financial/account/store';
     }else{
         typeRequest = "PATCH";
-        urlRequest = SearaApp.baseURL + 'conta-bancaria/'+idAccontBank;
+        urlRequest = SearaApp.baseURL + 'financial/account/store/'+idAccontBank;
     }
     $.ajax({
         type: typeRequest,

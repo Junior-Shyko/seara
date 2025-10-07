@@ -10,7 +10,7 @@ class BankRepository {
         return Bank::all();
     }
 
-    public function getBank($id) {
+    static public function getBank($id) {
         return Bank::findOrFail($id);
     }
 

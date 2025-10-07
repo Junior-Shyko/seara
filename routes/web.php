@@ -194,3 +194,7 @@ Route::prefix('financial')->name('financial.')->group(function() {
     Route::get('/entries/create', 'FinancialEntryController@create')->name('entries.create');
     Route::post('/entries', 'FinancialEntryController@store')->name('entries.store');
 });
+Route::prefix('financial/account')->name('financial.')->group(function() {
+    // Route::get('/store', 'FinancialAccountController@create')->name('entries.create');
+    Route::post('/store', 'FinancialAccountController@store');
+});
