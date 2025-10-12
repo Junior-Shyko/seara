@@ -41,4 +41,15 @@ class Company extends Model
     {
       return Company::findOrFail($id);
     }
+
+    static public function getIdCompany()
+    {
+       $user = auth()->user();
+       
+        if ($user) {
+          return $user->user_id_company;
+        }
+
+        return null;
+    }
 }

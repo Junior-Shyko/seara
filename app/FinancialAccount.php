@@ -3,6 +3,7 @@
 namespace Seara;
 
 use Seara\Models\Company;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
 class FinancialAccount extends Model
@@ -147,5 +148,17 @@ class FinancialAccount extends Model
         $this->save();
         
         return $this;
+    }
+
+    static public function getbankInternal(Request $request, $account)
+    {
+        if($request->idAccountBank == ''){                   
+            foreach($account as $acc){
+                if($acc->type == 'cash'){
+                    $account = FinancialAccount::find($acc->id);                            
+                }
+            }
+        }
+        return $account;
     }
 }

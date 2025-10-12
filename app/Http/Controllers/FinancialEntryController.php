@@ -19,6 +19,10 @@ use Seara\Repository\AccountLaunchRepository;
 
 class FinancialEntryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -26,13 +30,13 @@ class FinancialEntryController extends Controller
      */
     public function index()
     {
-        $idCompany = auth()->user()->user_company_id ?? 406;
+        $idCompany = Company::getIdCompany();
         $company = Company::getCompany($idCompany);
         // Calcular totais
+       
         $totalBanks = FinancialAccount::byCompany($idCompany)
             ->banks()
             ->sum('current_balance');
-            
         $totalCash = FinancialAccount::byCompany($idCompany)
             ->cash()
             ->sum('current_balance');
@@ -40,7 +44,6 @@ class FinancialEntryController extends Controller
         $totalGeneral = $totalBanks + $totalCash;
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
-        // dd($accounts);
         return view('entry.index', compact(
             'totalBanks', 'totalCash', 'totalGeneral', 'idCompany', 'company', 'accounts'
         ));
@@ -87,12 +90,12 @@ class FinancialEntryController extends Controller
         //     'document_file.mimes' => 'Arquivo deve ser PDF, JPG, JPEG ou PNG',
         //     'document_file.max' => 'Arquivo não pode ultrapassar 2MB'
         // ]);
-
-        $companyId = auth()->user()->user_company_id ?? 406;
+        
+        $companyId = Company::getIdCompany();
         $userId = auth()->id();
 
         DB::beginTransaction();
-        
+       
         try {
             $dateStart = SettingsBoxRepository::convertDateToFullYear($request->entries_date_launch);
             
@@ -143,14 +146,17 @@ class FinancialEntryController extends Controller
             ]);
             
             // 4. Atualizar saldo da conta
-            $account = FinancialAccount::find(1);
-            
+            // Buscando conta financeira por empresa
+            $account = FinancialAccount::byCompany($companyId)->get();
+             
             if ($entryType === 'credit') {
-                $account->increment('current_balance', $numeric_value);
+                $financialAccount = FinancialAccount::getbankInternal($request, $account);
+                $financialAccount->increment('current_balance', $numeric_value);
             } else {
-                $account->decrement('current_balance', $numeric_value);
+                $financialAccount = FinancialAccount::getbankInternal($request, $account);
+                $financialAccount->decrement('current_balance', $numeric_value);
             }
-            
+           
             DB::commit();
             return response()->json([
                 'message' => 'Conta lançada',
@@ -232,8 +238,8 @@ class FinancialEntryController extends Controller
      */
     public function datatable(Request $request)
     {
-        $companyId = auth()->user()->company_id ?? 406;
-        
+        $companyId = Company::getIdCompany();
+
         $query = Transaction::with([
                 'entries.account',
                 'entries.category',
