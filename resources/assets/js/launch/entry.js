@@ -466,6 +466,14 @@ $("#btnEditLaunch").click(function (e) {
                 styling: 'bootstrap3'
             });
         }
+    })
+    .fail(function(jqXHR){
+        new PNotify({
+            title: 'Ops!!',
+            text: 'Ocorreu um erro inesperado. Tente novamente mais tarde',
+            type: 'error',
+            styling: 'bootstrap3'
+        });
     });
 });
 
@@ -687,14 +695,14 @@ function saveDataForm(name_form) {
         return false;
     }
 
-    if(verifyBank) {
-       alterValueBank(idBank, valueLanchBank);
-    }
+    // if(verifyBank) {
+    //    alterValueBank(idBank, valueLanchBank);
+    // }
     //concatenendo com id da compania
     form = form + '&entries_id_company=' + idCompany
     //enviando requisição
     SearaAjax.post('financial/entries', form, function( response ){
-        console.log(response)
+       
         if(response.typeAccount == 'Despesa') {
             $("#modalUploadLaunch").modal('show');
         }
@@ -703,22 +711,32 @@ function saveDataForm(name_form) {
         bankBalance(idCompany);
         internalBalance(idCompany);
         general(idCompany);
-        new PNotify({
-            title: 'Sucesso',
-            text: response.message,
-            type: response.status,
-            styling: 'bootstrap3'
-        });
-        if(response.typeAccount == 'Receita') {
-            setTimeout(() => {
-                // window.location.reload();
-            }, 2000);
+        if(response.status == 'error') {
+            new PNotify({
+                title: 'Ops!!!',
+                text: response.message,
+                type: response.status,
+                styling: 'bootstrap3'
+            });
+            return false;
+        }else{
+            new PNotify({
+                title: 'Sucesso',
+                text: response.message,
+                type: response.status,
+                styling: 'bootstrap3'
+            });
+            if(response.typeAccount == 'Receita') {
+                setTimeout(() => {
+                    // window.location.reload();
+                }, 2000);
+            }
         }
+        
         
     })
     .fail(function(jqXHR){
-        notify.response(jqXHR.responseJSON);
-
+       notify.response(jqXHR.responseJSON);
     })
     .always(function(){
         //console.log('hideModal');

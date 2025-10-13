@@ -12,6 +12,7 @@ use Seara\AccountLaunch;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
+use Seara\FinancialAccount;
 use Illuminate\Http\Request;
 use Seara\Relation_launch_bank;
 use Seara\Repository\EntryRepository;
@@ -54,6 +55,8 @@ class EntryController extends Controller
         }
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
+        $accounts = FinancialAccount::byCompany($idCompany)->get();
+        dd($accounts);
         //DADOS DA IGREJA COMPLETO
         $company = Company::getCompany($idCompany);
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO

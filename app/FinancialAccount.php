@@ -158,7 +158,9 @@ class FinancialAccount extends Model
                     $account = FinancialAccount::find($acc->id);                            
                 }
             }
-        }
+        }else{
+            $account = FinancialAccount::find($request->idAccountBank);
+        }   
         return $account;
     }
 }

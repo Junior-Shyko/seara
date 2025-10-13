@@ -43,9 +43,10 @@ class FinancialEntryController extends Controller
             
         $totalGeneral = $totalBanks + $totalCash;
         //TODAS CONTAS
+        $accountsBussines = FinancialAccount::byCompany($idCompany)->get();
         $accounts = AccountLaunch::get();
         return view('entry.index', compact(
-            'totalBanks', 'totalCash', 'totalGeneral', 'idCompany', 'company', 'accounts'
+            'totalBanks', 'totalCash', 'totalGeneral', 'idCompany', 'company', 'accounts', 'accountsBussines'
         ));
     }
 
@@ -168,20 +169,22 @@ class FinancialEntryController extends Controller
             
         } catch (\Exception $e) {
             DB::rollBack();
-            dd([
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-
-
+            // dd([
+            //     'message' => $e->getMessage(),
+            //     'file' => $e->getFile(),
+            //     'line' => $e->getLine(),
+            //     'trace' => $e->getTraceAsString()
+            // ]);
             // Se houve upload, deletar arquivo
             // if ($documentPath && \Storage::disk('public')->exists($documentPath)) {
             //     \Storage::disk('public')->delete($documentPath);
-            // }
-            
+            // } 
+             return response()->json([
+                'message' => 'Ocorreu um erro ao cadastrar lançamento: ' . $e->getMessage(),
+                'status' => 'error',
+                'id' => $entry->id,
+                'typeAccount' => $entryType
+            ], 200);           
             return back()
                 ->withInput()
                 ->withErrors(['error' => 'Erro ao cadastrar lançamento: ' . $e->getMessage()]);
