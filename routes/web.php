@@ -138,7 +138,7 @@ Route::get('getBank/{id}' , 'BankController@show');
 Route::resource('conta-bancaria' , 'AccountBankController');
 Route::get('getAccountBank/{id}' , 'AccountBankController@show');
 
-Route::post('transferir' , 'AccountBankController@actionTransfer');
+
 
 //TIPO DE CONTAS BANCARIASS
 Route::get('tipo-banco/getType', 'TypeBankController@getType');
@@ -193,6 +193,7 @@ Route::prefix('financial/reports')->name('financial.reports.')->group(function()
 Route::prefix('financial')->name('financial.')->group(function() {
     Route::get('/entries/create', 'FinancialEntryController@create')->name('entries.create');
     Route::post('/entries', 'FinancialEntryController@store')->name('entries.store');
+    Route::post('transferir' , 'FinancialEntryController@transfer');
 });
 Route::group(['prefix' => 'financial/account'], function() {
     Route::get('/store', 'FinancialAccountController@create')->name('entries.create');

@@ -6,6 +6,7 @@ use Seara\TypeBank;
 use Seara\FinancialAccount;
 use Illuminate\Http\Request;
 use Seara\Repository\BankRepository;
+use Yajra\DataTables\Facades\DataTables;
 
 class FinancialAccountController extends Controller
 {
@@ -49,15 +50,15 @@ class FinancialAccountController extends Controller
 
         // Buscar o TypeBank pelo ID fornecido na requisição
         $typeBank = TypeBank::findOrFail($request->typeBank_id);
-        $bank = BankRepository::getBank($request->bank_id) ;
-       
+        $bank = BankRepository::getBank($request->bank_id);
+
         // Criar uma nova instância de FinancialAccount
         $financialAccount = new FinancialAccount();
 
         // Adicionar (definir ou concatenar) o nome do TypeBank ao campo 'name' da FinancialAccount
         // Aqui, assumi que "adicione" significa definir o name como o nome do TypeBank.
         // Se for para concatenar com algo existente, ajuste conforme necessário (ex: $financialAccount->name = 'Conta ' . $typeBank->name;)
-        $financialAccount->name = $bank->name .' - '. $typeBank->name;
+        $financialAccount->name = $bank->name . ' - ' . $typeBank->name;
 
         // Preencher os outros campos da requisição
         $financialAccount->bank_id = $request->bank_id;
@@ -131,6 +132,19 @@ class FinancialAccountController extends Controller
     public function getAllAccount($id)
     {
         $accounts = FinancialAccount::where('company_id', $id)->get();
-        return response()->json($accounts);
+        // return response()->json($accounts);
+        return DataTables::of($accounts)
+            ->addColumn('type', function ($accounts) {
+               if($accounts->type == 'bank'){
+                   return 'Banco';
+               } else {
+                   return 'Caixa';
+               }
+            })
+            ->addColumn('action', function ($accounts) {
+                return '<button class="btn btn-sm btn-danger" onclick="deleteAccount(' . $accounts->id . ')"><i class="fa fa-trash"></i> Excluir</button>';
+            })
+            ->rawColumns(['action']) // Permitir HTML na coluna 'action'
+            ->make(true);
     }
 }

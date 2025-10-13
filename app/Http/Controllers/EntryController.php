@@ -469,8 +469,9 @@ class EntryController extends Controller
 
     public function bank($idCompany)
     {
-        $balanceBank = new AccountBankRepository();
-        return $balanceBank->getBalanceBank($idCompany);
+        return FinancialAccount::byCompany($idCompany)
+            ->banks()
+            ->sum('current_balance');
     }
 
     public function internal($idCompany)

@@ -127,12 +127,11 @@
                                         <small class="text-danger">Conta de saída</small>
                                         <select name="" id="selectAccountBankEnd" class="form-control">
                                             <option value="">--Selecione--</option>
-                                            <option value="0">CAIXA INTERNO</option>
-                                            {{-- @foreach ($accountBank as $bank)
+                                            @foreach ($accountsBussines as $bank)
                                                 <option value="{{ $bank->id }}">
-                                                    {{ $bank->nameBank }}
+                                                    {{ $bank->name }}
                                                 </option>
-                                            @endforeach --}}
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-3">
@@ -153,12 +152,11 @@
                                         <small class="text-danger">Conta de entrada</small>
                                         <select name="" id="selectAccountBankEntry" class="form-control">
                                             <option value="">--Selecione--</option>
-                                            <option value="0">CAIXA INTERNO</option>
-                                            {{-- @foreach ($accountBank as $bank)
+                                            @foreach ($accountsBussines as $bank)
                                                 <option value="{{ $bank->id }}">
-                                                    {{ $bank->nameBank }}
+                                                    {{ $bank->name }}
                                                 </option>
-                                            @endforeach --}}
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-3">

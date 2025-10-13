@@ -8,6 +8,7 @@ use Seara\AccountLaunch;
 use Seara\FinancialEntry;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
+use Seara\TransferDetail;
 use Illuminate\Support\Str;
 use Seara\FinancialAccount;
 use Illuminate\Http\Request;
@@ -357,5 +358,98 @@ class FinancialEntryController extends Controller
         );
     }
 
+    public function transfer(Request $request)
+    {
+        
+        $companyId = Company::getIdCompany();
+        $userId = auth()->id();
+        $fromAccount = FinancialAccount::find($request->idAccountEnd);
+        $toAccount = FinancialAccount::find($request->idAccountEntry);
+        $toAccountId = $request->idAccountEntry;
+        $amount = $request->value;
+
+        // Exemplo de transferência no Laravel
+       DB::beginTransaction();
+       try {
+        // Buscar nomes das contas para descrição
+        $numeric_value = Monetary::money_real($request->value);
+        // ========================================
+        // 1. CRIAR TRANSACTION (Cabeçalho da Transferência)
+        // ========================================
+        $transaction = Transaction::create([
+            'uuid' => $this->generateUuid(),
+            'type' => 'transfer', // 👈 ENUM direto
+            'status' => 'completed',
+            'description' => 'Transferência recebida de ' . $fromAccount->name,
+            'total_amount' => $numeric_value,
+            'from_account_id' => $request->idAccountEnd, // 👈 Importante para rastreabilidade
+            'to_account_id' => $request->idAccountEntry,     // 👈 Importante para rastreabilidade
+            'company_id' => $companyId,
+            'created_by_user_id' => $userId
+        ]);
+        // ========================================
+        // 2. CRIAR ENTRY DE DÉBITO (Saída da conta origem)
+        // ========================================
+        $debitEntry = FinancialEntry::create([
+            'transaction_id' => $transaction->id,
+            'account_id' => $request->idAccountEnd,
+            'category_id' => null, // Transferências podem não ter categoria ou usar categoria específica
+            'type' => 'debit', // 👈 Saída
+            'description' => 'Transferência enviada para ' . $toAccount->name,
+            'amount' => $numeric_value,
+            'entry_date' => Carbon::now(),
+            'document_file' => null,
+            'company_id' => $companyId,
+            'created_by_user_id' => $userId
+        ]);
+         // ========================================
+        // 3. CRIAR ENTRY DE CRÉDITO (Entrada na conta destino)
+        // ========================================
+        $creditEntry = FinancialEntry::create([
+            'transaction_id' => $transaction->id,
+            'account_id' => $request->idAccountEnd,
+            'category_id' => null,
+            'type' => 'credit', // 👈 Entrada
+            'description' => 'Transferência recebida de ' . $fromAccount->name,
+            'amount' => $numeric_value,
+            'entry_date' =>  Carbon::now(),
+            'document_file' => null, // Mesmo arquivo nas duas entries
+            'company_id' => $companyId,
+            'created_by_user_id' => $userId
+        ]);
+
+        // ========================================
+        // 4. ATUALIZAR SALDOS DAS CONTAS
+        // ========================================
+        // Débito (diminui saldo da origem)
+        $fromAccount->decrement('current_balance', $numeric_value);
+        
+        // Crédito (aumenta saldo do destino)
+        $toAccount->increment('current_balance', $numeric_value);
+        // 5. (OPCIONAL) CRIAR REGISTRO NA TABELA transfer_details
+        TransferDetail::create([
+            'transfer_group_id' => $transaction->uuid,
+            'from_account_id' => $request->idAccountEnd,
+            'to_account_id' => $request->idAccountEntry,
+            'amount' => $numeric_value,
+            'debit_entry_id' => $debitEntry->id,
+            'credit_entry_id' => $creditEntry->id,
+            'transfer_date' => Carbon::now(),
+            'notes' => 'Transferencia entre contas bancárias',
+        ]);
+        DB::commit();
+        return response()->json([
+                'title' => 'Sucesso',
+               'message' => 'Transferência realizada com sucesso!',
+               'status' => '200'
+           ], 200);
+       } catch (\Exception $e) {
+           DB::rollBack();
+           return response()->json([
+               'message' => 'Erro ao realizar transferência: ' . $e->getMessage(),
+               'status' => 'error'
+           ], 500);
+       }
+    }
 
 }
