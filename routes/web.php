@@ -99,7 +99,7 @@ Route::resource('lancar' , 'FinancialEntryController')->middleware('auth');
 Route::post('caixa/upload' , 'EntryController@upload');
 // Route::get('all-launch/{company}', 'EntryController@getAll');
 Route::get('all-launch/{company}', 'FinancialEntryController@datatable');
-Route::post('lancar/delete' , 'EntryController@destroy')->middleware('auth.basic');
+
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
 Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}/company/{company}' , 'EntryController@reportBox');
@@ -190,6 +190,8 @@ Route::prefix('financial/reports')->name('financial.reports.')->group(function()
     // Route::post('/export-pdf', [FinancialReportController::class, 'exportPdf'])->name('export-pdf');
     // Route::post('/export-excel', [FinancialReportController::class, 'exportExcel'])->name('export-excel');
 });
+
+Route::post('lancar/delete' , 'FinancialEntryController@destroy')->middleware('auth.basic');
 Route::prefix('financial')->name('financial.')->group(function() {
     Route::get('/entries/create', 'FinancialEntryController@create')->name('entries.create');
     Route::post('/entries', 'FinancialEntryController@store')->name('entries.store');

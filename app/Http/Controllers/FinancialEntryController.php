@@ -227,14 +227,86 @@ class FinancialEntryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Exclui um lançamento (Transaction + Entries + Atualiza Saldos).
      *
-     * @param  \Seara\FinancialEntry  $financialEntry
-     * @return \Illuminate\Http\Response
+     * @param int $id ID da Transaction
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(FinancialEntry $financialEntry)
+    public function destroy(Request $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            // Buscar a transaction com todas as entries
+            $transaction = Transaction::with(['entries.account'])
+                ->findOrFail($request->id);
+            // Verificar se pertence à empresa do usuário logado
+            $companyId = Company::getIdCompany();
+            $accounts = FinancialAccount::byCompany($companyId)->get();
+           
+            if ($transaction->company_id != $companyId) {
+                return back()->withErrors(['error' => 'Você não tem permissão para excluir este lançamento.']);
+            }            
+            // ========================================
+            // 1. REVERTER SALDOS DAS CONTAS
+            // ========================================
+            foreach ($transaction->entries as $entry) {
+                $account = null;
+                foreach ($accounts as $acc) {
+                    if($acc->type == 'cash'){
+                        $account = $acc;
+                    }
+                }
+                if (!$account) {
+                    continue; // Pula se a conta foi deletada
+                }
+                
+                // Reverter o lançamento:
+                // Se foi CRÉDITO (entrada), diminui o saldo
+                // Se foi DÉBITO (saída), aumenta o saldo
+                if ($entry->type === 'credit') {
+                    $account->decrement('current_balance', $account->current_balance);
+                } else {
+                    $account->increment('current_balance', $account->current_balance);
+                }
+            }
+            
+            // ========================================
+            // 2. DELETAR ARQUIVOS ANEXADOS (se houver)
+            // ========================================
+            // foreach ($transaction->entries as $entry) {
+            //     if ($entry->document_file && \Storage::disk('public')->exists($entry->document_file)) {
+            //         \Storage::disk('public')->delete($entry->document_file);
+            //     }
+            // }
+            
+            // ========================================
+            // 3. DELETAR A TRANSACTION
+            // ========================================
+            // Por causa do ON DELETE CASCADE, as entries serão deletadas automaticamente
+            $transaction->delete();
+            DB::commit();
+            return back()->with('success', 'Lançamento excluído com sucesso!');           
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
+            return response()->json([
+                'title' => 'Erro',
+                'message' => 'Lançamento não encontrado.',
+                'status' => '400',
+                'type' => 'error'
+            ], 400);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'title' => 'Erro',
+                'message' => 'Erro ao excluir lançamento: ' . $e->getMessage(),
+                'status' => '400',
+                'type' => 'error'
+            ], 400);
+
+        }
     }
 
     /**
