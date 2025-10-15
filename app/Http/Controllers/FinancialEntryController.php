@@ -14,6 +14,7 @@ use Seara\FinancialAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Logging\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\SettingsBoxRepository;
 use Seara\Repository\AccountLaunchRepository;
@@ -260,43 +261,50 @@ class FinancialEntryController extends Controller
                 ->findOrFail($request->id);
             // Verificar se pertence à empresa do usuário logado
             $companyId = Company::getIdCompany();
-            $accounts = FinancialAccount::byCompany($companyId)->get();
-
             if ($transaction->company_id != $companyId) {
-                return back()->withErrors(['error' => 'Você não tem permissão para excluir este lançamento.']);
+                return response()->json([
+                    'title' => 'Erro',
+                    'message' => 'Você não tem permissão para excluir este lançamento.',
+                    'status' => '403',
+                    'type' => 'error'
+                ], 403);
             }            
-            // ========================================
-            // 1. REVERTER SALDOS DAS CONTAS
-            // ========================================
-            foreach ($transaction->entries as $entry) {
-                $account = $entry->account;
-               
-                if (!$account) {
-                    continue; // Pula se a conta foi deletada
+            $transfer = $transaction->transfer();
+            $transfer = $transfer->first();
+            if ($transfer && $transfer->type === 'transfer') {
+                // Lógica específica para transferências: adicionar ao 'from' e remover do 'to'
+                $fromAccount = FinancialAccount::find($transfer->from_account_id);
+                if ($fromAccount) {
+                    $fromAccount->increment('current_balance', $transfer->total_amount);
+                }               
+                $toAccount = FinancialAccount::find($transfer->to_account_id);
+                if ($toAccount) {
+                    $toAccount->decrement('current_balance', $transfer->total_amount);
                 }
-                
-                // Reverter o lançamento:
-                // Se foi CRÉDITO (entrada), diminui o saldo
-                // Se foi DÉBITO (saída), aumenta o saldo
-                if ($entry->type === 'credit') {
-                    $account->decrement('current_balance', $account->current_balance);
-                } else {
-                    $account->increment('current_balance', $account->current_balance);
+            } else {
+                // Lógica geral para outros tipos: reverter baseado nas entries
+                foreach ($transaction->entries as $entry) {
+                    $account = $entry->account;                    
+                    if (!$account) {
+                        continue; // Pula se a conta foi deletada
+                    }                    
+                    // Reverter o lançamento:
+                    // Se foi CRÉDITO (entrada), diminui o saldo pelo VALOR DO LANÇAMENTO
+                    // Se foi DÉBITO (saída), aumenta o saldo pelo VALOR DO LANÇAMENTO
+                    if ($entry->type === 'credit') {
+                        $account->decrement('current_balance', $entry->amount); // 👈 CORRIGIDO
+                    } else {
+                        $account->increment('current_balance', $entry->amount); // 👈 CORRIGIDO
+                    }
                 }
-            }
-            
-            // ========================================
+            }            
             // 2. DELETAR ARQUIVOS ANEXADOS (se houver)
-            // ========================================
             // foreach ($transaction->entries as $entry) {
             //     if ($entry->document_file && \Storage::disk('public')->exists($entry->document_file)) {
             //         \Storage::disk('public')->delete($entry->document_file);
             //     }
             // }
-            
-            // ========================================
             // 3. DELETAR A TRANSACTION
-            // ========================================
             // Por causa do ON DELETE CASCADE, as entries serão deletadas automaticamente
             $transaction->delete();
             DB::commit();
@@ -313,6 +321,12 @@ class FinancialEntryController extends Controller
             
         } catch (\Exception $e) {
             DB::rollBack();
+            // dd([
+            //     'message' => $e->getMessage(),
+            //     'file' => $e->getFile(),
+            //     'line' => $e->getLine(),
+            //     'trace' => $e->getTraceAsString()
+            // ]);
             return response()->json([
                 'title' => 'Erro',
                 'message' => 'Erro ao excluir lançamento: ' . $e->getMessage(),
@@ -398,7 +412,8 @@ class FinancialEntryController extends Controller
             return $btnUserRole;
         }
 
-        $disabled = $mov->isTransfer() ? 'disabled' : '';
+        // $disabled = $mov->isTransfer() ? 'disabled' : '';
+        $disabled = '';
 
         return '<button class="btn btn-primary btn-xs ' . $disabled . '" type="button" title="Editar do Registro"
             data-toggle="modal"
@@ -455,8 +470,6 @@ class FinancialEntryController extends Controller
         $userId = auth()->id();
         $fromAccount = FinancialAccount::find($request->idAccountEnd);
         $toAccount = FinancialAccount::find($request->idAccountEntry);
-        $toAccountId = $request->idAccountEntry;
-        $amount = $request->value;
 
         // Exemplo de transferência no Laravel
        DB::beginTransaction();
