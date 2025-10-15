@@ -154,7 +154,7 @@ class Transaction extends Model
     public function getTypeFormattedAttribute()
     {
         $types = [
-            'income' => '💚 Receita',
+            'income' => '🟢 Receita',
             'expense' => '🔴 Despesa',
             'transfer' => '🔄 Transferência',
         ];

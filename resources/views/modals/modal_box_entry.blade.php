@@ -137,7 +137,7 @@
                                     <div class="col-md-3">
                                         <small>Valor para transferência</small>
                                         <input type="text" name="realValueTranfer" 
-                                        id="realValueTranfer" class="form-control" value="50">
+                                        id="realValueTranfer" class="form-control">
                                     </div>
                                     <div class="col-md-5">
                                         {{-- <label>informações</label>

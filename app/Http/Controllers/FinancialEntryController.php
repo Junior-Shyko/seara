@@ -35,20 +35,26 @@ class FinancialEntryController extends Controller
         $idCompany = Company::getIdCompany();
         $company = Company::getCompany($idCompany);
         // Calcular totais
-       
+
         $totalBanks = FinancialAccount::byCompany($idCompany)
             ->banks()
             ->sum('current_balance');
         $totalCash = FinancialAccount::byCompany($idCompany)
             ->cash()
             ->sum('current_balance');
-            
+
         $totalGeneral = $totalBanks + $totalCash;
         //TODAS CONTAS
         $accountsBussines = FinancialAccount::byCompany($idCompany)->get();
         $accounts = AccountLaunch::get();
         return view('entry.index', compact(
-            'totalBanks', 'totalCash', 'totalGeneral', 'idCompany', 'company', 'accounts', 'accountsBussines'
+            'totalBanks',
+            'totalCash',
+            'totalGeneral',
+            'idCompany',
+            'company',
+            'accounts',
+            'accountsBussines'
         ));
     }
 
@@ -67,18 +73,18 @@ class FinancialEntryController extends Controller
      */
     public function store(Request $request)
     {
-       
+
         $companyId = Company::getIdCompany();
         $userId = auth()->id();
 
         DB::beginTransaction();
-       
+
         try {
             $dateStart = SettingsBoxRepository::convertDateToFullYear($request->entries_date_launch);
-            
+
             // Converter data
             $entryDate = \Carbon\Carbon::createFromFormat('d/m/Y', $dateStart);
-           
+
             // Upload de arquivo (se houver)
             $documentPath = null;
             if ($request->hasFile('document_file')) {
@@ -90,13 +96,13 @@ class FinancialEntryController extends Controller
             $typeAccount  = AccountLaunchRepository::getTypeAccount($request->entries_id_account);
             // Alterando para novoo padrao (income, expense ou transfer)
             $type = $this->getReturnTypeAccount($typeAccount);
-           
+
             $numeric_value = Monetary::money_real($request->entries_value);
             // ========================================
             // DETERMINAR A CONTA FINANCEIRA
             // ========================================
             $accountId = null;
-            
+
             if ($request->filled('entries_bank') && $request->entries_bank > 0) {
                 // Banco foi selecionado
                 $accountId = $request->entries_bank;
@@ -105,21 +111,21 @@ class FinancialEntryController extends Controller
                 $caixaInterno = FinancialAccount::where('company_id', $companyId)
                     ->where('type', 'cash')
                     ->first();
-                
+
                 if (!$caixaInterno) {
                     throw new \Exception('Caixa interno não encontrado para esta empresa. Por favor, cadastre uma conta de caixa.');
                 }
-                
+
                 $accountId = $caixaInterno->id;
             }
 
             // Validar se a conta existe
             $account = FinancialAccount::find($accountId);
-            
+
             if (!$account) {
                 throw new \Exception('Conta financeira não encontrada (ID: ' . $accountId . ')');
             }
-            
+
             // Validar se a conta pertence à empresa
             if ($account->company_id != $companyId) {
                 throw new \Exception('Esta conta não pertence à sua empresa.');
@@ -136,12 +142,12 @@ class FinancialEntryController extends Controller
                 'company_id' => $companyId,
                 'created_by_user_id' => $userId
             ]);
-            
+
             // 2. Determinar tipo de entry (credit ou debit)
             $entryType = $type === 'income' ? 'credit' : 'debit';
-            
+
             // 3. Criar Financial Entry
-            
+
             $entry = FinancialEntry::create([
                 'transaction_id' => $transaction->id,
                 'account_id' => $accountId,
@@ -154,7 +160,7 @@ class FinancialEntryController extends Controller
                 'company_id' => $companyId,
                 'created_by_user_id' => $userId
             ]);
-            
+
             // ========================================
             // 4. ATUALIZAR SALDO DA CONTA
             // ========================================
@@ -163,19 +169,19 @@ class FinancialEntryController extends Controller
                 $account->increment('current_balance', $numeric_value);
             } else {
                 // Despesa: diminui saldo
-                
+
                 // Validar se tem saldo suficiente (opcional)
                 if ($account->current_balance < $numeric_value) {
                     // Pode optar por lançar exceção ou apenas avisar
                     // throw new \Exception('Saldo insuficiente na conta ' . $account->name);
-                    
+
                     // Ou permitir saldo negativo:
                     $account->decrement('current_balance', $numeric_value);
                 } else {
                     $account->decrement('current_balance', $numeric_value);
                 }
             }
-           
+
             DB::commit();
             return response()->json([
                 'message' => 'Conta lançada',
@@ -183,10 +189,8 @@ class FinancialEntryController extends Controller
                 'id' => $entry->id,
                 'typeAccount' => $entryType,
                 'account_name' => $account->name,
-                'new_balance' => $account->fresh()->current_balance 
+                'new_balance' => $account->fresh()->current_balance
             ], 200);
-            
-            
         } catch (\Exception $e) {
             DB::rollBack();
             dd([
@@ -204,7 +208,7 @@ class FinancialEntryController extends Controller
                 'status' => 'error',
                 'id' => $entry->id,
                 'typeAccount' => $entryType
-            ], 200);           
+            ], 200);
             return back()
                 ->withInput()
                 ->withErrors(['error' => 'Erro ao cadastrar lançamento: ' . $e->getMessage()]);
@@ -268,7 +272,7 @@ class FinancialEntryController extends Controller
                     'status' => '403',
                     'type' => 'error'
                 ], 403);
-            }            
+            }
             $transfer = $transaction->transfer();
             $transfer = $transfer->first();
             if ($transfer && $transfer->type === 'transfer') {
@@ -276,7 +280,7 @@ class FinancialEntryController extends Controller
                 $fromAccount = FinancialAccount::find($transfer->from_account_id);
                 if ($fromAccount) {
                     $fromAccount->increment('current_balance', $transfer->total_amount);
-                }               
+                }
                 $toAccount = FinancialAccount::find($transfer->to_account_id);
                 if ($toAccount) {
                     $toAccount->decrement('current_balance', $transfer->total_amount);
@@ -284,10 +288,10 @@ class FinancialEntryController extends Controller
             } else {
                 // Lógica geral para outros tipos: reverter baseado nas entries
                 foreach ($transaction->entries as $entry) {
-                    $account = $entry->account;                    
+                    $account = $entry->account;
                     if (!$account) {
                         continue; // Pula se a conta foi deletada
-                    }                    
+                    }
                     // Reverter o lançamento:
                     // Se foi CRÉDITO (entrada), diminui o saldo pelo VALOR DO LANÇAMENTO
                     // Se foi DÉBITO (saída), aumenta o saldo pelo VALOR DO LANÇAMENTO
@@ -297,7 +301,7 @@ class FinancialEntryController extends Controller
                         $account->increment('current_balance', $entry->amount); // 👈 CORRIGIDO
                     }
                 }
-            }            
+            }
             // 2. DELETAR ARQUIVOS ANEXADOS (se houver)
             // foreach ($transaction->entries as $entry) {
             //     if ($entry->document_file && \Storage::disk('public')->exists($entry->document_file)) {
@@ -308,8 +312,7 @@ class FinancialEntryController extends Controller
             // Por causa do ON DELETE CASCADE, as entries serão deletadas automaticamente
             $transaction->delete();
             DB::commit();
-            return back()->with('success', 'Lançamento excluído com sucesso!');           
-            
+            return back()->with('success', 'Lançamento excluído com sucesso!');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             DB::rollBack();
             return response()->json([
@@ -318,7 +321,6 @@ class FinancialEntryController extends Controller
                 'status' => '400',
                 'type' => 'error'
             ], 400);
-            
         } catch (\Exception $e) {
             DB::rollBack();
             // dd([
@@ -333,7 +335,6 @@ class FinancialEntryController extends Controller
                 'status' => '400',
                 'type' => 'error'
             ], 400);
-
         }
     }
 
@@ -345,37 +346,37 @@ class FinancialEntryController extends Controller
         $companyId = Company::getIdCompany();
 
         $query = Transaction::with([
-                'entries.account',
-                'entries.category',
-                'createdBy',
-                'fromAccount',
-                'toAccount'
-            ])
+            'entries.account',
+            'entries.category',
+            'createdBy',
+            'fromAccount',
+            'toAccount'
+        ])
             ->byCompany($companyId);
 
         // Filtro por tipo
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
-       
+
         // Filtro por período
         if ($request->filled('dtIni') && $request->filled('dtEnd')) {
             $dtInitCarbon = Carbon::createFromFormat('y-m-d', $request->dtIni);
             $dtEndCarbon = Carbon::createFromFormat('y-m-d', $request->dtEnd);
-            $query->whereHas('entries', function($q) use ($dtInitCarbon, $dtEndCarbon) {
+            $query->whereHas('entries', function ($q) use ($dtInitCarbon, $dtEndCarbon) {
                 $q->whereBetween('entry_date', [$dtInitCarbon, $dtEndCarbon]);
             });
         }
 
         return DataTables::of($query)
-        ->addColumn('created_at', function ($transaction) {
-            $firstEntry = $transaction->entries->first();
-            return $firstEntry ? $firstEntry->entry_date->format('d/m/Y') : '-';
-        })
-        ->addColumn('date_sort', function ($transaction) {
-            $firstEntry = $transaction->entries->first();
-            return $firstEntry ? $firstEntry->entry_date->timestamp : 0;
-        })
+            ->addColumn('created_at', function ($transaction) {
+                $firstEntry = $transaction->entries->first();
+                return $firstEntry ? $firstEntry->entry_date->format('d/m/Y') : '-';
+            })
+            ->addColumn('date_sort', function ($transaction) {
+                $firstEntry = $transaction->entries->first();
+                return $firstEntry ? $firstEntry->entry_date->timestamp : 0;
+            })
             ->addColumn('type_badge', function ($transaction) {
                 return $transaction->type_formatted;
             })
@@ -386,10 +387,10 @@ class FinancialEntryController extends Controller
                 if ($transaction->isTransfer()) {
                     return $transaction->transfer_description;
                 }
-                
+
                 $firstEntry = $transaction->entries->first();
-                return $firstEntry && $firstEntry->account 
-                    ? $firstEntry->account->name 
+                return $firstEntry && $firstEntry->account
+                    ? $firstEntry->account->name
                     : '-';
             })
             ->addColumn('user', function ($transaction) {
@@ -397,9 +398,9 @@ class FinancialEntryController extends Controller
             })
             ->addColumn('action', function ($mov) {
                 $firstEntry = $mov->entries->first();
-        $dtLauch = $firstEntry ? $firstEntry->entry_date->format('d/m/Y') : '';
-        
-        $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
+                $dtLauch = $firstEntry ? $firstEntry->entry_date->format('d/m/Y') : '';
+
+                $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
             data-toggle="modal"
             data-id="' . $mov->id . '"
             data-day="' . ($firstEntry ? $firstEntry->entry_date->day : '') . '"
@@ -408,14 +409,14 @@ class FinancialEntryController extends Controller
             data-target="#modalInfoLaunch">
             <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>';
 
-        if (Auth::user()->hasRole('user')) {
-            return $btnUserRole;
-        }
+                if (Auth::user()->hasRole('user')) {
+                    return $btnUserRole;
+                }
 
-        // $disabled = $mov->isTransfer() ? 'disabled' : '';
-        $disabled = '';
+                // $disabled = $mov->isTransfer() ? 'disabled' : '';
+                $disabled = '';
 
-        return '<button class="btn btn-primary btn-xs ' . $disabled . '" type="button" title="Editar do Registro"
+                return '<button class="btn btn-primary btn-xs ' . $disabled . '" type="button" title="Editar do Registro"
             data-toggle="modal"
             data-id="' . $mov->id . '"
             data-date="' . $dtLauch . '"
@@ -435,9 +436,9 @@ class FinancialEntryController extends Controller
             data-type="' . $mov->type . '"
             data-target="#modalDeleteComponent">
             <i class="fa fa-trash"></i></button>';
-                })
-                ->rawColumns(['type_badge', 'amount_formatted', 'action'])
-                ->make(true);
+            })
+            ->rawColumns(['type_badge', 'amount_formatted', 'action'])
+            ->make(true);
     }
 
     protected function getReturnTypeAccount($typeAccount)
@@ -454,105 +455,100 @@ class FinancialEntryController extends Controller
 
     private function generateUuid()
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0x0fff) | 0x4000,
             mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
     }
 
     public function transfer(Request $request)
     {
-        
         $companyId = Company::getIdCompany();
         $userId = auth()->id();
         $fromAccount = FinancialAccount::find($request->idAccountEnd);
         $toAccount = FinancialAccount::find($request->idAccountEntry);
 
         // Exemplo de transferência no Laravel
-       DB::beginTransaction();
-       try {
-        // Buscar nomes das contas para descrição
-        $numeric_value = Monetary::money_real($request->value);
-        // ========================================
-        // 1. CRIAR TRANSACTION (Cabeçalho da Transferência)
-        // ========================================
-        $transaction = Transaction::create([
-            'uuid' => $this->generateUuid(),
-            'type' => 'transfer', // 👈 ENUM direto
-            'status' => 'completed',
-            'description' => 'Transferência recebida de ' . $fromAccount->name,
-            'total_amount' => $numeric_value,
-            'from_account_id' => $request->idAccountEnd, // 👈 Importante para rastreabilidade
-            'to_account_id' => $request->idAccountEntry,     // 👈 Importante para rastreabilidade
-            'company_id' => $companyId,
-            'created_by_user_id' => $userId
-        ]);
-        // ========================================
-        // 2. CRIAR ENTRY DE DÉBITO (Saída da conta origem)
-        // ========================================
-        $debitEntry = FinancialEntry::create([
-            'transaction_id' => $transaction->id,
-            'account_id' => $request->idAccountEnd,
-            'category_id' => null, // Transferências podem não ter categoria ou usar categoria específica
-            'type' => 'debit', // 👈 Saída
-            'description' => 'Transferência enviada para ' . $toAccount->name,
-            'amount' => $numeric_value,
-            'entry_date' => Carbon::now(),
-            'document_file' => null,
-            'company_id' => $companyId,
-            'created_by_user_id' => $userId
-        ]);
-         // ========================================
-        // 3. CRIAR ENTRY DE CRÉDITO (Entrada na conta destino)
-        // ========================================
-        $creditEntry = FinancialEntry::create([
-            'transaction_id' => $transaction->id,
-            'account_id' => $request->idAccountEnd,
-            'category_id' => null,
-            'type' => 'credit', // 👈 Entrada
-            'description' => 'Transferência recebida de ' . $fromAccount->name,
-            'amount' => $numeric_value,
-            'entry_date' =>  Carbon::now(),
-            'document_file' => null, // Mesmo arquivo nas duas entries
-            'company_id' => $companyId,
-            'created_by_user_id' => $userId
-        ]);
+        DB::beginTransaction();
+        try {
+            // Buscar nomes das contas para descrição
+            $numeric_value = Monetary::money_real($request->value);
+            // 1. CRIAR TRANSACTION (Cabeçalho da Transferência)
+            $transaction = Transaction::create([
+                'uuid' => $this->generateUuid(),
+                'type' => 'transfer', // 👈 ENUM direto
+                'status' => 'completed',
+                'description' => 'Transferência recebida de ' . $fromAccount->name,
+                'total_amount' => $numeric_value,
+                'from_account_id' => $request->idAccountEnd, // 👈 Importante para rastreabilidade
+                'to_account_id' => $request->idAccountEntry,     // 👈 Importante para rastreabilidade
+                'company_id' => $companyId,
+                'created_by_user_id' => $userId
+            ]);
+            // 2. CRIAR ENTRY DE DÉBITO (Saída da conta origem)
+            $debitEntry = FinancialEntry::create([
+                'transaction_id' => $transaction->id,
+                'account_id' => $request->idAccountEnd,
+                'category_id' => null, // Transferências podem não ter categoria ou usar categoria específica
+                'type' => 'debit', // 👈 Saída
+                'description' => 'Transferência enviada para ' . $toAccount->name,
+                'amount' => $numeric_value,
+                'entry_date' => Carbon::now(),
+                'document_file' => null,
+                'company_id' => $companyId,
+                'created_by_user_id' => $userId
+            ]);
+            // ========================================
+            // 3. CRIAR ENTRY DE CRÉDITO (Entrada na conta destino)
+            $creditEntry = FinancialEntry::create([
+                'transaction_id' => $transaction->id,
+                'account_id' => $request->idAccountEnd,
+                'category_id' => null,
+                'type' => 'credit', // 👈 Entrada
+                'description' => 'Transferência recebida de ' . $fromAccount->name,
+                'amount' => $numeric_value,
+                'entry_date' =>  Carbon::now(),
+                'document_file' => null, // Mesmo arquivo nas duas entries
+                'company_id' => $companyId,
+                'created_by_user_id' => $userId
+            ]);
 
-        // ========================================
-        // 4. ATUALIZAR SALDOS DAS CONTAS
-        // ========================================
-        // Débito (diminui saldo da origem)
-        $fromAccount->decrement('current_balance', $numeric_value);
-        
-        // Crédito (aumenta saldo do destino)
-        $toAccount->increment('current_balance', $numeric_value);
-        // 5. (OPCIONAL) CRIAR REGISTRO NA TABELA transfer_details
-        TransferDetail::create([
-            'transfer_group_id' => $transaction->uuid,
-            'from_account_id' => $request->idAccountEnd,
-            'to_account_id' => $request->idAccountEntry,
-            'amount' => $numeric_value,
-            'debit_entry_id' => $debitEntry->id,
-            'credit_entry_id' => $creditEntry->id,
-            'transfer_date' => Carbon::now(),
-            'notes' => 'Transferencia entre contas bancárias',
-        ]);
-        DB::commit();
-        return response()->json([
+            // 4. ATUALIZAR SALDOS DAS CONTAS
+            // Débito (diminui saldo da origem)
+            $fromAccount->decrement('current_balance', $numeric_value);
+
+            // Crédito (aumenta saldo do destino)
+            $toAccount->increment('current_balance', $numeric_value);
+            // 5. (OPCIONAL) CRIAR REGISTRO NA TABELA transfer_details
+            TransferDetail::create([
+                'transfer_group_id' => $transaction->uuid,
+                'from_account_id' => $request->idAccountEnd,
+                'to_account_id' => $request->idAccountEntry,
+                'amount' => $numeric_value,
+                'debit_entry_id' => $debitEntry->id,
+                'credit_entry_id' => $creditEntry->id,
+                'transfer_date' => Carbon::now(),
+                'notes' => 'Transferencia entre contas bancárias',
+            ]);
+            DB::commit();
+            return response()->json([
                 'title' => 'Sucesso',
-               'message' => 'Transferência realizada com sucesso!',
-               'status' => '200'
-           ], 200);
-       } catch (\Exception $e) {
-           DB::rollBack();
-           return response()->json([
-               'message' => 'Erro ao realizar transferência: ' . $e->getMessage(),
-               'status' => 'error'
-           ], 500);
-       }
+                'message' => 'Transferência realizada com sucesso!',
+                'status' => '200'
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Erro ao realizar transferência: ' . $e->getMessage(),
+                'status' => 'error'
+            ], 500);
+        }
     }
-
 }
