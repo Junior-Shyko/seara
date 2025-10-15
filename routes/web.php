@@ -98,7 +98,7 @@ Route::resource('tipo-conta', 'AccountTypeController');
 Route::resource('lancar' , 'FinancialEntryController')->middleware('auth');
 Route::post('caixa/upload' , 'EntryController@upload');
 // Route::get('all-launch/{company}', 'EntryController@getAll');
-Route::get('all-launch/{company}', 'FinancialEntryController@datatable');
+
 
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
@@ -192,6 +192,8 @@ Route::prefix('financial/reports')->name('financial.reports.')->group(function()
 });
 
 Route::post('lancar/delete' , 'FinancialEntryController@destroy')->middleware('auth.basic');
+Route::get('all-launch/{company}', 'FinancialEntryController@datatable');
+
 Route::prefix('financial')->name('financial.')->group(function() {
     Route::get('/entries/create', 'FinancialEntryController@create')->name('entries.create');
     Route::post('/entries', 'FinancialEntryController@store')->name('entries.store');

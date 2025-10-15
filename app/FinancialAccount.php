@@ -152,7 +152,8 @@ class FinancialAccount extends Model
 
     static public function getbankInternal(Request $request, $account)
     {
-        if($request->idAccountBank == ''){                   
+       
+        if($request->idAccountBank == '' || is_null($request->idAccountBank)){                   
             foreach($account as $acc){
                 if($acc->type == 'cash'){
                     $account = FinancialAccount::find($acc->id);                            

@@ -67,32 +67,6 @@ class FinancialEntryController extends Controller
     public function store(Request $request)
     {
        
-        // Validação
-        // $validated = $request->validate([
-        //     'entries_id_account' => 'required|exists:account_launches,id',
-        //     // 'account_id' => 'required|exists:financial_accounts,id',
-        //     'type' => 'required|in:income,expense',
-        //     'entries_description' => 'required|string|max:255',
-        //     'entries_value' => 'required|numeric|min:0.01',
-        //     'entries_date_launch' => 'required|date_format:d/m/Y',
-        //     'document_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048'
-        // ], [
-        //     'entries_id_account.required' => 'Selecione uma categoria',
-        //     'entries_id_account.exists' => 'Categoria inválida',
-        //     // 'account_id.required' => 'Selecione uma conta',
-        //     // 'account_id.exists' => 'Conta inválida',
-        //     'type.required' => 'Selecione o tipo (Receita ou Despesa)',
-        //     'type.in' => 'Tipo inválido',
-        //     'entries_description.required' => 'Descrição é obrigatória',
-        //     'entries_value.required' => 'Valor é obrigatório',
-        //     'entries_value.numeric' => 'Valor deve ser numérico',
-        //     'entries_value.min' => 'Valor deve ser maior que zero',
-        //     'entries_date_launch.required' => 'Data é obrigatória',
-        //     'entries_date_launch.date_format' => 'Data deve estar no formato dd/mm/yyyy',
-        //     'document_file.mimes' => 'Arquivo deve ser PDF, JPG, JPEG ou PNG',
-        //     'document_file.max' => 'Arquivo não pode ultrapassar 2MB'
-        // ]);
-        
         $companyId = Company::getIdCompany();
         $userId = auth()->id();
 
@@ -117,6 +91,38 @@ class FinancialEntryController extends Controller
             $type = $this->getReturnTypeAccount($typeAccount);
            
             $numeric_value = Monetary::money_real($request->entries_value);
+            // ========================================
+            // DETERMINAR A CONTA FINANCEIRA
+            // ========================================
+            $accountId = null;
+            
+            if ($request->filled('entries_bank') && $request->entries_bank > 0) {
+                // Banco foi selecionado
+                $accountId = $request->entries_bank;
+            } else {
+                // Caixa Interno - Buscar o caixa interno da empresa
+                $caixaInterno = FinancialAccount::where('company_id', $companyId)
+                    ->where('type', 'cash')
+                    ->first();
+                
+                if (!$caixaInterno) {
+                    throw new \Exception('Caixa interno não encontrado para esta empresa. Por favor, cadastre uma conta de caixa.');
+                }
+                
+                $accountId = $caixaInterno->id;
+            }
+
+            // Validar se a conta existe
+            $account = FinancialAccount::find($accountId);
+            
+            if (!$account) {
+                throw new \Exception('Conta financeira não encontrada (ID: ' . $accountId . ')');
+            }
+            
+            // Validar se a conta pertence à empresa
+            if ($account->company_id != $companyId) {
+                throw new \Exception('Esta conta não pertence à sua empresa.');
+            }
             // 1. Criar Transaction (cabeçalho)
             $transaction = Transaction::create([
                 'uuid' => $this->generateUuid(),
@@ -134,9 +140,10 @@ class FinancialEntryController extends Controller
             $entryType = $type === 'income' ? 'credit' : 'debit';
             
             // 3. Criar Financial Entry
+            
             $entry = FinancialEntry::create([
                 'transaction_id' => $transaction->id,
-                'account_id' => 1,
+                'account_id' => $accountId,
                 'category_id' => $request->entries_id_account,
                 'type' => $entryType,
                 'description' => $request->entries_description,
@@ -147,16 +154,25 @@ class FinancialEntryController extends Controller
                 'created_by_user_id' => $userId
             ]);
             
-            // 4. Atualizar saldo da conta
-            // Buscando conta financeira por empresa
-            $account = FinancialAccount::byCompany($companyId)->get();
-             
+            // ========================================
+            // 4. ATUALIZAR SALDO DA CONTA
+            // ========================================
             if ($entryType === 'credit') {
-                $financialAccount = FinancialAccount::getbankInternal($request, $account);
-                $financialAccount->increment('current_balance', $numeric_value);
+                // Receita: aumenta saldo
+                $account->increment('current_balance', $numeric_value);
             } else {
-                $financialAccount = FinancialAccount::getbankInternal($request, $account);
-                $financialAccount->decrement('current_balance', $numeric_value);
+                // Despesa: diminui saldo
+                
+                // Validar se tem saldo suficiente (opcional)
+                if ($account->current_balance < $numeric_value) {
+                    // Pode optar por lançar exceção ou apenas avisar
+                    // throw new \Exception('Saldo insuficiente na conta ' . $account->name);
+                    
+                    // Ou permitir saldo negativo:
+                    $account->decrement('current_balance', $numeric_value);
+                } else {
+                    $account->decrement('current_balance', $numeric_value);
+                }
             }
            
             DB::commit();
@@ -164,23 +180,25 @@ class FinancialEntryController extends Controller
                 'message' => 'Conta lançada',
                 'status' => 'success',
                 'id' => $entry->id,
-                'typeAccount' => $entryType
+                'typeAccount' => $entryType,
+                'account_name' => $account->name,
+                'new_balance' => $account->fresh()->current_balance 
             ], 200);
             
             
         } catch (\Exception $e) {
             DB::rollBack();
-            // dd([
-            //     'message' => $e->getMessage(),
-            //     'file' => $e->getFile(),
-            //     'line' => $e->getLine(),
-            //     'trace' => $e->getTraceAsString()
-            // ]);
+            dd([
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
             // Se houve upload, deletar arquivo
             // if ($documentPath && \Storage::disk('public')->exists($documentPath)) {
             //     \Storage::disk('public')->delete($documentPath);
             // } 
-             return response()->json([
+            return response()->json([
                 'message' => 'Ocorreu um erro ao cadastrar lançamento: ' . $e->getMessage(),
                 'status' => 'error',
                 'id' => $entry->id,
@@ -243,7 +261,7 @@ class FinancialEntryController extends Controller
             // Verificar se pertence à empresa do usuário logado
             $companyId = Company::getIdCompany();
             $accounts = FinancialAccount::byCompany($companyId)->get();
-           
+
             if ($transaction->company_id != $companyId) {
                 return back()->withErrors(['error' => 'Você não tem permissão para excluir este lançamento.']);
             }            
@@ -251,12 +269,8 @@ class FinancialEntryController extends Controller
             // 1. REVERTER SALDOS DAS CONTAS
             // ========================================
             foreach ($transaction->entries as $entry) {
-                $account = null;
-                foreach ($accounts as $acc) {
-                    if($acc->type == 'cash'){
-                        $account = $acc;
-                    }
-                }
+                $account = $entry->account;
+               
                 if (!$account) {
                     continue; // Pula se a conta foi deletada
                 }
@@ -324,15 +338,19 @@ class FinancialEntryController extends Controller
                 'toAccount'
             ])
             ->byCompany($companyId);
-        
+
         // Filtro por tipo
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
-        
+       
         // Filtro por período
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->betweenDates($request->start_date, $request->end_date);
+        if ($request->filled('dtIni') && $request->filled('dtEnd')) {
+            $dtInitCarbon = Carbon::createFromFormat('y-m-d', $request->dtIni);
+            $dtEndCarbon = Carbon::createFromFormat('y-m-d', $request->dtEnd);
+            $query->whereHas('entries', function($q) use ($dtInitCarbon, $dtEndCarbon) {
+                $q->whereBetween('entry_date', [$dtInitCarbon, $dtEndCarbon]);
+            });
         }
 
         return DataTables::of($query)
