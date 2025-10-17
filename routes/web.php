@@ -203,5 +203,6 @@ Route::group(['prefix' => 'financial/account'], function() {
     Route::get('/store', 'FinancialAccountController@create')->name('entries.create');
     Route::get('all/{id}' , 'FinancialAccountController@getAllAccount');
     Route::post('/store', 'FinancialAccountController@store');
-
 });
+
+Route::get('criar-caixa', 'BoxController@criar_caixa');

@@ -2,12 +2,14 @@
 
 namespace Seara\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Auth , DB;
 use Seara\Box;
 use Seara\Entry;
-use Seara\FunctionGeneral;
-use Auth , DB;
 use Carbon\Carbon;
+use Seara\Models\Company;
+use Seara\FunctionGeneral;
+use Seara\FinancialAccount;
+use Illuminate\Http\Request;
 use Yajra\DataTables\Datatables;
 
 class BoxController extends Controller
@@ -242,4 +244,24 @@ class BoxController extends Controller
         }
 
     }
+
+    public function criar_caixa()
+    {
+        $companies = Company::get();
+        foreach ($companies as $key => $company) {
+            FinancialAccount::create([
+                'name' => 'Caixa Interno',
+                'type' => 'cash',
+                'bank_id' => 20,
+                'agency_number' => 0001,
+                'account_number' => 0001,
+                'company_id' => $company->company_id,
+                'current_balance' => 0.00,
+                'is_active' => 1,
+            ]);
+        }
+        
+    }
+
+        
 }
