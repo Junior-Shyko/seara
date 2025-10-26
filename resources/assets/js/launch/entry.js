@@ -539,12 +539,12 @@ function formatValueToFront(action, idAccountBank, balanceInternal, smalTextInfo
 $("#selectAccountBankEnd").change(function (e) { 
     e.preventDefault();
     $("#realValueTranfer").removeAttr('disabled');
-    formatValueToFront(
-        'saida',
-        $("#selectAccountBankEnd").val(), 
-        $("#valueInternal").val(), 
-        'balanceEndAccount'
-    );
+    // formatValueToFront(
+    //     'saida',
+    //     $("#selectAccountBankEnd").val(), 
+    //     $("#valueInternal").val(), 
+    //     'balanceEndAccount'
+    // );
 });
 
 $("#selectAccountBankEntry").change(function (e) { 
@@ -563,12 +563,12 @@ $("#selectAccountBankEntry").change(function (e) {
         $("#btnTransferValue").show();
     }
     
-    formatValueToFront(
-        'entrada',
-        $("#selectAccountBankEntry").val(), 
-        $("#valueInternal").val(), 
-        'balanceEntryAccount'
-    );
+    // formatValueToFront(
+    //     'entrada',
+    //     $("#selectAccountBankEntry").val(), 
+    //     $("#valueInternal").val(), 
+    //     'balanceEntryAccount'
+    // );
 }); 
 //AO SAIR DO CAMPO SE FAZ A VELIDAÇÃO DE VALORES
 $('#realValueTranfer').on('blur', function () {
