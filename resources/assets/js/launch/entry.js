@@ -116,6 +116,10 @@ $(document).ready(function () {
         modal.find('#idDelete').val(id)
     })
 
+    $('#lancar_conta').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+    });
+
     //ID DO LANÇAMENTO
         
     function getInfolaunch(id, nameDivFile) {
@@ -192,7 +196,6 @@ function getLaunchAccount(codAccount) {
         $(".label_desc_type").html(data[0].account_types_name);
         $(".typeTransactionForm").val(data[0].account_types_name);
         $(".entries_description").val(data[0].accountlaunch_history);
-        // $(".account_launches_referring").html(data[0].account_launches_referring);
         showDivs();
     });
 }    
@@ -225,7 +228,7 @@ function getLaunch(idCompany) {
             {
                 extend: 'excel',
                 text: 'Exportar planilha do Excel',
-                filename: 'dados_exportados',
+                filename: 'planilha_exportada_com_lancamentos',
                 className: 'btn btn-secondary',
                 charset: 'utf-8',
                 bom: true // Para caracteres especiais
@@ -233,7 +236,7 @@ function getLaunch(idCompany) {
             {
                 extend: 'pdf',
                 text: 'Imprimir em PDF',
-                filename: 'dados_exportados',
+                filename: 'pdf_lancamentos',
                 orientation: 'landscape', // ou 'portrait'
                 pageSize: 'A4',
                 className: 'btn btn-primary',
@@ -453,8 +456,8 @@ $("#btnEditLaunch").click(function (e) {
 
     var idLaunch = $("#idLaunchEdit").val();
     $.ajax({
-        type: "POST",
-        url: SearaApp.baseURL+'lancar/'+idLaunch,
+        type: "PUT",
+        url: SearaApp.baseURL+'financial/entries/update/'+idLaunch,
         data: form,
         dataType: "json",
         success: function (_response) {
@@ -661,6 +664,8 @@ function transferValue() {
        
     });''
 }
+
+
 
 function saveDataForm(name_form) {
     var form = $('#'+name_form).serialize();

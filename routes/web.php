@@ -96,6 +96,7 @@ Route::resource('conta' , 'AccountController');
 
 Route::resource('tipo-conta', 'AccountTypeController');
 Route::resource('lancar' , 'FinancialEntryController')->middleware('auth');
+
 Route::post('caixa/upload' , 'EntryController@upload');
 // Route::get('all-launch/{company}', 'EntryController@getAll');
 
@@ -198,7 +199,9 @@ Route::prefix('financial')->name('financial.')->group(function() {
     Route::get('/entries/create', 'FinancialEntryController@create')->name('entries.create');
     Route::post('/entries', 'FinancialEntryController@store')->name('entries.store');
     Route::post('transferir' , 'FinancialEntryController@transfer');
+    Route::put('entries/update/{id}' , 'FinancialEntryController@update')->name('entries/update.update');
 });
+
 Route::group(['prefix' => 'financial/account'], function() {
     Route::get('/store', 'FinancialAccountController@create')->name('entries.create');
     Route::get('all/{id}' , 'FinancialAccountController@getAllAccount');
