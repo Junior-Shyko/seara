@@ -247,19 +247,25 @@ class BoxController extends Controller
 
     public function criar_caixa()
     {
-        $companies = Company::get();
-        foreach ($companies as $key => $company) {
-            FinancialAccount::create([
-                'name' => 'Caixa Interno',
-                'type' => 'cash',
-                'bank_id' => 20,
-                'agency_number' => 0001,
-                'account_number' => 0001,
-                'company_id' => $company->company_id,
-                'current_balance' => 0.00,
-                'is_active' => 1,
-            ]);
-        }
+        $caixaInterno = FinancialAccount::where('company_id', 392)
+                ->where('type', 'cash')
+                ->first();
+
+                dump($caixaInterno);
+        //
+        // $companies = Company::get();
+        // foreach ($companies as $key => $company) {
+        //     FinancialAccount::create([
+        //         'name' => 'Caixa Interno',
+        //         'type' => 'cash',
+        //         'bank_id' => 20,
+        //         'agency_number' => 0001,
+        //         'account_number' => 0001,
+        //         'company_id' => $company->company_id,
+        //         'current_balance' => 0.00,
+        //         'is_active' => 1,
+        //     ]);
+        // }
         
     }
 

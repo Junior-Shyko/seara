@@ -104,7 +104,7 @@ abstract class GeneralBalanceAbstract
      */
     public function getInternalInternal($idCompany)
     {
-         $balance = Entry::where('entries_id_company', $idCompany)->get();
+        $balance = Entry::where('entries_id_company', $idCompany)->get();
         $sumOfValue = 0;
         $subtrationOfValue = 0;
        
