@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountType;
 use Seara\AccountLaunch;
+use Seara\FinancialEntry;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
@@ -491,78 +492,52 @@ class EntryController extends Controller
         return 0;
     }
 
-    public function reportBox($dateInit, $dateEnd, $idCompany)
+    public function reportBox(Request $request, $dateInit = null, $dateEnd = null, $idCompany = null)
     {
          ini_set('max_execution_time', '120');
         // Inicializa variáveis de data
-        $dtinit = null;
-        $dtend = null;
-        $perInitial = '';
-        $perEnd = '';
-        $total = 0;
-        $previousBalance = 0;
+        $dateInit  = $request->route('dateInit');
+        $dateEnd   = $request->route('dateEnd');
+        $idCompany = $request->route('idCompany');
+        
+        $perInitial = base64_decode($dateInit);
+        $perEnd = base64_decode($dateEnd);
+        $dtInitialConverted = FunctionGeneral::convertTwoDigitYearToFourDateBR($perInitial);
+        $dtEndConverted = FunctionGeneral::convertTwoDigitYearToFourDateBR($perEnd);
+        // dump($dtInitialConverted, $dtEndConverted  );
+    // Construir a query no model FinancialEntry
+        $query = FinancialEntry::query();
 
-        // Verifica se há período definido (datas de início e fim não estão vazias)
-        $hasPeriod = !empty($dateInit) && !empty($dateEnd);
-
-        if ($hasPeriod) {
-            // Conversão das datas de formato BR para MySQL
-            $dtinit = FunctionGeneral::DataBRtoMySQL(base64_decode($dateInit));
-            $dtend = FunctionGeneral::DataBRtoMySQL(base64_decode($dateEnd));
-
-            // Cálculo do período (receitas - despesas)
-            $per = Monetary::getValueBoxPerPeriodo($dtinit, $dtend, $idCompany);
-            $total = ($per['receitas'] - $per['despesas']);
-
-            // Datas decodificadas para exibição
-            $perInitial = base64_decode($dateInit);
-            $perEnd = base64_decode($dateEnd);
-
-            // Cálculo do saldo anterior
-            $prevBalan = Monetary::previousBalance($dtinit, $idCompany);
-            $previousBalance = ($prevBalan['receitas'] - $prevBalan['despesas']);
+        // Filtrar por empresa se $idCompany for fornecido
+        if ($idCompany) {
+            $query->where('company_id', $idCompany);
         }
 
-        // Busca de registros da Entry com joins
-        $query = Entry::join('companies', 'entries.entries_id_company', '=', 'companies.company_id')
-            ->join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-            ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-            ->where('companies.company_id', '=', $idCompany);
-
-        // Aplica filtro de data apenas se houver período definido
-        if ($hasPeriod) {
-            $query->whereBetween('entries_date_launch', [$dtinit, $dtend]);
+        // Filtrar por intervalo de datas se ambos os parâmetros forem fornecidos
+        if ($dtInitialConverted && $dtEndConverted) {
+            $query->whereBetween('entry_date', [$dtInitialConverted, $dtEndConverted]);
         }
 
-        // Ordena por data de lançamento e obtém os resultados
-        $entries = $query->orderBy('entries_date_launch', 'asc')->get();
+        // Ordenar por data (ascendente) e buscar os resultados
+        $entries = $query->orderBy('entry_date', 'asc')->get();
 
-        // Se não houver registros de lançamento, retorna apenas dados da empresa
-        if (count($entries) == 0) {
-            $entries = Company::where('company_id', $idCompany)->get();
+        // Calcular o saldo acumulado (running balance)
+        $runningBalance = 0; // Saldo inicial (pode ajustar se houver um saldo inicial da empresa)
+        foreach ($entries as $entry) {
+            if ($entry->type === 'credit') {
+                $runningBalance += $entry->amount; // Adiciona receita
+            } elseif ($entry->type === 'debit') {
+                $runningBalance -= $entry->amount; // Subtrai despesa
+            }
+            $entry->running_balance = $runningBalance; // Adiciona atributo temporário ao model para o saldo
         }
-
-        // Cálculo do saldo bancário
-        $balanceBank = new AccountBankRepository();
-        $generalBalanceBank = $balanceBank->getBalanceBank($idCompany);
-
-        // Cálculo do saldo interno
-        $balanceInternal = new AccountInternalRepository();
-        $interInternal = $balanceInternal->getInternalInternal($idCompany);
-        $balanceBank = ($generalBalanceBank + $interInternal);
-
-        // // Retorno da view com os dados compactados
-        // return view(
-        //     'entry.report.perPeriod',
-        //     compact('entries', 'perInitial', 'perEnd', 'total', 'previousBalance', 'balanceBank')
-        // );
-
-         $pdf = PDF::loadView('entry.report.perPeriod',
-                     compact( 'entries', 'perInitial', 'perEnd', 'total', 'previousBalance', 'balanceBank'));
+        $pdf = PDF::loadView('report.financial.box',
+                     compact( 'entries'));
 
                 return $pdf->stream('report');
 
-
+        // return view('report.financial.box', ['entries' => $entries]);
+        // dd($entries);
     }
 
     /**

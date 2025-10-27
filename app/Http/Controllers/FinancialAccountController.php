@@ -5,6 +5,7 @@ namespace Seara\Http\Controllers;
 use Seara\TypeBank;
 use Seara\FinancialAccount;
 use Illuminate\Http\Request;
+use Seara\FinancialEntry;
 use Seara\Repository\BankRepository;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -141,8 +142,21 @@ class FinancialAccountController extends Controller
                    return 'Caixa';
                }
             })
+            ->addColumn('current_balance', function ($accounts) {
+                return number_format($accounts->current_balance, 2, ',', '.');
+            })
             ->addColumn('action', function ($accounts) {
-                return '<button class="btn btn-sm btn-danger" onclick="deleteAccount(' . $accounts->id . ')"><i class="fa fa-trash"></i> Excluir</button>';
+                $isFinancialEntries = FinancialEntry::where('account_id', $accounts->id)->count() > 0;
+                if ($isFinancialEntries) {  
+                    return '<button class="btn btn-sm btn-danger disabled" 
+                    title="Não pode excluir conta que tenha lançamento" 
+                    onclick="deleteAccount(' . $accounts->id . ')">
+                    <i class="fa fa-trash"></i> Excluir </button>';                
+                }
+                return '<button class="btn btn-sm btn-danger " title="Excluir conta" 
+                onclick="deleteAccount(' . $accounts->id . ')">
+                <i class="fa fa-trash"></i> Excluir </button>';                
+                
             })
             ->rawColumns(['action']) // Permitir HTML na coluna 'action'
             ->make(true);

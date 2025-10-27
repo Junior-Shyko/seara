@@ -63,4 +63,18 @@ class FunctionGeneral extends Model
 		// Retorna no formato YYYY-MM-DD
 		return $carbonDate->format('Y-m-d');
 	}
+
+	public static function convertTwoDigitYearToFourDateBR($dateString)
+	{
+		// Parse a data assumindo formato como 'YY-MM-DD' ou 'DD-MM-YY'. Ajuste o formato aqui se necessário.
+		$carbonDate = Carbon::createFromFormat('d/m/y', $dateString); // 'y' é para ano de 2 dígitos
+
+		// Se o parsing falhar, você pode adicionar validação ou fallback
+		if (!$carbonDate) {
+			throw new \Exception("Formato de data inválido: " . $dateString);
+		}
+
+		// Retorna no formato YYYY-MM-DD
+		return $carbonDate->format('Y-m-d');
+	}
 }

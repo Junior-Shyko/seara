@@ -103,7 +103,9 @@ Route::post('caixa/upload' , 'EntryController@upload');
 
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
-Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}/company/{company}' , 'EntryController@reportBox');
+
+Route::get('lancar/relatorio/dtIni/{dateInit?}/dtEnd/{dateEnd?}/company/{idCompany}', 'EntryController@reportBox')
+    ->where(['dateInit' => '.*', 'dateEnd' => '.*']);
 
 Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-banco/{idCompany}' , 'EntryController@bank');
@@ -183,7 +185,7 @@ Route::group(['prefix' => 'permission', 'middleware' => ['role:admin|superAdmin'
     Route::post('alter-permission' , 'UserController@alterPermissionUser');
 });
 // ROTAS PARA RELATÓRIOS FINANCEIROS
-
+## FINANCIAL
 Route::prefix('financial/reports')->name('financial.reports.')->group(function() {
     Route::get('/', 'FinancialReportController@index');
     Route::post('/by-category','FinancialReportController@byCategory');

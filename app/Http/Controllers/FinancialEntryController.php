@@ -237,176 +237,174 @@ class FinancialEntryController extends Controller
         //
     }
 
-/**
- * Atualiza um lançamento existente
- * 
- * @param Request $request
- * @param int $id ID da Transaction
- * @return \Illuminate\Http\JsonResponse
- */
-public function update(Request $request, $id)
-{
-    $companyId = Company::getIdCompany();
-    $userId = auth()->id();
+    /**
+     * Atualiza um lançamento existente
+     * 
+     * @param Request $request
+     * @param int $id ID da Transaction
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $companyId = Company::getIdCompany();
+        $userId = auth()->id();
 
-    DB::beginTransaction();
-   
-    try {
-        // ========================================
-        // 1. BUSCAR TRANSACTION E VALIDAR
-        // ========================================
-        $transaction = Transaction::with(['entries.account'])
-            ->findOrFail($id);
-        
-        // Verificar se pertence à empresa do usuário
-        if ($transaction->company_id != $companyId) {
-            return response()->json([
-                'message' => 'Você não tem permissão para editar este lançamento.',
-                'status' => 'error'
-            ], 403);
-        }
-        
-        // Não permitir editar transferências (são criadas em par)
-        if ($transaction->type === 'transfer') {
-            return response()->json([
-                'message' => 'Transferências não podem ser editadas. Exclua e crie uma nova.',
-                'status' => 'error'
-            ], 400);
-        }
-        
-        // ========================================
-        // 2. VALIDAR DADOS
-        // ========================================
-        $dateStart = SettingsBoxRepository::convertDateToFullYear($request->entries_date_launch);
-        $entryDate = \Carbon\Carbon::createFromFormat('d/m/Y', $dateStart);
-        
-        // Buscar tipo da categoria
-        $typeAccount = AccountLaunchRepository::getTypeAccount($request->entries_id_account);
-        $type = $this->getReturnTypeAccount($typeAccount);
-        $entryType = $type === 'income' ? 'credit' : 'debit';
-        
-        // Converter valor
-        $numeric_value = Monetary::money_real($request->entries_value);
-        
-        // ========================================
-        // 3. PEGAR ENTRY ORIGINAL (só tem 1 para receitas/despesas)
-        // ========================================
-        $originalEntry = $transaction->entries->first();
-        
-        if (!$originalEntry) {
-            throw new \Exception('Entry original não encontrada');
-        }
-        
-        // Guardar valores antigos para reverter saldo
-        $oldAmount = $originalEntry->amount;
-        $oldAccountId = $originalEntry->account_id;
-        $oldType = $originalEntry->type;
-        
-        // ========================================
-        // 4. DETERMINAR NOVA CONTA (se mudou)
-        // ========================================
-        $newAccountId = $oldAccountId; // Por padrão, mantém a mesma
-        
-        // Se o request tiver informação de conta, usar ela
-        if ($request->filled('entries_bank')) {
-            $newAccountId = $request->entries_bank;
-        } elseif ($request->filled('account_id')) {
-            $newAccountId = $request->account_id;
-        }
-        // Senão, mantém a conta original
-        
-        // Validar se a nova conta existe
-        $newAccount = FinancialAccount::find($newAccountId);
-        
-        if (!$newAccount) {
-            throw new \Exception('Conta financeira não encontrada (ID: ' . $newAccountId . ')');
-        }
-        
-        // ========================================
-        // 5. REVERTER SALDO DA CONTA ANTIGA
-        // ========================================
-        $oldAccount = FinancialAccount::find($oldAccountId);
-        
-        if ($oldAccount) {
-            if ($oldType === 'credit') {
-                // Era receita: diminui o saldo antigo
-                $oldAccount->decrement('current_balance', $oldAmount);
-            } else {
-                // Era despesa: aumenta o saldo antigo (revertendo)
-                $oldAccount->increment('current_balance', $oldAmount);
+        DB::beginTransaction();
+
+        try {
+            // ========================================
+            // 1. BUSCAR TRANSACTION E VALIDAR
+            // ========================================
+            $transaction = Transaction::with(['entries.account'])
+                ->findOrFail($id);
+
+            // Verificar se pertence à empresa do usuário
+            if ($transaction->company_id != $companyId) {
+                return response()->json([
+                    'message' => 'Você não tem permissão para editar este lançamento.',
+                    'status' => 'error'
+                ], 403);
             }
+
+            // Não permitir editar transferências (são criadas em par)
+            if ($transaction->type === 'transfer') {
+                return response()->json([
+                    'message' => 'Transferências não podem ser editadas. Exclua e crie uma nova.',
+                    'status' => 'error'
+                ], 400);
+            }
+
+            // ========================================
+            // 2. VALIDAR DADOS
+            // ========================================
+            $dateStart = SettingsBoxRepository::convertDateToFullYear($request->entries_date_launch);
+            $entryDate = \Carbon\Carbon::createFromFormat('d/m/Y', $dateStart);
+
+            // Buscar tipo da categoria
+            $typeAccount = AccountLaunchRepository::getTypeAccount($request->entries_id_account);
+            $type = $this->getReturnTypeAccount($typeAccount);
+            $entryType = $type === 'income' ? 'credit' : 'debit';
+
+            // Converter valor
+            $numeric_value = Monetary::money_real($request->entries_value);
+
+            // ========================================
+            // 3. PEGAR ENTRY ORIGINAL (só tem 1 para receitas/despesas)
+            // ========================================
+            $originalEntry = $transaction->entries->first();
+
+            if (!$originalEntry) {
+                throw new \Exception('Entry original não encontrada');
+            }
+
+            // Guardar valores antigos para reverter saldo
+            $oldAmount = $originalEntry->amount;
+            $oldAccountId = $originalEntry->account_id;
+            $oldType = $originalEntry->type;
+
+            // ========================================
+            // 4. DETERMINAR NOVA CONTA (se mudou)
+            // ========================================
+            $newAccountId = $oldAccountId; // Por padrão, mantém a mesma
+
+            // Se o request tiver informação de conta, usar ela
+            if ($request->filled('entries_bank')) {
+                $newAccountId = $request->entries_bank;
+            } elseif ($request->filled('account_id')) {
+                $newAccountId = $request->account_id;
+            }
+            // Senão, mantém a conta original
+
+            // Validar se a nova conta existe
+            $newAccount = FinancialAccount::find($newAccountId);
+
+            if (!$newAccount) {
+                throw new \Exception('Conta financeira não encontrada (ID: ' . $newAccountId . ')');
+            }
+
+            // ========================================
+            // 5. REVERTER SALDO DA CONTA ANTIGA
+            // ========================================
+            $oldAccount = FinancialAccount::find($oldAccountId);
+
+            if ($oldAccount) {
+                if ($oldType === 'credit') {
+                    // Era receita: diminui o saldo antigo
+                    $oldAccount->decrement('current_balance', $oldAmount);
+                } else {
+                    // Era despesa: aumenta o saldo antigo (revertendo)
+                    $oldAccount->increment('current_balance', $oldAmount);
+                }
+            }
+
+            // ========================================
+            // 6. ATUALIZAR TRANSACTION
+            // ========================================
+            $transaction->update([
+                'type' => $type,
+                'description' => $request->entries_description,
+                'total_amount' => $numeric_value,
+                'updated_at' => now()
+            ]);
+
+            // ========================================
+            // 7. ATUALIZAR ENTRY
+            // ========================================
+            $originalEntry->update([
+                'account_id' => $newAccountId,
+                'category_id' => $request->entries_id_account,
+                'type' => $entryType,
+                'description' => $request->entries_description,
+                'amount' => $numeric_value,
+                'entry_date' => $entryDate,
+                'updated_at' => now()
+            ]);
+
+            // ========================================
+            // 8. APLICAR NOVO SALDO NA CONTA NOVA
+            // ========================================
+            if ($entryType === 'credit') {
+                // Nova receita: aumenta saldo
+                $newAccount->increment('current_balance', $numeric_value);
+            } else {
+                // Nova despesa: diminui saldo
+                $newAccount->decrement('current_balance', $numeric_value);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Lançamento atualizado com sucesso',
+                'status' => 'success',
+                'id' => $transaction->id,
+                'typeAccount' => $entryType,
+                'new_balance' => $newAccount->fresh()->current_balance
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Lançamento não encontrado.',
+                'status' => 'error'
+            ], 404);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Log do erro
+            // \Log::error('Erro ao atualizar lançamento ID ' . $id, [
+            //     'message' => $e->getMessage(),
+            //     'file' => $e->getFile(),
+            //     'line' => $e->getLine(),
+            //     'user_id' => $userId,
+            //     'company_id' => $companyId
+            // ]);
+
+            return response()->json([
+                'message' => 'Ocorreu um erro ao atualizar lançamento: ' . $e->getMessage(),
+                'status' => 'error'
+            ], 500);
         }
-        
-        // ========================================
-        // 6. ATUALIZAR TRANSACTION
-        // ========================================
-        $transaction->update([
-            'type' => $type,
-            'description' => $request->entries_description,
-            'total_amount' => $numeric_value,
-            'updated_at' => now()
-        ]);
-        
-        // ========================================
-        // 7. ATUALIZAR ENTRY
-        // ========================================
-        $originalEntry->update([
-            'account_id' => $newAccountId,
-            'category_id' => $request->entries_id_account,
-            'type' => $entryType,
-            'description' => $request->entries_description,
-            'amount' => $numeric_value,
-            'entry_date' => $entryDate,
-            'updated_at' => now()
-        ]);
-        
-        // ========================================
-        // 8. APLICAR NOVO SALDO NA CONTA NOVA
-        // ========================================
-        if ($entryType === 'credit') {
-            // Nova receita: aumenta saldo
-            $newAccount->increment('current_balance', $numeric_value);
-        } else {
-            // Nova despesa: diminui saldo
-            $newAccount->decrement('current_balance', $numeric_value);
-        }
-        
-        DB::commit();
-        
-        return response()->json([
-            'message' => 'Lançamento atualizado com sucesso',
-            'status' => 'success',
-            'id' => $transaction->id,
-            'typeAccount' => $entryType,
-            'new_balance' => $newAccount->fresh()->current_balance
-        ], 200);
-        
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        DB::rollBack();
-        
-        return response()->json([
-            'message' => 'Lançamento não encontrado.',
-            'status' => 'error'
-        ], 404);
-        
-    } catch (\Exception $e) {
-        DB::rollBack();
-        
-        // Log do erro
-        // \Log::error('Erro ao atualizar lançamento ID ' . $id, [
-        //     'message' => $e->getMessage(),
-        //     'file' => $e->getFile(),
-        //     'line' => $e->getLine(),
-        //     'user_id' => $userId,
-        //     'company_id' => $companyId
-        // ]);
-        
-        return response()->json([
-            'message' => 'Ocorreu um erro ao atualizar lançamento: ' . $e->getMessage(),
-            'status' => 'error'
-        ], 500);
     }
-}
 
     /**
      * Exclui um lançamento (Transaction + Entries + Atualiza Saldos).
@@ -555,12 +553,12 @@ public function update(Request $request, $id)
                 return $transaction->amount_formatted;
             })
             ->addColumn('total_amount', function ($transaction) {
-                return number_format($transaction->total_amount,2,',','.');
+                return number_format($transaction->total_amount, 2, ',', '.');
             })
             ->addColumn('description', function ($transaction) {
                 return $transaction->description;
             })
-            
+
             ->addColumn('account_info', function ($transaction) {
                 if ($transaction->isTransfer()) {
                     return $transaction->transfer_description;
@@ -578,14 +576,7 @@ public function update(Request $request, $id)
                 $firstEntry = $mov->entries->first();
                 $dtLauch = $firstEntry ? $firstEntry->entry_date->format('d/m/Y') : '';
 
-                $btnUserRole = '<button class="btn btn-success btn-xs" type="button" title="Informação do Registro"
-            data-toggle="modal"
-            data-id="' . $mov->id . '"
-            data-day="' . ($firstEntry ? $firstEntry->entry_date->day : '') . '"
-            data-his="' . $mov->description . '"
-            data-val="' . $mov->total_amount . '"
-            data-target="#modalInfoLaunch">
-            <i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>';
+                $btnUserRole = '';
 
                 if (Auth::user()->hasRole('user')) {
                     return $btnUserRole;
@@ -599,7 +590,7 @@ public function update(Request $request, $id)
             data-id="' . $mov->id . '"
             data-date="' . $dtLauch . '"
             data-his="' . $mov->description . '"
-            data-val="' . $mov->total_amount . '"
+            data-val="' . number_format($mov->total_amount, 2, ',', '.')   . '"
             data-typ="' . ($firstEntry && $firstEntry->category ? $firstEntry->category->accountlaunch_name : '') . '"
             data-idlau="' . ($firstEntry ? $firstEntry->category_id : '') . '"
             data-namel="' . ($firstEntry && $firstEntry->account ? $firstEntry->account->name : '') . '"
