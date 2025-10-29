@@ -57,7 +57,7 @@ class EntryController extends Controller
         //TODAS CONTAS
         $accounts = AccountLaunch::get();
         $accounts = FinancialAccount::byCompany($idCompany)->get();
-        dd($accounts);
+
         //DADOS DA IGREJA COMPLETO
         $company = Company::getCompany($idCompany);
         // RETORNO DA SOMA DOS VALORES DO CAIXA BANCO
@@ -494,50 +494,85 @@ class EntryController extends Controller
 
     public function reportBox(Request $request, $dateInit = null, $dateEnd = null, $idCompany = null)
     {
-         ini_set('max_execution_time', '120');
-        // Inicializa variáveis de data
         $dateInit  = $request->route('dateInit');
         $dateEnd   = $request->route('dateEnd');
         $idCompany = $request->route('idCompany');
-        
-        $perInitial = base64_decode($dateInit);
-        $perEnd = base64_decode($dateEnd);
-        $dtInitialConverted = FunctionGeneral::convertTwoDigitYearToFourDateBR($perInitial);
-        $dtEndConverted = FunctionGeneral::convertTwoDigitYearToFourDateBR($perEnd);
-        // dump($dtInitialConverted, $dtEndConverted  );
-    // Construir a query no model FinancialEntry
+        $perInitial = null;
+        $perEnd = null;
+
+        // Processa datas apenas se ambas forem fornecidas
+        $dtInitialConverted = null;
+        $dtEndConverted = null;
+        if ($dateInit && $dateEnd) {
+            $perInitial = base64_decode($dateInit);
+            $perEnd = base64_decode($dateEnd);
+
+            // Converte datas e valida
+            $dtInitialConverted = FunctionGeneral::convertTwoDigitYearToFourDateBR($perInitial);
+            $dtEndConverted = FunctionGeneral::convertTwoDigitYearToFourDateBR($perEnd);
+
+            // Se alguma conversão falhar, ignora o filtro de datas (traz resultado geral)
+            if (!$dtInitialConverted || !$dtEndConverted) {
+                $dtInitialConverted = null;
+                $dtEndConverted = null;
+            }
+        }
+
+        // Se não houver período válido, $dtInitialConverted e $dtEndConverted permanecem null,
+        // o que faz a query trazer o resultado geral (sem filtro de datas)
+
+        // Constrói a query no model FinancialEntry
         $query = FinancialEntry::query();
 
-        // Filtrar por empresa se $idCompany for fornecido
+        // Filtra por empresa se $idCompany for fornecido
         if ($idCompany) {
             $query->where('company_id', $idCompany);
         }
 
-        // Filtrar por intervalo de datas se ambos os parâmetros forem fornecidos
+        // Filtra por intervalo de datas apenas se ambas as datas convertidas forem válidas
         if ($dtInitialConverted && $dtEndConverted) {
             $query->whereBetween('entry_date', [$dtInitialConverted, $dtEndConverted]);
         }
 
-        // Ordenar por data (ascendente) e buscar os resultados
+        // Ordena por data (ascendente) e busca os resultados
         $entries = $query->orderBy('entry_date', 'asc')->get();
 
-        // Calcular o saldo acumulado (running balance)
-        $runningBalance = 0; // Saldo inicial (pode ajustar se houver um saldo inicial da empresa)
+        // NOVO: Calcula o saldo anterior (apenas se houver período válido)
+        $priorBalance = 0; // Saldo anterior inicial (ajuste se houver um saldo base da empresa)
+        if ($dtInitialConverted && $dtEndConverted && $idCompany) {
+            // Query para somar créditos e subtrair débitos ANTES da data inicial
+            $priorEntries = FinancialEntry::where('company_id', $idCompany)
+                ->where('entry_date', '<', $dtInitialConverted)
+                ->selectRaw("SUM(CASE WHEN type = 'credit' THEN amount ELSE 0 END) - SUM(CASE WHEN type = 'debit' THEN amount ELSE 0 END) as prior_balance")
+                ->first();
+
+            $priorBalance = $priorEntries->prior_balance ?? 0;
+        }
+
+        // NOVO: Calcula totais de créditos (entradas/receitas) e débitos (saídas/despesas)
+        $totalCredits = 0;
+        $totalDebits = 0;
+
+        // Calcula o saldo acumulado (running balance), iniciando do saldo anterior
+        $runningBalance = $priorBalance;
         foreach ($entries as $entry) {
             if ($entry->type === 'credit') {
                 $runningBalance += $entry->amount; // Adiciona receita
+                $totalCredits += $entry->amount;   // Soma total de créditos
             } elseif ($entry->type === 'debit') {
                 $runningBalance -= $entry->amount; // Subtrai despesa
+                $totalDebits += $entry->amount;    // Soma total de débitos
             }
             $entry->running_balance = $runningBalance; // Adiciona atributo temporário ao model para o saldo
         }
-        $pdf = PDF::loadView('report.financial.box',
-                     compact( 'entries'));
 
-                return $pdf->stream('report');
+        // Busca a empresa apenas se $idCompany for fornecido (para relatório geral, company pode ser null)
+        $company = $idCompany ? Company::getCompany($idCompany) : null;
 
-        // return view('report.financial.box', ['entries' => $entries]);
-        // dd($entries);
+        // Gera o PDF, passando também o $priorBalance, $totalCredits e $totalDebits para a view
+        $pdf = PDF::loadView('report.financial.box', compact('entries', 'company', 'perInitial', 'perEnd', 'priorBalance', 'totalCredits', 'totalDebits'));
+
+        return $pdf->stream('report');
     }
 
     /**

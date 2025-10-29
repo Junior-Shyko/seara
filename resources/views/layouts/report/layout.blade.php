@@ -17,6 +17,7 @@
                 page-break-after: always;
             }
         </style>
+        @stack('stylesheets')
         <title>Relatório por período - @yield('title')</title>
 
     </head>
