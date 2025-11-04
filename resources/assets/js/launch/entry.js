@@ -364,25 +364,25 @@ function showReport(idCompany) {
     var dtInit = $("#dateInitial").val().trim(); // Remove espaços extras
     var dtEnd = $("#dateEnd").val().trim();
 
-   
-if (dtInit !== '') {
-    path = 'lancar/relatorio/dtIni/' + btoa(dtInit) + '/dtEnd';
-    if (dtEnd !== '') {
-        path += '/' + btoa(dtEnd);
+    if (dtInit !== '') {
+        path = 'lancar/relatorio/dtIni/' + btoa(dtInit) + '/dtEnd';
+        if (dtEnd !== '') {
+            path += '/' + btoa(dtEnd);
+        }
+        path += '/company/' + idCompany;
+    } else if (dtEnd !== '') {
+        // Se só dtEnd, ajuste conforme lógica
+        path = 'lancar/relatorio/dtEnd/' + btoa(dtEnd) + '/company/' + idCompany;
     }
-    path += '/company/' + idCompany;
-} else if (dtEnd !== '') {
-    // Se só dtEnd, ajuste conforme lógica
-    path = 'lancar/relatorio/dtEnd/' + btoa(dtEnd) + '/company/' + idCompany;
-}
 
-if(dtInit == '' && dtEnd == ''){
-     var path = 'lancar/relatorio/dtIni/'+btoa(dtInit)+'/dtEnd/'+btoa(dtEnd)+'/company/'+ idCompany;
-}
+    if(dtInit == '' && dtEnd == ''){
+         var path = 'lancar/relatorio/dtIni/'+btoa(dtInit)+'/dtEnd/'+btoa(dtEnd)+'/company/'+ idCompany;
+    }
 
-var url = SearaApp.baseURL + path;
+    var url = SearaApp.baseURL + path;
 
     $("#btn-print-report").attr('href', url);
+
 }
 
 function getFiles(id) {

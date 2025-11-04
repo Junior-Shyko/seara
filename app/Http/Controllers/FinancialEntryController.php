@@ -419,12 +419,12 @@ class FinancialEntryController extends Controller
         DB::beginTransaction();
 
         try {
-            // Buscar a transaction com todas as entries
+            // 1. BUSCAR E VALIDAR TRANSACTION
             $transaction = Transaction::with(['entries.account'])
                 ->findOrFail($request->id);
 
-            // Verificar se pertence à empresa do usuário logado
             $companyId = Company::getIdCompany();
+
             if ($transaction->company_id != $companyId) {
                 return response()->json([
                     'title' => 'Erro',
@@ -433,70 +433,78 @@ class FinancialEntryController extends Controller
                     'type' => 'error'
                 ], 403);
             }
+            // 2. REVERTER SALDOS DAS CONTAS
+            // A lógica é a mesma para TODAS as transactions (incluindo transferências)
+            // porque as entries já guardam corretamente debit/credit
+            foreach ($transaction->entries as $entry) {
+                $account = $entry->account;
 
-            // Buscar o transfer relacionado (se existir)
-            $transferQuery = $transaction->transfer();
-            $transfer = $transferQuery->first();
-
-            if ($transfer && $transfer->type === 'transfer') {
-                // Lógica específica para transferências: reverter saldos
-                $fromAccount = FinancialAccount::find($transfer->from_account_id);
-                if ($fromAccount) {
-                    $fromAccount->increment('current_balance', $transfer->total_amount);
+                if (!$account) {
+                    \Log::warning("Conta não encontrada para entry {$entry->id}");
+                    continue; // Pula se a conta foi deletada
                 }
+                // Reverter o lançamento:
+                // - Se foi CRÉDITO (entrada de dinheiro), DIMINUI o saldo (remove a entrada)
+                // - Se foi DÉBITO (saída de dinheiro), AUMENTA o saldo (remove a saída)
+                if ($entry->type === 'credit') {
+                    $account->decrement('current_balance', $entry->amount);
 
-                $toAccount = FinancialAccount::find($transfer->to_account_id);
-                if ($toAccount) {
-                    $toAccount->decrement('current_balance', $transfer->total_amount);
-                }
+                    \Log::info("Revertendo CRÉDITO de R$ {$entry->amount} na conta {$account->name} (ID: {$account->id})");
+                } else {
+                    $account->increment('current_balance', $entry->amount);
 
-                // Deletar o registro de transfer_details para remover a referência de FK antes de deletar entries
-                $transfer->delete();
-            } else {
-                // Lógica geral para outros tipos: reverter baseado nas entries
-                foreach ($transaction->entries as $entry) {
-                    $account = $entry->account;
-                    if (!$account) {
-                        continue; // Pula se a conta foi deletada
-                    }
-                    // Reverter o lançamento:
-                    // Se foi CRÉDITO (entrada), diminui o saldo pelo VALOR DO LANÇAMENTO
-                    // Se foi DÉBITO (saída), aumenta o saldo pelo VALOR DO LANÇAMENTO
-                    if ($entry->type === 'credit') {
-                        $account->decrement('current_balance', $entry->amount);
-                    } else {
-                        $account->increment('current_balance', $entry->amount);
-                    }
+                    \Log::info("Revertendo DÉBITO de R$ {$entry->amount} na conta {$account->name} (ID: {$account->id})");
                 }
             }
-
-            // 3. DELETAR A TRANSACTION
-            // Por causa do ON DELETE CASCADE, as entries serão deletadas automaticamente
+            // 3. DELETAR ARQUIVOS ANEXADOS (se houver)
+            foreach ($transaction->entries as $entry) {
+                if ($entry->document_file && \Storage::disk('public')->exists($entry->document_file)) {
+                    \Storage::disk('public')->delete($entry->document_file);
+                    \Log::info("Arquivo deletado: {$entry->document_file}");
+                }
+            }
+            // 4. DELETAR A TRANSACTION
+            // Com ON DELETE CASCADE configurado:
+            // - financial_entries serão deletadas automaticamente
+            // - transfer_details serão deletados automaticamente (se existir)
+            $transactionId = $transaction->id;
+            $transactionType = $transaction->type;
             $transaction->delete();
+
             DB::commit();
+
+            \Log::info("Transaction {$transactionId} (tipo: {$transactionType}) deletada com sucesso");
+
             return back()->with('success', 'Lançamento excluído com sucesso!');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             DB::rollBack();
+
+            \Log::error('Transaction não encontrada: ' . $request->id);
+
             return response()->json([
                 'title' => 'Erro',
                 'message' => 'Lançamento não encontrado.',
-                'status' => '400',
+                'status' => '404',
                 'type' => 'error'
-            ], 400);
+            ], 404);
         } catch (\Exception $e) {
             DB::rollBack();
-            // dd([
-            //     'message' => $e->getMessage(),
-            //     'file' => $e->getFile(),
-            //     'line' => $e->getLine(),
-            //     'trace' => $e->getTraceAsString()
-            // ]);
+
+            \Log::error('Erro ao excluir lançamento ID ' . $request->id, [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => auth()->id(),
+                'company_id' => $companyId ?? null
+            ]);
+
             return response()->json([
                 'title' => 'Erro',
                 'message' => 'Erro ao excluir lançamento: ' . $e->getMessage(),
-                'status' => '400',
+                'status' => '500',
                 'type' => 'error'
-            ], 400);
+            ], 500);
         }
     }
 
@@ -633,85 +641,152 @@ class FinancialEntryController extends Controller
     public function transfer(Request $request)
     {
         $companyId = Company::getIdCompany();
-        $userId = auth()->id();
-        $fromAccount = FinancialAccount::find($request->idAccountEnd);
-        $toAccount = FinancialAccount::find($request->idAccountEntry);
+    $userId = auth()->id();
+    
+    // Buscar contas
+    $fromAccount = FinancialAccount::find($request->idAccountEnd);
+    $toAccount = FinancialAccount::find($request->idAccountEntry);
+    
+    // Validações
+    if (!$fromAccount || !$toAccount) {
+        return response()->json([
+            'title' => 'Erro',
+            'message' => 'Conta de origem ou destino não encontrada.',
+            'status' => '404',
+            'type' => 'error'
+        ], 404);
+    }
+    
+    if ($fromAccount->id === $toAccount->id) {
+        return response()->json([
+            'title' => 'Erro',
+            'message' => 'Conta de origem e destino não podem ser iguais.',
+            'status' => '400',
+            'type' => 'error'
+        ], 400);
+    }
+    
+    $numeric_value = Monetary::money_real($request->value);
+    
+    // Validar saldo
+    if ($fromAccount->current_balance < $numeric_value) {
+        return response()->json([
+            'title' => 'Erro',
+            'message' => 'Saldo insuficiente na conta de origem. Disponível: R$ ' . number_format($fromAccount->current_balance, 2, ',', '.'),
+            'status' => '400',
+            'type' => 'error'
+        ], 400);
+    }
 
-        // Exemplo de transferência no Laravel
-        DB::beginTransaction();
-        try {
-            // Buscar nomes das contas para descrição
-            $numeric_value = Monetary::money_real($request->value);
-            // 1. CRIAR TRANSACTION (Cabeçalho da Transferência)
-            $transaction = Transaction::create([
-                'uuid' => $this->generateUuid(),
-                'type' => 'transfer', // 👈 ENUM direto
-                'status' => 'completed',
-                'description' => 'Transferência recebida de ' . $fromAccount->name,
-                'total_amount' => $numeric_value,
-                'from_account_id' => $request->idAccountEnd, // 👈 Importante para rastreabilidade
-                'to_account_id' => $request->idAccountEntry,     // 👈 Importante para rastreabilidade
-                'company_id' => $companyId,
-                'created_by_user_id' => $userId
-            ]);
-            // 2. CRIAR ENTRY DE DÉBITO (Saída da conta origem)
-            $debitEntry = FinancialEntry::create([
+    DB::beginTransaction();
+    
+    try {
+        // ========================================
+        // 1. CRIAR TRANSACTION
+        // ========================================
+        $transaction = Transaction::create([
+            'uuid' => $this->generateUuid(),
+            'type' => 'transfer',
+            'status' => 'completed',
+            'description' => 'Transferência: ' . $fromAccount->name . ' → ' . $toAccount->name,
+            'total_amount' => $numeric_value,
+            'from_account_id' => $fromAccount->id, // 👈 Usar objeto, não request
+            'to_account_id' => $toAccount->id,     // 👈 Usar objeto, não request
+            'company_id' => $companyId,
+            'created_by_user_id' => $userId
+        ]);
+        
+        // ========================================
+        // 2. CRIAR ENTRY DE DÉBITO (Saída da origem)
+        // ========================================
+        $debitEntry = FinancialEntry::create([
+            'transaction_id' => $transaction->id,
+            'account_id' => $fromAccount->id, // 👈 CONTA DE ORIGEM
+            'category_id' => null,
+            'type' => 'debit', // 👈 SAÍDA
+            'description' => 'Transferência enviada para ' . $toAccount->name,
+            'amount' => $numeric_value,
+            'entry_date' => Carbon::now(),
+            'document_file' => null,
+            'company_id' => $companyId,
+            'created_by_user_id' => $userId
+        ]);
+        
+        // ========================================
+        // 3. CRIAR ENTRY DE CRÉDITO (Entrada no destino)
+        // ========================================
+        $creditEntry = FinancialEntry::create([
+            'transaction_id' => $transaction->id,
+            'account_id' => $toAccount->id, // 👈 CORRIGIDO: CONTA DE DESTINO
+            'category_id' => null,
+            'type' => 'credit', // 👈 ENTRADA
+            'description' => 'Transferência recebida de ' . $fromAccount->name,
+            'amount' => $numeric_value,
+            'entry_date' => Carbon::now(),
+            'document_file' => null,
+            'company_id' => $companyId,
+            'created_by_user_id' => $userId
+        ]);
+        
+        // ========================================
+        // 4. ATUALIZAR SALDOS
+        // ========================================
+        // Origem: diminui
+        $fromAccount->decrement('current_balance', $numeric_value);
+        
+        // Destino: aumenta
+        $toAccount->increment('current_balance', $numeric_value);
+        
+        // ========================================
+        // 5. CRIAR transfer_details
+        // ========================================
+        TransferDetail::create([
+            'transfer_group_id' => $transaction->uuid,
+            'from_account_id' => $fromAccount->id, // 👈 Usar objeto
+            'to_account_id' => $toAccount->id,     // 👈 Usar objeto
+            'amount' => $numeric_value,
+            'debit_entry_id' => $debitEntry->id,
+            'credit_entry_id' => $creditEntry->id,
+            'transfer_date' => Carbon::now(),
+            'notes' => 'Transferência entre contas',
+        ]);
+        
+        DB::commit();
+        
+        // Log de sucesso
+        \Log::info("Transferência criada: {$fromAccount->name} → {$toAccount->name} | R$ {$numeric_value}");
+        
+        return response()->json([
+            'title' => 'Sucesso',
+            'message' => 'Transferência realizada com sucesso!',
+            'status' => '200',
+            'type' => 'success',
+            'data' => [
                 'transaction_id' => $transaction->id,
-                'account_id' => $request->idAccountEnd,
-                'category_id' => null, // Transferências podem não ter categoria ou usar categoria específica
-                'type' => 'debit', // 👈 Saída
-                'description' => 'Transferência enviada para ' . $toAccount->name,
-                'amount' => $numeric_value,
-                'entry_date' => Carbon::now(),
-                'document_file' => null,
-                'company_id' => $companyId,
-                'created_by_user_id' => $userId
-            ]);
-            // ========================================
-            // 3. CRIAR ENTRY DE CRÉDITO (Entrada na conta destino)
-            $creditEntry = FinancialEntry::create([
-                'transaction_id' => $transaction->id,
-                'account_id' => $request->idAccountEnd,
-                'category_id' => null,
-                'type' => 'credit', // 👈 Entrada
-                'description' => 'Transferência recebida de ' . $fromAccount->name,
-                'amount' => $numeric_value,
-                'entry_date' =>  Carbon::now(),
-                'document_file' => null, // Mesmo arquivo nas duas entries
-                'company_id' => $companyId,
-                'created_by_user_id' => $userId
-            ]);
-
-            // 4. ATUALIZAR SALDOS DAS CONTAS
-            // Débito (diminui saldo da origem)
-            $fromAccount->decrement('current_balance', $numeric_value);
-
-            // Crédito (aumenta saldo do destino)
-            $toAccount->increment('current_balance', $numeric_value);
-            // 5. (OPCIONAL) CRIAR REGISTRO NA TABELA transfer_details
-            TransferDetail::create([
-                'transfer_group_id' => $transaction->uuid,
-                'from_account_id' => $request->idAccountEnd,
-                'to_account_id' => $request->idAccountEntry,
-                'amount' => $numeric_value,
-                'debit_entry_id' => $debitEntry->id,
-                'credit_entry_id' => $creditEntry->id,
-                'transfer_date' => Carbon::now(),
-                'notes' => 'Transferencia entre contas bancárias',
-            ]);
-            DB::commit();
-            return response()->json([
-                'title' => 'Sucesso',
-                'message' => 'Transferência realizada com sucesso!',
-                'status' => '200',
-                'type' => 'success'
-            ], 200);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'message' => 'Erro ao realizar transferência: ' . $e->getMessage(),
-                'status' => 'error'
-            ], 500);
-        }
+                'from_account' => $fromAccount->name,
+                'to_account' => $toAccount->name,
+                'amount' => 'R$ ' . number_format($numeric_value, 2, ',', '.'),
+                'new_balance_from' => 'R$ ' . number_format($fromAccount->fresh()->current_balance, 2, ',', '.'),
+                'new_balance_to' => 'R$ ' . number_format($toAccount->fresh()->current_balance, 2, ',', '.')
+            ]
+        ], 200);
+        
+    } catch (\Exception $e) {
+        DB::rollBack();
+        
+        \Log::error('Erro ao criar transferência', [
+            'message' => $e->getMessage(),
+            'from' => $fromAccount->name ?? 'N/A',
+            'to' => $toAccount->name ?? 'N/A',
+            'amount' => $numeric_value ?? 'N/A'
+        ]);
+        
+        return response()->json([
+            'title' => 'Erro',
+            'message' => 'Erro ao realizar transferência: ' . $e->getMessage(),
+            'status' => '500',
+            'type' => 'error'
+        ], 500);
+    }
     }
 }
