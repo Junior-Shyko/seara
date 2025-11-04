@@ -466,11 +466,13 @@ $("#btnEditLaunch").click(function (e) {
             });
         }
     })
-    .fail(function(jqXHR){
+    .fail(function(jqXHR, e){
+        console.log(jqXHR)
+        console.log({e})
         new PNotify({
             title: 'Ops!!',
-            text: 'Ocorreu um erro inesperado. Tente novamente mais tarde',
-            type: 'error',
+            text: 'Ocorreu um erro inesperado. ' + jqXHR.responseJSON.message,
+            type: jqXHR.responseJSON.type,
             styling: 'bootstrap3'
         });
     });
@@ -573,31 +575,31 @@ $("#selectAccountBankEntry").change(function (e) {
 $('#realValueTranfer').on('blur', function () {
     // Verificando se tem saldo no banco pra transferencia
     console.log({idCompany})
-    const valueBank = getBankGeneral(idCompany)
-        .then(valueBank => {
-            SearaAlert.loading();
-            if(valueBank < parseFloat($("#realValueTranfer").val().replace(/[R$.\s]/g, '').replace(',', '.'))){
-                setTimeout(() => {
-                    SearaLoader.hideModal();
-                    new PNotify({
-                        title: 'Ops!',
-                        text: 'O valor da transferência não pode ser maior que o saldo da conta',
-                        type: 'error',
-                        styling: 'bootstrap3'
-                    });
-                }, 1000);
-                
-                $("#btnTransferValue").hide();
-            }else{
-                $("#btnTransferValue").show();
-                setTimeout(() => {
-                    SearaLoader.hideModal();
-                }, 1000);
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
+    // const valueBank = getBankGeneral(idCompany)
+    //     .then(valueBank => {
+    //         SearaAlert.loading();
+    //         if(valueBank < parseFloat($("#realValueTranfer").val().replace(/[R$.\s]/g, '').replace(',', '.'))){
+    //             setTimeout(() => {
+    //                 SearaLoader.hideModal();
+    //                 new PNotify({
+    //                     title: 'Ops!',
+    //                     text: 'O valor da transferência não pode ser maior que o saldo da conta',
+    //                     type: 'error',
+    //                     styling: 'bootstrap3'
+    //                 });
+    //             }, 1000);
+    //
+    //             $("#btnTransferValue").hide();
+    //         }else{
+    //             $("#btnTransferValue").show();
+    //             setTimeout(() => {
+    //                 SearaLoader.hideModal();
+    //             }, 1000);
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Erro:', error);
+    //     });
            
 });
 

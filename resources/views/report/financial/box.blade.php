@@ -31,7 +31,7 @@
             border-collapse: collapse;
             border: 1px solid;
             font-size: small;
-            padding: 0.35rem
+            padding: 0.20rem
         }
 
 
@@ -86,7 +86,7 @@
         @if ($entries->isEmpty())
             <p>Nenhum lançamento encontrado.</p>
         @else
-            <table class="table table-striped">
+            <table class="table table-striped" style="width: 100%">
                 <thead>
                      @if (isset($priorBalance) && $perInitial && $perEnd)
                      <tr>
@@ -106,32 +106,32 @@
                 <tbody>
                     @foreach ($entries as $entry)
                         <tr>
-                            <td>{{ \Carbon\Carbon::parse($entry->entry_date)->format('d/m/Y') }}</td>
+                            <td style="width: 5%">{{ \Carbon\Carbon::parse($entry->entry_date)->format('d/m/Y') }}</td>
                             
-                            <td>{{ $entry->description }}</td> 
-                            <td>
+                            <td style="width: 40%">{{ $entry->description }}</td>
+                            <td style="width: 15%;" class="center-text">
                                 @if ($entry->type === 'credit')
                                     {{ number_format($entry->amount, 2, ',', '.') }} 
                                 @else
                                     0,00
                                 @endif
                             </td>
-                            <td>
+                            <td style="width: 15%;" class="center-text">
                                 @if ($entry->type === 'debit')
                                     {{ number_format($entry->amount, 2, ',', '.') }}
                                 @else
                                     0,00
                                 @endif
                             </td>
-                            <td>{{ number_format($entry->running_balance, 2, ',', '.') }}</td> <!-- Saldo acumulado -->
+                            <td style="width: 20%" class="center-text">{{ number_format($entry->running_balance, 2, ',', '.') }}</td> <!-- Saldo acumulado -->
                         </tr>
                     @endforeach
                     <tr style="font-weight: 500;font-size: small;background-color: #f0f0f0;">
     <td colspan="2">Totais do período (s.ant + ent + sai)</td> <!-- Ajuste o colspan conforme o número de colunas da sua tabela -->
     
-    <td>Total: {{ number_format($totalCredits, 2, ',', '.') }}</td>
-    <td>Total: {{ number_format($totalDebits, 2, ',', '.') }}</td>
-    <td>Geral: {{ number_format($priorBalance + $totalCredits - $totalDebits, 2, ',', '.') }}</td>
+    <td class="center-text">{{ number_format($totalCredits, 2, ',', '.') }}</td>
+    <td class="center-text">{{ number_format($totalDebits, 2, ',', '.') }}</td>
+    <td class="center-text">{{ number_format($priorBalance + $totalCredits - $totalDebits, 2, ',', '.') }}</td>
 </tr>
                 </tbody>
             </table>

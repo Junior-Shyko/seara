@@ -262,7 +262,8 @@ class FinancialEntryController extends Controller
             if ($transaction->company_id != $companyId) {
                 return response()->json([
                     'message' => 'Você não tem permissão para editar este lançamento.',
-                    'status' => 'error'
+                    'status' => 'error',
+                    'type' => 'error',
                 ], 403);
             }
 
@@ -270,7 +271,8 @@ class FinancialEntryController extends Controller
             if ($transaction->type === 'transfer') {
                 return response()->json([
                     'message' => 'Transferências não podem ser editadas. Exclua e crie uma nova.',
-                    'status' => 'error'
+                    'status' => 'error',
+                    'type' => 'error',
                 ], 400);
             }
 
@@ -468,19 +470,10 @@ class FinancialEntryController extends Controller
                 }
             }
 
-            // 2. DELETAR ARQUIVOS ANEXADOS (se houver) - descomente se necessário
-            // foreach ($transaction->entries as $entry) {
-            //     if ($entry->document_file && \Storage::disk('public')->exists($entry->document_file)) {
-            //         \Storage::disk('public')->delete($entry->document_file);
-            //     }
-            // }
-
             // 3. DELETAR A TRANSACTION
             // Por causa do ON DELETE CASCADE, as entries serão deletadas automaticamente
             $transaction->delete();
-
             DB::commit();
-
             return back()->with('success', 'Lançamento excluído com sucesso!');
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             DB::rollBack();
