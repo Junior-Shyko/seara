@@ -205,7 +205,9 @@ function getLaunch(idCompany) {
     const colunas = [
         { data: 'created_at', name: 'created_at', orderable: true }, // Nova coluna oculta para ordenação},
         { data: 'description', name: 'description' },
-        { data: 'total_amount', name: 'total_amount' , orderable: true},
+        { data: 'total_amount', name: 'total_amount' , orderable: true,
+
+        },
         { data: 'type_badge', name: 'type_badge' },
         { data: 'account_info', name: 'entries.account.name' ,},
         { data: 'user', name: 'user' },
@@ -231,7 +233,9 @@ function getLaunch(idCompany) {
                 filename: 'planilha_exportada_com_lancamentos',
                 className: 'btn btn-primary',
                 charset: 'utf-8',
-                bom: true // Para caracteres especiais
+                bom: true, // Para caracteres especiais
+                
+                
             }
         ],
         ajax: SearaApp.baseURL+'all-launch/'+idCompany,
@@ -348,12 +352,18 @@ function searchPeriod(idCompany) {
         pageLength: 100,
         ajax: ajaxUrl,
         columns: columns,
-        order: [[0, "asc"]],
-        drawCallback: function() {
-            const api = this.api();
-            const sum = api.column(2, { page: 'current' }).data().sum();
-            $(api.table().footer()).html(sum);
-        }
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                text: 'Exportar planilha do Excel',
+                filename: 'planilha_exportada_com_lancamentos',
+                className: 'btn btn-primary',
+                charset: 'utf-8',
+                bom: true // Para caracteres especiais
+            }
+        ],
+        order: [[0, "asc"]]        
     });
 }
 

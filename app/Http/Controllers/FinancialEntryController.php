@@ -552,9 +552,11 @@ class FinancialEntryController extends Controller
             })
             ->addColumn('amount_formatted', function ($transaction) {
                 return $transaction->amount_formatted;
+                
             })
             ->addColumn('total_amount', function ($transaction) {
                 return number_format($transaction->total_amount, 2, ',', '.');
+                
             })
             ->addColumn('description', function ($transaction) {
                 return $transaction->description;
@@ -607,7 +609,7 @@ class FinancialEntryController extends Controller
             data-target="#modalDeleteComponent">
             <i class="fa fa-trash"></i></button>';
             })
-            ->rawColumns(['type_badge', 'amount_formatted', 'action'])
+            ->rawColumns(['type_badge', 'amount_formatted', 'action', 'total_amount'])
             ->make(true);
     }
 

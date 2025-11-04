@@ -535,7 +535,7 @@ class EntryController extends Controller
 
         // Calcula o saldo anterior (apenas se houver período válido e empresa)
         $priorBalance = $this->calculatePriorBalance($idCompany, $dtInitialConverted);
-
+        
         // Calcula totais de créditos e débitos, e o saldo acumulado
         [$totalCredits, $totalDebits, $entries] = $this->calculateTotalsAndRunningBalance($entries, $priorBalance);
 

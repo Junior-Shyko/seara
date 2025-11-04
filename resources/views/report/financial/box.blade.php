@@ -143,7 +143,7 @@
         @if (!$entries->isEmpty())
             <p><strong>Saldo Final:</strong>
                 @php
-                 $finalBalance = $priorBalance + $entries->last()->running_balance;   
+                 $finalBalance = $priorBalance + ($totalCredits - $totalDebits);   
                 @endphp
                 
                 R$ {{ number_format($finalBalance, 2, ',', '.') }}</p>
