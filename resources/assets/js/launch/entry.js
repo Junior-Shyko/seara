@@ -656,6 +656,10 @@ function transferValue() {
             }, 2000);
         }
     })
+    .fail(function(jqXHR){
+        console.log({jqXHR})
+			notify.response(jqXHR.responseJSON);
+    })
     .always(function(response){
         console.log({response})
         if(response.type == 'error')
