@@ -190,6 +190,7 @@ Route::get('lancar/relatorio/dtIni/{dateInit?}/dtEnd/{dateEnd?}/company/{idCompa
 Route::prefix('financial/reports')->name('financial.reports.')->group(function() {
     Route::get('/', 'FinancialReportController@index');
     Route::post('/by-category','FinancialReportController@byCategory');
+    Route::post('/monthly/pdf', 'FinancialReportController@monthlyReportPdf')->name('monthly.pdf');
     // Route::post('/detailed', [FinancialReportController::class, 'detailed'])->name('detailed');
     // Route::post('/export-pdf', [FinancialReportController::class, 'exportPdf'])->name('export-pdf');
     // Route::post('/export-excel', [FinancialReportController::class, 'exportExcel'])->name('export-excel');

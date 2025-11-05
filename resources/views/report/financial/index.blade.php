@@ -24,7 +24,7 @@
                         <div class="clearfix">
                             <br>
                         </div>
-                        <form action="{{url('relatorio/financeiro/')}}" data-parsley-validate="" 
+                        <form action="{{url('financial/reports/monthly/pdf')}}" data-parsley-validate="" 
                             method="POST" class="form-horizontal form-label-left" novalidate="">
 
                             <div class="item form-group">

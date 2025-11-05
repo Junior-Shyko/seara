@@ -4,19 +4,27 @@ declare(strict_types=1);
 
 namespace Seara\Http\Controllers;
 
+use Carbon\Carbon;
+use Barryvdh\DomPDF\PDF;
 use Seara\AccountLaunch;
 use Seara\Models\Company;
+use Seara\FinancialAccount;
 use Illuminate\Http\Request;
 use Seara\Http\Controllers\Controller;
+use Seara\Service\MonthlyFinancialReportService;
 use Seara\Service\Financial\FinancialReportService;
 
 class FinancialReportController extends Controller
 {
     protected $reportService;
+    protected $monthlyReportService;
 
-    public function __construct(FinancialReportService $reportService)
-    {
+    public function __construct(
+        FinancialReportService $reportService,
+        MonthlyFinancialReportService $monthlyReportService
+    ) {
         $this->reportService = $reportService;
+        $this->monthlyReportService = $monthlyReportService;
     }
 
     /**
@@ -157,5 +165,51 @@ class FinancialReportController extends Controller
             new \App\Exports\FinancialReportExport($report), 
             'relatorio-' . date('Y-m-d') . '.xlsx'
         );
+    }
+
+    
+    /**
+     * Gera PDF do relatório mensal
+     */
+    public function monthlyReportPdf(Request $request)
+    {
+        // $request->validate([
+        //     'month_financial' => 'required|integer|min:1|max:12',
+        //     'year_financial' => 'required|integer|min:2000|max:2100'
+        // ]);
+        // $startDate = $this->normalizeDate($request->dateInitial);
+        // $endDate = $this->normalizeDate($request->dateEnd);
+        
+        $carbonDate = Carbon::createFromFormat('y', $request->year_financial);
+
+        // Extrai o ano completo como inteiro
+        $fullYear = $carbonDate->year; // 2025
+
+        $companyId = auth()->user()->user_id_company ?? 406;
+       
+        // Usa $this->monthlyReportService 👈 NOVO SERVICE
+        $report = $this->monthlyReportService->getMonthlyReport(
+            $request->month_financial,
+            $fullYear,
+            $companyId
+        );
+        $totalBanks = FinancialAccount::byCompany($companyId)
+            ->banks()
+            ->sum('current_balance');
+        $totalCash = FinancialAccount::byCompany($companyId)
+            ->cash()
+            ->sum('current_balance');
+
+        $totalGeneral = $totalBanks + $totalCash;
+       
+        // Buscar dados da empresa
+        $company = Company::find($companyId);
+        // dd($report);
+        $pdf = \PDF::loadView('financial.reports.monthly-pdf', compact('report', 'company', 'totalBanks', 'totalCash', 'totalGeneral'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('relatorio-mensal.pdf');
+        // $filename = 'relatorio-' . str_pad($request->month_financial, 2, '0', STR_PAD_LEFT) . '-' . $fullYear . '.pdf';
+        
+        // return $pdf->download($filename);
     }
 }
