@@ -31,7 +31,7 @@
                                 {{ csrf_field() }}
                                 <div class="form-group">
                                     <div class="col-md-12">
-                                        <label>Nome da conta</label>
+                                        <label>Nome da conta</labedl>
                                     <select name="entries_id_account" id="cod_account" name="account" class="form-control select2">
                                         <option value=""></option>
                                         @foreach($accounts as $account)

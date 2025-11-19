@@ -657,8 +657,7 @@ function transferValue() {
         }
     })
     .fail(function(jqXHR){
-        console.log({jqXHR})
-			notify.response(jqXHR.responseJSON);
+        notify.response(jqXHR.responseJSON);
     })
     .always(function(response){
         console.log({response})

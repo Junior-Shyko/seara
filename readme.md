@@ -36,8 +36,15 @@ Alterar composer v1 para v2
     composer self-update --2
 Npm container v5.6.0
 Npm maquina local 8.19.4
-
+# Build
+## Exemplo
+- `docker build --no-cache -t junioroliveira/seara:1.0.5 -f docker/php/Dockerfile .`
 # Migracao
 ## Passo a passo
+- Migrar banco atual para o novo via backup
+- Realizar a criação das tabelas novas via sql
 - Mapear as empresas
 - Acessar o container do php
+- Migra todas as empresas: `php artisan entries:migrate`
+- Migrar individualmente: `php artisan entries:migrate --company=47`
+- Roolback se precisar: `php artisan entries:migrate --rollback`
