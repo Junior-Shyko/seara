@@ -494,6 +494,8 @@ class EntryController extends Controller
 
     public function reportBox(Request $request, $dateInit = null, $dateEnd = null, $idCompany = null)
     {
+        ini_set('memory_limit', '512M');
+        set_time_limit(300);
         $dateInit  = $request->route('dateInit');
         $dateEnd   = $request->route('dateEnd');
         $idCompany = $request->route('idCompany');

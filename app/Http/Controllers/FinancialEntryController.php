@@ -589,25 +589,52 @@ class FinancialEntryController extends Controller
                 $disabled = '';
 
                 return '<button class="btn btn-primary btn-xs ' . $disabled . '" type="button" title="Editar do Registro"
-            data-toggle="modal"
-            data-id="' . $mov->id . '"
-            data-date="' . $dtLauch . '"
-            data-his="' . $mov->description . '"
-            data-val="' . number_format($mov->total_amount, 2, ',', '.')   . '"
-            data-typ="' . ($firstEntry && $firstEntry->category ? $firstEntry->category->accountlaunch_name : '') . '"
-            data-idlau="' . ($firstEntry ? $firstEntry->category_id : '') . '"
-            data-namel="' . ($firstEntry && $firstEntry->account ? $firstEntry->account->name : '') . '"
-            data-target="#modalEditLauch">
-            <i class="fa fa-edit" aria-hidden="true"></i></button>
-            ' . $btnUserRole . '
-            <button class="btn btn-danger btn-xs" ' . $disabled . ' type="button" title="Excluir Registro"
-            data-toggle="modal"
-            data-id="' . $mov->id . '"
-            data-name="' . $mov->description . '"
-            data-parent="' . ($mov->isTransfer() ? '1' : '0') . '"
-            data-type="' . $mov->type . '"
-            data-target="#modalDeleteComponent">
-            <i class="fa fa-trash"></i></button>';
+                data-toggle="modal"
+                data-id="' . $mov->id . '"
+                data-date="' . $dtLauch . '"
+                data-his="' . $mov->description . '"
+                data-val="' . number_format($mov->total_amount, 2, ',', '.')   . '"
+                data-typ="' . ($firstEntry && $firstEntry->category ? $firstEntry->category->accountlaunch_name : '') . '"
+                data-idlau="' . ($firstEntry ? $firstEntry->category_id : '') . '"
+                data-namel="' . ($firstEntry && $firstEntry->account ? $firstEntry->account->name : '') . '"
+                data-target="#modalEditLauch">
+                <i class="fa fa-edit" aria-hidden="true"></i></button>
+                ' . $btnUserRole . '
+                <button class="btn btn-danger btn-xs" ' . $disabled . ' type="button" title="Excluir Registro"
+                data-toggle="modal"
+                data-id="' . $mov->id . '"
+                data-name="' . $mov->description . '"
+                data-parent="' . ($mov->isTransfer() ? '1' : '0') . '"
+                data-type="' . $mov->type . '"
+                data-target="#modalDeleteComponent">
+                <i class="fa fa-trash"></i></button>';
+            })
+            ->filterColumn('description', function($query, $keyword) {
+                $query->where('description', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('total_amount', function($query, $keyword) {
+                // Remove formatação para buscar pelo valor
+                $keyword = str_replace(['.', ','], ['', '.'], $keyword);
+                $query->where('total_amount', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('account_info', function($query, $keyword) {
+                $query->whereHas('entries.account', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('user', function($query, $keyword) {
+                $query->whereHas('createdBy', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('type_badge', function($query, $keyword) {
+                $query->where('type', 'like', "%{$keyword}%");
+            })
+            ->filterColumn('created_at', function($query, $keyword) {
+                // Busca por data no formato dd/mm/yyyy ou yyyy-mm-dd
+                $query->whereHas('entries', function($q) use ($keyword) {
+                    $q->where('entry_date', 'like', "%{$keyword}%");
+                });
             })
             ->rawColumns(['type_badge', 'amount_formatted', 'action', 'total_amount'])
             ->make(true);
