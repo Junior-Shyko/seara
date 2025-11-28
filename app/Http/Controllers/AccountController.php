@@ -6,19 +6,15 @@ use DB;
 use Throwable;
 use DataTables;
 use Carbon\Carbon;
-use Seara\Account;
 use Seara\AccountLaunch;
 use Seara\Models\Company;
 use Seara\Seara\Monetary;
 use Seara\FunctionGeneral;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Seara\Traits\ActionTable;
 use Illuminate\Http\JsonResponse;
-use \PDF;
 use Illuminate\Support\Facades\Auth;
 use Seara\Http\Requests\StoreAccount;
-use Seara\Repository\AccountBankRepository;
 use Seara\Http\Requests\UpdateAccountRequest;
 use Seara\Repository\AccountLaunchRepository;
 use Seara\Service\Financing\Account\CreateAccount;
@@ -238,8 +234,21 @@ class AccountController extends Controller
 
     public function getReportFinancial()
     {
-        return view('report.financial.index', 
-            compact('accounts', 'company', 'companyAll','startMonthFormated', 'endMonthFormated' )
+        $anoAtual = date('Y'); // Ex: 2025 (ou 2026, dependendo do ano atual)
+        $anoInicial = 2022;
+
+        // Inicializa a variável que armazenará o HTML
+        $htmlSelect = '<select name="year_financial" class="form-control" id="year_financial" placeholder="Ano com dois digitos">' . PHP_EOL;
+        // Gera as opções
+        $htmlSelect .= "<option value='0'>--Selecione--</option>";
+        for ($ano = $anoAtual; $ano >= $anoInicial; $ano--) {
+            $ano2digitos = substr($ano, -2);
+            $htmlSelect .= "<option value=\"$ano2digitos\">$ano2digitos</option>" . PHP_EOL;
+        }
+        // Fecha a tag select
+        $htmlSelect .= '</select>' . PHP_EOL;
+        return view('report.financial.index',
+            compact('htmlSelect' )
         );
     }
 

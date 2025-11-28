@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use Seara\Models\Company;
 use Seara\Models\User;
 use Exception;
+use Seara\Service\Financial\FinancialAccountService;
 use Validator;
 
 use Seara\Mail\UserRegistered;
 use Illuminate\Support\Facades\Mail;
 
 use Carbon\Carbon;
+use function dd;
 
 class SignUpController extends Controller
 {
@@ -84,10 +86,19 @@ class SignUpController extends Controller
             DB::transaction(function () use ($companyData, $userData) {
                 $companyData['company_status'] = 1;
                 $companyData['company_manager'] = $userData['name'];
-                Company::create($companyData);
-            });
+                $company = Company::create($companyData);
 
-            return response()->json(['status' => 'success', 'message' => 'Cadastrado concluido com sucesso.']);
+                $bodyRequest = [
+                    'name' => 'Caixa Interno',
+                    'company_id' => $company->company_id, // ID da empresa
+                    'agency_number' => 001, // Opcional
+                    'account_number' => 001, // Opcional
+                    'current_balance' => 0, // Opcional, default 0
+                    'is_active' => true, // Opcional
+                ];
+                FinancialAccountService::createCashAccount($bodyRequest);
+            });
+           return response()->json(['status' => 'success', 'message' => 'Cadastrado concluido com sucesso.']);
         } catch (\Throwable $e) {
             $errorCode = 422;
             return response()

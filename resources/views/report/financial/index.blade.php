@@ -18,7 +18,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <i class="fa fa-bar-chart"></i>
+                        <i class="fa fa-bar-chart"></i>Qual o mês?
                         Relatório Financeiro
                         <br>
                         <div class="clearfix">
@@ -49,13 +49,15 @@
                                 </div>
                             </div>
                             <div class="item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="year_financial">Digite o
-                                    ano<span class="required">*</span>
+                                <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                       for="year_financial">Selecione o ano
+                                        <span class="required">*</span>
                                 </label>
                                 <div class="col-md-6 col-sm-6  form-group has-feedback">
-                                    <input type="text" class="form-control has-feedback-left" id="year_financial"
-                                        name="year_financial" placeholder="First Name">
-                                    <span class="form-control-feedback left" aria-hidden="true">20</span>
+                                    @php
+                                     echo $htmlSelect;
+                                    @endphp
+
                                 </div>
                             </div>
                             <div class="item form-group">

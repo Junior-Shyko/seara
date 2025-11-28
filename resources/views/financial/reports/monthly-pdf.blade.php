@@ -226,10 +226,5 @@
                 <td style="width: 20%;" class="text-right">{{ number_format($totalGeneral, 2, ',', '.') }}</td>
             </tr>
         </tbody>
-
     </table>
-    <!-- Rodapé -->
-    <div class="footer-info">
-        <p>Relatório gerado em {{ now()->format('d/m/Y H:i') }}</p>
-    </div>
 @endsection
