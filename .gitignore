@@ -14,3 +14,4 @@ npm-debug.log
 /build
 /files
 docker/mysql/data
+public/img/images

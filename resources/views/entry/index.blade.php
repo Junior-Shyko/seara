@@ -9,6 +9,7 @@
 </style>
 @endpush
 @section('main_container')
+
     <!-- page content -->
     <div class="right_col" role="main">
         <div class="row">
@@ -34,7 +35,7 @@
                         </span>
                         <div class="count">
                             @php 
-                                echo number_format($generalBalnaceBank, 2 , ',', '.');
+                                echo number_format($totalBanks, 2 , ',', '.');
                             @endphp
                         </div>
                         <span class="count_bottom">
@@ -47,7 +48,7 @@
                         <span class="count_top">
                             <i class="fa fa-money" aria-hidden="true"></i> Caixa Interno
                         </span>
-                        <div class="count">{{number_format($interInternal, 2 , ',', '.')}}</div>
+                        <div class="count">{{number_format($totalCash, 2 , ',', '.')}}</div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral do caixa interno
@@ -58,7 +59,7 @@
                         <span class="count_top">
                             <i class="fa fa-calculator" aria-hidden="true"></i> Caixa Geral
                         </span>
-                        <div class="count green">{{number_format($balanceGeneral, 2 , ',', '.')}}</div>
+                        <div class="count green">{{number_format($totalGeneral, 2 , ',', '.')}}</div>
                         <span class="count_bottom">
                             <i class="green">
                                 Valor geral de todos os caixas
@@ -163,12 +164,12 @@
             </div>
         </div>
     </div>
-    {{-- @include('modals.entry.modal_lauch') --}}
+    @include('modals.entry.modal_lauch')
     
     @include('modals.modal_box_entry', [
-        'saldo' => $interInternal, 
-        'accountBank' => $accountBank,
-        'generalBalnaceBank' => $generalBalnaceBank
+        'saldo' => 0, 
+        'accountBank' => 0,
+        'generalBalnaceBank' => 0
         ])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')

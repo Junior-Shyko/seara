@@ -13,12 +13,13 @@ $(document).ready(function () {
 
     //Contas bancarias
     $('#table-account-bank').DataTable( {
-        ajax: SearaApp.baseURL+'todasContas/'+idCodeCompany+'/',
+        ajax: SearaApp.baseURL+'financial/account/all/'+idCodeCompany,
         columns: [
-            {data: 'nameBank', name: 'nameBank'},
-            {data: 'nameTypeBank', name: 'nameTypeBank'},
-            {data: 'number', name: 'number'},
+            {data: 'name', name: 'name'},
+            {data: 'type', name: 'type'},
+            {data: 'account_number', name: 'account_number'},
             {data: 'agency_number', name: 'agency_number'},
+            {data: 'current_balance', name: 'current_balance'},
             {data: 'action', name: 'action', searchable: false, className: 'nowrap'}
         ]
     } );
@@ -153,6 +154,7 @@ $("#btn_delete_type_account_bank").click(function (e) {
 
 $("#btnSaveAccontBank").click(function (e){
     var form = $("#formAccountBank").serialize();
+    console.log(form)
     //validação
     if(
         $(".accountBankNumber").val() == '' ||
@@ -169,10 +171,10 @@ $("#btnSaveAccontBank").click(function (e){
     //referenciando url
     if(idAccontBank == '' ){
         typeRequest = "POST";
-        urlRequest = SearaApp.baseURL + 'conta-bancaria';
+        urlRequest = SearaApp.baseURL + 'financial/account/store';
     }else{
         typeRequest = "PATCH";
-        urlRequest = SearaApp.baseURL + 'conta-bancaria/'+idAccontBank;
+        urlRequest = SearaApp.baseURL + 'financial/account/store/'+idAccontBank;
     }
     $.ajax({
         type: typeRequest,

@@ -3,9 +3,12 @@
 namespace Seara\Console;
 
 use Seara\Console\Commands\DropTables;
-use Seara\Console\Commands\ImportCustomer;
 use Seara\Console\Commands\MigrateViews;
+use Seara\Console\Commands\ImportCustomer;
 use Illuminate\Console\Scheduling\Schedule;
+use Seara\Console\Commands\MigrateOldEntries;
+use Seara\Console\Commands\ValidateMigration;
+use Seara\Console\Commands\RecalculateBalances;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -19,6 +22,9 @@ class Kernel extends ConsoleKernel
         ImportCustomer::class,
         MigrateViews::class,
         DropTables::class,
+        MigrateOldEntries::class,
+        ValidateMigration::class,
+        RecalculateBalances::class
     ];
 
     /**

@@ -1,0 +1,263 @@
+<?php
+
+namespace Seara\Service\Financial;
+
+use Seara\FinancialEntry;
+use Seara\AccountLaunch;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Seara\Repository\SettingsBoxRepository;
+
+class FinancialReportService
+{
+    /**
+     * Gera relatório por categoria entre duas datas
+     *
+     * @param string $startDate Formato dd/mm/yyyy
+     * @param string $endDate Formato dd/mm/yyyy
+     * @param int $companyId
+     * @return array
+     */
+    public function getReportByCategory($startDate, $endDate, $companyId, $categoryId = null)
+    {
+        $dateStart = SettingsBoxRepository::convertDateToFullYear($startDate);
+        $dateEnd = SettingsBoxRepository::convertDateToFullYear($endDate);
+        
+        $start = Carbon::createFromFormat('d/m/Y', $dateStart)->startOfDay();
+        $end = Carbon::createFromFormat('d/m/Y', $dateEnd)->endOfDay();
+
+        // ========================================
+        // 1. DADOS AGREGADOS (para totais)
+        // ========================================
+        $reportData = FinancialEntry::select(
+                'category_id',
+                DB::raw('SUM(CASE 
+                    WHEN type = "credit" THEN amount 
+                    WHEN type = "debit" THEN -amount 
+                    ELSE 0 
+                END) as total')
+            )
+            ->with(['category:id,accountlaunch_name,accountlaunch_type'])
+            ->whereBetween('entry_date', [$start, $end])
+            ->where('company_id', $companyId)
+            ->whereNotNull('category_id')
+            ->when($categoryId, function ($query) use ($categoryId) {
+                // FILTRO CONDICIONAL: Se $categoryId não for null, filtra
+                return $query->where('category_id', $categoryId);
+            })
+            ->groupBy('category_id')
+            ->orderBy('total', 'DESC')
+            ->get();
+
+        // Calcular totais gerais
+        $totalIncome = 0;
+        $totalExpense = 0;
+
+        $categories = $reportData->map(function ($item) use (&$totalIncome, &$totalExpense, $start, $end, $companyId) {
+            $isIncome = $item->total > 0;
+        
+            if ($isIncome) {
+                $totalIncome += $item->total;
+            } else {
+                $totalExpense += abs($item->total);
+            }
+            
+            return [
+                'category_id' => $item->category_id,
+                'category_name' => $item->category ? $item->category->accountlaunch_name : 'Sem Categoria',
+                'total' => $item->total,
+                'total_formatted' => 'R$ ' . number_format(abs($item->total), 2, ',', '.'),
+                'type' => $isIncome ? 'income' : 'expense',
+                'type_label' => $isIncome ? 'Receita' : 'Despesa',
+                'count' => $this->getEntriesCountByCategory($item->category_id, $start, $end, $companyId)
+            ];
+        });
+
+        // ========================================
+        // 2. DADOS DETALHADOS (todos os lançamentos)
+        // ========================================
+        $allEntries = FinancialEntry::with([
+                'category:id,accountlaunch_name,accountlaunch_type',
+                'account:id,name,type',
+                'transaction:id,type,description',
+                'createdBy:id,name'
+            ])
+            ->whereBetween('entry_date', [$start, $end])
+            ->where('company_id', $companyId)
+            ->whereNotNull('category_id')
+            ->when($categoryId, function ($query) use ($categoryId) {
+                // FILTRO CONDICIONAL: Se $categoryId não for null, filtra
+                return $query->where('category_id', $categoryId);
+            })
+            ->orderBy('entry_date', 'DESC')
+            ->orderBy('category_id')
+            ->get()
+            ->map(function ($entry) {
+                return [
+                    'id' => $entry->id,
+                    'date' => $entry->entry_date->format('d/m/Y'),
+                    'date_carbon' => $entry->entry_date,
+                    'description' => $entry->description,
+                    'category_id' => $entry->category_id,
+                    'category_name' => $entry->category ? $entry->category->accountlaunch_name : 'Sem Categoria',
+                    'account_name' => $entry->account ? $entry->account->name : '-',
+                    'type' => $entry->type,
+                    'type_label' => $entry->type === 'credit' ? 'Crédito' : 'Débito',
+                    'amount' => $entry->amount,
+                    'amount_formatted' => 'R$ ' . number_format($entry->amount, 2, ',', '.'),
+                    'amount_signed' => $entry->type === 'credit' ? $entry->amount : -$entry->amount,
+                    'amount_signed_formatted' => ($entry->type === 'debit' ? '-' : '+') . 'R$ ' . number_format($entry->amount, 2, ',', '.'),
+                    'transaction_type' => $entry->transaction ? $entry->transaction->type : '-',
+                    'created_by' => $entry->createdBy ? $entry->createdBy->name : '-'
+                ];
+            });
+
+        // ========================================
+        // 3. AGRUPAR LANÇAMENTOS POR CATEGORIA
+        // ========================================
+        $entriesByCategory = $allEntries->groupBy('category_id')->map(function ($entries, $categoryId) {
+            return [
+                'category_id' => $categoryId,
+                'category_name' => $entries->first()['category_name'],
+                'entries' => $entries->values()->toArray(),
+                'count' => $entries->count(),
+                'subtotal' => $entries->sum('amount_signed'),
+                'subtotal_formatted' => 'R$ ' . number_format(abs($entries->sum('amount_signed')), 2, ',', '.')
+            ];
+        });
+
+        // Saldo final
+        $balance = $totalIncome - $totalExpense;
+
+        // INFORMAÇÃO ADICIONAL: Se filtrou por categoria
+        $filteredCategory = null;
+        if ($categoryId) {
+            $filteredCategory = AccountLaunch::find($categoryId);
+        }
+
+        return [
+            'filtered_category' => $filteredCategory,
+            'is_filtered' => !is_null($categoryId), 
+            'period' => [
+                'start' => $start->format('d/m/Y'),
+                'end' => $end->format('d/m/Y'),
+                'start_carbon' => $start,
+                'end_carbon' => $end
+            ],
+            'categories' => $categories,
+            'entries' => $allEntries,
+            'entries_by_category' => $entriesByCategory,
+            'totals' => [
+                'income' => $totalIncome,
+                'income_formatted' => 'R$ ' . number_format($totalIncome, 2, ',', '.'),
+                'expense' => $totalExpense,
+                'expense_formatted' => 'R$ ' . number_format($totalExpense, 2, ',', '.'),
+                'balance' => $balance,
+                'balance_formatted' => 'R$ ' . number_format($balance, 2, ',', '.'),
+                'balance_class' => $balance >= 0 ? 'text-success' : 'text-danger'
+            ],
+            'summary' => [
+                'total_entries' => $allEntries->count(),
+                'total_categories' => $categories->count()
+            ]
+        ];
+    }
+
+    /**
+     * Conta quantos lançamentos existem por categoria
+     */
+    private function getEntriesCountByCategory($categoryId, $start, $end, $companyId)
+    {
+        return FinancialEntry::where('category_id', $categoryId)
+            ->whereBetween('entry_date', [$start, $end])
+            ->where('company_id', $companyId)
+            ->count();
+    }
+
+    /**
+     * Total de lançamentos no período
+     */
+    private function getTotalEntries($start, $end, $companyId)
+    {
+        return FinancialEntry::whereBetween('entry_date', [$start, $end])
+            ->where('company_id', $companyId)
+            ->count();
+    }
+
+    /**
+     * Relatório detalhado por categoria (com lançamentos individuais)
+     */
+    public function getDetailedReportByCategory($startDate, $endDate, $companyId)
+    {
+        $start = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay();
+        $end = Carbon::createFromFormat('d/m/Y', $endDate)->endOfDay();
+
+        $categories = AccountLaunch::whereHas('financialEntries', function ($query) use ($start, $end, $companyId) {
+                $query->whereBetween('entry_date', [$start, $end])
+                      ->where('company_id', $companyId);
+            })
+            ->with(['financialEntries' => function ($query) use ($start, $end, $companyId) {
+                $query->whereBetween('entry_date', [$start, $end])
+                      ->where('company_id', $companyId)
+                      ->orderBy('entry_date', 'DESC');
+            }])
+            ->get();
+
+        $report = [];
+        $totalIncome = 0;
+        $totalExpense = 0;
+
+        foreach ($categories as $category) {
+            $categoryTotal = 0;
+            $entries = [];
+
+            foreach ($category->financialEntries as $entry) {
+                $value = $entry->type === 'credit' ? $entry->amount : -$entry->amount;
+                $categoryTotal += $value;
+
+                $entries[] = [
+                    'id' => $entry->id,
+                    'date' => $entry->entry_date->format('d/m/Y'),
+                    'description' => $entry->description,
+                    'type' => $entry->type,
+                    'amount' => $entry->amount,
+                    'amount_formatted' => 'R$ ' . number_format($entry->amount, 2, ',', '.'),
+                    'value_signed' => $value,
+                    'account' => $entry->account ? $entry->account->name : '-'
+                ];
+            }
+
+            if ($categoryTotal > 0) {
+                $totalIncome += $categoryTotal;
+            } else {
+                $totalExpense += abs($categoryTotal);
+            }
+
+            $report[] = [
+                'category_id' => $category->id,
+                'category_name' => $category->accountlaunch_name,
+                'total' => $categoryTotal,
+                'total_formatted' => 'R$ ' . number_format(abs($categoryTotal), 2, ',', '.'),
+                'type' => $categoryTotal > 0 ? 'income' : 'expense',
+                'entries' => $entries,
+                'entries_count' => count($entries)
+            ];
+        }
+
+        return [
+            'period' => [
+                'start' => $start->format('d/m/Y'),
+                'end' => $end->format('d/m/Y')
+            ],
+            'categories' => $report,
+            'totals' => [
+                'income' => $totalIncome,
+                'income_formatted' => 'R$ ' . number_format($totalIncome, 2, ',', '.'),
+                'expense' => $totalExpense,
+                'expense_formatted' => 'R$ ' . number_format($totalExpense, 2, ',', '.'),
+                'balance' => $totalIncome - $totalExpense,
+                'balance_formatted' => 'R$ ' . number_format($totalIncome - $totalExpense, 2, ',', '.')
+            ]
+        ];
+    }
+}

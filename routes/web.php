@@ -1,5 +1,6 @@
 <?php
 
+use Seara\Http\Controllers\Financial\FinancialReportController;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -94,13 +95,14 @@ Route::get('conta/dataTable', 'AccountController@dataTable');
 Route::resource('conta' , 'AccountController');
 
 Route::resource('tipo-conta', 'AccountTypeController');
-Route::resource('lancar' , 'EntryController')->middleware('auth');
+Route::resource('lancar' , 'FinancialEntryController')->middleware('auth');
+
 Route::post('caixa/upload' , 'EntryController@upload');
-Route::get('all-launch/{company}', 'EntryController@getAll');
-Route::post('lancar/delete' , 'EntryController@destroy')->middleware('auth.basic');
+// Route::get('all-launch/{company}', 'EntryController@getAll');
+
+
 Route::get('info-launch/{id}' , 'EntryController@info');
 Route::post('lancar/file/delete', 'EntryController@deleteFile');
-Route::get('lancar/relatorio/dtIni/{ini}/dtEnd/{end}/company/{company}' , 'EntryController@reportBox');
 
 Route::group(['prefix' => 'api'], function () {
     Route::get('saldo-banco/{idCompany}' , 'EntryController@bank');
@@ -135,8 +137,8 @@ Route::get('getBank/{id}' , 'BankController@show');
 //ROTA PARA CONTAS BANCARIAS
 Route::resource('conta-bancaria' , 'AccountBankController');
 Route::get('getAccountBank/{id}' , 'AccountBankController@show');
-Route::get('todasContas/{id}' , 'AccountBankController@getAccountBank');
-Route::post('transferir' , 'AccountBankController@actionTransfer');
+
+
 
 //TIPO DE CONTAS BANCARIASS
 Route::get('tipo-banco/getType', 'TypeBankController@getType');
@@ -179,7 +181,35 @@ Route::group(['prefix' => 'permission', 'middleware' => ['role:admin|superAdmin'
     Route::post('alter-role' , 'UserController@alterRoleUser');
     Route::post('alter-permission' , 'UserController@alterPermissionUser');
 });
+// Controller
+Route::get('lancar/relatorio/dtIni/{dateInit?}/dtEnd/{dateEnd?}/company/{idCompany}', 'EntryController@reportBox')
+    ->where(['dateInit' => '.*', 'dateEnd' => '.*']);
 
-Route::get('csrf', function() {
-    return csrf_token();
+// ROTAS PARA RELATÓRIOS FINANCEIROS
+## FINANCIAL
+Route::prefix('financial/reports')->name('financial.reports.')->group(function() {
+    Route::get('/', 'FinancialReportController@index');
+    Route::post('/by-category','FinancialReportController@byCategory');
+    Route::post('/monthly/pdf', 'FinancialReportController@monthlyReportPdf')->name('monthly.pdf');
+    // Route::post('/detailed', [FinancialReportController::class, 'detailed'])->name('detailed');
+    // Route::post('/export-pdf', [FinancialReportController::class, 'exportPdf'])->name('export-pdf');
+    // Route::post('/export-excel', [FinancialReportController::class, 'exportExcel'])->name('export-excel');
 });
+
+Route::post('lancar/delete' , 'FinancialEntryController@destroy')->middleware('auth.basic');
+Route::get('all-launch/{company}', 'FinancialEntryController@datatable');
+
+Route::prefix('financial')->name('financial.')->group(function() {
+    Route::get('/entries/create', 'FinancialEntryController@create')->name('entries.create');
+    Route::post('/entries', 'FinancialEntryController@store')->name('entries.store');
+    Route::post('transferir' , 'FinancialEntryController@transfer');
+    Route::put('entries/update/{id}' , 'FinancialEntryController@update')->name('entries/update.update');
+});
+
+Route::group(['prefix' => 'financial/account'], function() {
+    Route::get('/store', 'FinancialAccountController@create')->name('entries.create');
+    Route::get('all/{id}' , 'FinancialAccountController@getAllAccount');
+    Route::post('/store', 'FinancialAccountController@store');
+});
+
+Route::get('criar-caixa', 'BoxController@criar_caixa');

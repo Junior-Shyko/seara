@@ -56,7 +56,8 @@
                                             <th>Nome do banco</th>
                                             <th>Tipo de conta</th>
                                             <th>N. Conta</th>
-                                            <th>N. Agência<th>
+                                            <th>N. Agência</th>
+                                            <th>Saldo da conta</th>
                                             <th>Ação</th>
                                         </tr>
                                     </thead>

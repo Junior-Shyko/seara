@@ -76,20 +76,21 @@
                                     <div class="form-horizontal">
                                         <div class="form-group row">
                                             <div class="col-md-12">
-                                                <label for="">Selecione um banco</label>                                       
+                                                <label for="">Selecione um banco</label> 
                                                 <select name="entries_bank" id="select-form-option-bank" class="form-control">
                                                     <option value="--">-- Selecione --</option>
-
-                                                    @foreach ($accountBank as $bank)
+                                                    @foreach ($accountsBussines as $bank)
+                                                     @if($bank->type == 'bank' || $bank->type == 'BANK')
                                                         <option 
-                                                            value="{{ $bank->bank_id }}"
-                                                            data-num="{{$bank->number}}"
+                                                            value="{{ $bank->id }}"
+                                                            data-num="{{$bank->account_number}}"
                                                             data-age="{{$bank->agency_number}}"
-                                                            data-type="{{$bank->nameTypeBank}}"
+                                                            data-type="{{$bank->type}}"
                                                             data-idaccount="{{$bank->id}}"
                                                         >
-                                                        Conta:  {{$bank->agency_number}} - Banco: {{ $bank->nameBank }}
+                                                        Conta:  {{$bank->agency_number}} - Banco: {{ $bank->name }}
                                                         </option>
+                                                     @endif
                                                     @endforeach
                                                 </select>                                           
                                             </div>
@@ -126,10 +127,9 @@
                                         <small class="text-danger">Conta de saída</small>
                                         <select name="" id="selectAccountBankEnd" class="form-control">
                                             <option value="">--Selecione--</option>
-                                            <option value="0">CAIXA INTERNO</option>
-                                            @foreach ($accountBank as $bank)
+                                            @foreach ($accountsBussines as $bank)
                                                 <option value="{{ $bank->id }}">
-                                                    {{ $bank->nameBank }}
+                                                    {{ $bank->name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -137,7 +137,7 @@
                                     <div class="col-md-3">
                                         <small>Valor para transferência</small>
                                         <input type="text" name="realValueTranfer" 
-                                        id="realValueTranfer" class="form-control" value="50">
+                                        id="realValueTranfer" class="form-control">
                                     </div>
                                     <div class="col-md-5">
                                         {{-- <label>informações</label>
@@ -152,10 +152,9 @@
                                         <small class="text-danger">Conta de entrada</small>
                                         <select name="" id="selectAccountBankEntry" class="form-control">
                                             <option value="">--Selecione--</option>
-                                            <option value="0">CAIXA INTERNO</option>
-                                            @foreach ($accountBank as $bank)
+                                            @foreach ($accountsBussines as $bank)
                                                 <option value="{{ $bank->id }}">
-                                                    {{ $bank->nameBank }}
+                                                    {{ $bank->name }}
                                                 </option>
                                             @endforeach
                                         </select>

@@ -125,7 +125,7 @@ var SearaAlert = (function(){
   {
     return swal({
         title: 'Aguarde...',
-        html: 'Verificando o valor bancário',
+        html: 'Verificando os dados',
         allowOutsideClick: false,
         allowEscapeKey: false,
         showConfirmButton: false,

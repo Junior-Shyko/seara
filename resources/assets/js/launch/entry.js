@@ -116,6 +116,10 @@ $(document).ready(function () {
         modal.find('#idDelete').val(id)
     })
 
+    $('#lancar_conta').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+    });
+
     //ID DO LANÇAMENTO
         
     function getInfolaunch(id, nameDivFile) {
@@ -192,23 +196,54 @@ function getLaunchAccount(codAccount) {
         $(".label_desc_type").html(data[0].account_types_name);
         $(".typeTransactionForm").val(data[0].account_types_name);
         $(".entries_description").val(data[0].accountlaunch_history);
-        // $(".account_launches_referring").html(data[0].account_launches_referring);
         showDivs();
     });
 }    
 var idCompany = $("#idCodeCompany").val();
 
 function getLaunch(idCompany) {
-    let colunas = [
-        {data: 'entries_date_launch', name: 'entries_date_launch'},
-        {data: 'entries_description', name: 'entries_description'},
-        {data: 'entries_value', name: 'entries_value'},
-        {data: 'entries_id_account', name: 'entries_id_account'},
-        {data: 'entries_bank', name: 'entries_bank'},
-        {data: 'entries_id_user', name: 'entries_id_user'},
-        {data: 'action', name: 'action', searchable: false, className: 'nowrap'},
+    const colunas = [
+       { 
+            data: 'created_at', 
+            name: 'created_at', 
+            orderable: true,
+            searchable: true 
+        },
+        { 
+            data: 'description', 
+            name: 'description',
+            searchable: true 
+        },
+        { 
+            data: 'total_amount', 
+            name: 'total_amount',
+            orderable: true,
+            searchable: true
+        },
+        { 
+            data: 'type_badge', 
+            name: 'type_badge',
+            searchable: true 
+        },
+        { 
+            data: 'account_info', 
+            name: 'account_info', 
+            searchable: true 
+        },
+        { 
+            data: 'user', 
+            name: 'user',
+            searchable: true 
+        },
+        { 
+            data: 'action', 
+            name: 'action', 
+            orderable: false, 
+            searchable: false, 
+            className: 'nowrap'
+        },
     ];
-    
+
     var table = $('#entry-table').DataTable( {
         paging: false,
         retrieve: true,
@@ -224,31 +259,21 @@ function getLaunch(idCompany) {
             {
                 extend: 'excel',
                 text: 'Exportar planilha do Excel',
-                filename: 'dados_exportados',
-                className: 'btn btn-secondary',
-                charset: 'utf-8',
-                bom: true // Para caracteres especiais
-            },
-            {
-                extend: 'pdf',
-                text: 'Imprimir em PDF',
-                filename: 'dados_exportados',
-                orientation: 'landscape', // ou 'portrait'
-                pageSize: 'A4',
+                filename: 'planilha_exportada_com_lancamentos',
                 className: 'btn btn-primary',
-                title: 'Imprimir em pdf tabela de lançamentos',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4] // colunas específicas
-                },
-
-                customize: function(doc) {
-                    // Personalizar o PDF se necessário
-                    doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
-                }
+                charset: 'utf-8',
+                bom: true, // Para caracteres especiais
             }
         ],
         ajax: SearaApp.baseURL+'all-launch/'+idCompany,
-        columns: colunas
+        columns: colunas,
+        order: [[0, 'asc']],
+        language: {
+            search: "Buscar:",
+            searchPlaceholder: "Digite para buscar...",
+            processing: "Processando...",
+            emptyTable: "Nenhum registro encontrado"
+        }
     });
 }
 
@@ -330,13 +355,45 @@ function searchPeriod(idCompany) {
 
     // Configuração das colunas da DataTable
     const columns = [
-        { data: 'entries_date_launch', name: 'entries_date_launch' },
-        { data: 'entries_description', name: 'entries_description' },
-        { data: 'entries_value', name: 'entries_value' },
-        { data: 'account_types_name', name: 'account_types_name' },
-        { data: 'entries_id_account', name: 'entries_id_account' },
-        { data: 'entries_id_user', name: 'entries_id_user' },
-        { data: 'action', name: 'action' }
+        { 
+            data: 'created_at', 
+            name: 'created_at', 
+            orderable: true,
+            searchable: true // ⭐ Adicione explicitamente
+        },
+        { 
+            data: 'description', 
+            name: 'description',
+            searchable: true // ⭐
+        },
+        { 
+            data: 'total_amount', 
+            name: 'total_amount',
+            orderable: true,
+            searchable: true // ⭐
+        },
+        { 
+            data: 'type_badge', 
+            name: 'type_badge',
+            searchable: true // ⭐
+        },
+        { 
+            data: 'account_info', 
+            name: 'account_info', // ⭐ Corrija aqui
+            searchable: true // ⭐
+        },
+        { 
+            data: 'user', 
+            name: 'user',
+            searchable: true // ⭐
+        },
+        { 
+            data: 'action', 
+            name: 'action', 
+            orderable: false, 
+            searchable: false, 
+            className: 'nowrap'
+        },
     ];
 
     // Verifica se a DataTable já existe
@@ -360,12 +417,18 @@ function searchPeriod(idCompany) {
         pageLength: 100,
         ajax: ajaxUrl,
         columns: columns,
-        order: [[0, "asc"]],
-        drawCallback: function() {
-            const api = this.api();
-            const sum = api.column(2, { page: 'current' }).data().sum();
-            $(api.table().footer()).html(sum);
-        }
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                text: 'Exportar planilha do Excel',
+                filename: 'planilha_exportada_com_lancamentos',
+                className: 'btn btn-primary',
+                charset: 'utf-8',
+                bom: true // Para caracteres especiais
+            }
+        ],
+        order: [[0, "asc"]]        
     });
 }
 
@@ -373,15 +436,28 @@ var dtInit = '';
 var dtEnd = '';
 
 function showReport(idCompany) {
-    dtInit = btoa($("#dateInitial").val()); 
-    dtEnd = btoa($("#dateEnd").val());
+    var dtInit = $("#dateInitial").val().trim(); // Remove espaços extras
+    var dtEnd = $("#dateEnd").val().trim();
 
-    if(dtInit == '' || dtEnd == '') {
-        dtInit = " ";
-        dtEnd = " ";
+    if (dtInit !== '') {
+        path = 'lancar/relatorio/dtIni/' + btoa(dtInit) + '/dtEnd';
+        if (dtEnd !== '') {
+            path += '/' + btoa(dtEnd);
+        }
+        path += '/company/' + idCompany;
+    } else if (dtEnd !== '') {
+        // Se só dtEnd, ajuste conforme lógica
+        path = 'lancar/relatorio/dtEnd/' + btoa(dtEnd) + '/company/' + idCompany;
     }
 
-    $("#btn-print-report").attr('href', SearaApp.baseURL+'lancar/relatorio/dtIni/'+dtInit+'/dtEnd/'+ dtEnd + '/company/'+idCompany );
+    if(dtInit == '' && dtEnd == ''){
+         var path = 'lancar/relatorio/dtIni/'+btoa(dtInit)+'/dtEnd/'+btoa(dtEnd)+'/company/'+ idCompany;
+    }
+
+    var url = SearaApp.baseURL + path;
+
+    $("#btn-print-report").attr('href', url);
+
 }
 
 function getFiles(id) {
@@ -451,8 +527,8 @@ $("#btnEditLaunch").click(function (e) {
 
     var idLaunch = $("#idLaunchEdit").val();
     $.ajax({
-        type: "POST",
-        url: SearaApp.baseURL+'lancar/'+idLaunch,
+        type: "PUT",
+        url: SearaApp.baseURL+'financial/entries/update/'+idLaunch,
         data: form,
         dataType: "json",
         success: function (_response) {
@@ -464,6 +540,16 @@ $("#btnEditLaunch").click(function (e) {
                 styling: 'bootstrap3'
             });
         }
+    })
+    .fail(function(jqXHR, e){
+        console.log(jqXHR)
+        console.log({e})
+        new PNotify({
+            title: 'Ops!!',
+            text: 'Ocorreu um erro inesperado. ' + jqXHR.responseJSON.message,
+            type: jqXHR.responseJSON.type,
+            styling: 'bootstrap3'
+        });
     });
 });
 
@@ -529,12 +615,12 @@ function formatValueToFront(action, idAccountBank, balanceInternal, smalTextInfo
 $("#selectAccountBankEnd").change(function (e) { 
     e.preventDefault();
     $("#realValueTranfer").removeAttr('disabled');
-    formatValueToFront(
-        'saida',
-        $("#selectAccountBankEnd").val(), 
-        $("#valueInternal").val(), 
-        'balanceEndAccount'
-    );
+    // formatValueToFront(
+    //     'saida',
+    //     $("#selectAccountBankEnd").val(), 
+    //     $("#valueInternal").val(), 
+    //     'balanceEndAccount'
+    // );
 });
 
 $("#selectAccountBankEntry").change(function (e) { 
@@ -547,44 +633,48 @@ $("#selectAccountBankEntry").change(function (e) {
             type: 'error',
             styling: 'bootstrap3'
         });
+        $("#btnTransferValue").hide();
         return false;
+    }else{
+        $("#btnTransferValue").show();
     }
     
-    formatValueToFront(
-        'entrada',
-        $("#selectAccountBankEntry").val(), 
-        $("#valueInternal").val(), 
-        'balanceEntryAccount'
-    );
+    // formatValueToFront(
+    //     'entrada',
+    //     $("#selectAccountBankEntry").val(), 
+    //     $("#valueInternal").val(), 
+    //     'balanceEntryAccount'
+    // );
 }); 
 //AO SAIR DO CAMPO SE FAZ A VELIDAÇÃO DE VALORES
 $('#realValueTranfer').on('blur', function () {
     // Verificando se tem saldo no banco pra transferencia
-    const valueBank = getBankGeneral(404)
-        .then(valueBank => {
-            SearaAlert.loading();
-            if(valueBank < parseFloat($("#realValueTranfer").val().replace(/[R$.\s]/g, '').replace(',', '.'))){
-                setTimeout(() => {
-                    SearaLoader.hideModal();
-                    new PNotify({
-                        title: 'Ops!',
-                        text: 'O valor da transferência não pode ser maior que o saldo da conta',
-                        type: 'error',
-                        styling: 'bootstrap3'
-                    });
-                }, 1000);
-                
-                $("#btnTransferValue").hide();
-            }else{
-                $("#btnTransferValue").show();
-                setTimeout(() => {
-                    SearaLoader.hideModal();
-                }, 1000);
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-        });
+    console.log({idCompany})
+    // const valueBank = getBankGeneral(idCompany)
+    //     .then(valueBank => {
+    //         SearaAlert.loading();
+    //         if(valueBank < parseFloat($("#realValueTranfer").val().replace(/[R$.\s]/g, '').replace(',', '.'))){
+    //             setTimeout(() => {
+    //                 SearaLoader.hideModal();
+    //                 new PNotify({
+    //                     title: 'Ops!',
+    //                     text: 'O valor da transferência não pode ser maior que o saldo da conta',
+    //                     type: 'error',
+    //                     styling: 'bootstrap3'
+    //                 });
+    //             }, 1000);
+    //
+    //             $("#btnTransferValue").hide();
+    //         }else{
+    //             $("#btnTransferValue").show();
+    //             setTimeout(() => {
+    //                 SearaLoader.hideModal();
+    //             }, 1000);
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Erro:', error);
+    //     });
            
 });
 
@@ -616,7 +706,7 @@ function transferValue() {
     }
 
     // return;
-    SearaAjax.post('transferir', data, function( response ){
+    SearaAjax.post('financial/transferir', data, function( response ){
         console.log(response)
         if(response.type == 'success')
         {
@@ -630,6 +720,9 @@ function transferValue() {
                 window.location.reload(); 
             }, 2000);
         }
+    })
+    .fail(function(jqXHR){
+        notify.response(jqXHR.responseJSON);
     })
     .always(function(response){
         console.log({response})
@@ -647,6 +740,8 @@ function transferValue() {
        
     });''
 }
+
+
 
 function saveDataForm(name_form) {
     var form = $('#'+name_form).serialize();
@@ -672,8 +767,7 @@ function saveDataForm(name_form) {
             const dateVerify = moment(field.value, format, true);
             const dateStr = field.value;
             isValid = dateVerify.isValid() && !dateStr.includes('/00');
-        }
-console.log(isValid);
+        };
     });
     if(!isValid){
         new PNotify({
@@ -685,14 +779,14 @@ console.log(isValid);
         return false;
     }
 
-    if(verifyBank) {
-       alterValueBank(idBank, valueLanchBank);
-    }
+    // if(verifyBank) {
+    //    alterValueBank(idBank, valueLanchBank);
+    // }
     //concatenendo com id da compania
     form = form + '&entries_id_company=' + idCompany
     //enviando requisição
-    SearaAjax.post('lancar', form, function( response ){
-
+    SearaAjax.post('financial/entries', form, function( response ){
+       
         if(response.typeAccount == 'Despesa') {
             $("#modalUploadLaunch").modal('show');
         }
@@ -701,22 +795,32 @@ console.log(isValid);
         bankBalance(idCompany);
         internalBalance(idCompany);
         general(idCompany);
-        new PNotify({
-            title: 'Sucesso',
-            text: response.message,
-            type: response.status,
-            styling: 'bootstrap3'
-        });
-        if(response.typeAccount == 'Receita') {
-            setTimeout(() => {
-                // window.location.reload();
-            }, 2000);
+        if(response.status == 'error') {
+            new PNotify({
+                title: 'Ops!!!',
+                text: response.message,
+                type: response.status,
+                styling: 'bootstrap3'
+            });
+            return false;
+        }else{
+            new PNotify({
+                title: 'Sucesso',
+                text: response.message,
+                type: response.status,
+                styling: 'bootstrap3'
+            });
+            if(response.typeAccount == 'Receita') {
+                setTimeout(() => {
+                    // window.location.reload();
+                }, 2000);
+            }
         }
+        
         
     })
     .fail(function(jqXHR){
-        notify.response(jqXHR.responseJSON);
-
+       notify.response(jqXHR.responseJSON);
     })
     .always(function(){
         //console.log('hideModal');
