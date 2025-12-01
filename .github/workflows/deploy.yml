@@ -46,7 +46,7 @@ jobs:
         run: npx bower install
 
       - name: Build assets for production
-        run: npm run prod
+        run: npm run dev
 
       - name: Deploy via Deployer
         run: |
