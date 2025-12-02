@@ -59,12 +59,13 @@ jobs:
         run: docker push junioroliveira/seara:latest
 
       - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           port: 22
+          debug: true
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             docker compose down
