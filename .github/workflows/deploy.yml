@@ -52,11 +52,22 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
-        run: docker build --no-cache -t junioroliveira/seara:latest -f docker/php/Dockerfile .
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/php/Dockerfile
+          push: true
+          tags: junioroliveira/seara:latest
+          cache-from: type=registry,ref=junioroliveira/seara:latest
+          cache-to: type=inline
+        timeout-minutes: 30
 
       - name: Push Docker image to Docker Hub
-        run: docker push junioroliveira/seara:latest
+        run: |
+          for i in 1 2 3; do
+            docker push junioroliveira/seara:latest && break || sleep 15
+          done
 
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.2.0
