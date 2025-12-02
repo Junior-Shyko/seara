@@ -9,7 +9,7 @@ use Seara\Service\Company\CompanyRepository;
 use Seara\Service\Company\CsvCompanyExtractor;
 use Seara\Service\Company\DelayedCompanyDataProvider;
 use Seara\Service\Company\EloquentCompanyRepository;
-use Seara\Service\Company\Extractor;
+use Illuminate\Support\Facades\URL;
 use Seara\Service\Company\ReceitaWsCompanyDataProvider;
 use Seara\Service\Core\Transactor\EloquentTransactor;
 use Seara\Service\Core\Transactor\Transactor;
@@ -38,7 +38,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 
     /**
