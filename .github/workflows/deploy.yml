@@ -1,7 +1,9 @@
 name: Deploy
 
-# Este workflow faz deploy apenas quando há push para master
+# Este workflow faz deploy quando um PR é fechado na branch develop
 # Você precisará configurar os secrets no GitHub:
+# - DOCKER_USERNAME: usuário do Docker Hub
+# - DOCKER_PASSWORD: senha ou token do Docker Hub
 # - DEPLOY_HOST: servidor de destino
 # - DEPLOY_USER: usuário SSH
 # - DEPLOY_KEY: chave SSH privada
@@ -16,10 +18,9 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to Production
+    name: Build and Deploy to Production
     runs-on: ubuntu-latest
-    # Descomente a linha abaixo após configurar o environment no GitHub
-    # environment: production
+    if: github.event.pull_request.merged == true
 
     steps:
       - name: Checkout code
@@ -45,21 +46,19 @@ jobs:
       - name: Install Bower dependencies
         run: npx bower install
 
-      - name: Build assets for production
-        run: npm run dev
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Deploy via Deployer
-        run: |
-          # Usando o deployer.php que já existe no projeto
-          # Você precisará configurar os hosts em deploy.php
-          vendor/bin/dep deploy production --revision="${GITHUB_SHA}"
-        env:
-          # Adicione as variáveis de ambiente necessárias aqui
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      - name: Build Docker image
+        run: docker build --no-cache -t junioroliveira/seara:latest -f docker/php/Dockerfile .
 
-      # Deploy Docker via SSH
-      - name: Deploy Docker via SSH
+      - name: Push Docker image to Docker Hub
+        run: docker push junioroliveira/seara:latest
+
+      - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
@@ -68,13 +67,13 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            docker compose pull
             docker compose down
+            docker pull junioroliveira/seara:latest
             docker compose up -d
             docker image prune -f
 
-      - name: Slack Notification (opcional)
+      - name: Deployment notification
         if: always()
         run: |
-          # Adicione notificação Slack/Discord/Email aqui se desejar
-          echo "Deploy ${{ job.status }}"
+          echo "Deployment status: ${{ job.status }}"
+          echo "Image: junioroliveira/seara:latest"
