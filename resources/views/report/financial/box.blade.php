@@ -151,3 +151,11 @@
     </div>
 
 @endsection
+
+@push('stylesheets')
+    <script>
+        window.addEventListener("load", (event) => {
+            window.print();
+        });
+    </script>
+@endpush
