@@ -543,11 +543,9 @@ class EntryController extends Controller
 
         // Busca a empresa se aplicável
         $company = $idCompany ? Company::getCompany($idCompany) : null;
-
-        // Gera e retorna o PDF
-        $pdf = PDF::loadView('report.financial.box', compact('entries', 'company', 'perInitial', 'perEnd', 'priorBalance', 'totalCredits', 'totalDebits'));
-
-        return $pdf->stream('report');
+        return view('report.financial.box',
+            compact('entries', 'company',
+                'perInitial', 'perEnd', 'priorBalance', 'totalCredits', 'totalDebits'));
     }
 
     /**

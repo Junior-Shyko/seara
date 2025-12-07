@@ -9,7 +9,9 @@ use Barryvdh\DomPDF\PDF;
 use Seara\AccountLaunch;
 use Seara\Models\Company;
 use Seara\FinancialAccount;
+use Seara\FinancialEntry;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Seara\Http\Controllers\Controller;
 use Seara\Service\MonthlyFinancialReportService;
 use Seara\Service\Financial\FinancialReportService;
@@ -173,43 +175,61 @@ class FinancialReportController extends Controller
      */
     public function monthlyReportPdf(Request $request)
     {
-        // $request->validate([
-        //     'month_financial' => 'required|integer|min:1|max:12',
-        //     'year_financial' => 'required|integer|min:2000|max:2100'
-        // ]);
-        // $startDate = $this->normalizeDate($request->dateInitial);
-        // $endDate = $this->normalizeDate($request->dateEnd);
-        
+        $request->validate([
+            'month_financial' => 'required|integer|min:1|max:12',
+            'year_financial' => 'required',
+            'company_id' => 'required|integer'
+        ]);
+
         $carbonDate = Carbon::createFromFormat('y', $request->year_financial);
+        $fullYear = $carbonDate->year;
 
-        // Extrai o ano completo como inteiro
-        $fullYear = $carbonDate->year; // 2025
+        $companyId = $request->company_id;
 
-        $companyId = auth()->user()->user_id_company ?? 406;
-       
         // Usa $this->monthlyReportService 👈 NOVO SERVICE
         $report = $this->monthlyReportService->getMonthlyReport(
             $request->month_financial,
             $fullYear,
             $companyId
         );
-        $totalBanks = FinancialAccount::byCompany($companyId)
-            ->banks()
-            ->sum('current_balance');
-        $totalCash = FinancialAccount::byCompany($companyId)
-            ->cash()
-            ->sum('current_balance');
 
+        // Calcula saldo de bancos e caixa até o final do mês/ano especificado
+        $endDate = Carbon::create($fullYear, $request->month_financial, 1)->endOfMonth()->endOfDay();
+
+        $totalBanks = $this->calculateTotalBalanceByType($endDate, $companyId, 'bank');
+        $totalCash = $this->calculateTotalBalanceByType($endDate, $companyId, 'cash');
         $totalGeneral = $totalBanks + $totalCash;
-       
+
         // Buscar dados da empresa
         $company = Company::find($companyId);
-        // dd($report);
+
         $pdf = \PDF::loadView('financial.reports.monthly-pdf', compact('report', 'company', 'totalBanks', 'totalCash', 'totalGeneral'));
         $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream('relatorio-mensal.pdf');
-        // $filename = 'relatorio-' . str_pad($request->month_financial, 2, '0', STR_PAD_LEFT) . '-' . $fullYear . '.pdf';
-        
-        // return $pdf->download($filename);
+
+        $filename = 'relatorio-' . str_pad($request->month_financial, 2, '0', STR_PAD_LEFT) . '-' . $fullYear . '.pdf';
+
+        return $pdf->stream($filename);
+    }
+
+    /**
+     * Calcula o saldo total de contas por tipo até uma data específica
+     *
+     * @param Carbon $endDate Data final para cálculo
+     * @param int $companyId ID da empresa
+     * @param string $accountType Tipo da conta ('bank' ou 'cash')
+     * @return float Saldo calculado
+     */
+    private function calculateTotalBalanceByType($endDate, $companyId, $accountType)
+    {
+        $result = FinancialEntry::select(
+                DB::raw('SUM(CASE WHEN financial_entries.type = "credit" THEN financial_entries.amount ELSE -financial_entries.amount END) as balance')
+            )
+            ->join('financial_accounts', 'financial_entries.account_id', '=', 'financial_accounts.id')
+            ->where('financial_accounts.company_id', $companyId)
+            ->where('financial_accounts.type', $accountType)
+            ->where('financial_entries.entry_date', '<=', $endDate)
+            ->first();
+
+        return $result->balance ?? 0;
     }
 }
