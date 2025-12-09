@@ -552,11 +552,13 @@ class FinancialEntryController extends Controller
             })
             ->addColumn('amount_formatted', function ($transaction) {
                 return $transaction->amount_formatted;
-                
+
             })
             ->addColumn('total_amount', function ($transaction) {
+                return $transaction->total_amount;
+            })
+            ->addColumn('total_amount_formatted', function ($transaction) {
                 return number_format($transaction->total_amount, 2, ',', '.');
-                
             })
             ->addColumn('description', function ($transaction) {
                 return $transaction->description;
@@ -636,7 +638,7 @@ class FinancialEntryController extends Controller
                     $q->where('entry_date', 'like', "%{$keyword}%");
                 });
             })
-            ->rawColumns(['type_badge', 'amount_formatted', 'action', 'total_amount'])
+            ->rawColumns(['type_badge', 'amount_formatted', 'action', 'total_amount_formatted'])
             ->make(true);
     }
 

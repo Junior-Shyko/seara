@@ -203,43 +203,51 @@ var idCompany = $("#idCodeCompany").val();
 
 function getLaunch(idCompany) {
     const colunas = [
-       { 
-            data: 'created_at', 
-            name: 'created_at', 
-            orderable: true,
-            searchable: true 
-        },
-        { 
-            data: 'description', 
-            name: 'description',
-            searchable: true 
-        },
-        { 
-            data: 'total_amount', 
-            name: 'total_amount',
+       {
+            data: 'created_at',
+            name: 'created_at',
             orderable: true,
             searchable: true
         },
-        { 
-            data: 'type_badge', 
+        {
+            data: 'description',
+            name: 'description',
+            searchable: true
+        },
+        {
+            data: 'total_amount',
+            name: 'total_amount',
+            orderable: true,
+            searchable: true,
+            render: function(data, type, row) {
+                // Para exportação (Excel), retorna o valor raw
+                if (type === 'export' || type === 'sort') {
+                    return data;
+                }
+                // Para exibição na tela, retorna formatado
+                return row.total_amount_formatted;
+            }
+        },
+        {
+            data: 'type_badge',
             name: 'type_badge',
-            searchable: true 
+            searchable: true
         },
-        { 
-            data: 'account_info', 
-            name: 'account_info', 
-            searchable: true 
+        {
+            data: 'account_info',
+            name: 'account_info',
+            searchable: true
         },
-        { 
-            data: 'user', 
+        {
+            data: 'user',
             name: 'user',
-            searchable: true 
+            searchable: true
         },
-        { 
-            data: 'action', 
-            name: 'action', 
-            orderable: false, 
-            searchable: false, 
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false,
             className: 'nowrap'
         },
     ];
@@ -263,6 +271,24 @@ function getLaunch(idCompany) {
                 className: 'btn btn-primary',
                 charset: 'utf-8',
                 bom: true, // Para caracteres especiais
+                exportOptions: {
+                    format: {
+                        body: function (data, row, column, node) {
+                            // Se for a coluna de valor (índice 2)
+                            if (column === 2) {
+                                // Remove formatação e converte para número
+                                var value = typeof data === 'string' ? parseFloat(data.replace(/[^\d,-]/g, '').replace(',', '.')) : data;
+                                // Se o valor for maior que 1000, pode estar em centavos, então divide por 100
+                                if (value > 1000) {
+                                    value = value / 100;
+                                }
+                                // Retorna formatado com 2 casas decimais
+                                return value.toFixed(2);
+                            }
+                            return data;
+                        }
+                    }
+                }
             }
         ],
         ajax: SearaApp.baseURL+'all-launch/'+idCompany,
@@ -355,43 +381,51 @@ function searchPeriod(idCompany) {
 
     // Configuração das colunas da DataTable
     const columns = [
-        { 
-            data: 'created_at', 
-            name: 'created_at', 
+        {
+            data: 'created_at',
+            name: 'created_at',
             orderable: true,
-            searchable: true // ⭐ Adicione explicitamente
+            searchable: true
         },
-        { 
-            data: 'description', 
+        {
+            data: 'description',
             name: 'description',
-            searchable: true // ⭐
+            searchable: true
         },
-        { 
-            data: 'total_amount', 
+        {
+            data: 'total_amount',
             name: 'total_amount',
             orderable: true,
-            searchable: true // ⭐
+            searchable: true,
+            render: function(data, type, row) {
+                // Para exportação (Excel), retorna o valor raw
+                if (type === 'export' || type === 'sort') {
+                    return data;
+                }
+                // Para exibição na tela, retorna formatado
+                return row.total_amount_formatted;
+            }
         },
-        { 
-            data: 'type_badge', 
+        {
+            data: 'type_badge',
             name: 'type_badge',
-            searchable: true // ⭐
+            searchable: true
         },
-        { 
-            data: 'account_info', 
-            name: 'account_info', // ⭐ Corrija aqui
-            searchable: true // ⭐
+        {
+            data: 'account_info',
+            name: 'account_info',
+            searchable: true
         },
-        { 
-            data: 'user', 
+        {
+            data: 'user',
             name: 'user',
-            searchable: true // ⭐
+            searchable: true
         },
-        { 
-            data: 'action', 
-            name: 'action', 
-            orderable: false, 
-            searchable: false, 
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false,
             className: 'nowrap'
         },
     ];
@@ -425,7 +459,25 @@ function searchPeriod(idCompany) {
                 filename: 'planilha_exportada_com_lancamentos',
                 className: 'btn btn-primary',
                 charset: 'utf-8',
-                bom: true // Para caracteres especiais
+                bom: true, // Para caracteres especiais
+                exportOptions: {
+                    format: {
+                        body: function (data, row, column, node) {
+                            // Se for a coluna de valor (índice 2)
+                            if (column === 2) {
+                                // Remove formatação e converte para número
+                                var value = typeof data === 'string' ? parseFloat(data.replace(/[^\d,-]/g, '').replace(',', '.')) : data;
+                                // Se o valor for maior que 1000, pode estar em centavos, então divide por 100
+                                if (value > 1000) {
+                                    value = value / 100;
+                                }
+                                // Retorna formatado com 2 casas decimais
+                                return value.toFixed(2);
+                            }
+                            return data;
+                        }
+                    }
+                }
             }
         ],
         order: [[0, "asc"]]        

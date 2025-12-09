@@ -37,7 +37,7 @@
               <!-- Data -->
               <div class="col-md-2 col-sm-2 col-xs-12">
                 <input id="receipt_date" name="receipt_date" required placeholder="Data"
-                class="form-control col-md-7 col-xs-12 date-mask" type="text">
+                class="form-control col-md-7 col-xs-12" type="text">
               </div>
             </div>
 
