@@ -18,7 +18,7 @@
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-6">
                                 <label for="payment_date">Data de Pagamento</label>
-                                <input type="text" required class="form-control date-mask" name="payment_date" id="payment_date">
+                                <input type="text" required class="form-control" name="payment_date" id="payment_date">
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6">
                                 <label>Valor pago</label>
