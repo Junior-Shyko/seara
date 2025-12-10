@@ -23,7 +23,7 @@
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <label for="due_date">Vencimento</label>
-                                <input type="text" required class="form-control date-mask" name="due_date" id="due_date">
+                                <input type="text" required class="form-control" name="due_date" id="due_date">
                             </div>
                         </div>
                         <div class="row">
