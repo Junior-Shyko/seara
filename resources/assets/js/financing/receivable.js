@@ -1,5 +1,6 @@
 $(document).ready(function(){
     $('.payment_date').mask('00/00/0000', {placeholder: "__/__/____"});
+    console.log('receivable');
 });
 let ReceivableModule = (function () {
     const columns = [
