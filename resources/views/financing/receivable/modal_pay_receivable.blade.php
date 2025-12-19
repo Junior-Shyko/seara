@@ -17,8 +17,8 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-6">
-                                <label for="payment_date">Data de Pagamento</label>
-                                <input type="text" required class="form-control " name="payment_date" id="payment_date">
+                                <label for="date_payment">Data de Pagamento</label>
+                                <input type="text" required class="form-control payment_date" name="payment_date" id="date_payment">
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-6">
                                 <label>Valor pago</label>
