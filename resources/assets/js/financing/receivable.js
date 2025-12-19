@@ -149,7 +149,6 @@ let ReceivableModule = (function () {
 $(() => {
     ReceivableModule.index();
     $('#due_date').mask('00/00/0000', {placeholder: "__/__/____"});
-    console.log('financing.receivable');
 });
 function deleteReceivable(id) {
     ReceivableModule.deleteReceivable(id);
