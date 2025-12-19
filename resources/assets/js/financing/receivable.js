@@ -1,3 +1,6 @@
+$(document).ready(function(){
+    $('.payment_date').mask('00/00/0000', {placeholder: "__/__/____"});
+});
 let ReceivableModule = (function () {
     const columns = [
         {data: 'due_date', name: 'due_date'},
@@ -142,9 +145,7 @@ let ReceivableModule = (function () {
         generateReceipt
     };
 })();
-$(document).ready(function(){
-    $('.payment_date').mask('00/00/0000', {placeholder: "__/__/____"});
-});
+
 $(() => {
     ReceivableModule.index();
     $('#due_date').mask('00/00/0000', {placeholder: "__/__/____"});
