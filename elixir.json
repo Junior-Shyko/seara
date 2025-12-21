@@ -1,0 +1,16 @@
+{
+  "js": {
+    "uglify": {
+      "compress": false,
+      "mangle": false
+    }
+  },
+  "css": {
+    "minifier": {
+      "pluginOptions": {
+        "level": 0
+      }
+    }
+  },
+  "production": false
+}
