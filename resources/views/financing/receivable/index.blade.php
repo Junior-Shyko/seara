@@ -120,5 +120,5 @@
 @endsection
 
 @push('scripts')
-    <script type="text/javascript" language="javascript" src="{{elixir('js/financing/receivable.min.js')}}"></script>
+        <script type="text/javascript" language="javascript" src="{{url('js/financing/receivable.min.js')}}"></script>
 @endpush

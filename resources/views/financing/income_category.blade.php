@@ -52,5 +52,5 @@
 @endsection
 
 @push('scripts')
-    <script type="text/javascript" language="javascript" src="{{elixir('js/financing/income_category.min.js')}}"></script>
+    <script type="text/javascript" language="javascript" src="{{asset('js/financing/income_category.min.js')}}"></script>
 @endpush
