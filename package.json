@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "prod": "gulp --production",
+    "prod": "gulp",
     "dev": "gulp watch",
     "cy:run": "cypress run",
     "cy:dry-run": "cypress run --config video=false",
