@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # Serviço PHP-FPM (usando imagem pré-construída)
+  php:
+    image: junioroliveira/seara:1.1.15
+    container_name: seara-php-prod
+    working_dir: /var/www
+    volumes:
+      # Monta apenas diretórios que precisam ser persistentes
+      - ./storage:/var/www/storage
+      - ./bootstrap/cache:/var/www/bootstrap/cache
+      - ./.env:/var/www/.env:ro
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+      # Volume compartilhado com Nginx para arquivos públicos
+      - app-public:/var/www/public
+      - app-vendor:/var/www/vendor
+      - app-root:/var/www
+    networks:
+      - seara-prod
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: >
+      bash -c "
+        php artisan config:cache &&
+        php artisan route:cache &&
+        php-fpm
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "pidof php-fpm"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+
+  # Serviço Nginx
+  nginx:
+    image: nginx:1.25
+    container_name: seara-nginx-prod
+    expose:
+      - "80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # Volume compartilhado com PHP para arquivos públicos e aplicação
+      - app-root:/var/www:ro
+      # Se tiver certificados SSL, montar aqui
+      # - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      php:
+        condition: service_healthy
+    networks:
+      - seara-prod
+      - nginx-proxy  # Rede do proxy reverso
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST:-app.searacontabilidade.com.br}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST:-app.searacontabilidade.com.br}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-franciscoanto@gmail.com}
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Banco MySQL
+  mysql:
+    image: mysql:5.7
+    container_name: seara-mysql-prod
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-seara}
+      MYSQL_USER: ${DB_USERNAME:-laravel}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - seara-prod
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  seara-prod:
+    driver: bridge
+  nginx-proxy:
+    external: true
+
+volumes:
+  mysql-data:
+    driver: local
+  app-root:
+    driver: local
+  app-public:
+    driver: local
+  app-vendor:
+    driver: local

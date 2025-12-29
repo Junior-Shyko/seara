@@ -1,0 +1,143 @@
+# Makefile para Produção - Seara
+# Uso: make -f Makefile.production [comando]
+
+.PHONY: help deploy up down restart logs status shell artisan migrate cache-clear backup restore clean
+
+COMPOSE = docker compose -f docker-compose.production.yml
+PHP_CONTAINER = seara-php-prod
+NGINX_CONTAINER = seara-nginx-prod
+MYSQL_CONTAINER = seara-mysql-prod
+
+help: ## Mostra esta mensagem de ajuda
+	@echo "Comandos disponíveis:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+deploy: ## Deploy completo usando script (requer versão: make deploy VERSION=1.1.16)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Erro: Especifique a versão: make deploy VERSION=1.1.16"; \
+		exit 1; \
+	fi
+	./deploy.sh $(VERSION)
+
+up: ## Inicia os containers
+	$(COMPOSE) up -d
+	@echo "Aguardando containers ficarem saudáveis..."
+	@sleep 10
+	@$(COMPOSE) ps
+
+down: ## Para e remove os containers
+	$(COMPOSE) down
+
+restart: ## Reinicia os containers
+	$(COMPOSE) restart
+	@echo "Containers reiniciados"
+
+logs: ## Mostra logs de todos os containers
+	$(COMPOSE) logs -f
+
+logs-php: ## Mostra logs do container PHP
+	$(COMPOSE) logs -f php
+
+logs-nginx: ## Mostra logs do container Nginx
+	$(COMPOSE) logs -f nginx
+
+logs-mysql: ## Mostra logs do container MySQL
+	$(COMPOSE) logs -f mysql
+
+status: ## Mostra status dos containers
+	@echo "=== Status dos Containers ==="
+	@$(COMPOSE) ps
+	@echo ""
+	@echo "=== Saúde dos Containers ==="
+	@echo -n "PHP:   "; docker inspect $(PHP_CONTAINER) --format='{{.State.Health.Status}}' 2>/dev/null || echo "not running"
+	@echo -n "Nginx: "; docker inspect $(NGINX_CONTAINER) --format='{{.State.Health.Status}}' 2>/dev/null || echo "not running"
+	@echo -n "MySQL: "; docker inspect $(MYSQL_CONTAINER) --format='{{.State.Health.Status}}' 2>/dev/null || echo "not running"
+
+shell: ## Acessa shell do container PHP
+	$(COMPOSE) exec php bash
+
+shell-mysql: ## Acessa MySQL
+	$(COMPOSE) exec mysql mysql -u root -p
+
+artisan: ## Executa comando artisan (uso: make artisan CMD="migrate")
+	@if [ -z "$(CMD)" ]; then \
+		echo "Uso: make artisan CMD=\"seu-comando\""; \
+		exit 1; \
+	fi
+	$(COMPOSE) exec php php artisan $(CMD)
+
+migrate: ## Executa migrações do banco
+	$(COMPOSE) exec php php artisan migrate --force
+	@echo "Migrações executadas"
+
+migrate-entries: ## Migra entries (opcional: make migrate-entries COMPANY=47)
+	@if [ -z "$(COMPANY)" ]; then \
+		$(COMPOSE) exec php php artisan entries:migrate; \
+	else \
+		$(COMPOSE) exec php php artisan entries:migrate --company=$(COMPANY); \
+	fi
+
+rollback: ## Rollback da última migração
+	$(COMPOSE) exec php php artisan migrate:rollback --force
+
+cache-clear: ## Limpa todos os caches
+	@echo "Limpando caches..."
+	$(COMPOSE) exec php php artisan cache:clear
+	$(COMPOSE) exec php php artisan config:clear
+	$(COMPOSE) exec php php artisan route:clear
+	$(COMPOSE) exec php php artisan view:clear
+	@echo "Caches limpos"
+
+cache-build: ## Reconstrói caches para produção
+	@echo "Reconstruindo caches..."
+	$(COMPOSE) exec php php artisan config:cache
+	$(COMPOSE) exec php php artisan route:cache
+	@echo "Caches reconstruídos"
+
+backup: ## Cria backup do banco de dados
+	@mkdir -p backups
+	@BACKUP_FILE="backups/backup-$$(date +%Y%m%d-%H%M%S).sql"; \
+	echo "Criando backup em $$BACKUP_FILE..."; \
+	$(COMPOSE) exec -T mysql mysqldump -u root -proot seara > $$BACKUP_FILE; \
+	echo "Backup criado com sucesso"
+
+restore: ## Restaura backup (uso: make restore FILE=backups/backup-20231215.sql)
+	@if [ -z "$(FILE)" ]; then \
+		echo "Uso: make restore FILE=caminho/para/backup.sql"; \
+		exit 1; \
+	fi
+	@echo "Restaurando backup $(FILE)..."
+	$(COMPOSE) exec -T mysql mysql -u root -proot seara < $(FILE)
+	@echo "Backup restaurado com sucesso"
+
+permissions: ## Corrige permissões de storage e cache
+	$(COMPOSE) exec php chmod -R 775 storage bootstrap/cache
+	$(COMPOSE) exec php chown -R www-data:www-data storage bootstrap/cache
+	@echo "Permissões corrigidas"
+
+clean: ## Remove containers, volumes e imagens antigas
+	@echo "Removendo containers e volumes..."
+	$(COMPOSE) down -v
+	@echo "Removendo imagens antigas..."
+	docker image prune -f
+	@echo "Limpeza concluída"
+
+pull: ## Baixa última versão da imagem (requer: make pull VERSION=1.1.16)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Erro: Especifique a versão: make pull VERSION=1.1.16"; \
+		exit 1; \
+	fi
+	docker pull junioroliveira/seara:$(VERSION)
+	@echo "Atualizando docker-compose.production.yml..."
+	sed -i "s|junioroliveira/seara:.*|junioroliveira/seara:$(VERSION)|g" docker-compose.production.yml
+	@echo "Imagem atualizada. Execute 'make restart' para aplicar"
+
+health: ## Verifica saúde detalhada dos containers
+	@echo "=== PHP Health ==="
+	@docker inspect $(PHP_CONTAINER) --format='{{json .State.Health}}' 2>/dev/null | jq . || echo "Container não está rodando"
+	@echo ""
+	@echo "=== Nginx Health ==="
+	@docker inspect $(NGINX_CONTAINER) --format='{{json .State.Health}}' 2>/dev/null | jq . || echo "Container não está rodando"
+	@echo ""
+	@echo "=== MySQL Health ==="
+	@docker inspect $(MYSQL_CONTAINER) --format='{{json .State.Health}}' 2>/dev/null | jq . || echo "Container não está rodando"

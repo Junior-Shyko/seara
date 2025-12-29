@@ -18,12 +18,39 @@ use Illuminate\Contracts\Logging\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\SettingsBoxRepository;
 use Seara\Repository\AccountLaunchRepository;
+use function app;
+use function dd;
 
 class FinancialEntryController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    /**
+     * Valida e retorna o ID da empresa com base nas permissões do usuário
+     *
+     * @return int|null ID da empresa ou null se redirecionamento for necessário
+     * @throws \Illuminate\Http\RedirectResponse
+     */
+    private function validateAndGetCompanyId()
+    {
+        $user = Auth::user();
+        $idCompany = $user->user_id_company;
+
+        if (app('request')->input('company') !== null) {
+            $idCompany = intval(app('request')->input('company'));
+        }
+        // CASO O USUARIO NÃO SEJA UM SUPER ADMIN, ENTRA NA CONDIÇÃO PARA VERIFICAÇÃO
+        if (!$user->hasRole('superAdmin')) {
+            // verifica se o id das empresas são iguais
+            if ($idCompany !== $user->user_id_company) {
+                abort(403, 'Você não tem permissão de acesso a esta empresa.');
+            }
+        }
+
+        return $idCompany;
     }
     /**
      * Display a listing of the resource.
@@ -32,7 +59,8 @@ class FinancialEntryController extends Controller
      */
     public function index()
     {
-        $idCompany = Company::getIdCompany();
+        $idCompany = $this->validateAndGetCompanyId();
+
         $company = Company::getCompany($idCompany);
         // Calcular totais
 
@@ -73,8 +101,7 @@ class FinancialEntryController extends Controller
      */
     public function store(Request $request)
     {
-
-        $companyId = Company::getIdCompany();
+        $companyId = $this->validateAndGetCompanyId();
         $userId = auth()->id();
 
         DB::beginTransaction();
@@ -246,7 +273,7 @@ class FinancialEntryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $companyId = Company::getIdCompany();
+        $companyId = $this->validateAndGetCompanyId();
         $userId = auth()->id();
 
         DB::beginTransaction();
@@ -419,11 +446,11 @@ class FinancialEntryController extends Controller
         DB::beginTransaction();
 
         try {
+            $companyId = $this->validateAndGetCompanyId();
+
             // 1. BUSCAR E VALIDAR TRANSACTION
             $transaction = Transaction::with(['entries.account'])
                 ->findOrFail($request->id);
-
-            $companyId = Company::getIdCompany();
 
             if ($transaction->company_id != $companyId) {
                 return response()->json([
@@ -511,9 +538,19 @@ class FinancialEntryController extends Controller
     /**
      * DataTables - Retorna dados em JSON
      */
-    public function datatable(Request $request)
+    public function datatable(Request $request, $company)
     {
-        $companyId = Company::getIdCompany();
+        // Usar o route parameter ao invés de depender apenas do validateAndGetCompanyId
+        $user = Auth::user();
+
+        // Se não for superAdmin, validar se pode acessar essa empresa
+        if (!$user->hasRole('superAdmin')) {
+            if (intval($company) !== $user->user_id_company) {
+                abort(403, 'Você não tem permissão de acesso a esta empresa.');
+            }
+        }
+
+        $companyId = intval($company);
 
         $query = Transaction::with([
             'entries.account',
@@ -671,8 +708,8 @@ class FinancialEntryController extends Controller
 
     public function transfer(Request $request)
     {
-        $companyId = Company::getIdCompany();
-    $userId = auth()->id();
+        $companyId = $this->validateAndGetCompanyId();
+        $userId = auth()->id();
     
     // Buscar contas
     $fromAccount = FinancialAccount::find($request->idAccountEnd);
