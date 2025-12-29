@@ -37,8 +37,26 @@ COPY --from=composer:1.10 /usr/bin/composer /usr/bin/composer
 # Definir diretório de trabalho
 WORKDIR /var/www
 
+# Copiar composer.json e composer.lock primeiro (para cache)
+COPY composer.json composer.lock /var/www/
+
+# Instalar dependências do Composer (sem dev)
+RUN composer install \
+    --no-dev \
+    --no-scripts \
+    --no-autoloader \
+    --prefer-dist \
+    && composer clear-cache
+
 # Copiar arquivos da aplicação
 COPY . /var/www
+
+# Finalizar instalação do Composer e otimizar autoload
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --prefer-dist \
+    && composer clear-cache
 
 # Definir permissões
 RUN chown -R www-data:www-data /var/www \
