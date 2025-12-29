@@ -41,11 +41,6 @@ let ReceivableModule = (function () {
         $('#modal-receivable').on('hidden.bs.modal', function () {
             $('#repeat_for').closest('div').show();
         });
-
-        $('#modal-pay-receivable').on('shown.bs.modal', function () {
-            $('#date_payment').focus();
-        });
-
     }
 
     function registerAmountEvents(remainingAmount) {

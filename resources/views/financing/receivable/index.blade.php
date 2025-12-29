@@ -121,4 +121,12 @@
 
 @push('scripts')
         <script type="text/javascript" language="javascript" src="{{asset('js/financing/receivable.min.js')}}"></script>
+    <script>
+
+        $(document).ready(function(){
+            $('#modal-pay-receivable').on('shown.bs.modal', function () {
+                $('#date_payment').focus();
+            });
+        });
+    </script>
 @endpush
