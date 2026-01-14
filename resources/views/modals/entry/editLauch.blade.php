@@ -60,7 +60,7 @@
         <div class="modal-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h2>Arquivos <small>Todos os arquivos enviados.</small></h2>
+                    <h2>Arquivos <small>Todos os arquisssvos enviados.</small></h2>
                 </div>
                 <div class="col-md-6">
                     <a href="#" class="btn btn-success pull-right"

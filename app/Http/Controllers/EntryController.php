@@ -25,6 +25,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Seara\Repository\AccountBankRepository;
 use GuzzleHttp\Exception\BadResponseException;
 use Seara\Repository\AccountInternalRepository;
+use function count;
+use function dd;
 
 class EntryController extends Controller
 {
@@ -435,23 +437,50 @@ class EntryController extends Controller
 
     public function info($id)
     {
-        $file = FileLaunch::where('file_launches_id_entry', $id)->get();
+        $dateFile = new Carbon('2025-12-02');
 
-        if (count($file) > 0) {
-            $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                ->join('users', 'entries.entries_id_user', '=', 'users.id')
-                ->join('file_launches', 'file_launches.file_launches_id_entry', '=', 'entries.entries_id')
-                ->where('entries.entries_id', '=', $id)
-                ->select('entries.*', 'file_launches.*', 'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.created_at as createEntry', 'users.name as nameUser', 'file_launches.created_at as createadFiles', 'file_launches.id as idFileLaunch')
-                ->get();
-        } else {
-            $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
-                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
-                ->join('users', 'entries.entries_id_user', '=', 'users.id')
-                ->where('entries.entries_id', '=', $id)
-                ->select('entries.*',  'account_launches.*', 'account_types.id', 'account_types.account_types_name', 'entries.entries_date_launch as createEntry', 'users.name as nameUser')->get();
+        $files    = [];
+        $filesOld = [];
+        $financialEntriesIdCompany = null;
+        $financialEntries = FinancialEntry::where('transaction_id', $id)->first();
+
+        $file = FileLaunch::where('file_launches_id_entry', $financialEntries->id)->get();
+        $entryAntigo = Entry::find($financialEntries->id);
+        foreach ($file as $f) {
+//            dump($f->created_at);
+            if ($f->created_at > $dateFile) {
+                $files[] = $f;
+            }else{
+                $filesOld[] = $f;
+            }
         }
+//        dump($files);
+//        dd($filesOld);
+//        //        dump($entryAntigo);
+////        dump($financialEntries->id);
+////        $financialEntriesDescription = $financialEntries->description;
+////        dump($financialEntriesDescription);
+////        dump($entryAntigo->entries_description);
+//
+//        dd();
+
+//        if (count($files) > 0) {
+//            $info = Entry::join('account_launches', 'entries.entries_id_account', '=', 'account_launches.id')
+//                ->join('account_types', 'account_launches.accountlaunch_type', '=', 'account_types.id')
+//                ->join('users', 'entries.entries_id_user', '=', 'users.id')
+//                ->join('file_launches', 'file_launches.file_launches_id_entry', '=', 'entries.entries_id')
+//                ->where('entries.entries_id', '=', $id)
+//                ->select('entries.*', 'file_launches.*', 'account_launches.*',
+//                    'account_types.id', 'account_types.account_types_name',
+//                    'entries.created_at as createEntry', 'users.name as nameUser',
+//                    'file_launches.created_at as createadFiles', 'file_launches.id as idFileLaunch')
+//                ->get();
+//        }
+
+        if (count($filesOld) > 0) {
+            return $filesOld;
+        }
+
 
         return $info;
     }
