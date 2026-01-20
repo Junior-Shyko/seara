@@ -632,6 +632,7 @@ class FinancialEntryController extends Controller
                 data-id="' . $mov->id . '"
                 data-date="' . $dtLauch . '"
                 data-his="' . $mov->description . '"
+                data-company_id="' . Auth::user()->user_id_company . '"
                 data-val="' . number_format($mov->total_amount, 2, ',', '.')   . '"
                 data-typ="' . ($firstEntry && $firstEntry->category ? $firstEntry->category->accountlaunch_name : '') . '"
                 data-idlau="' . ($firstEntry ? $firstEntry->category_id : '') . '"

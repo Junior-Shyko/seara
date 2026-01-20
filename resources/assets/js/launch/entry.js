@@ -512,27 +512,33 @@ function showReport(idCompany) {
 
 }
 
-function getFiles(id) {
-    $.get(SearaApp.baseURL+'/info-launch/'+id, function (data, textStatus, jqXHR) {
-        $.each(data, function (index, val) { 
+function getFiles(id, desc, value, date, company_id) {
+    $.get(SearaApp.baseURL+'/info-launch/'+id+'/?desc='+desc+'&value='+value+'&date='+date+'&comp='+company_id, function (data, textStatus, jqXHR) {
+        $.each(data, function (index, val) {
             //url da imagem
             var imgPublic = SearaApp.assetURL+'img/images/';
             //formato de data brasileiro
-            var dtBr = dataAtualFormatada(val.createadFiles);
+            let dtBr = dataAtualFormatada(val.created_at);
+
             if(val.hasOwnProperty('file_launches_name')) {
                 $("#tbodyFilesEntriEdit").append('<tr>'+
-                '<td><input type="checkbox" name="checkFilesLaunch[]" value="'+val.idFileLaunch+'"></td>'+
+                '<td><input type="checkbox" name="checkFilesLaunch[]" value="'+val.file_launches_id_entry+'"></td>'+
                 '<td style="width: 20%">'+
-                        '<a href="'+SearaApp.baseURL+'/img/images/'+val.file_launches_name+'" data-lightbox="roadtrip" data-title="Conta: '+val.entries_description+'"> <img src="'+imgPublic+val.file_launches_name+'" style="width: 80%"> </a>'+
+                        '<a href="'+SearaApp.baseURL+'/img/images/'+val.file_launches_name+'" data-lightbox="roadtrip" ' +
+                    'data-title="Conta: '+val.entries_description+'"> <img src="'+imgPublic+val.file_launches_name+'"' +
+                    ' style="width: 80%"> </a>'+
                     '</td>'+
                     '<td>'+dtBr+'</td>'+
                 '</tr>');
             }
-           
+
         });
     });
 }
-
+// Apos o modal ocultar, estou removendo os itens
+$('#modalEditLauch').on('hidden.bs.modal', function () {
+    $("#tbodyFilesEntriEdit tr").remove(); // Remove todas as tr's
+});
 /** Modal de alterar lançamento*/
 $('#modalEditLauch').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
@@ -562,7 +568,13 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
         $('#cod_accountEdit').select2({
             data: accontLauntAll
         }) 
-        getFiles(button.data('id'))
+        getFiles(
+            button.data('id'),
+            button.data('his'),
+            button.data('val'),
+            button.data('date'),
+            button.data('company_id')
+        )
     });
 })
 

@@ -77,4 +77,11 @@ class FunctionGeneral extends Model
 		// Retorna no formato YYYY-MM-DD
 		return $carbonDate->format('Y-m-d');
 	}
+
+    static public function converterStringToFloat($valueString)
+    {
+        $valueFloat = (float) str_replace(',', '.', $valueString);
+
+        return $valueFloat;
+    }
 }

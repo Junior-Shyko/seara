@@ -6,6 +6,7 @@ use Seara\Entry;
 use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountBank;
+use Seara\FunctionGeneral;
 use Seara\SettingsBox;
 use Seara\AccountLaunch;
 use Seara\Seara\Monetary;
@@ -182,5 +183,15 @@ class EntryRepository
                 'error' => 'Data inválida. Formato esperado: dd/mm/yy.'
             ], 422);
         }
+    }
+
+    static public function getFiles(Request $request)
+    {
+        return Entry::where([
+            'entries_description' => $request->desc,
+            'entries_value' => FunctionGeneral::converterStringToFloat($request->value),
+            'entries_date_launch' => FunctionGeneral::DataBRtoMySQL($request->date),
+            'entries_id_company' => (int) $request->comp
+        ])->get();
     }
 }
