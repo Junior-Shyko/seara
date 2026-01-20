@@ -80,7 +80,9 @@ class FunctionGeneral extends Model
 
     static public function converterStringToFloat($valueString)
     {
-        $valueFloat = (float) str_replace(',', '.', $valueString);
+        // Remove pontos de milhar e substitui vírgula decimal por ponto
+        // Ex: '1.109,46' → '1109.46'
+        $valueFloat = (float) str_replace(',', '.', str_replace('.', '', $valueString));
 
         return $valueFloat;
     }

@@ -30,10 +30,8 @@ $(document).ready(function () {
 
     Dropzone.autoDiscover = false;
     var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-    var idEntry = $("#idEntry").val();
-    $("#form-upload-entry").dropzone({ 
+    $("#form-upload-entry").dropzone({
         url: SearaApp.baseURL+"caixa/upload",
-        params: idEntry,
         autoProcessQueue: true,
         dictDefaultMessage: "Arraste seus arquivos para essa área ou click para localizar",
         maxFiles: 4,
@@ -49,6 +47,18 @@ $(document).ready(function () {
             'x-csrf-token': CSRF_TOKEN,
         },
         init: function () {
+            this.on("sending", function(file, xhr, formData) {
+                // Envia transactionId para novos uploads
+                var transactionId = $(".transactionId").val();
+                if (transactionId) {
+                    formData.append("transactionId", transactionId);
+                }
+                // Fallback para idEntry (uploads antigos/edição)
+                var idEntry = $(".idEntry").val();
+                if (idEntry) {
+                    formData.append("idEntry", idEntry);
+                }
+            });
             this.on("success", function (_file, response) {
                 notify.response(response);
             });
@@ -855,6 +865,7 @@ function saveDataForm(name_form) {
             $("#modalUploadLaunch").modal('show');
         }
         $(".idEntry").val(response.id);
+        $(".transactionId").val(response.transaction_id);
         $("#entry-table").DataTable().ajax.reload();
         bankBalance(idCompany);
         internalBalance(idCompany);

@@ -293,12 +293,21 @@ class EntryController extends Controller
                 $datetime = Carbon::now();
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
                 $newNameFile = base64_encode($datetime . '-' . $_FILES['file']['name'][$i]);
-                $file = FileLaunch::insert([
+                $fileData = [
                     'file_launches_name' => $newNameFile . '.' . $ext,
-                    'file_launches_id_entry' => $request->idEntry,
                     'created_at' => $datetime,
                     'updated_at' => $datetime
-                ]);
+                ];
+
+                // Novos uploads usam transaction_id
+                if ($request->filled('transactionId')) {
+                    $fileData['transaction_id'] = $request->transactionId;
+                } else {
+                    // Fallback para compatibilidade com uploads antigos
+                    $fileData['file_launches_id_entry'] = $request->idEntry;
+                }
+
+                $file = FileLaunch::insert($fileData);
                 move_uploaded_file($tmpFilePath, "./img/images/" . $newNameFile . '.' . $ext);
                 if ($file) {
                     $uploadSuccess = true;
@@ -437,18 +446,16 @@ class EntryController extends Controller
 
     public function info(Request $request)
     {
-//        dd($request->all());
+        // Data de corte: antes = entries, depois = financial_entries com transaction_id
         $dateFile = new Carbon('2025-12-02');
 
-        $files    = [];
-        $filesOld = [];
-        $financialEntriesIdCompany = null;
+        // Primeiro, tentar buscar na tabela entries (registros antigos)
         $entries = EntryRepository::getFiles($request);
-        if($entries->count() > 0 && $entries->first()->entries_date_launch <= $dateFile){
+        if ($entries->count() > 0 && $entries->first()->entries_date_launch <= $dateFile) {
             return FileLaunch::where('file_launches_id_entry', $entries->first()->entries_id)->get();
         }
 
-
+        // Buscar na tabela financial_entries (registros novos)
         $financialEntries = FinancialEntry::where([
             'description' => $request->desc,
             'amount' => FunctionGeneral::converterStringToFloat($request->value),
@@ -456,15 +463,27 @@ class EntryController extends Controller
             'company_id' => (int) $request->comp
         ])->get();
 
-        $file = [];
+        $files = [];
         foreach ($financialEntries as $financialEntry) {
-            $file = FileLaunch::where('file_launches_id_entry', $financialEntry->id)->get();
-        }
-        foreach ($file as $f) {
-            if ($f->created_at > $dateFile) {
-                $files[] = $f;
+            // Primeiro tenta buscar por transaction_id (novos uploads)
+            $transactionFiles = FileLaunch::where('transaction_id', $financialEntry->transaction_id)->get();
+
+            if ($transactionFiles->count() > 0) {
+                foreach ($transactionFiles as $file) {
+                    $files[] = $file;
+                }
+            } else {
+                // Fallback: buscar por file_launches_id_entry (uploads antigos pós-migração)
+                $legacyFiles = FileLaunch::where('file_launches_id_entry', $financialEntry->id)
+                    ->where('created_at', '>', $dateFile)
+                    ->get();
+
+                foreach ($legacyFiles as $file) {
+                    $files[] = $file;
+                }
             }
         }
+
         return $files;
     }
 

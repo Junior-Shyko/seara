@@ -26,6 +26,7 @@
             <form method="POST" class="dropzone" id="form-upload-entry"  enctype="multipart/form-data">
               {{ csrf_field() }}
               <input type="hidden" name="idEntry" class="idEntry">
+              <input type="hidden" name="transactionId" class="transactionId">
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">

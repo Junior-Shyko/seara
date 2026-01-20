@@ -9,6 +9,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Seara\Console\Commands\MigrateOldEntries;
 use Seara\Console\Commands\ValidateMigration;
 use Seara\Console\Commands\RecalculateBalances;
+use Seara\Console\Commands\MigrateFileLaunches;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -24,7 +25,8 @@ class Kernel extends ConsoleKernel
         DropTables::class,
         MigrateOldEntries::class,
         ValidateMigration::class,
-        RecalculateBalances::class
+        RecalculateBalances::class,
+        MigrateFileLaunches::class
     ];
 
     /**

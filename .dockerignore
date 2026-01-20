@@ -1,0 +1,69 @@
+# Dependências (serão instaladas no build)
+node_modules/
+vendor/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+docker-compose*.yml
+Dockerfile
+.dockerignore
+
+# Environment e configuração local
+.env
+.env.*
+!.env.example
+
+# IDE e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testes
+tests/
+phpunit.xml
+.phpunit.result.cache
+cypress/
+cypress.json
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Logs e temporários
+storage/logs/*
+!storage/logs/.gitkeep
+storage/framework/cache/*
+!storage/framework/cache/.gitkeep
+storage/framework/sessions/*
+!storage/framework/sessions/.gitkeep
+storage/framework/testing/*
+!storage/framework/testing/.gitkeep
+storage/framework/views/*
+!storage/framework/views/.gitkeep
+bootstrap/cache/*
+!bootstrap/cache/.gitkeep
+*.log
+
+# Build scripts
+build-production.sh
+deploy-production.sh
+migrate-uploads.sh
+Makefile
+
+# Documentação
+doc/app/readme.md
+CLAUDE.md
+*.md
+
+# Backup e temporários
+*.bak
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db

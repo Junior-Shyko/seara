@@ -214,6 +214,7 @@ class FinancialEntryController extends Controller
                 'message' => 'Conta lançada',
                 'status' => 'success',
                 'id' => $entry->id,
+                'transaction_id' => $transaction->id,
                 'typeAccount' => $entryType,
                 'account_name' => $account->name,
                 'new_balance' => $account->fresh()->current_balance

@@ -13,6 +13,7 @@ use Seara\Seara\Monetary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use function dd;
 
 class EntryRepository
 {
@@ -187,7 +188,7 @@ class EntryRepository
 
     static public function getFiles(Request $request)
     {
-        return Entry::where([
+        return  Entry::where([
             'entries_description' => $request->desc,
             'entries_value' => FunctionGeneral::converterStringToFloat($request->value),
             'entries_date_launch' => FunctionGeneral::DataBRtoMySQL($request->date),
