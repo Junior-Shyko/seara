@@ -122,8 +122,8 @@
                             @foreach ($files as $file)
                             <tr>
                                 <td>
-                                    <a href="{{url('img/images/'.$file->file_launches_name)}}" target="_blanck">
-                                        <img src="{{url('img/images/'.$file->file_launches_name)}}" class="img_edit">
+                                    <a href="{{url('storage/images/'.$file->file_launches_name)}}" target="_blanck">
+                                        <img src="{{url('storage/images/'.$file->file_launches_name)}}" class="img_edit">
                                     </a>
                                 </td>
                                 <td>

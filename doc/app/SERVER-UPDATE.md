@@ -9,7 +9,7 @@ Este documento lista EXATAMENTE o que precisa ser enviado/atualizado no seu drop
 **Mudanças principais:**
 - Versão da imagem: `1.1.13` → `1.1.14` (linha 29)
 - Adicionado volume `public_assets:/var/www/public` (linha 34)
-- Mantido volume `uploads:/var/www/public/img/images` (linha 35)
+- Volume de uploads agora usa `storage_uploads:/var/www/storage/app/public` (linha 35)
 - Nginx agora usa `public_assets:/var/www/public:ro` (linha 75)
 - Removido `volumes_from` do nginx
 - Adicionados volumes na seção volumes: `public_assets` e `uploads` (linhas 107-108)

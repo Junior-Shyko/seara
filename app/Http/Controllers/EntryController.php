@@ -4,7 +4,7 @@ namespace Seara\Http\Controllers;
 
 use Validator;
 use Seara\Entry;
-use Auth, DB, PDF;
+use Auth, DB, PDF, Storage;
 use Carbon\Carbon;
 use Seara\FileLaunch;
 use Seara\AccountType;
@@ -281,20 +281,13 @@ class EntryController extends Controller
 
             //Make sure we have a file path
             if ($tmpFilePath != "") {
-
-                if (!file_exists($tmpFilePath)) {
-                    mkdir($tmpFilePath, 777);
-                }
-                //Setup our new file path
-                $newFilePath = "./img/images/" . $_FILES['file']['name'][$i];
                 $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
-
-                // //Upload the file into the temp dir
                 $datetime = Carbon::now();
-                $ext = pathinfo($_FILES['file']['name'][$i], PATHINFO_EXTENSION);
                 $newNameFile = base64_encode($datetime . '-' . $_FILES['file']['name'][$i]);
+                $fileName = $newNameFile . '.' . $ext;
+
                 $fileData = [
-                    'file_launches_name' => $newNameFile . '.' . $ext,
+                    'file_launches_name' => $fileName,
                     'created_at' => $datetime,
                     'updated_at' => $datetime
                 ];
@@ -308,7 +301,7 @@ class EntryController extends Controller
                 }
 
                 $file = FileLaunch::insert($fileData);
-                move_uploaded_file($tmpFilePath, "./img/images/" . $newNameFile . '.' . $ext);
+                Storage::disk('public')->put('images/' . $fileName, file_get_contents($tmpFilePath));
                 if ($file) {
                     $uploadSuccess = true;
                 }
@@ -491,12 +484,11 @@ class EntryController extends Controller
     {
         $file = FileLaunch::find($request->id);
         $file->delete();
-        $filename = public_path('img/images/' . $file->file_launches_name);
-        if (file_exists($filename)) {
-            if (unlink($filename)) {
-                return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
-            }
+        $storagePath = 'images/' . $file->file_launches_name;
+        if (Storage::disk('public')->exists($storagePath)) {
+            Storage::disk('public')->delete($storagePath);
         }
+        return redirect()->back()->with('success', 'Arquivo Excluído com sucesso');
     }
 
     public function bank($idCompany)

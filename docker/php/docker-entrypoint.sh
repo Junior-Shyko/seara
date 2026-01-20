@@ -12,29 +12,23 @@ if [ ! -f "$PUBLIC_DIR/.assets-initialized" ] || [ "${FORCE_ASSETS_UPDATE:-false
     echo "Inicializando/Atualizando assets públicos..."
 
     # Copiar arquivos estáticos da imagem para o volume
-    # Preservando o diretório de uploads (img/images)
+    # Uploads agora ficam em storage/app/public/images (volume separado)
     if [ -d "$ASSETS_SOURCE" ]; then
         echo "Copiando assets de $ASSETS_SOURCE para $PUBLIC_DIR..."
-
-        # Criar diretório temporário para uploads se necessário
-        TEMP_UPLOADS=""
-        if [ -d "$PUBLIC_DIR/img/images" ]; then
-            TEMP_UPLOADS="/tmp/uploads-backup"
-            echo "Fazendo backup temporário de uploads..."
-            mkdir -p "$TEMP_UPLOADS"
-            cp -a "$PUBLIC_DIR/img/images/." "$TEMP_UPLOADS/" 2>/dev/null || true
-        fi
 
         # Copiar todos os assets
         cp -a "$ASSETS_SOURCE/." "$PUBLIC_DIR/"
 
-        # Restaurar uploads se havia backup
-        if [ -n "$TEMP_UPLOADS" ] && [ -d "$TEMP_UPLOADS" ]; then
-            echo "Restaurando uploads..."
-            mkdir -p "$PUBLIC_DIR/img/images"
-            cp -a "$TEMP_UPLOADS/." "$PUBLIC_DIR/img/images/" 2>/dev/null || true
-            rm -rf "$TEMP_UPLOADS"
+        # Garantir que o link simbólico do storage existe
+        STORAGE_PUBLIC="/var/www/storage/app/public"
+        if [ ! -L "$PUBLIC_DIR/storage" ]; then
+            echo "Criando link simbólico para storage..."
+            ln -sf "$STORAGE_PUBLIC" "$PUBLIC_DIR/storage"
         fi
+
+        # Garantir que o diretório de uploads existe no storage
+        mkdir -p "$STORAGE_PUBLIC/images"
+        chown -R www-data:www-data "$STORAGE_PUBLIC"
 
         # Marcar como inicializado
         date > "$PUBLIC_DIR/.assets-initialized"

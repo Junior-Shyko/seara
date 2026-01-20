@@ -134,7 +134,7 @@ docker inspect searaprodphp | grep -A 10 "Mounts"
 
 # Deve mostrar:
 # - public_assets:/var/www/public
-# - uploads:/var/www/public/img/images
+# - storage_uploads:/var/www/storage/app/public
 
 # Verificar conteúdo do volume
 docker run --rm -v prodseara_public_assets:/public alpine ls -lh /public/build/

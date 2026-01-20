@@ -15,3 +15,4 @@ npm-debug.log
 /files
 docker/mysql/data
 public/img/images
+storage/app/public/images
