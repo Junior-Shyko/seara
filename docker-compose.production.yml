@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Serviço PHP-FPM (usando imagem pré-construída)
   php:
-    image: junioroliveira/seara:1.1.27
+    image: junioroliveira/seara:1.1.28
     container_name: seara-php-prod
     working_dir: /var/www
     volumes:
