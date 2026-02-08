@@ -122,6 +122,47 @@ ls -la public/ | grep storage
 
 ---
 
+## Correção das Migrations (Primeira vez)
+
+Se o banco de produção já possui as tabelas `financial_accounts`, `financial_entries`, `transactions`, `transfer_details` e `settings_boxes` criadas manualmente (fora do `php artisan migrate`), é necessário sincronizar a tabela `migrations` antes de rodar novas migrations.
+
+### 1. Executar o script de correção
+
+O script `database/scripts/fix_migrations_production.sql` verifica automaticamente quais tabelas/colunas já existem e registra as migrations correspondentes, deixando pendentes apenas as que precisam realmente ser executadas.
+
+```bash
+# Acessar o MySQL de produção e executar o script
+docker compose -f docker-compose.production.yml exec mysql \
+  mysql -u root -p seara < /caminho/fix_migrations_production.sql
+```
+
+O script exibe o status de cada migration:
+- `[OK]` — tabela/coluna já existia, migration registrada (não será executada novamente)
+- `[PENDENTE]` — não existe no banco, será criada pelo `php artisan migrate`
+- `[SKIP]` — migration já estava registrada
+
+### 2. Rodar as migrations pendentes
+
+```bash
+docker compose -f docker-compose.production.yml exec php php artisan migrate --force
+```
+
+As migrations pendentes que serão executadas:
+- `add_transaction_id_to_file_launches_table` — adiciona coluna `transaction_id` com FK em `file_launches`
+- `remove_foreign_key_from_file_launches_table` — remove a FK antiga `file_launches_id_entry`
+
+### 3. Conferir o resultado
+
+```bash
+docker compose -f docker-compose.production.yml exec php php artisan migrate:status
+```
+
+Todas as 80 migrations devem aparecer com "Y".
+
+> **Nota:** Este procedimento só precisa ser executado uma vez. Após a sincronização, futuros deploys podem usar o `php artisan migrate --force` normalmente.
+
+---
+
 ## Checklist de Deploy
 
 - [ ] Backup do banco de dados
