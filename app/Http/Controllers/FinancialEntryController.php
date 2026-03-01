@@ -631,6 +631,7 @@ class FinancialEntryController extends Controller
                 return '<button class="btn btn-primary btn-xs ' . $disabled . '" type="button" title="Editar do Registro"
                 data-toggle="modal"
                 data-id="' . $mov->id . '"
+                data-transaction-id="' . $mov->id . '"
                 data-date="' . $dtLauch . '"
                 data-his="' . $mov->description . '"
                 data-company_id="' . Auth::user()->user_id_company . '"

@@ -8,7 +8,15 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Versão da imagem (pode ser passada como argumento)
-VERSION=${1:-"1.1.14"}
+# Suporta: ./build-production.sh 1.1.29 ou ./build-production.sh -t 1.1.29
+VERSION=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -t|--tag) VERSION="$2"; shift 2 ;;
+        *) VERSION="$1"; shift ;;
+    esac
+done
+VERSION=${VERSION:-"1.1.14"}
 IMAGE_NAME="junioroliveira/seara"
 
 echo -e "${GREEN}=== Build de Produção - Seara ${VERSION} ===${NC}"
@@ -16,13 +24,7 @@ echo ""
 
 # Passo 1: Compilar assets
 echo -e "${YELLOW}[1/4] Compilando assets...${NC}"
-if docker compose ps | grep -q "node"; then
-    echo "Usando container node em execução..."
-    docker compose run --rm node npm run prod
-else
-    echo "Iniciando container node temporário..."
-    docker compose run --rm node npm run prod
-fi
+docker compose run --rm node sh -c "npm install -g bower gulp@3 && bower install --allow-root && /usr/local/bin/gulp"
 echo -e "${GREEN}✓ Assets compilados com sucesso!${NC}"
 echo ""
 

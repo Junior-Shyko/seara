@@ -561,6 +561,7 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
     $("#btnShowModalUpload").attr('data-id', button.data('id'));
     //ADICIONANDO O ID DO LANÇAMENTO AO MODAL DE UPLOAD DE ARQUIVOS
     $('.idEntry').val(button.data('id'));
+    $('.transactionId').val(button.data('transactionId'));
 
     $.get(SearaApp.baseURL+'account/launch/all', function (data, _textStatus, _jqXHR) {
         var dataOptions = {
