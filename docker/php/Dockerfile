@@ -63,6 +63,9 @@ RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage \
     && chmod -R 755 /var/www/bootstrap/cache
 
+# Configurar PHP-FPM para escutar em todas as interfaces (necessário para nginx de outro container)
+COPY docker/php/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+
 # Expor porta 9000
 EXPOSE 9000
 

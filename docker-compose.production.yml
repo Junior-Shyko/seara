@@ -4,20 +4,18 @@ services:
   # Serviço PHP-FPM (usando imagem pré-construída)
   php:
     image: junioroliveira/seara:1.1.28
-    container_name: seara-php-prod
+    container_name: searaprod
     working_dir: /var/www
     volumes:
-      # Monta apenas diretórios que precisam ser persistentes
+      # Diretórios persistentes de dados
       - ./storage:/var/www/storage
       - ./bootstrap/cache:/var/www/bootstrap/cache
       - ./.env:/var/www/.env:ro
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini:ro
-      # Volume compartilhado com Nginx para arquivos públicos
-      - app-public:/var/www/public
-      - app-vendor:/var/www/vendor
-      - app-root:/var/www
+      # Volume compartilhado com Nginx (sem montar public separadamente)
+      - prod-app-root:/var/www
     networks:
-      - seara-prod
+      - scontab
     depends_on:
       mysql:
         condition: service_healthy
@@ -36,78 +34,95 @@ services:
       retries: 3
     restart: unless-stopped
     environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
+      - APP_ENV=prod
+      - APP_DEBUG=true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
 
   # Serviço Nginx
   nginx:
     image: nginx:1.25
     container_name: seara-nginx-prod
+    # MUDANÇA 1: Trocar expose por ports para acesso local
+    # ports:
+    #   - "80:80"
     expose:
       - "80"
     volumes:
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./docker/nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
       # Volume compartilhado com PHP para arquivos públicos e aplicação
-      - app-root:/var/www:ro
+      - prod-app-root:/var/www:ro
+      # Storage bind mount para Nginx enxergar os arquivos uploadados
       - ./storage:/var/www/storage:ro
-      # Se tiver certificados SSL, montar aqui
-      # - ./docker/nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       php:
         condition: service_healthy
     networks:
-      - seara-prod
-      - nginx-proxy  # Rede do proxy reverso
+      - scontab
+      # MUDANÇA 2: Comentar rede do proxy reverso
+      - nginx-proxy_default
     restart: unless-stopped
+    # MUDANÇA 3: Comentar variáveis de ambiente do Let's Encrypt
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST:-app.searacontabilidade.com.br}
+      - VIRTUAL_PORT=80
       - LETSENCRYPT_HOST=${LETSENCRYPT_HOST:-app.searacontabilidade.com.br}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-franciscoanto@gmail.com}
-    labels:
-      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+    # MUDANÇA 4: Comentar labels do Let's Encrypt
+    # labels:
+    #   - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost/ || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
 
   # Banco MySQL
   mysql:
     image: mysql:5.7
     container_name: seara-mysql-prod
     restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
-      MYSQL_DATABASE: ${DB_DATABASE:-seara}
-      MYSQL_USER: ${DB_USERNAME:-laravel}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
-    ports:
-      - "${DB_PORT:-3306}:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_DATABASE:-seara_prod}
+      MYSQL_USER: ${DB_USERNAME:-laravel}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
     networks:
-      - seara-prod
+      - scontab
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
 
 networks:
-  seara-prod:
+  scontab:
     driver: bridge
-  nginx-proxy:
-    external:
-      name: nginx-proxy_default
+  # MUDANÇA 5: Comentar rede externa nginx-proxy
+  nginx-proxy_default:  # MUDEI AQUI
+    external: true  # ADICIONE ISSO
 
 volumes:
+  # Volumes de HOMOLOGAÇÃO (separados de produção)
   mysql-data:
     driver: local
-  app-root:
-    driver: local
-  app-public:
-    driver: local
-  app-vendor:
+  prod-app-root:
     driver: local

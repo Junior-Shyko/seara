@@ -59,6 +59,31 @@
        
 
       </div>
+      @if ($entries->fileLaunches->isNotEmpty())
+      <div class="modal-body" style="border-top: 1px solid #e5e5e5;">
+        <h5><strong>Arquivos anexados</strong></h5>
+        <table class="table table-striped table-condensed">
+          <thead>
+            <tr>
+              <th>Arquivo</th>
+              <th>Enviado em</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($entries->fileLaunches as $file)
+            <tr>
+              <td>
+                <a href="{{ url('storage/images/' . $file->file_launches_name) }}" target="_blank">
+                  <img src="{{ url('storage/images/' . $file->file_launches_name) }}" alt="{{ $file->file_launches_name }}" style="max-height:60px; max-width:80px; object-fit:cover;">
+                </a>
+              </td>
+              <td>{{ $file->created_at }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+      @endif
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Voltar</button>
         <button type="submit" class="btn btn-primary"  id="alter_save_entry">Alterar Lançamento <i class="fa fa-check-square" aria-hidden="true"></i></button>

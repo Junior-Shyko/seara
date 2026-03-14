@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entry extends Model
 {
+    public function fileLaunches()
+    {
+        return $this->hasMany(FileLaunch::class, 'file_launches_id_entry', 'entries_id');
+    }
+
     protected $table 		= 'entries';
     protected $primaryKey 	= 'entries_id';
     protected $fillable	 	= [
