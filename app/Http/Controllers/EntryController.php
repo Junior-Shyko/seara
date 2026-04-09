@@ -441,19 +441,34 @@ class EntryController extends Controller
 
     public function info(Request $request, $id)
     {
-        // Busca todos os arquivos do lançamento, independente de como foram salvos:
-        // - file_launches_id_entry: uploads via modal de edição
-        // - transaction_id: uploads de novos lançamentos
-        $files = FileLaunch::where('file_launches_id_entry', $id)
-            ->orWhere('transaction_id', $id)
-            ->get();
+        $companyId = auth()->user()->user_id_company;
 
-        if ($files->count() > 0) {
-            return $files;
+        // Caso 1: transaction_id preenchido → valida empresa via transactions.company_id
+        // Cobre: upload na criação (Estado C) e arquivos antigos já migrados (Estado B)
+        $ids1 = FileLaunch::where('file_launches.transaction_id', $id)
+            ->join('transactions', 'file_launches.transaction_id', '=', 'transactions.id')
+            ->where('transactions.company_id', $companyId)
+            ->pluck('file_launches.id');
+
+        // Caso 2: file_launches_id_entry preenchido + transaction_id NULL
+        // Significa upload via modal de edição em novo lançamento (Estado D),
+        // onde file_launches_id_entry armazena o Transaction.id — valida via transactions
+        $ids2 = FileLaunch::where('file_launches.file_launches_id_entry', $id)
+            ->whereNull('file_launches.transaction_id')
+            ->join('transactions', 'file_launches.file_launches_id_entry', '=', 'transactions.id')
+            ->where('transactions.company_id', $companyId)
+            ->pluck('file_launches.id');
+
+        $allIds = $ids1->merge($ids2)->unique();
+
+        if ($allIds->count() > 0) {
+            return FileLaunch::whereIn('id', $allIds)->get();
         }
 
-        // Fallback: entry migrada — busca transaction_id via tabela entries
-        $entry = Entry::where('entries_id', $id)->first();
+        // Fallback: arquivo antigo não migrado (Estado A — file_launches_id_entry = entries_id, transaction_id NULL)
+        $entry = Entry::where('entries_id', $id)
+            ->where('entries_id_company', $companyId)
+            ->first();
         if ($entry && $entry->transaction_id) {
             return FileLaunch::where('transaction_id', $entry->transaction_id)->get();
         }

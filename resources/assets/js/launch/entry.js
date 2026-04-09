@@ -522,8 +522,17 @@ function showReport(idCompany) {
 
 }
 
+var _getFilesXhr = null;
+
 function getFiles(id, desc, value, date, company_id) {
-    $.get(SearaApp.baseURL+'/info-launch/'+id+'/?desc='+desc+'&value='+value+'&date='+date+'&comp='+company_id, function (data, textStatus, jqXHR) {
+    // Aborta requisição anterior em voo para evitar duplicação por race condition
+    if (_getFilesXhr) {
+        _getFilesXhr.abort();
+        _getFilesXhr = null;
+    }
+    _getFilesXhr = $.get(SearaApp.baseURL+'/info-launch/'+id+'/?desc='+desc+'&value='+value+'&date='+date+'&comp='+company_id, function (data, textStatus, jqXHR) {
+        // Limpa dentro do callback (atômico com o render) para evitar race condition
+        $("#tbodyFilesEntriEdit").empty();
         $.each(data, function (index, val) {
             //url da imagem
             var imgPublic = SearaApp.assetURL+'storage/images/';
@@ -540,7 +549,6 @@ function getFiles(id, desc, value, date, company_id) {
                     '<td>'+dtBr+'</td>'+
                 '</tr>');
             }
-
         });
     });
 }
@@ -548,6 +556,8 @@ function getFiles(id, desc, value, date, company_id) {
 $('#modalEditLauch').on('hidden.bs.modal', function () {
     $("#tbodyFilesEntriEdit tr").remove(); // Remove todas as tr's
 });
+var _accountLaunchXhr = null;
+
 /** Modal de alterar lançamento*/
 $('#modalEditLauch').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
@@ -563,7 +573,13 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
     $('.idEntry').val(button.data('id'));
     $('.transactionId').val(button.data('transactionid'));
 
-    $.get(SearaApp.baseURL+'account/launch/all', function (data, _textStatus, _jqXHR) {
+    // Aborta requisição anterior caso o modal seja reaberto antes de resolver
+    if (_accountLaunchXhr) {
+        _accountLaunchXhr.abort();
+        _accountLaunchXhr = null;
+    }
+    _accountLaunchXhr = $.get(SearaApp.baseURL+'account/launch/all', function (data, _textStatus, _jqXHR) {
+        _accountLaunchXhr = null;
         var dataOptions = {
             id: button.data('idlau'),
             text: button.data('namel')
@@ -572,13 +588,13 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
         var newOption = new Option(dataOptions.text, dataOptions.id, false, false);
         $('#cod_accountEdit').append(newOption).trigger('change');
         var accontLauntAll = [];
-        $.each(data, function (_indexInArray, el) { 
+        $.each(data, function (_indexInArray, el) {
             accontLauntAll.push({'id': el.id, 'text': el.text});
         });
 
         $('#cod_accountEdit').select2({
             data: accontLauntAll
-        }) 
+        })
         getFiles(
             button.data('id'),
             button.data('his'),
@@ -590,6 +606,15 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
 })
 
 $('#modalEditLauch').on('hidden.bs.modal', function (_e) {
+    // Aborta XHRs em voo para evitar que callbacks stale disparem getFiles após fechar
+    if (_accountLaunchXhr) {
+        _accountLaunchXhr.abort();
+        _accountLaunchXhr = null;
+    }
+    if (_getFilesXhr) {
+        _getFilesXhr.abort();
+        _getFilesXhr = null;
+    }
     //LIMPANDO O SELECT PARA PROXIMO MODAL
     $('#cod_accountEdit').empty();
     $(this).removeData();
