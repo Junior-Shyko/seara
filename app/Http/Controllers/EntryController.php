@@ -441,13 +441,18 @@ class EntryController extends Controller
 
     public function info(Request $request, $id)
     {
-        // Busca direta pelo entries_id (sempre disponível na rota /info-launch/{id})
-        $files = FileLaunch::where('file_launches_id_entry', $id)->get();
+        // Busca todos os arquivos do lançamento, independente de como foram salvos:
+        // - file_launches_id_entry: uploads via modal de edição
+        // - transaction_id: uploads de novos lançamentos
+        $files = FileLaunch::where('file_launches_id_entry', $id)
+            ->orWhere('transaction_id', $id)
+            ->get();
+
         if ($files->count() > 0) {
             return $files;
         }
 
-        // Fallback: entry migrada que usa transaction_id no file_launches
+        // Fallback: entry migrada — busca transaction_id via tabela entries
         $entry = Entry::where('entries_id', $id)->first();
         if ($entry && $entry->transaction_id) {
             return FileLaunch::where('transaction_id', $entry->transaction_id)->get();
