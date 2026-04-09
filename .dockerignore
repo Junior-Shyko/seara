@@ -52,7 +52,7 @@ bootstrap/cache/*
 
 # Build scripts
 build-production.sh
-deploy-production.sh
+doc/app/deploy-production.sh
 migrate-uploads.sh
 Makefile
 

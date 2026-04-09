@@ -47,6 +47,7 @@
         </div>
         <div class="modal-footer">
             <input type="hidden" name="idLaunchEdit" id="idLaunchEdit">
+            <input type="hidden" id="companyIdLaunchEdit">
             <button type="button" class="btn btn-default" data-dismiss="modal">
                 <i class="fa fa-close"></i>
                 Sair

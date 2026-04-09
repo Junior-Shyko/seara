@@ -529,7 +529,6 @@ function getFiles(id, desc, value, date, company_id) {
             var imgPublic = SearaApp.assetURL+'storage/images/';
             //formato de data brasileiro
             let dtBr = dataAtualFormatada(val.created_at);
-
             if(val.hasOwnProperty('file_launches_name')) {
                 $("#tbodyFilesEntriEdit").append('<tr>'+
                 '<td><input type="checkbox" name="checkFilesLaunch[]" value="'+val.file_launches_id_entry+'"></td>'+
@@ -558,10 +557,11 @@ $('#modalEditLauch').on('show.bs.modal', function (event) {
     $("#entriesValueEdit").val(button.data('val'));
     $("#labelDescType").html(button.data('typ'));
     $("#idLaunchEdit").val(button.data('id'));
+    $("#companyIdLaunchEdit").val(button.data('company_id'));
     $("#btnShowModalUpload").attr('data-id', button.data('id'));
     //ADICIONANDO O ID DO LANÇAMENTO AO MODAL DE UPLOAD DE ARQUIVOS
     $('.idEntry').val(button.data('id'));
-    $('.transactionId').val(button.data('transactionId'));
+    $('.transactionId').val(button.data('transactionid'));
 
     $.get(SearaApp.baseURL+'account/launch/all', function (data, _textStatus, _jqXHR) {
         var dataOptions = {
@@ -629,10 +629,27 @@ $("#btnEditLaunch").click(function (e) {
 });
 
 //AO CLICAR NO ADD UPLOAD O MODAL DE EDIÇÃO É OCUTADO
-$("#btnShowModalUpload").click(function (e) { 
+$("#btnShowModalUpload").click(function (e) {
     e.preventDefault();
     $("#modalEditLauch").modal('hide');
     // $("#modalUploadLaunch").modal('show');
+});
+
+// AO FECHAR O MODAL DE UPLOAD, REABRE O MODAL DE EDIÇÃO E ATUALIZA A LISTA DE ARQUIVOS
+$('#modalUploadLaunch').on('hidden.bs.modal', function () {
+    var id        = $("#idLaunchEdit").val();
+    var desc      = $("#entriesDescriptionEdit").val();
+    var val       = $("#entriesValueEdit").val();
+    var date      = $("#dateLaunchEdit").val();
+    var companyId = $("#companyIdLaunchEdit").val();
+
+    Dropzone.forElement("#form-upload-entry").removeAllFiles(true);
+
+    if (id) {
+        $("#tbodyFilesEntriEdit").empty();
+        getFiles(id, desc, val, date, companyId);
+        // $("#modalEditLauch").modal('show');
+    }
 });
 
 $("#btnTrashLaunch").click(function (e) { 

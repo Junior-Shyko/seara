@@ -421,6 +421,8 @@ class EntryController extends Controller
                 data-typ="' . $mov->account_types_name . '"
                 data-idlau="' . $mov->idAccontLaunch . '"
                 data-namel="' . $mov->accountlaunch_name . '"
+                data-company_id="' . $mov->entries_id_company . '"
+                data-transactionid="' . $mov->transaction_id . '"
                 data-target="#modalEditLauch">
                 <i class="fa fa-edit" aria-hidden="true"></i></button>
                 ' . $btnUserRole . '
@@ -437,47 +439,21 @@ class EntryController extends Controller
             ->make(true);
     }
 
-    public function info(Request $request)
+    public function info(Request $request, $id)
     {
-        // Data de corte: antes = entries, depois = financial_entries com transaction_id
-        $dateFile = new Carbon('2025-12-02');
-
-        // Primeiro, tentar buscar na tabela entries (registros antigos)
-        $entries = EntryRepository::getFiles($request);
-        if ($entries->count() > 0 && $entries->first()->entries_date_launch <= $dateFile) {
-            return FileLaunch::where('file_launches_id_entry', $entries->first()->entries_id)->get();
+        // Busca direta pelo entries_id (sempre disponível na rota /info-launch/{id})
+        $files = FileLaunch::where('file_launches_id_entry', $id)->get();
+        if ($files->count() > 0) {
+            return $files;
         }
 
-        // Buscar na tabela financial_entries (registros novos)
-        $financialEntries = FinancialEntry::where([
-            'description' => $request->desc,
-            'amount' => FunctionGeneral::converterStringToFloat($request->value),
-            'entry_date' => FunctionGeneral::DataBRtoMySQL($request->date),
-            'company_id' => (int) $request->comp
-        ])->get();
-
-        $files = [];
-        foreach ($financialEntries as $financialEntry) {
-            // Primeiro tenta buscar por transaction_id (novos uploads)
-            $transactionFiles = FileLaunch::where('transaction_id', $financialEntry->transaction_id)->get();
-
-            if ($transactionFiles->count() > 0) {
-                foreach ($transactionFiles as $file) {
-                    $files[] = $file;
-                }
-            } else {
-                // Fallback: buscar por file_launches_id_entry (uploads antigos pós-migração)
-                $legacyFiles = FileLaunch::where('file_launches_id_entry', $financialEntry->id)
-                    ->where('created_at', '>', $dateFile)
-                    ->get();
-
-                foreach ($legacyFiles as $file) {
-                    $files[] = $file;
-                }
-            }
+        // Fallback: entry migrada que usa transaction_id no file_launches
+        $entry = Entry::where('entries_id', $id)->first();
+        if ($entry && $entry->transaction_id) {
+            return FileLaunch::where('transaction_id', $entry->transaction_id)->get();
         }
 
-        return $files;
+        return collect([]);
     }
 
     public function deleteFile(Request $request)
