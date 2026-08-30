@@ -61,6 +61,13 @@ doc/app/readme.md
 CLAUDE.md
 *.md
 
+# Dados locais de containers / dumps (não vão para a imagem)
+docker/mysql/data/
+phpdocker/
+docker/*.sql
+docker/deployer/
+files/
+
 # Backup e temporários
 *.bak
 *.tmp

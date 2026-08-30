@@ -1,145 +1,96 @@
 #!/bin/bash
 
 # Script de Deploy para Produção - Seara
-# Uso: ./deploy.sh [versão]
-# Exemplo: ./deploy.sh 1.1.16
+# Uso:  ./deploy.sh [tag]
+#   ./deploy.sh          -> usa a tag "latest"
+#   ./deploy.sh 1.1.33   -> usa a tag "1.1.33" (e fixa ela no compose)
+#
+# IMPORTANTE: este script APAGA o volume `*_prod-app-root` a cada deploy.
+# Esse volume guarda o código da aplicação (/var/www) e, se não for recriado,
+# o Docker continua servindo a versão antiga mesmo depois de um `pull`.
+# storage/ (uploads) e mysql-data (banco) NÃO são tocados.
 
-set -e  # Para em caso de erro
+set -e
 
-# Cores para output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Função para log
-log_info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
-}
+log_info()    { echo -e "${GREEN}[INFO]${NC} $1"; }
+log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
+log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
 
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Verificar se foi passada a versão
-if [ -z "$1" ]; then
-    log_error "Por favor, informe a versão da imagem"
-    echo "Uso: $0 <versão>"
-    echo "Exemplo: $0 1.1.16"
-    exit 1
-fi
-
-VERSION=$1
-IMAGE_NAME="junioroliveira/seara:${VERSION}"
+TAG="${1:-latest}"
+IMAGE_NAME="junioroliveira/seara:${TAG}"
 COMPOSE_FILE="docker-compose.production.yml"
+COMPOSE="docker compose -f ${COMPOSE_FILE}"
 
-log_info "Iniciando deploy da versão ${VERSION}"
+[ -f "$COMPOSE_FILE" ] || { log_error "${COMPOSE_FILE} não encontrado! Rode na pasta do projeto."; exit 1; }
+[ -f ".env" ]          || { log_error "Arquivo .env não encontrado!"; exit 1; }
 
-# Verificar se o arquivo docker-compose existe
-if [ ! -f "$COMPOSE_FILE" ]; then
-    log_error "Arquivo ${COMPOSE_FILE} não encontrado!"
-    exit 1
+log_info "Iniciando deploy — imagem ${IMAGE_NAME}"
+
+# 1. Backup do banco (best effort)
+if $COMPOSE ps --status running | grep -q "seara-mysql-prod"; then
+    BACKUP_DIR="backups"
+    mkdir -p "$BACKUP_DIR"
+    BACKUP_FILE="${BACKUP_DIR}/backup-$(date +%Y%m%d-%H%M%S).sql"
+    log_info "Backup do banco em ${BACKUP_FILE}..."
+    $COMPOSE exec -T mysql sh -c 'mysqldump -u root -p"${MYSQL_ROOT_PASSWORD:-root}" "${MYSQL_DATABASE}"' > "$BACKUP_FILE" 2>/dev/null \
+        && log_info "Backup ok." \
+        || log_warning "Backup falhou (seguindo mesmo assim)."
 fi
 
-# Verificar se o arquivo .env existe
-if [ ! -f ".env" ]; then
-    log_warning "Arquivo .env não encontrado. Criando a partir do .env.example..."
-    if [ -f ".env.example" ]; then
-        cp .env.example .env
-        log_warning "Por favor, edite o arquivo .env com as configurações de produção!"
-        exit 1
-    else
-        log_error "Arquivo .env.example também não encontrado!"
-        exit 1
-    fi
+# 2. Fixar a tag no compose quando uma versão explícita for passada
+if [ "$TAG" != "latest" ]; then
+    log_info "Fixando tag ${TAG} no ${COMPOSE_FILE}..."
+    sed -i "s|junioroliveira/seara:[^[:space:]]*|junioroliveira/seara:${TAG}|g" "$COMPOSE_FILE"
 fi
 
-# Fazer backup do banco de dados
-log_info "Criando backup do banco de dados..."
-BACKUP_DIR="backups"
-mkdir -p $BACKUP_DIR
-BACKUP_FILE="${BACKUP_DIR}/backup-$(date +%Y%m%d-%H%M%S).sql"
+# 3. Baixar a imagem nova
+log_info "Baixando ${IMAGE_NAME}..."
+docker pull "$IMAGE_NAME"
 
-if docker compose -f $COMPOSE_FILE ps | grep -q "seara-mysql-prod"; then
-    docker compose -f $COMPOSE_FILE exec -T mysql mysqldump -u root -proot seara > $BACKUP_FILE 2>/dev/null || {
-        log_warning "Não foi possível criar backup do banco (container pode não estar rodando)"
-    }
-    if [ -f "$BACKUP_FILE" ]; then
-        log_info "Backup criado em: ${BACKUP_FILE}"
-    fi
-fi
-
-# Atualizar versão no docker-compose.yml
-log_info "Atualizando versão no ${COMPOSE_FILE}..."
-sed -i "s|junioroliveira/seara:.*|junioroliveira/seara:${VERSION}|g" $COMPOSE_FILE
-
-# Pull da nova imagem
-log_info "Baixando imagem ${IMAGE_NAME}..."
-docker pull $IMAGE_NAME
-
-# Parar containers
+# 4. Derrubar containers
 log_info "Parando containers..."
-docker compose -f $COMPOSE_FILE down
+$COMPOSE down
 
-# Subir novos containers
-log_info "Iniciando novos containers..."
-docker compose -f $COMPOSE_FILE up -d
+# 5. APAGAR o volume do código (recriado do zero a partir da imagem nova)
+log_info "Removendo volume prod-app-root (código da aplicação)..."
+docker volume ls -q | grep -E '_prod-app-root$' | xargs -r docker volume rm
 
-# Aguardar containers ficarem saudáveis
+# 6. Subir
+log_info "Subindo containers..."
+$COMPOSE up -d
+
+# 7. Aguardar saúde
 log_info "Aguardando containers ficarem saudáveis..."
-sleep 10
+for i in $(seq 1 30); do
+    UNHEALTHY=$(docker ps --filter health=unhealthy --filter health=starting --format '{{.Names}}' | grep -E 'searaprod|seara-nginx-prod|seara-mysql-prod' || true)
+    [ -z "$UNHEALTHY" ] && break
+    sleep 3
+done
 
-# Verificar status
-log_info "Verificando status dos containers..."
-docker compose -f $COMPOSE_FILE ps
+# 8. Migrations
+log_info "Executando migrations..."
+$COMPOSE exec -T php php artisan migrate --force || log_warning "migrate falhou ou sem pendências."
 
-# Executar migrações
-log_info "Executando migrações..."
-docker compose -f $COMPOSE_FILE exec -T php php artisan migrate --force || {
-    log_warning "Migrações falharam ou não há migrações pendentes"
-}
+# 9. Cache
+log_info "Recriando cache..."
+$COMPOSE exec -T php php artisan view:clear
+$COMPOSE exec -T php php artisan config:cache
+$COMPOSE exec -T php php artisan route:cache
 
-# Limpar e recriar cache
-log_info "Limpando e recriando cache..."
-docker compose -f $COMPOSE_FILE exec -T php php artisan cache:clear
-docker compose -f $COMPOSE_FILE exec -T php php artisan config:cache
-docker compose -f $COMPOSE_FILE exec -T php php artisan route:cache
-
-# Corrigir permissões
-log_info "Corrigindo permissões..."
-docker compose -f $COMPOSE_FILE exec -T php chmod -R 775 storage bootstrap/cache || {
-    log_warning "Não foi possível ajustar permissões via chmod"
-}
-
-# Verificar saúde dos containers
-log_info "Verificando saúde dos containers..."
-sleep 5
-
-PHP_HEALTH=$(docker inspect seara-php-prod --format='{{.State.Health.Status}}' 2>/dev/null || echo "unknown")
-NGINX_HEALTH=$(docker inspect seara-nginx-prod --format='{{.State.Health.Status}}' 2>/dev/null || echo "unknown")
-MYSQL_HEALTH=$(docker inspect seara-mysql-prod --format='{{.State.Health.Status}}' 2>/dev/null || echo "unknown")
-
+# 10. Status final
 echo ""
-echo "Status dos containers:"
-echo "  PHP:   ${PHP_HEALTH}"
-echo "  Nginx: ${NGINX_HEALTH}"
-echo "  MySQL: ${MYSQL_HEALTH}"
+log_info "Status dos containers:"
+for c in searaprod seara-nginx-prod seara-mysql-prod; do
+    printf "  %-20s %s\n" "$c" "$(docker inspect "$c" --format='{{.State.Health.Status}}' 2>/dev/null || echo 'unknown')"
+done
 echo ""
 
-# Limpar imagens antigas
-log_info "Limpando imagens antigas..."
-docker image prune -f
+# 11. Limpar imagens órfãs
+docker image prune -f >/dev/null 2>&1 || true
 
-log_info "Deploy da versão ${VERSION} concluído com sucesso!"
-log_info "Acesse a aplicação em: http://localhost"
-
-# Mostrar logs
-read -p "Deseja ver os logs? (s/N): " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Ss]$ ]]; then
-    docker compose -f $COMPOSE_FILE logs -f
-fi
+log_info "Deploy concluído — ${IMAGE_NAME}"

@@ -79,9 +79,16 @@ jobs:
           debug: true
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            docker compose down
             docker pull junioroliveira/seara:latest
-            docker compose up -d
+            docker compose -f docker-compose.production.yml down
+            # Recria o volume do código — senão o /var/www continua servindo a imagem antiga
+            docker volume ls -q | grep -E '_prod-app-root$' | xargs -r docker volume rm
+            docker compose -f docker-compose.production.yml up -d
+            sleep 15
+            docker compose -f docker-compose.production.yml exec -T php php artisan migrate --force || true
+            docker compose -f docker-compose.production.yml exec -T php php artisan view:clear || true
+            docker compose -f docker-compose.production.yml exec -T php php artisan config:cache || true
+            docker compose -f docker-compose.production.yml exec -T php php artisan route:cache || true
             docker image prune -f
 
       - name: Deployment notification
