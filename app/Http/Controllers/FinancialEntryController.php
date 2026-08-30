@@ -567,6 +567,27 @@ class FinancialEntryController extends Controller
             $query->where('type', $request->type);
         }
 
+        // Filtro por banco/caixa (financial_entries.account_id)
+        if ($request->filled('account_id')) {
+            $accountId = $request->account_id;
+            $query->whereHas('entries', function ($q) use ($accountId) {
+                $q->where('account_id', $accountId);
+            });
+        }
+
+        // Filtro por conta / plano de contas (financial_entries.category_id)
+        if ($request->filled('category_id')) {
+            $categoryId = $request->category_id;
+            $query->whereHas('entries', function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId);
+            });
+        }
+
+        // Filtro por histórico (descrição do lançamento)
+        if ($request->filled('history')) {
+            $query->where('description', 'like', '%' . $request->history . '%');
+        }
+
         // Filtro por período: quando informado, usa o intervalo; caso contrário,
         // carrega apenas os lançamentos do mês atual.
         if ($request->filled('dtIni') && $request->filled('dtEnd')) {

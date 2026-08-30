@@ -125,6 +125,10 @@
                                             <button class="btn btn-primary" onclick="searchPeriod({{$idCompany}})">
                                                 <i class="fa fa-search"></i>
                                             </button>
+                                            <button type="button" class="btn btn-info" data-toggle="modal"
+                                                data-target="#modalAdvancedSearch" title="Filtro avançado">
+                                                <i class="fa fa-filter"></i>
+                                            </button>
                                         </div>
                                         <div class="col-sm-6 col-xs-6">
                                             <label class="col-md-12 col-sm-12 col-xs-12 ">Relatório</label>
@@ -173,6 +177,62 @@
         ])
     @include('modals.modal_upload_launch')
     @include('modals.entry.editLauch')
+
+    {{-- FILTRO AVANÇADO DE LANÇAMENTOS --}}
+    <div class="modal fade" id="modalAdvancedSearch" tabindex="-1" role="dialog" aria-labelledby="modalAdvancedSearchLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalAdvancedSearchLabel">Filtro avançado</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="filterAccountId">Banco / Caixa</label>
+                        <select id="filterAccountId" class="form-control">
+                            <option value="">-- Todos --</option>
+                            @foreach ($accountsBussines as $account)
+                                <option value="{{ $account->id }}">{{ $account->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filterCategoryId">Conta (plano de contas)</label>
+                        <select id="filterCategoryId" class="form-control">
+                            <option value="">-- Todas --</option>
+                            @foreach ($accounts as $accountLaunch)
+                                <option value="{{ $accountLaunch->id }}">{{ $accountLaunch->accountlaunch_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filterType">Tipo</label>
+                        <select id="filterType" class="form-control">
+                            <option value="">-- Todos --</option>
+                            <option value="income">Receita</option>
+                            <option value="expense">Despesa</option>
+                            <option value="transfer">Transferência</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filterHistory">Histórico</label>
+                        <input type="text" id="filterHistory" class="form-control" placeholder="Trecho do histórico...">
+                    </div>
+                    <small class="text-muted">O filtro respeita também o período (Data Inicial / Data Final) selecionado na tela.</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" onclick="clearAdvancedSearch({{ $idCompany }})">
+                        Limpar
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" onclick="searchAdvanced({{ $idCompany }})">
+                        <i class="fa fa-search"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     {{-- EXCLUINDO UM LANCAMENTO --}}
     @component('components.modal_delete_comp')
     <form action="{{ url('lancar/delete') }}" method="post">

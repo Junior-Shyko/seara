@@ -494,6 +494,109 @@ function searchPeriod(idCompany) {
     });
 }
 
+/**
+ * (Re)constrói a DataTable de lançamentos batendo em all-launch/{company}
+ * com os parâmetros informados (período + filtros avançados).
+ */
+function buildEntryTable(idCompany, params) {
+    var columns = [
+        { data: 'created_at', name: 'created_at', orderable: true, searchable: true },
+        { data: 'description', name: 'description', searchable: true },
+        {
+            data: 'total_amount', name: 'total_amount', orderable: true, searchable: true,
+            render: function (data, type, row) {
+                if (type === 'export' || type === 'sort') { return data; }
+                return row.total_amount_formatted;
+            }
+        },
+        { data: 'type_badge', name: 'type_badge', searchable: true },
+        { data: 'account_info', name: 'account_info', searchable: true },
+        { data: 'user', name: 'user', searchable: true },
+        { data: 'action', name: 'action', orderable: false, searchable: false, className: 'nowrap' }
+    ];
+
+    if ($.fn.dataTable.isDataTable('#entry-table')) {
+        $('#entry-table').DataTable().destroy();
+    }
+
+    var query = $.param(params || {});
+    var ajaxUrl = SearaApp.baseURL + 'all-launch/' + idCompany + (query ? ('?' + query) : '');
+
+    $('#entry-table').DataTable({
+        pageLength: 100,
+        ajax: ajaxUrl,
+        columns: columns,
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                text: 'Exportar planilha do Excel',
+                filename: 'planilha_exportada_com_lancamentos',
+                className: 'btn btn-primary',
+                charset: 'utf-8',
+                bom: true,
+                exportOptions: {
+                    format: {
+                        body: function (data, row, column, node) {
+                            if (column === 2) {
+                                var value = typeof data === 'string' ? parseFloat(data.replace(/[^\d,-]/g, '').replace(',', '.')) : data;
+                                if (value > 1000) { value = value / 100; }
+                                return value.toFixed(2);
+                            }
+                            return data;
+                        }
+                    }
+                }
+            }
+        ],
+        order: [[0, 'asc']],
+        language: {
+            search: "Buscar:",
+            searchPlaceholder: "Digite para buscar...",
+            processing: "Processando...",
+            emptyTable: "Nenhum registro encontrado"
+        }
+    });
+}
+
+/** Lê o período da tela (Data Inicial / Data Final) como parâmetros. */
+function currentPeriodParams() {
+    var params = {};
+    var dateInitial = $("#dateInitial").val();
+    var dateEnd = $("#dateEnd").val();
+    if (dateInitial) { params.dtIni = brDatetoUsa(dateInitial); }
+    if (dateEnd) { params.dtEnd = brDatetoUsa(dateEnd); }
+    return params;
+}
+
+/** Aplica os filtros do modal "Filtro avançado". */
+function searchAdvanced(idCompany) {
+    var params = currentPeriodParams();
+
+    var accountId = $("#filterAccountId").val();
+    var categoryId = $("#filterCategoryId").val();
+    var type = $("#filterType").val();
+    var history = ($("#filterHistory").val() || '').trim();
+
+    if (accountId) { params.account_id = accountId; }
+    if (categoryId) { params.category_id = categoryId; }
+    if (type) { params.type = type; }
+    if (history) { params.history = history; }
+
+    buildEntryTable(idCompany, params);
+    $('#modalAdvancedSearch').modal('hide');
+}
+
+/** Limpa os campos do filtro avançado e recarrega respeitando apenas o período. */
+function clearAdvancedSearch(idCompany) {
+    $("#filterAccountId").val('');
+    $("#filterCategoryId").val('');
+    $("#filterType").val('');
+    $("#filterHistory").val('');
+    buildEntryTable(idCompany, currentPeriodParams());
+    $('#modalAdvancedSearch').modal('hide');
+}
+
 var dtInit = '';
 var dtEnd = '';
 
