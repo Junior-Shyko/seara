@@ -567,14 +567,19 @@ class FinancialEntryController extends Controller
             $query->where('type', $request->type);
         }
 
-        // Filtro por período
+        // Filtro por período: quando informado, usa o intervalo; caso contrário,
+        // carrega apenas os lançamentos do mês atual.
         if ($request->filled('dtIni') && $request->filled('dtEnd')) {
-            $dtInitCarbon = Carbon::createFromFormat('y-m-d', $request->dtIni);
-            $dtEndCarbon = Carbon::createFromFormat('y-m-d', $request->dtEnd);
-            $query->whereHas('entries', function ($q) use ($dtInitCarbon, $dtEndCarbon) {
-                $q->whereBetween('entry_date', [$dtInitCarbon, $dtEndCarbon]);
-            });
+            $dtInitCarbon = Carbon::createFromFormat('y-m-d', $request->dtIni)->startOfDay();
+            $dtEndCarbon = Carbon::createFromFormat('y-m-d', $request->dtEnd)->endOfDay();
+        } else {
+            $dtInitCarbon = Carbon::now()->startOfMonth();
+            $dtEndCarbon = Carbon::now()->endOfMonth();
         }
+
+        $query->whereHas('entries', function ($q) use ($dtInitCarbon, $dtEndCarbon) {
+            $q->whereBetween('entry_date', [$dtInitCarbon, $dtEndCarbon]);
+        });
 
         return DataTables::of($query)
             ->addColumn('created_at', function ($transaction) {

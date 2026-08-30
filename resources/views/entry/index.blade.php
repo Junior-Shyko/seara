@@ -73,7 +73,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div class="x_panel tile">
                         <div class="x_title">
-                            <h2>LANÇAMENTO DE CAIXA <small>Seus últimos lançamentos</small></h2>
+                            <h2>LANÇAMENTO DE CAIXA <small>Lançamentos do mês atual</small></h2>
                             <ul class="nav navbar-right panel_toolbox">
                                 @role('admin|superAdmin')
                                 <li class="dropdown">
@@ -261,8 +261,9 @@
         console.log(moment().format());
         var dtInit = moment().startOf('month').format("DD/MM/YYYY");
         var today = moment().endOf("month").format("DD/MM/YYYY");;
-        // $("#dateInitial").val(dtInit);
-        // $("#dateEnd").val(today);
+        // Por padrão a tela carrega apenas os lançamentos do mês atual
+        $("#dateInitial").val(dtInit);
+        $("#dateEnd").val(today);
         $("#inputDtInit").val(btoa(dtInit));
         $("#inputDtEnd").val(btoa(today));
     </script>
