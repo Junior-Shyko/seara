@@ -319,8 +319,9 @@
         crossorigin="anonymous"></script>
     <script>
         console.log(moment().format());
-        var dtInit = moment().startOf('month').format("DD/MM/YYYY");
-        var today = moment().endOf("month").format("DD/MM/YYYY");;
+        var dtInit = moment().startOf('month').format("DD/MM/YY");
+        console.log(dtInit);
+        var today = moment().endOf("month").format("DD/MM/YY");
         // Por padrão a tela carrega apenas os lançamentos do mês atual
         $("#dateInitial").val(dtInit);
         $("#dateEnd").val(today);

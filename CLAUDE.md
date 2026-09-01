@@ -257,12 +257,70 @@ File uploads for entries use Dropzone.js and are stored with the `FileLaunch` mo
 - `APP_ENV` (local/production)
 - Mail configuration for notifications
 
-## Production Build
+## Production Build & Deploy
+
+### Server
+
+- SSH: `ssh root@142.93.86.166`, project at `/home/dev/seara-prod`
+- Compose file: `docker-compose.production.yml`, image `junioroliveira/seara:latest`
+- Behind a `reverse-proxy` (jwilder/nginx-proxy) + Let's Encrypt companion; also **behind Cloudflare** (orange cloud)
+
+### Automatic deploy (GitHub Actions)
+
+`.github/workflows/deploy.yml` runs on **a PR merged into `develop`** (or manual `workflow_dispatch`):
+builds the image with `docker/php/Dockerfile`, pushes `:latest` to Docker Hub, then SSHes into the
+server and runs the redeploy sequence below. Requires secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD`,
+`DEPLOY_HOST` (**must be the raw IP `142.93.86.166`, not a Cloudflare-proxied domain — port 22 won't
+route through Cloudflare**), `DEPLOY_USER` (`root`), `DEPLOY_KEY`, `DEPLOY_PATH` (`/home/dev/seara-prod`).
+
+CI does **not** run gulp. Changes to JS/CSS require compiling locally and committing the built
+`public/**/*.min.js`:
 
 ```bash
-# Build Docker image
-docker build --no-cache -t junioroliveira/seara:1.0.5 -f docker/php/Dockerfile .
+docker compose run --rm node sh -c "npm install -g bower gulp@3 && bower install --allow-root && /usr/local/bin/gulp"
 ```
+
+### Manual deploy
+
+```bash
+./deploy.sh            # deploy junioroliveira/seara:latest
+./deploy.sh 1.1.33     # deploy a specific tag (also pins it in the compose file)
+```
+
+Or step by step on the server (`cd /home/dev/seara-prod`):
+
+```bash
+docker pull junioroliveira/seara:latest
+docker compose -f docker-compose.production.yml down
+docker volume ls -q | grep -E '_prod-app-root$' | xargs -r docker volume rm   # see gotcha below
+docker compose -f docker-compose.production.yml up -d
+docker compose -f docker-compose.production.yml exec -T php php artisan migrate --force
+docker compose -f docker-compose.production.yml exec -T php php artisan view:clear
+docker compose -f docker-compose.production.yml exec -T php php artisan config:cache
+docker compose -f docker-compose.production.yml exec -T php php artisan route:cache
+```
+
+Build the image by hand:
+
+```bash
+docker build --no-cache -t junioroliveira/seara:latest -f docker/php/Dockerfile .
+```
+
+### Deploy gotchas (important)
+
+- **`prod-app-root` volume shadows the code.** `php` and `nginx` mount the named volume
+  `seara-prod_prod-app-root` over `/var/www`. A named volume only copies image content on first
+  creation, so after that `docker pull` + `up -d` keeps serving the **old** code. The deploy must
+  `docker volume rm` that volume every time (the workflow and `deploy.sh` already do). Never remove
+  `*_mysql-data` or the `./storage` bind mount.
+- **Cloudflare caches `.js`/`.css`** with a long `immutable` TTL. New code on the server but the
+  browser still gets the old asset (even after Ctrl+Shift+R) → purge in Cloudflare
+  (Caching → Purge Cache). Blade assets are loaded with a cache-buster
+  `?v={{ @filemtime(public_path(...)) }}` so future changes bust automatically; all `mix.version()`
+  in `gulpfile.js` are commented out, so without `?v=` there is no asset versioning.
+- **`.dockerignore` must exclude `docker/mysql/data/`** — the dev MySQL container creates it with
+  root-owned files and breaks the Docker build context ("permission denied").
+- Migrations never run automatically outside the deploy sequence.
 
 ## Important Notes
 
