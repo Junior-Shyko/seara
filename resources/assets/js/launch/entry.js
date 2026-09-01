@@ -211,13 +211,27 @@ function getLaunchAccount(codAccount) {
 }    
 var idCompany = $("#idCodeCompany").val();
 
+/**
+ * Render da coluna "Dia": mostra dd/mm/aaaa mas ordena por data real.
+ * A tabela ordena no client e o DataTables nao entende o formato dd/mm/aaaa,
+ * entao para type 'sort'/'type' devolvemos aaaammdd (comparavel como string).
+ */
+function renderDiaColumn(data, type) {
+    if (type === 'sort' || type === 'type') {
+        var p = (data || '').split('/');
+        return p.length === 3 ? (p[2] + p[1] + p[0]) : '';
+    }
+    return data;
+}
+
 function getLaunch(idCompany) {
     const colunas = [
        {
             data: 'created_at',
             name: 'created_at',
             orderable: true,
-            searchable: true
+            searchable: true,
+            render: renderDiaColumn
         },
         {
             data: 'description',
@@ -303,7 +317,7 @@ function getLaunch(idCompany) {
         ],
         ajax: SearaApp.baseURL+'all-launch/'+idCompany,
         columns: colunas,
-        order: [[0, 'asc']],
+        order: [[0, 'desc']],
         language: {
             search: "Buscar:",
             searchPlaceholder: "Digite para buscar...",
@@ -395,7 +409,8 @@ function searchPeriod(idCompany) {
             data: 'created_at',
             name: 'created_at',
             orderable: true,
-            searchable: true
+            searchable: true,
+            render: renderDiaColumn
         },
         {
             data: 'description',
@@ -490,7 +505,7 @@ function searchPeriod(idCompany) {
                 }
             }
         ],
-        order: [[0, "asc"]]        
+        order: [[0, "desc"]]
     });
 }
 
@@ -500,7 +515,7 @@ function searchPeriod(idCompany) {
  */
 function buildEntryTable(idCompany, params) {
     var columns = [
-        { data: 'created_at', name: 'created_at', orderable: true, searchable: true },
+        { data: 'created_at', name: 'created_at', orderable: true, searchable: true, render: renderDiaColumn },
         { data: 'description', name: 'description', searchable: true },
         {
             data: 'total_amount', name: 'total_amount', orderable: true, searchable: true,
@@ -549,7 +564,7 @@ function buildEntryTable(idCompany, params) {
                 }
             }
         ],
-        order: [[0, 'asc']],
+        order: [[0, 'desc']],
         language: {
             search: "Buscar:",
             searchPlaceholder: "Digite para buscar...",

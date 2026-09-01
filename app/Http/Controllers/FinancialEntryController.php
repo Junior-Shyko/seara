@@ -704,6 +704,12 @@ class FinancialEntryController extends Controller
                     $q->where('entry_date', 'like', "%{$keyword}%");
                 });
             })
+            ->order(function ($query) {
+                // Sempre do lançamento mais recente para o mais antigo,
+                // independente de filtro ou clique no cabeçalho.
+                $query->orderByRaw('(select max(fe.entry_date) from financial_entries fe where fe.transaction_id = transactions.id) desc')
+                      ->orderBy('transactions.id', 'desc');
+            })
             ->rawColumns(['type_badge', 'amount_formatted', 'action', 'total_amount_formatted'])
             ->make(true);
     }
