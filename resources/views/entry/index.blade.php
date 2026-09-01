@@ -320,6 +320,7 @@
     <script>
         console.log(moment().format());
         var dtInit = moment().startOf('month').format("DD/MM/YYYY");
+        console.log(dtInit);
         var today = moment().endOf("month").format("DD/MM/YYYY");;
         // Por padrão a tela carrega apenas os lançamentos do mês atual
         $("#dateInitial").val(dtInit);
