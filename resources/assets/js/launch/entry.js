@@ -36,7 +36,7 @@ $(document).ready(function () {
         dictDefaultMessage: "Arraste seus arquivos para essa área ou click para localizar",
         maxFiles: 4,
         dictMaxFilesExceeded: 'Você nao pode enviar mais arquivo',
-        maxFilesize: 4,
+        maxFilesize: 20,
         dictFileTooBig: 'O Arquivo excedeu o limite máximo permitido',
         clickable: true,
         uploadMultiple: true,
