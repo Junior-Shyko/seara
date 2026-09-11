@@ -87,6 +87,7 @@ jobs:
             docker volume ls -q | grep -E '_prod-app-root$' | xargs -r docker volume rm
             docker compose -f docker-compose.production.yml up -d
             sleep 15
+            docker compose -f docker-compose.production.yml exec -T php php artisan storage:link
             docker compose -f docker-compose.production.yml exec -T php php artisan migrate --force || true
             docker compose -f docker-compose.production.yml exec -T php php artisan view:clear || true
             docker compose -f docker-compose.production.yml exec -T php php artisan config:cache || true
